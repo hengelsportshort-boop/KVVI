@@ -1,10 +1,10 @@
-import { readFileSync, writeFileSync } from 'fs';
+import { readFileSync, writeFileSync, statSync } from 'fs';
 import path from 'path';
 
 const GEOJSON_PATH = path.resolve('./public/data/fisheries.geojson');
 
 function getEtag() {
-  try { return 'W/"' + readFileSync(GEOJSON_PATH).length + '"'; } catch { return ''; }
+  try { return 'W/"' + statSync(GEOJSON_PATH).mtimeMs + '"'; } catch { return ''; }
 }
 
 export async function GET({ request }) {
