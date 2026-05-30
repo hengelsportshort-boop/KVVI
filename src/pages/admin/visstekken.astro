@@ -410,7 +410,7 @@ const pageTitle = "Visstekken Beheer | KVVI Admin";
     const query = searchInput.value.toLowerCase().trim();
     const colorVal = colorFilter.value.toLowerCase();
     let filtered = allFeatures;
-    if (query === 'uk' || query === 'uk -') {
+    if (query.replace(/[\s-]+/g, '') === 'uk') {
       filtered = filtered.filter(f => f._en);
     } else if (query) {
       filtered = filtered.filter(f => {
