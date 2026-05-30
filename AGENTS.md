@@ -7,6 +7,11 @@
 
 ## Opgelost
 
+### ETag 304 markers verdwijnen (30-05-2026)
+- **Oorzaak**: `laadVisstekken()` resette `alleVisstekkenFeaturesKvvi` en `alleVisstekkenFeaturesAbc` naar `null` voordat async API calls terugkwamen. Bij 304 waren de caches leeg → geen markers toegevoegd aan nieuwe `markerGroup`.
+- **Fix**: per-API caches niet resetten in `laadVisstekken()`, alleen in initialisatie. Ze blijven behouden tussen 30s refreshes.
+- **Structuur**: `processGeoJSON(data, isAbc)` — aparte functie voor marker-creatie, gebruikt door zowel 200- als 304-pad.
+
 ### Admin login (29-05-2026)
 - **Cross-site POST 403**: `security.checkOrigin: false` in `astro.config.mjs` — Astro v6 blokkeert standaard POST forms achter Fly proxy
 - **ADMIN_KEY leeg bij Docker build**: `.env` staat in `.dockerignore`, dus `import.meta.env.ADMIN_KEY` wordt leeg geïnlined tijdens build. Opgelost door `process.env.ADMIN_KEY` in `login.astro` en `middleware.ts`.

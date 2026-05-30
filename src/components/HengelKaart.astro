@@ -328,7 +328,7 @@ import WeerOverlay from './WeerOverlay.astro';
 <script>
   let L, map, legendeFilterColor = null;
   let markerGroup = null, selectedMarkerPinEl = null, alleVisstekkenFeatures = null;
-  let alleVisstekkenFeaturesKvvi = null, alleVisstekkenFeaturesAbc = null;
+  let alleVisstekkenFeaturesKvvi = null, alleVisstekkenFeaturesAbc = null, alleVisstekkenFeaturesEn = null;
   let active = false, raf, c, ctx, spd = 0, dir = 0, lastTime, parts = [];
   let windDayOffset = 0;
   
@@ -480,6 +480,7 @@ import WeerOverlay from './WeerOverlay.astro';
 
   var visstekkenEtag = {};
   var visstekkenAbcEtag = {};
+  var visstekkenEnEtag = {};
 
   function laadVisstekken() {
     if (markerGroup) map.removeLayer(markerGroup);
@@ -487,8 +488,9 @@ import WeerOverlay from './WeerOverlay.astro';
     window.kvviMarkerGroup = markerGroup;
     alleVisstekkenFeatures = [];
     toonLaadIndicator();
-    loadGeoJSON('/api/visstekken', visstekkenEtag, false);
-    loadGeoJSON('/api/visstekken-abc', visstekkenAbcEtag, true);
+    loadGeoJSON('/api/visstekken', visstekkenEtag, 'kvvi');
+    loadGeoJSON('/api/visstekken-abc', visstekkenAbcEtag, 'abc');
+    loadGeoJSON('/api/visstekken-en', visstekkenEnEtag, 'en');
     setTimeout(verbergLaadIndicator, 8000);
   }
 
@@ -496,7 +498,9 @@ import WeerOverlay from './WeerOverlay.astro';
     return coords && coords[0] === 3.0 && coords[1] === 51.0;
   }
 
-  function processGeoJSON(data, isAbc) {
+  function processGeoJSON(data, source) {
+    var isAbc = source === 'abc';
+    var isEn = source === 'en';
     L.geoJSON(data, {
       filter: function(f) {
         return !isFallbackCoord(f.geometry.coordinates);
@@ -505,11 +509,14 @@ import WeerOverlay from './WeerOverlay.astro';
         const color = f.properties['marker-color'] || '#94a3b8';
         const pinTitle = f.properties?.title || '';
         const escapedTitle = pinTitle.replace(/"/g, '&quot;');
-        const borderWidth = isAbc ? '4px' : '3px';
+        const borderWidth = (isAbc || isEn) ? '4px' : '3px';
+        var cls = '';
+        if (isAbc) cls = 'abc-marker';
+        else if (isEn) cls = 'en-marker';
         const marker = L.marker(ll, {
           icon: L.divIcon({
             html: `<div class="kvvi-marker-pin" data-title="${escapedTitle}" style="--kvvi-marker-border:#fff; background: ${color}; width: 30px; height: 30px; border-radius: 50% 50% 50% 0; border: ${borderWidth} solid var(--kvvi-marker-border); transform: rotate(-45deg); display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"><div style="width: 8px; height: 8px; background: white; border-radius: 50%; transform: rotate(45deg)"></div></div>`,
-            className: isAbc ? 'abc-marker' : '',
+            className: cls,
             iconSize: [30, 30],
             iconAnchor: [15, 30]
           })
@@ -546,6 +553,8 @@ import WeerOverlay from './WeerOverlay.astro';
           let content = `<h2 class="map-title">${title}</h2>`;
           if (isAbc) {
             content += '<div class="mb-2"><span class="inline-block text-[10px] font-bold uppercase tracking-wider bg-yellow-300 text-yellow-900 px-2 py-0.5 rounded">ABC Sportvissen</span></div>';
+          } else if (isEn) {
+            content += '<div class="mb-2"><span class="inline-block text-[10px] font-bold uppercase tracking-wider bg-red-300 text-red-900 px-2 py-0.5 rounded">Commercial Fishery UK</span></div>';
           }
           if (description) {
             const descLines = description.split('\n').filter(line => line.trim());
@@ -577,7 +586,7 @@ import WeerOverlay from './WeerOverlay.astro';
     });
   }
 
-  function loadGeoJSON(url, etagCache, isAbc) {
+  function loadGeoJSON(url, etagCache, source) {
     var headers = {};
     if (etagCache.value) headers['If-None-Match'] = etagCache.value;
     fetch(url, { headers: headers }).then(function(r){
@@ -587,23 +596,28 @@ import WeerOverlay from './WeerOverlay.astro';
       return r.json();
     }).then(function(result){
       if (!result) {
-        var cached = isAbc ? alleVisstekkenFeaturesAbc : alleVisstekkenFeaturesKvvi;
+        var cached = null;
+        if (source === 'abc') cached = alleVisstekkenFeaturesAbc;
+        else if (source === 'en') cached = alleVisstekkenFeaturesEn;
+        else cached = alleVisstekkenFeaturesKvvi;
         if (cached) {
-          processGeoJSON({ type: 'FeatureCollection', features: cached }, isAbc);
+          processGeoJSON({ type: 'FeatureCollection', features: cached }, source);
         }
         verbergLaadIndicator();
         return;
       }
       var d = result.data || result;
       if (!d.features) return;
-      if (isAbc) {
+      if (source === 'abc') {
         alleVisstekkenFeaturesAbc = d.features;
+      } else if (source === 'en') {
+        alleVisstekkenFeaturesEn = d.features;
       } else {
         alleVisstekkenFeaturesKvvi = d.features;
       }
       alleVisstekkenFeatures = alleVisstekkenFeatures.concat(d.features);
       verbergLaadIndicator();
-      processGeoJSON(d, isAbc);
+      processGeoJSON(d, source);
     }).catch(function(error) {
       console.error('Error loading ' + url, error);
     });
