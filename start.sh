@@ -9,10 +9,11 @@ if [ ! -d "$DATA_DIR" ]; then
 fi
 
 for f in "$SEED_DIR"/*; do
+  [ -e "$f" ] || continue
   name=$(basename "$f")
-  if [ ! -f "$DATA_DIR/$name" ]; then
+  if [ ! -e "$DATA_DIR/$name" ]; then
     echo "  seeding $name..."
-    cp "$f" "$DATA_DIR/"
+    cp -r "$f" "$DATA_DIR/"
   fi
 done
 
