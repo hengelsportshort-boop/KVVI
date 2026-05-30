@@ -486,8 +486,6 @@ import WeerOverlay from './WeerOverlay.astro';
     markerGroup = L.layerGroup().addTo(map);
     window.kvviMarkerGroup = markerGroup;
     alleVisstekkenFeatures = [];
-    alleVisstekkenFeaturesKvvi = null;
-    alleVisstekkenFeaturesAbc = null;
     toonLaadIndicator();
     loadGeoJSON('/api/visstekken', visstekkenEtag, false);
     loadGeoJSON('/api/visstekken-abc', visstekkenAbcEtag, true);
