@@ -328,6 +328,7 @@ import WeerOverlay from './WeerOverlay.astro';
 <script>
   let L, map, legendeFilterColor = null;
   let markerGroup = null, selectedMarkerPinEl = null, alleVisstekkenFeatures = null;
+  let alleVisstekkenFeaturesKvvi = null, alleVisstekkenFeaturesAbc = null;
   let active = false, raf, c, ctx, spd = 0, dir = 0, lastTime, parts = [];
   let windDayOffset = 0;
   
@@ -485,6 +486,8 @@ import WeerOverlay from './WeerOverlay.astro';
     markerGroup = L.layerGroup().addTo(map);
     window.kvviMarkerGroup = markerGroup;
     alleVisstekkenFeatures = [];
+    alleVisstekkenFeaturesKvvi = null;
+    alleVisstekkenFeaturesAbc = null;
     toonLaadIndicator();
     loadGeoJSON('/api/visstekken', visstekkenEtag, false);
     loadGeoJSON('/api/visstekken-abc', visstekkenAbcEtag, true);
@@ -493,6 +496,87 @@ import WeerOverlay from './WeerOverlay.astro';
 
   function isFallbackCoord(coords) {
     return coords && coords[0] === 3.0 && coords[1] === 51.0;
+  }
+
+  function processGeoJSON(data, isAbc) {
+    L.geoJSON(data, {
+      filter: function(f) {
+        return !isFallbackCoord(f.geometry.coordinates);
+      },
+      pointToLayer: function(f,ll){
+        const color = f.properties['marker-color'] || '#94a3b8';
+        const pinTitle = f.properties?.title || '';
+        const escapedTitle = pinTitle.replace(/"/g, '&quot;');
+        const borderWidth = isAbc ? '4px' : '3px';
+        const marker = L.marker(ll, {
+          icon: L.divIcon({
+            html: `<div class="kvvi-marker-pin" data-title="${escapedTitle}" style="--kvvi-marker-border:#fff; background: ${color}; width: 30px; height: 30px; border-radius: 50% 50% 50% 0; border: ${borderWidth} solid var(--kvvi-marker-border); transform: rotate(-45deg); display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"><div style="width: 8px; height: 8px; background: white; border-radius: 50%; transform: rotate(45deg)"></div></div>`,
+            className: isAbc ? 'abc-marker' : '',
+            iconSize: [30, 30],
+            iconAnchor: [15, 30]
+          })
+        }).addTo(markerGroup);
+        if (pinTitle) {
+          marker.bindTooltip(pinTitle, {
+            direction: 'top',
+            offset: [0, -10],
+            className: 'visstek-tooltip'
+          });
+        }
+        return marker;
+      },
+      onEachFeature: function(f,l){
+        l.on('click',function(e){
+          L.DomEvent.stopPropagation(e);
+
+          if (selectedMarkerPinEl) {
+            try { selectedMarkerPinEl.style.setProperty('--kvvi-marker-border', '#fff'); } catch (err) {}
+          }
+          setMarkerSelected(l, true);
+          try {
+            const el = l.getElement ? l.getElement() : null;
+            selectedMarkerPinEl = el ? el.querySelector('.kvvi-marker-pin') : null;
+          } catch (err) { selectedMarkerPinEl = null; }
+
+          const p = f.properties || {};
+          const title = p.title || 'Onbekend';
+          const description = p.description || '';
+          const image = typeof p.image === 'string' ? p.image : '';
+          const video = p.video || '';
+          const url = p.url || '';
+          const color = p['marker-color'] || '#94a3b8';
+          let content = `<h2 class="map-title">${title}</h2>`;
+          if (isAbc) {
+            content += '<div class="mb-2"><span class="inline-block text-[10px] font-bold uppercase tracking-wider bg-yellow-300 text-yellow-900 px-2 py-0.5 rounded">ABC Sportvissen</span></div>';
+          }
+          if (description) {
+            const descLines = description.split('\n').filter(line => line.trim());
+            if (descLines.length > 0) {
+              content += '<div class="mb-4"><h3 class="font-bold text-sm mb-2">Vissoorten:</h3><ul class="text-sm space-y-1">';
+              descLines.forEach(line => {
+                content += `<li class="flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background-color: ${color}"></span>${line.trim()}</li>`;
+              });
+              content += '</ul></div>';
+            }
+          }
+          if (image) {
+            content += `<div class="mb-4"><img src="${image}" alt="${title}" class="w-full rounded-lg border border-slate-200" onerror="this.style.display='none'"></div>`;
+          }
+          if (video) {
+            const match = video.match(/(?:youtu\.be\/|youtube\.com(?:\/embed\/|\/v\/|\/watch\?v=))([\w\-]{11})/);
+            if (match) {
+              content += `<div class="mb-4"><iframe src="https://www.youtube.com/embed/${match[1]}" class="w-full aspect-video rounded-lg border border-slate-200" allowfullscreen></iframe></div>`;
+            }
+          }
+          if (url) {
+            content += `<div class="mb-4"><a href="${url}" target="_blank" class="inline-flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800 font-medium"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>Website</a></div>`;
+          }
+
+          document.getElementById('info-panel').classList.add('active');
+          document.getElementById('panel-content').innerHTML = content;
+        });
+      }
+    });
   }
 
   function loadGeoJSON(url, etagCache, isAbc) {
@@ -504,89 +588,24 @@ import WeerOverlay from './WeerOverlay.astro';
       if (newEtag) etagCache.value = newEtag;
       return r.json();
     }).then(function(result){
-      if (!result) return;
+      if (!result) {
+        var cached = isAbc ? alleVisstekkenFeaturesAbc : alleVisstekkenFeaturesKvvi;
+        if (cached) {
+          processGeoJSON({ type: 'FeatureCollection', features: cached }, isAbc);
+        }
+        verbergLaadIndicator();
+        return;
+      }
       var d = result.data || result;
       if (!d.features) return;
+      if (isAbc) {
+        alleVisstekkenFeaturesAbc = d.features;
+      } else {
+        alleVisstekkenFeaturesKvvi = d.features;
+      }
       alleVisstekkenFeatures = alleVisstekkenFeatures.concat(d.features);
       verbergLaadIndicator();
-      L.geoJSON(d, {
-        filter: function(f) {
-          return !isFallbackCoord(f.geometry.coordinates);
-        },
-        pointToLayer: function(f,ll){
-          const color = f.properties['marker-color'] || '#94a3b8';
-          const pinTitle = f.properties?.title || '';
-          const escapedTitle = pinTitle.replace(/"/g, '&quot;');
-          const borderWidth = isAbc ? '4px' : '3px';
-          const marker = L.marker(ll, {
-            icon: L.divIcon({
-              html: `<div class="kvvi-marker-pin" data-title="${escapedTitle}" style="--kvvi-marker-border:#fff; background: ${color}; width: 30px; height: 30px; border-radius: 50% 50% 50% 0; border: ${borderWidth} solid var(--kvvi-marker-border); transform: rotate(-45deg); display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"><div style="width: 8px; height: 8px; background: white; border-radius: 50%; transform: rotate(45deg)"></div></div>`,
-              className: isAbc ? 'abc-marker' : '',
-              iconSize: [30, 30],
-              iconAnchor: [15, 30]
-            })
-          }).addTo(markerGroup);
-          if (pinTitle) {
-            marker.bindTooltip(pinTitle, {
-              direction: 'top',
-              offset: [0, -10],
-              className: 'visstek-tooltip'
-            });
-          }
-          return marker;
-        },
-        onEachFeature: function(f,l){
-          l.on('click',function(e){
-            L.DomEvent.stopPropagation(e);
-
-            if (selectedMarkerPinEl) {
-              try { selectedMarkerPinEl.style.setProperty('--kvvi-marker-border', '#fff'); } catch (err) {}
-            }
-            setMarkerSelected(l, true);
-            try {
-              const el = l.getElement ? l.getElement() : null;
-              selectedMarkerPinEl = el ? el.querySelector('.kvvi-marker-pin') : null;
-            } catch (err) { selectedMarkerPinEl = null; }
-
-            const p = f.properties || {};
-            const title = p.title || 'Onbekend';
-            const description = p.description || '';
-            const image = typeof p.image === 'string' ? p.image : '';
-            const video = p.video || '';
-            const url = p.url || '';
-            const color = p['marker-color'] || '#94a3b8';
-            let content = `<h2 class="map-title">${title}</h2>`;
-            if (isAbc) {
-              content += '<div class="mb-2"><span class="inline-block text-[10px] font-bold uppercase tracking-wider bg-yellow-300 text-yellow-900 px-2 py-0.5 rounded">ABC Sportvissen</span></div>';
-            }
-            if (description) {
-              const descLines = description.split('\n').filter(line => line.trim());
-              if (descLines.length > 0) {
-                content += '<div class="mb-4"><h3 class="font-bold text-sm mb-2">Vissoorten:</h3><ul class="text-sm space-y-1">';
-                descLines.forEach(line => {
-                  content += `<li class="flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background-color: ${color}"></span>${line.trim()}</li>`;
-                });
-                content += '</ul></div>';
-              }
-            }
-            if (image) {
-              content += `<div class="mb-4"><img src="${image}" alt="${title}" class="w-full rounded-lg border border-slate-200" onerror="this.style.display='none'"></div>`;
-            }
-            if (video) {
-              const match = video.match(/(?:youtu\.be\/|youtube\.com(?:\/embed\/|\/v\/|\/watch\?v=))([\w\-]{11})/);
-              if (match) {
-                content += `<div class="mb-4"><iframe src="https://www.youtube.com/embed/${match[1]}" class="w-full aspect-video rounded-lg border border-slate-200" allowfullscreen></iframe></div>`;
-              }
-            }
-            if (url) {
-              content += `<div class="mb-4"><a href="${url}" target="_blank" class="inline-flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800 font-medium"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>Website</a></div>`;
-            }
-
-            document.getElementById('info-panel').classList.add('active');
-            document.getElementById('panel-content').innerHTML = content;
-          });
-        }
-      });
+      processGeoJSON(d, isAbc);
     }).catch(function(error) {
       console.error('Error loading ' + url, error);
     });
