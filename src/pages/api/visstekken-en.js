@@ -1,4 +1,4 @@
-import { readFileSync } from 'fs';
+import { readFileSync, writeFileSync } from 'fs';
 import path from 'path';
 
 const GEOJSON_PATH = path.resolve('./public/data/fisheries.geojson');
@@ -21,6 +21,29 @@ export async function GET({ request }) {
         'Cache-Control': 'public, max-age=3600',
         'ETag': etag,
       },
+    });
+  } catch (e) {
+    return new Response(JSON.stringify({ error: e.message }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+}
+
+export async function POST({ request }) {
+  try {
+    const body = await request.json();
+
+    if (body.type !== 'FeatureCollection' || !Array.isArray(body.features)) {
+      return new Response(JSON.stringify({ error: 'Invalid GeoJSON' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    writeFileSync(GEOJSON_PATH, JSON.stringify(body, null, 2), 'utf-8');
+    return new Response(JSON.stringify({ success: true, count: body.features.length }), {
+      headers: { 'Content-Type': 'application/json' },
     });
   } catch (e) {
     return new Response(JSON.stringify({ error: e.message }), {

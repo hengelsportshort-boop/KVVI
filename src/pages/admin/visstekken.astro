@@ -328,15 +328,18 @@ const pageTitle = "Visstekken Beheer | KVVI Admin";
 
   async function loadData() {
     try {
-      const [resKvvi, resAbc] = await Promise.all([
+      const [resKvvi, resAbc, resEn] = await Promise.all([
         fetch('/api/visstekken'),
-        fetch('/api/visstekken-abc')
+        fetch('/api/visstekken-abc'),
+        fetch('/api/visstekken-en')
       ]);
       geoData = await resKvvi.json();
       abcGeoData = await resAbc.json();
-      const kvviFeatures = (geoData.features || []).map(f => { f._abc = false; return f; });
-      const abcFeatures = (abcGeoData.features || []).map(f => { f._abc = true; return f; });
-      allFeatures = kvviFeatures.concat(abcFeatures);
+      const enGeoData = await resEn.json();
+      const kvviFeatures = (geoData.features || []).map(f => { f._abc = false; f._en = false; return f; });
+      const abcFeatures = (abcGeoData.features || []).map(f => { f._abc = true; f._en = false; return f; });
+      const enFeatures = (enGeoData.features || []).map(f => { f._abc = false; f._en = true; return f; });
+      allFeatures = kvviFeatures.concat(abcFeatures).concat(enFeatures);
       renderGrid(allFeatures);
     } catch (e) {
       grid.innerHTML = '<div class="col-span-full p-8 text-center text-red-500">Fout bij laden.</div>';
@@ -367,6 +370,7 @@ const pageTitle = "Visstekken Beheer | KVVI Admin";
       const videoUrl = p.video || '';
       const url = p.url || '';
       const isAbc = f._abc;
+      const isEn = f._en;
       const originalIdx = allFeatures.indexOf(f);
       return `<div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden hover:shadow-md transition cursor-pointer relative group" data-idx="${originalIdx}">
         <div class="flex items-start gap-4 p-4">
@@ -374,6 +378,7 @@ const pageTitle = "Visstekken Beheer | KVVI Admin";
           <div class="flex-1 min-w-0">
             <h3 class="font-bold text-slate-800 text-sm truncate pr-6">${title}</h3>
             ${isAbc ? '<div class="mt-1"><span class="text-[9px] font-bold uppercase tracking-wider bg-yellow-300 text-yellow-900 px-1.5 py-0.5 rounded">ABC</span></div>' : ''}
+            ${isEn ? '<div class="mt-1"><span class="text-[9px] font-bold uppercase tracking-wider bg-red-300 text-red-900 px-1.5 py-0.5 rounded">UK</span></div>' : ''}
             ${descLines.length ? `<div class="mt-1 flex flex-wrap gap-1">${descLines.slice(0, 4).map(d => `<span class="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-medium">${d.trim()}</span>`).join('')}${descLines.length > 4 ? `<span class="text-[10px] text-slate-400">+${descLines.length - 4}</span>` : ''}</div>` : '<div class="text-[10px] text-slate-400 mt-1 italic">Geen beschrijving</div>'}
             <div class="flex gap-2 mt-2 flex-wrap">
               <span class="text-[9px] font-bold uppercase text-slate-400 bg-slate-100 px-2 py-0.5 rounded">${getColorName(color)}</span>
@@ -626,14 +631,22 @@ const pageTitle = "Visstekken Beheer | KVVI Admin";
 
   async function saveToServer() {
     try {
-      const kvviFeatures = allFeatures.filter(function(f) { return !f._abc; }).map(function(f) {
+      const kvviFeatures = allFeatures.filter(function(f) { return !f._abc && !f._en; }).map(function(f) {
         var clean = JSON.parse(JSON.stringify(f));
         delete clean._abc;
+        delete clean._en;
         return clean;
       });
       const abcFeatures = allFeatures.filter(function(f) { return f._abc; }).map(function(f) {
         var clean = JSON.parse(JSON.stringify(f));
         delete clean._abc;
+        delete clean._en;
+        return clean;
+      });
+      const enFeatures = allFeatures.filter(function(f) { return f._en; }).map(function(f) {
+        var clean = JSON.parse(JSON.stringify(f));
+        delete clean._abc;
+        delete clean._en;
         return clean;
       });
       var results = [];
@@ -652,6 +665,14 @@ const pageTitle = "Visstekken Beheer | KVVI Admin";
           body: JSON.stringify({ type: 'FeatureCollection', features: abcFeatures })
         });
         results.push(await r2.json());
+      }
+      if (enFeatures.length) {
+        var r3 = await fetch('/api/visstekken-en', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ type: 'FeatureCollection', features: enFeatures })
+        });
+        results.push(await r3.json());
       }
       var allOk = results.every(function(r) { return r.success; });
       if (allOk) showSaveStatus('✅ Opgeslagen!', 'text-green-600');
