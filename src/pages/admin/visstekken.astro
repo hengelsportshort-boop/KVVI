@@ -354,7 +354,6 @@ const pageTitle = "Visstekken Beheer | KVVI Admin";
   }
 
   function renderGrid(features) {
-    console.log('KVVI Admin renderGrid:', features.length, '(allFeatures:', allFeatures.length, ')');
     if (!features.length) {
       grid.innerHTML = '<div class="col-span-full p-8 text-center text-slate-400 italic">Geen visstekken gevonden.</div>';
       countNr.textContent = '0';
@@ -423,10 +422,7 @@ const pageTitle = "Visstekken Beheer | KVVI Admin";
     return filtered;
   }
 
-  searchInput.oninput = () => {
-    console.log('KVVI Admin searchInput oninput fired, value:', JSON.stringify(searchInput.value));
-    renderGrid(filterFeatures());
-  };
+  searchInput.oninput = () => renderGrid(filterFeatures());
   colorFilter.onchange = () => renderGrid(filterFeatures());
 
   function openModal(isNewFlag, isAbc) {
@@ -734,6 +730,7 @@ const pageTitle = "Visstekken Beheer | KVVI Admin";
   }
 
   loadLegenda();
+  searchInput.value = '';
   loadData();
 })();
 </script>
