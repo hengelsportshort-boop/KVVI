@@ -141,6 +141,7 @@ const pageTitle = "Visstekken Beheer | KVVI Admin";
             <span id="count-badge" class="bg-[#003366] text-white text-xs font-bold px-4 py-3 rounded-xl flex items-center gap-1 whitespace-nowrap">
               <span id="count-nr">0</span> visstekken
             </span>
+            <span id="count-en" class="hidden bg-red-100 text-red-800 text-[10px] font-bold px-2 py-1 rounded-lg"></span>
           </div>
 
           <!-- Visstekken grid -->
@@ -340,6 +341,7 @@ const pageTitle = "Visstekken Beheer | KVVI Admin";
       const abcFeatures = (abcGeoData.features || []).map(f => { f._abc = true; f._en = false; return f; });
       const enFeatures = (enGeoData.features || []).map(f => { f._abc = false; f._en = true; return f; });
       allFeatures = kvviFeatures.concat(abcFeatures).concat(enFeatures);
+      console.log('KVVI Admin: geladen features', allFeatures.length, '(kvvi:', kvviFeatures.length, 'abc:', abcFeatures.length, 'en:', enFeatures.length, ')');
       renderGrid(allFeatures);
     } catch (e) {
       grid.innerHTML = '<div class="col-span-full p-8 text-center text-red-500">Fout bij laden.</div>';
@@ -358,6 +360,14 @@ const pageTitle = "Visstekken Beheer | KVVI Admin";
       return;
     }
     countNr.textContent = features.length;
+    var enCount = features.filter(function(f) { return f._en; }).length;
+    var enEl = document.getElementById('count-en');
+    if (enCount) {
+      enEl.textContent = '🇬🇧 ' + enCount + ' UK';
+      enEl.classList.remove('hidden');
+    } else {
+      enEl.classList.add('hidden');
+    }
     saveBtn.classList.remove('hidden');
 
     grid.innerHTML = features.map((f, idx) => {
