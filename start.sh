@@ -8,9 +8,12 @@ if [ ! -d "$DATA_DIR" ]; then
   mkdir -p "$DATA_DIR"
 fi
 
-if [ ! -f "$DATA_DIR/hengelmap.csv" ]; then
-  echo "Seeding data volume with initial files..."
-  cp -r "$SEED_DIR"/* "$DATA_DIR/"
-fi
+for f in "$SEED_DIR"/*; do
+  name=$(basename "$f")
+  if [ ! -f "$DATA_DIR/$name" ]; then
+    echo "  seeding $name..."
+    cp "$f" "$DATA_DIR/"
+  fi
+done
 
 exec node server.mjs
