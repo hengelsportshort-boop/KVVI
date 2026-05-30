@@ -1,0 +1,1114 @@
+---
+import WeerOverlay from './WeerOverlay.astro';
+---
+<link rel="stylesheet" href="/lib/leaflet.css">
+
+<div class="hengel-wrapper">
+  <div id="map"></div>
+  
+  <button id="legende-toggle" class="legende-btn">
+    <span class="legende-btn-icon">📖</span>
+    <span class="legende-btn-text">Legende</span>
+  </button>
+
+  <button id="fai-toggle" class="fai-btn">
+    <span class="fai-btn-icon">🎯</span>
+    <span class="fai-btn-text">FAI</span>
+  </button>
+
+  <button id="help-btn" class="help-btn" title="Hulp">
+    <span class="help-btn-icon">❓</span>
+    <span class="help-btn-text">Hulp</span>
+  </button>
+
+  <!-- Mobile bottom toolbar -->
+  <div id="mobile-map-bar" class="mobile-map-bar">
+    <button id="mobile-bar-legende" class="mobile-bar-btn" title="Legende">📖</button>
+    <div class="mobile-bar-divider"></div>
+    <button id="mobile-bar-locate" class="mobile-bar-btn" title="Mijn locatie">📍</button>
+    <input type="number" id="mobile-bar-radius" class="mobile-bar-radius" value="5" min="1" max="100" step="1" title="Straal (km)" />
+    <span class="mobile-bar-unit">km</span>
+    <div class="mobile-bar-divider"></div>
+    <button id="mobile-bar-help" class="mobile-bar-btn" title="Hulp">❓</button>
+  </div>
+
+
+
+  <div class="locate-control" id="locate-control">
+    <button id="locate-btn" class="locate-btn" title="Toon mijn locatie">📍</button>
+    <input type="number" id="radius-input" class="radius-input" value="5" min="1" max="100" step="1" title="Straal in km" />
+    <span class="radius-unit">km</span>
+  </div>
+
+  <div id="legende-panel" class="legende-panel hidden">
+    <div class="legende-header">
+      <span class="font-bold text-sm">📖 Legende</span>
+      <button id="legende-close" class="text-slate-400 hover:text-slate-600 text-lg leading-none">&times;</button>
+    </div>
+    <div id="legende-items" class="legende-items"><p class="text-xs text-slate-400 italic p-3">Laden...</p></div>
+  </div>
+
+  <div id="info-panel" class="side-panel">
+    <div class="panel-header">
+      <span class="panel-title">📍 Visstek Info</span>
+      <button id="close-panel" class="close-btn" title="Sluiten (ESC)">&times;</button>
+    </div>
+    <div id="panel-content"><p class="placeholder">Selecteer een locatie op de kaart.</p></div>
+  </div>
+
+  <div id="help-overlay" class="help-overlay hidden">
+    <div class="help-modal">
+      <div class="help-header">
+        <span class="help-title">❓ Hulp bij de Hengelkaart</span>
+        <button id="help-close" class="help-close-btn">&times;</button>
+      </div>
+      <div class="help-body">
+        <div class="help-item">
+          <div class="help-item-icon">📖</div>
+          <div class="help-item-content">
+            <strong>Legende</strong>
+            <p>Toont de kleuren en categorieën van visstekken op de kaart. Klik op een kleur om alleen die categorie te tonen.</p>
+          </div>
+        </div>
+        <div class="help-item">
+          <div class="help-item-icon">🎯</div>
+          <div class="help-item-content">
+            <strong>FAI (Fishing Activity Index)</strong>
+            <p>Berekent per dag en uur hoe gunstig de weersomstandigheden zijn om te vissen. Hoe hoger de score (0-100), hoe beter. Houdt rekening met temperatuur, wind, neerslag en luchtdruk. Klik op 💨 (Wind Animatie) om de werkelijke wind op de kaart te zien.</p>
+          </div>
+        </div>
+        <div class="help-item">
+          <div class="help-item-icon">📍</div>
+          <div class="help-item-content">
+            <strong>Lokalisator</strong>
+            <p>Toont je huidige locatie op de kaart met een blauwe stip en een cirkel (instelbare straal in km). Vinkt automatisch visstekken binnen die straal. Werkt via HTTPS.</p>
+          </div>
+        </div>
+        <div class="help-item">
+          <div class="help-item-icon">🔍</div>
+          <div class="help-item-content">
+            <strong>Zoekbalk</strong>
+            <p>Zoek naar visstekken op naam of plaats. Resultaten worden gemarkeerd op de kaart. Klik op een resultaat voor meer details.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="visstekken-loading">📍 Visstekken laden...</div>
+  <WeerOverlay />
+</div>
+
+<style>
+  .hengel-wrapper { display: flex; height: 100%; width: 100%; position: relative; }
+  #map { flex: 1; height: 100%; z-index: 1; min-height: 600px; }
+  @media (max-width: 1023px) {
+    #map { min-height: calc(100dvh - 56px); } /* Corrected: Removed nested media query */
+    #map { min-height: calc(100dvh - 56px); } 
+  }
+  /* Laad-indicator voor visstekken */
+  #visstekken-loading {
+    position: absolute; bottom: 60px; left: 50%; transform: translateX(-50%);
+    z-index: 1000; background: rgba(0,0,0,0.7); color: white;
+    padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: 600;
+    display: none; pointer-events: none; backdrop-filter: blur(4px);
+    white-space: nowrap;
+  }
+  @media (min-width: 1025px) {
+    #visstekken-loading { bottom: 20px; }
+  }
+  .side-panel { width: 0; height: 100%; background: white; transition: width 0.2s ease-out; overflow-y: auto; z-index: 10000; box-shadow: -4px 0 15px rgba(0,0,0,0.1); }
+  .side-panel.active { width: 600px; max-width: 90vw; padding: 20px; }
+  .close-btn { 
+    border: none; 
+    background: #ef4444; 
+    color: white; 
+    padding: 8px 12px; 
+    cursor: pointer; 
+    border-radius: 6px; 
+    font-size: 20px; 
+    line-height: 1; 
+    width: 36px; 
+    height: 36px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    transition: all 0.2s; 
+    position: relative; 
+    z-index: 1001; 
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+  .close-btn:hover { 
+    background: #dc2626; 
+    transform: scale(1.1); 
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  }
+  .panel-header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 15px 20px; 
+    border-bottom: 1px solid #e2e8f0; 
+    background: #f8fafc; 
+    margin: -20px -20px 20px -20px; 
+    position: relative;
+    z-index: 1000;
+  }
+  .panel-title { font-weight: 600; color: #1e293b; font-size: 14px; }
+  .side-panel.active { width: 600px; max-width: 90vw; padding: 20px; position: relative; }
+  .placeholder { color: #94a3b8; text-align: center; margin-top: 100px; font-style: italic; }
+  .legende-btn { position: absolute; top: 80px; left: 10px; right: auto; z-index: 1000; background: white; border: 2px solid rgba(0,0,0,0.2); border-radius: 4px; padding: 6px 10px; cursor: pointer; display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; color: #333; box-shadow: 0 1px 5px rgba(0,0,0,0.2); }
+  .legende-btn:hover { background: #f4f4f4; }
+  .fai-btn { position: absolute; top: 120px; left: 10px; right: auto; z-index: 1000; background: white; border: 2px solid rgba(0,0,0,0.2); border-radius: 4px; padding: 6px 16px; cursor: pointer; display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; color: #333; box-shadow: 0 1px 5px rgba(0,0,0,0.2); }
+  .fai-btn:hover { background: #f4f4f4; }
+  .fai-btn.active { background: #004A99; color: white; }
+
+  .help-btn {
+    position: absolute; top: 200px; left: 10px; z-index: 1000;
+    background: white; border: 2px solid rgba(0,0,0,0.2);
+    border-radius: 4px; padding: 6px 10px; cursor: pointer;
+    display: flex; align-items: center; gap: 5px;
+    font-size: 12px; font-weight: 600; color: #333;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.2);
+    transition: background 0.15s;
+  }
+  .help-btn:hover { background: #f4f4f4; }
+  .help-btn-icon { -webkit-text-stroke: 1.5px currentColor; }
+
+  .help-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.45); z-index: 99999;
+    display: flex; align-items: center; justify-content: center;
+    backdrop-filter: blur(3px);
+  }
+  .help-overlay.hidden { display: none; }
+  .help-modal {
+    background: white; border-radius: 12px; max-width: 500px; width: 90%;
+    max-height: 80vh; overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    animation: help-fadein 0.2s ease-out;
+  }
+  @keyframes help-fadein { from { opacity: 0; transform: scale(0.95) translateY(-10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+  .help-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 16px 20px; border-bottom: 1px solid #e2e8f0;
+  }
+  .help-title { font-weight: 700; font-size: 16px; color: #1e293b; }
+  .help-close-btn {
+    border: none; background: #f1f5f9; color: #64748b;
+    width: 32px; height: 32px; border-radius: 50%;
+    font-size: 20px; cursor: pointer; display: flex;
+    align-items: center; justify-content: center;
+    transition: background 0.15s; line-height: 1;
+  }
+  .help-close-btn:hover { background: #e2e8f0; color: #1e293b; }
+  .help-body { padding: 12px 20px 20px; }
+  .help-item {
+    display: flex; gap: 14px; padding: 14px 0;
+    border-bottom: 1px solid #f1f5f9;
+  }
+  .help-item:last-child { border-bottom: none; }
+  .help-item-icon { font-size: 24px; flex-shrink: 0; width: 36px; text-align: center; padding-top: 2px; }
+  .help-item-content { flex: 1; }
+  .help-item-content strong { display: block; font-size: 14px; color: #1e293b; margin-bottom: 4px; }
+  .help-item-content p { margin: 0; font-size: 13px; color: #475569; line-height: 1.5; }
+
+  .locate-control {
+    position: absolute; top: 160px; left: 10px; z-index: 1000;
+    display: flex; align-items: stretch;
+    background: white; border: 2px solid rgba(0,0,0,0.2); border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    overflow: hidden;
+  }
+  .locate-btn {
+    border: none; background: none; cursor: pointer;
+    font-size: 17px; line-height: 1; padding: 7px 10px;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s;
+    border-right: 1px solid #e2e8f0;
+  }
+  .locate-btn:hover { background: #eef2ff; }
+  .locate-btn:active { background: #dbeafe; }
+  .radius-input {
+    width: 38px; border: none; padding: 0 0 0 8px;
+    font-size: 14px; font-weight: 700; text-align: center; color: #1e293b;
+    outline: none; background: transparent;
+    -moz-appearance: textfield;
+  }
+  .radius-input::-webkit-inner-spin-button,
+  .radius-input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+  .radius-input:focus { background: #f0f9ff; }
+  .radius-unit {
+    font-size: 11px; font-weight: 700; color: #64748b;
+    padding: 0 10px 0 2px;
+    display: flex; align-items: center;
+    background: transparent;
+  }
+  .legende-panel { position: absolute; top: 80px; left: 120px; right: auto; z-index: 1000; background: white; border: 2px solid rgba(0,0,0,0.2); border-radius: 6px; box-shadow: 0 2px 10px rgba(0,0,0,0.2); min-width: 200px; max-width: 280px; }
+  .legende-panel.hidden { display: none; }
+  .legende-header { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-bottom: 1px solid #e2e8f0; }
+  .legende-items { padding: 6px; }
+  .legende-item { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; color: #334155; cursor: pointer; transition: background 0.15s; }
+  .legende-item:hover { background: #f1f5f9; }
+  .legende-item.active { background: #dbeafe; box-shadow: inset 0 0 0 2px #3b82f6; }
+  .legende-color-dot { width: 20px !important; height: 20px !important; border-radius: 50% !important; flex-shrink: 0 !important; border: 2px solid white !important; box-shadow: 0 0 0 1px rgba(0,0,0,0.3) !important; display: inline-block !important; vertical-align: middle !important; }
+
+  .mobile-map-bar { display: none; align-items: center; justify-content: center; gap: 4px; padding: 3px 6px; }
+
+  @media (max-width: 1023px) {
+    .legende-panel { left: 10px !important; right: 10px !important; max-width: none !important; top: 130px !important; }
+    .legende-item { padding: 10px 8px !important; font-size: 13px !important; }
+    .side-panel.active { width: calc(100vw - 50px) !important; max-width: calc(100vw - 50px) !important; }
+    .legende-btn { display: none !important; }
+    .locate-control { display: none !important; }
+    .fai-btn { display: none !important; }
+    .help-btn { display: none !important; }
+    .mobile-map-bar { display: none !important; }
+    .mobile-bar-btn {
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 8px;
+      color: white;
+      font-size: 15px;
+      padding: 10px 12px;
+      cursor: pointer;
+      line-height: 1;
+      transition: background 0.15s;
+      white-space: nowrap;
+      min-height: 44px;
+    }
+    .mobile-bar-btn:active { background: rgba(255,255,255,0.25); }
+    .mobile-bar-divider {
+      width: 1px;
+      height: 20px;
+      background: rgba(255,255,255,0.15);
+    }
+    .mobile-bar-radius {
+      width: 44px;
+      border: none;
+      background: transparent;
+      color: white;
+      font-size: 14px;
+      font-weight: 700;
+      text-align: center;
+      outline: none;
+      -moz-appearance: textfield;
+      padding: 4px 0;
+    }
+    .mobile-bar-radius::-webkit-inner-spin-button,
+    .mobile-bar-radius::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    .mobile-bar-unit {
+      font-size: 10px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.6);
+    }
+
+  }
+
+  .leaflet-container { cursor: grab !important; }
+  .leaflet-container:active { cursor: grabbing !important; }
+  :global(.map-image) { width: 100%; border-radius: 8px; margin: 15px 0; }
+  :global(.map-video) { width: 100%; aspect-ratio: 16/9; margin-top: 15px; border-radius: 8px; border: none; }
+  :global(.map-title) { color: #004A99; font-weight: 800; font-size: 1.3rem; text-transform: uppercase; }
+  :global(.map-description) { margin-top: 10px; line-height: 1.5; color: #334155; }
+  :global(.map-color-badge) { display: inline-flex; align-items: center; gap: 6px; background: #f8fafc; padding: 4px 12px 4px 4px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; border: 1px solid #e2e8f0; }
+  :global(.visstek-tooltip) { background: #1e293b; border: none; border-radius: 6px; color: white; font-size: 12px; font-weight: 600; padding: 6px 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.3); white-space: nowrap; }
+  :global(.visstek-tooltip::before) { border-top-color: #1e293b !important; }
+  :global(.map-color-dot) { width: 14px; height: 14px; border-radius: 50%; border: 2px solid white; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+  :global(.map-header) { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+  :global(.map-title-wrap) { flex: 1; }
+  :global(.map-section-label) { font-size: 10px; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin-top: 16px; margin-bottom: 6px; }
+  :global(.map-description-list) { display: flex; flex-wrap: wrap; gap: 4px; }
+  :global(.map-fish-tag) { background: #eff6ff; color: #1e40af; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 12px; }
+  :global(.map-url-btn) { display: block; margin-top: 16px; text-align: center; background: #004A99; color: white; padding: 12px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; transition: background 0.2s; }
+  :global(.map-url-btn:hover) { background: #003366; }
+</style>
+
+<script>
+  let L, map, legendeFilterColor = null;
+  let markerGroup = null, selectedMarkerPinEl = null, alleVisstekkenFeatures = null;
+  let active = false, raf, c, ctx, spd = 0, dir = 0, lastTime, parts = [];
+  let windDayOffset = 0;
+  
+  async function initMap() {
+    const mod = await import('leaflet');
+    L = mod.default || mod;
+    window.L = L;
+    map = L.map('map').setView([51.05, 3.0], 10);
+    window.kvviMap = map;
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+    
+    map.on('moveend', resizeCanvas);
+    map.on('zoomend', resizeCanvas);
+    window.addEventListener('resize', resizeCanvas);
+    
+    bindEvents();
+    
+    map.whenReady(function() {
+      setTimeout(laadVisstekken, 500);
+    });
+    
+    var visstekkenInterval = setInterval(laadVisstekken, 30000);
+    document.addEventListener('visibilitychange', function() {
+      if (document.hidden) {
+        clearInterval(visstekkenInterval);
+        var wa = window.kvviWind && window.kvviWind.isActive();
+        if (wa) { window._windWasActive = true; window.kvviWind.stop(); }
+      } else {
+        visstekkenInterval = setInterval(laadVisstekken, 30000);
+        if (window._windWasActive) { window.kvviWind.start(windDayOffset); window._windWasActive = false; }
+      }
+    });
+    
+    // Mobile bar click relays
+    document.getElementById('mobile-bar-legende') && document.getElementById('mobile-bar-legende').addEventListener('click', function() {
+      var t = document.getElementById('legende-toggle');
+      if (t) t.click();
+    });
+    document.getElementById('mobile-bar-locate') && document.getElementById('mobile-bar-locate').addEventListener('click', function() {
+      document.getElementById('locate-btn').click();
+    });
+    document.getElementById('mobile-bar-help') && document.getElementById('mobile-bar-help').addEventListener('click', function() {
+      var h = document.getElementById('help-btn');
+      if (h) h.click();
+    });
+    var barRadius = document.getElementById('mobile-bar-radius');
+    var desktopRadius = document.getElementById('radius-input');
+    if (barRadius && desktopRadius) {
+      barRadius.value = desktopRadius.value || '5';
+      barRadius.addEventListener('input', function() {
+        desktopRadius.value = this.value;
+        desktopRadius.dispatchEvent(new Event('input', { bubbles: true }));
+      });
+      desktopRadius.addEventListener('input', function() {
+        barRadius.value = desktopRadius.value;
+      });
+    }
+  }
+  
+  function toggleHelp() {
+    var o = document.getElementById('help-overlay');
+    if (o) o.classList.toggle('hidden');
+  }
+  
+  function bindEvents() {
+    document.getElementById('legende-toggle').onclick = function() {
+      let p = document.getElementById('legende-panel');
+      p.classList.toggle('hidden');
+      if (!p.classList.contains('hidden')) laadLegende();
+    };
+    document.getElementById('legende-close').onclick = function() {
+      document.getElementById('legende-panel').classList.add('hidden');
+    };
+
+    var helpBtn = document.getElementById('help-btn');
+    if (helpBtn) helpBtn.addEventListener('click', toggleHelp);
+    var helpClose = document.getElementById('help-close');
+    if (helpClose) helpClose.addEventListener('click', toggleHelp);
+    var helpOverlay = document.getElementById('help-overlay');
+    if (helpOverlay) helpOverlay.addEventListener('click', function(e) {
+      if (e.target === this) toggleHelp();
+    });
+  }
+  
+  // Rest of helpers follow below
+
+  function filterOpLegende(kleur) {
+    if (legendeFilterColor === kleur) {
+      legendeFilterColor = null;
+      document.getElementById('legende-items').querySelectorAll('.legende-item.active').forEach(function(el){el.classList.remove('active');});
+      window.dispatchEvent(new CustomEvent('kvvi:reset-zoekresultaten'));
+      return;
+    }
+    legendeFilterColor = kleur;
+    document.getElementById('legende-items').querySelectorAll('.legende-item.active').forEach(function(el){el.classList.remove('active');});
+    var aktief = document.getElementById('legende-items').querySelector('[data-kleur="'+kleur+'"]');
+    if (aktief) aktief.classList.add('active');
+
+    if (!alleVisstekkenFeatures) return;
+    var resultaten = [];
+    var bounds = [];
+    alleVisstekkenFeatures.forEach(function(f) {
+      if (!f.geometry || f.geometry.type !== 'Point') return;
+      var color = f.properties['marker-color'] || '#94a3b8';
+      if (color.toLowerCase() === kleur.toLowerCase()) {
+        var lat = f.geometry.coordinates[1];
+        var lng = f.geometry.coordinates[0];
+        resultaten.push({ naam: f.properties?.title || 'Onbekend', lat: lat.toString(), lng: lng.toString() });
+        bounds.push([lat, lng]);
+      }
+    });
+    if (resultaten.length) {
+      window.dispatchEvent(new CustomEvent('kvvi:highlight-zoekresultaten', { detail: resultaten }));
+      map.fitBounds(bounds, { padding: [50, 50], maxZoom: 14 });
+    }
+  }
+
+  async function laadLegende() {
+    try {
+      let r = await fetch('/api/legende?_=' + Date.now());
+      if (!r.ok) return;
+      let items = await r.json();
+      if (!Array.isArray(items)) return;
+      document.getElementById('legende-items').innerHTML = items.map(function(x){return '<div class="legende-item'+(legendeFilterColor === x.kleur ? ' active' : '')+'" data-kleur="'+x.kleur+'" style="cursor:pointer"><span style="display:inline-block;width:20px;height:20px;border-radius:50%;background:'+(x.kleur||'#94a3b8')+';border:2px solid white;box-shadow:0 0 0 1px rgba(0,0,0,0.3)"></span><span>'+x.naam+'</span></div>';}).join('');
+      document.getElementById('legende-items').querySelectorAll('.legende-item').forEach(function(el){
+        el.onclick = function(){ filterOpLegende(el.dataset.kleur); };
+      });
+    } catch(e) {}
+  }
+
+
+  
+  function setMarkerSelected(marker, selected) {
+    try {
+      const el = marker && marker.getElement ? marker.getElement() : null;
+      const pin = el ? el.querySelector('.kvvi-marker-pin') : null;
+      if (!pin) return;
+      pin.style.setProperty('--kvvi-marker-border', selected ? '#000' : '#fff');
+    } catch (e) {}
+  }
+  function toonLaadIndicator() {
+    var el = document.getElementById('visstekken-loading');
+    if (el) el.style.display = 'block';
+  }
+  function verbergLaadIndicator() {
+    var el = document.getElementById('visstekken-loading');
+    if (el) el.style.display = 'none';
+  }
+
+  var visstekkenEtag = {};
+  var visstekkenAbcEtag = {};
+
+  function laadVisstekken() {
+    if (markerGroup) map.removeLayer(markerGroup);
+    markerGroup = L.layerGroup().addTo(map);
+    window.kvviMarkerGroup = markerGroup;
+    alleVisstekkenFeatures = [];
+    toonLaadIndicator();
+    loadGeoJSON('/api/visstekken', visstekkenEtag, false);
+    loadGeoJSON('/api/visstekken-abc', visstekkenAbcEtag, true);
+    setTimeout(verbergLaadIndicator, 8000);
+  }
+
+  function isFallbackCoord(coords) {
+    return coords && coords[0] === 3.0 && coords[1] === 51.0;
+  }
+
+  function loadGeoJSON(url, etagCache, isAbc) {
+    var headers = {};
+    if (etagCache.value) headers['If-None-Match'] = etagCache.value;
+    fetch(url, { headers: headers }).then(function(r){
+      if (r.status === 304) return null;
+      var newEtag = r.headers.get('ETag');
+      if (newEtag) etagCache.value = newEtag;
+      return r.json();
+    }).then(function(result){
+      if (!result) return;
+      var d = result.data || result;
+      if (!d.features) return;
+      alleVisstekkenFeatures = alleVisstekkenFeatures.concat(d.features);
+      verbergLaadIndicator();
+      L.geoJSON(d, {
+        filter: function(f) {
+          return !isFallbackCoord(f.geometry.coordinates);
+        },
+        pointToLayer: function(f,ll){
+          const color = f.properties['marker-color'] || '#94a3b8';
+          const pinTitle = f.properties?.title || '';
+          const escapedTitle = pinTitle.replace(/"/g, '&quot;');
+          const borderWidth = isAbc ? '4px' : '3px';
+          const marker = L.marker(ll, {
+            icon: L.divIcon({
+              html: `<div class="kvvi-marker-pin" data-title="${escapedTitle}" style="--kvvi-marker-border:#fff; background: ${color}; width: 30px; height: 30px; border-radius: 50% 50% 50% 0; border: ${borderWidth} solid var(--kvvi-marker-border); transform: rotate(-45deg); display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"><div style="width: 8px; height: 8px; background: white; border-radius: 50%; transform: rotate(45deg)"></div></div>`,
+              className: isAbc ? 'abc-marker' : '',
+              iconSize: [30, 30],
+              iconAnchor: [15, 30]
+            })
+          }).addTo(markerGroup);
+          if (pinTitle) {
+            marker.bindTooltip(pinTitle, {
+              direction: 'top',
+              offset: [0, -10],
+              className: 'visstek-tooltip'
+            });
+          }
+          return marker;
+        },
+        onEachFeature: function(f,l){
+          l.on('click',function(e){
+            L.DomEvent.stopPropagation(e);
+
+            if (selectedMarkerPinEl) {
+              try { selectedMarkerPinEl.style.setProperty('--kvvi-marker-border', '#fff'); } catch (err) {}
+            }
+            setMarkerSelected(l, true);
+            try {
+              const el = l.getElement ? l.getElement() : null;
+              selectedMarkerPinEl = el ? el.querySelector('.kvvi-marker-pin') : null;
+            } catch (err) { selectedMarkerPinEl = null; }
+
+            const p = f.properties || {};
+            const title = p.title || 'Onbekend';
+            const description = p.description || '';
+            const image = typeof p.image === 'string' ? p.image : '';
+            const video = p.video || '';
+            const url = p.url || '';
+            const color = p['marker-color'] || '#94a3b8';
+            let content = `<h2 class="map-title">${title}</h2>`;
+            if (isAbc) {
+              content += '<div class="mb-2"><span class="inline-block text-[10px] font-bold uppercase tracking-wider bg-yellow-300 text-yellow-900 px-2 py-0.5 rounded">ABC Sportvissen</span></div>';
+            }
+            if (description) {
+              const descLines = description.split('\n').filter(line => line.trim());
+              if (descLines.length > 0) {
+                content += '<div class="mb-4"><h3 class="font-bold text-sm mb-2">Vissoorten:</h3><ul class="text-sm space-y-1">';
+                descLines.forEach(line => {
+                  content += `<li class="flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background-color: ${color}"></span>${line.trim()}</li>`;
+                });
+                content += '</ul></div>';
+              }
+            }
+            if (image) {
+              content += `<div class="mb-4"><img src="${image}" alt="${title}" class="w-full rounded-lg border border-slate-200" onerror="this.style.display='none'"></div>`;
+            }
+            if (video) {
+              const match = video.match(/(?:youtu\.be\/|youtube\.com(?:\/embed\/|\/v\/|\/watch\?v=))([\w\-]{11})/);
+              if (match) {
+                content += `<div class="mb-4"><iframe src="https://www.youtube.com/embed/${match[1]}" class="w-full aspect-video rounded-lg border border-slate-200" allowfullscreen></iframe></div>`;
+              }
+            }
+            if (url) {
+              content += `<div class="mb-4"><a href="${url}" target="_blank" class="inline-flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800 font-medium"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>Website</a></div>`;
+            }
+
+            document.getElementById('info-panel').classList.add('active');
+            document.getElementById('panel-content').innerHTML = content;
+          });
+        }
+      });
+    }).catch(function(error) {
+      console.error('Error loading ' + url, error);
+    });
+  }
+  // === Gebruiker locatie marker ===
+  let gebruikerMarker = null;
+  let radiusHighlightActive = false;
+
+  function haversine(lat1, lng1, lat2, lng2) {
+    const R = 6371;
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLng = (lng2 - lng1) * Math.PI / 180;
+    const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) * Math.sin(dLng/2)**2;
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  }
+
+  function toonVisstekkenBinnenRadius(lat, lng, radiusKm) {
+    if (!alleVisstekkenFeatures) return;
+    const results = [];
+    alleVisstekkenFeatures.forEach(function(f) {
+      if (!f.geometry || f.geometry.type !== 'Point') return;
+      const [lng2, lat2] = f.geometry.coordinates;
+      if (haversine(lat, lng, lat2, lng2) <= radiusKm) {
+        results.push({
+          naam: f.properties?.title || 'Onbekend',
+          lat: lat2.toString(),
+          lng: lng2.toString(),
+          type: 'Visstek',
+        });
+      }
+    });
+    radiusHighlightActive = true;
+    window.dispatchEvent(new CustomEvent('kvvi:highlight-zoekresultaten', { detail: results }));
+  }
+
+  function verbergVisstekkenBinnenRadius() {
+    if (!radiusHighlightActive) return;
+    radiusHighlightActive = false;
+    window.dispatchEvent(new CustomEvent('kvvi:reset-zoekresultaten'));
+  }
+
+  // === Locatiemarker ===
+
+  var radiusCircle = null;
+
+  function getRadiusKm() {
+    var input = document.getElementById('radius-input');
+    var val = input ? parseFloat(input.value) : 5;
+    return (!isNaN(val) && val > 0) ? val : 5;
+  }
+
+  function toonRadiusCirkel(lat, lng) {
+    if (radiusCircle) map.removeLayer(radiusCircle);
+    radiusCircle = L.circle([lat, lng], {
+      radius: getRadiusKm() * 1000,
+      color: '#3b82f6',
+      fillColor: '#3b82f6',
+      fillOpacity: 0.08,
+      weight: 2,
+      dashArray: '8 8',
+    }).addTo(map);
+  }
+
+  function verbergRadiusCirkel() {
+    if (radiusCircle) {
+      map.removeLayer(radiusCircle);
+      radiusCircle = null;
+    }
+  }
+
+  var locateBtn = document.getElementById('locate-btn');
+  if (locateBtn) {
+    locateBtn.addEventListener('click', function() { plaatsGebruikerMarker(); });
+  }
+
+  function plaatsGebruikerMarker() {
+    if (!navigator.geolocation) {
+      alert('Geolocatie wordt niet ondersteund in deze browser.');
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(function(pos) {
+      if (gebruikerMarker) map.removeLayer(gebruikerMarker);
+      const lat = pos.coords.latitude;
+      const lng = pos.coords.longitude;
+
+      if (!document.getElementById('gebruiker-marker-style')) {
+        var s = document.createElement('style');
+        s.id = 'gebruiker-marker-style';
+        s.textContent = '.gebruiker-marker{width:24px;height:24px;background:#3b82f6;border:3px solid #fff;border-radius:50%;position:relative;box-shadow:0 0 0 3px rgba(59,130,246,0.4);animation:gm-pulse 2s ease-in-out infinite;box-sizing:content-box}.gebruiker-marker-inner{width:8px;height:8px;background:#fff;border-radius:50%;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}@keyframes gm-pulse{0%,100%{box-shadow:0 0 0 3px rgba(59,130,246,0.4)}50%{box-shadow:0 0 0 10px rgba(59,130,246,0.15)}}';
+        document.head.appendChild(s);
+      }
+      gebruikerMarker = L.marker([lat, lng], {
+        icon: L.divIcon({
+          html: '<div class="gebruiker-marker"><div class="gebruiker-marker-inner"></div></div>',
+          className: '',
+          iconSize: [30, 30],
+          iconAnchor: [15, 15]
+        }),
+        zIndexOffset: 10000,
+        keyboard: false,
+      }).addTo(map);
+
+      var r = getRadiusKm();
+      toonRadiusCirkel(lat, lng);
+      if (radiusCircle) {
+        map.fitBounds(radiusCircle.getBounds(), { padding: [30, 30], animate: true });
+      }
+      toonVisstekkenBinnenRadius(lat, lng, r);
+
+      gebruikerMarker.on('mouseover', function() {
+        toonVisstekkenBinnenRadius(lat, lng, getRadiusKm());
+      });
+      gebruikerMarker.on('mouseout', function() {
+        verbergVisstekkenBinnenRadius();
+      });
+    }, function(err) {
+      var msg = 'Kon locatie niet bepalen';
+      if (err.code === 1) msg = 'Locatietoegang geweigerd. Sta locatie toe in je browserinstellingen.';
+      else if (err.code === 2) msg = 'Locatie niet beschikbaar. Probeer opnieuw.';
+      else if (err.code === 3) msg = 'Locatiebepaling duurde te lang.';
+      alert(msg);
+    }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 });
+  }
+
+  // Locatie enkel tonen na klik op locate-btn
+
+  function escapeHtml(s) {
+    return (s || '').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  let hengelmapMarkers = new Map();
+  function focusVisplaats(place) {
+    const lat = parseFloat(place.lat);
+    const lng = parseFloat(place.lng);
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
+
+    map.setView([lat, lng], 13, { animate: true });
+
+    // Zoek de bestaande marker in de markerGroup en maak deze rood
+    markerGroup.eachLayer(function(layer) {
+      const markerLatLng = layer.getLatLng();
+      if (Math.abs(markerLatLng.lat - lat) < 0.001 && Math.abs(markerLatLng.lng - lng) < 0.001) {
+        // Reset alle markers naar wit behalve de huidige
+        markerGroup.eachLayer(function(l) {
+          if (l.getElement) {
+            const pin = l.getElement().querySelector('.kvvi-marker-pin');
+            if (pin) {
+              pin.style.setProperty('--kvvi-marker-border', '#fff');
+            }
+          }
+        });
+        
+        // Maak deze marker rood en open popup
+        const pin = layer.getElement().querySelector('.kvvi-marker-pin');
+        if (pin) {
+          pin.style.setProperty('--kvvi-marker-border', '#dc2626');
+        }
+        
+        // Open popup op de bestaande marker
+        const properties = layer.feature?.properties || {};
+        const title = properties.title || place.naam || 'Visstek';
+        const description = properties.description || '';
+        let popupContent = `<strong>${escapeHtml(title)}</strong>`;
+        if (description) {
+          const descLines = description.split('\n').filter(line => line.trim()).slice(0, 3);
+          if (descLines.length > 0) {
+            popupContent += '<br/><small>' + descLines.join(', ') + '</small>';
+          }
+        }
+        layer.bindPopup(popupContent).openPopup();
+        
+        return; // Stop de loop
+      }
+    });
+  }
+
+  function markeerPinnen(resultaten) {
+    markerGroup.eachLayer(function(layer) {
+      if (!layer.getElement) return;
+      const pin = layer.getElement().querySelector('.kvvi-marker-pin');
+      if (!pin) return;
+
+      pin.style.removeProperty('outline');
+      pin.style.removeProperty('outline-offset');
+      pin.style.removeProperty('box-shadow');
+      pin.style.setProperty('border', '3px solid #fff');
+
+      if (!resultaten || !resultaten.length) return;
+
+      resultaten.forEach(function(r) {
+        const lat = parseFloat(r.lat);
+        const lng = parseFloat(r.lng);
+        const title = (r.title || r.naam || '').trim();
+        const titleLower = title.toLowerCase();
+
+        if (title && pin.dataset.title && pin.dataset.title.toLowerCase() === titleLower) {
+          pin.style.setProperty('border', '3px solid #000');
+          return;
+        }
+
+        if (Number.isFinite(lat) && Number.isFinite(lng) && layer.getLatLng) {
+          const mLatLng = layer.getLatLng();
+          if (Math.abs(mLatLng.lat - lat) < 0.001 && Math.abs(mLatLng.lng - lng) < 0.001) {
+            pin.style.setProperty('border', '3px solid #000');
+          }
+        }
+      });
+    });
+  }
+
+  // Functie om zoekresultaat markers te highlighten
+  function highlightZoekresultaten(resultaten) {
+    markeerPinnen(resultaten);
+  }
+
+
+  // Chatbot/result-list kan visstek selecteren via event
+  window.addEventListener('kvvi:select-visplaats', (ev) => {
+    const place = ev && ev.detail;
+    if (place) focusVisplaats(place);
+  });
+
+  // Event listener voor zoekresultaten highlight
+  window.addEventListener('kvvi:highlight-zoekresultaten', (ev) => {
+    const resultaten = ev && ev.detail;
+    if (resultaten) highlightZoekresultaten(resultaten);
+  });
+
+  // Event listener om highlights te resetten
+  window.addEventListener('kvvi:reset-zoekresultaten', () => {
+    highlightZoekresultaten([]);
+  });
+
+  // Slaat hover-state op per pin element om later te kunnen herstellen
+  const _hoverState = new WeakMap();
+
+  // Event listener voor radius zoekresultaten — gedelegeerd naar markeerPinnen
+  window.addEventListener('kvvi:highlight-radius-resultaten', (ev) => {
+    const resultaten = ev && ev.detail;
+    if (!markerGroup) return;
+    if (!Array.isArray(resultaten)) return;
+    markeerPinnen(resultaten);
+  });
+
+  // Bewaar vorige stijl en pas hover-stijl toe
+  function _applyHover(pin) {
+    if (!pin || _hoverState.has(pin)) return;
+    _hoverState.set(pin, {
+      border: pin.style.getPropertyValue('border'),
+      borderPriority: pin.style.getPropertyPriority('border'),
+      outline: pin.style.getPropertyValue('outline'),
+      outlinePriority: pin.style.getPropertyPriority('outline'),
+      outlineOffset: pin.style.getPropertyValue('outline-offset'),
+      outlineOffsetPriority: pin.style.getPropertyPriority('outline-offset'),
+      boxShadow: pin.style.getPropertyValue('box-shadow'),
+      boxShadowPriority: pin.style.getPropertyPriority('box-shadow'),
+    });
+    pin.style.setProperty('border', '4px solid #dc2626', 'important');
+    pin.style.setProperty('outline', '3px solid #f87171', 'important');
+    pin.style.setProperty('outline-offset', '2px', 'important');
+    pin.style.setProperty('box-shadow', '0 0 14px 5px rgba(220,38,38,0.6)', 'important');
+  }
+
+  // Herstel vorige stijl
+  function _removeHover(pin) {
+    const prev = _hoverState.get(pin);
+    if (!prev) return;
+    _hoverState.delete(pin);
+    if (prev.border) pin.style.setProperty('border', prev.border, prev.borderPriority);
+    else pin.style.removeProperty('border');
+    if (prev.outline) pin.style.setProperty('outline', prev.outline, prev.outlinePriority);
+    else pin.style.removeProperty('outline');
+    if (prev.outlineOffset) pin.style.setProperty('outline-offset', prev.outlineOffset, prev.outlineOffsetPriority);
+    else pin.style.removeProperty('outline-offset');
+    if (prev.boxShadow) pin.style.setProperty('box-shadow', prev.boxShadow, prev.boxShadowPriority);
+    else pin.style.removeProperty('box-shadow');
+  }
+
+  // Vind pin op basis van lat/lng of data-title
+  function _findPin(lat, lng, title) {
+    if (!markerGroup) return null;
+    // Als we een title hebben, probeer eerst op data-title
+    if (title) {
+      let result = null;
+      markerGroup.eachLayer(function(layer) {
+        if (result) return;
+        if (!layer.getElement) return;
+        const pin = layer.getElement().querySelector('.kvvi-marker-pin');
+        if (pin && pin.dataset.title === title) {
+          result = pin;
+        }
+      });
+      if (result) return result;
+    }
+    // Fallback: match op coördinaten
+    let result = null;
+    markerGroup.eachLayer(function(layer) {
+      if (result) return;
+      if (!layer.getLatLng) return;
+      const mLatLng = layer.getLatLng();
+      if (Math.abs(mLatLng.lat - lat) < 0.001 && Math.abs(mLatLng.lng - lng) < 0.001) {
+        const el = layer.getElement();
+        if (el) result = el.querySelector('.kvvi-marker-pin');
+      }
+    });
+    return result;
+  }
+
+  // Directe globale functies voor de chatbot
+  window.kvviMarkerHover = function(lat, lng) {
+    console.log('MAP global hover:', lat, lng);
+    const pin = _findPin(parseFloat(lat), parseFloat(lng));
+    if (pin) _applyHover(pin);
+  };
+  window.kvviMarkerUnhover = function(lat, lng) {
+    console.log('MAP global unhover:', lat, lng);
+    const pin = _findPin(parseFloat(lat), parseFloat(lng));
+    if (pin) _removeHover(pin);
+  };
+
+  // Vind pin op basis van place object (title of coördinaten)
+  function _findPinByPlace(place) {
+    if (!place) return null;
+    const title = place.title || place.naam || '';
+    const lat = parseFloat(place.lat);
+    const lng = parseFloat(place.lng);
+    return _findPin(lat, lng, title);
+  }
+
+  // Event listeners (voor zoekbalk / VisstekkenZoek / chatbot)
+  window.addEventListener('kvvi:hover-marker', (ev) => {
+    const place = ev && ev.detail;
+    console.log('MAP event hover:', place ? place.title || place.naam || '?' : 'no detail');
+    if (!place) return;
+    const pin = _findPinByPlace(place);
+    if (pin) _applyHover(pin);
+  });
+
+  window.addEventListener('kvvi:unhover-marker', (ev) => {
+    const place = ev && ev.detail;
+    if (!place) return;
+    const pin = _findPinByPlace(place);
+    if (pin) _removeHover(pin);
+  });
+  
+  const closeInfoPanel = function() {
+    document.getElementById('info-panel').classList.remove('active');
+  };
+  document.getElementById('close-panel').onclick = closeInfoPanel;
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && document.getElementById('info-panel').classList.contains('active')) {
+      closeInfoPanel();
+    }
+  });
+  document.addEventListener('click', function(e) {
+    const infoPanel = document.getElementById('info-panel');
+    if (infoPanel.classList.contains('active') && 
+        !infoPanel.contains(e.target) && 
+        !e.target.closest('.leaflet-marker-icon') &&
+        !e.target.closest('#close-panel')) {
+      closeInfoPanel();
+    }
+
+  });
+  const COUNT = 250;
+  
+  function initCanvas() {
+    if (c) return;
+    c = document.createElement('canvas');
+    c.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;display:none';
+    document.getElementById('map').appendChild(c);
+    ctx = c.getContext('2d');
+    resizeCanvas();
+  }
+  function resizeCanvas() {
+    if (!c) return;
+    let r = document.getElementById('map').getBoundingClientRect();
+    c.width = Math.round(r.width); c.height = Math.round(r.height);
+  }
+  
+  let windDataCache = null;
+  let windDataLoading = false;
+  let lastApiDir = 0;
+
+  function averageWindDirection(directions, speeds) {
+    let sumSin = 0, sumCos = 0, totalWeight = 0;
+    for (let i = 0; i < directions.length; i++) {
+      let rad = directions[i] * Math.PI / 180;
+      let weight = speeds ? speeds[i] : 1;
+      sumSin += Math.sin(rad) * weight;
+      sumCos += Math.cos(rad) * weight;
+      totalWeight += weight;
+    }
+    if (totalWeight === 0) return 0;
+    let avg = Math.atan2(sumSin / totalWeight, sumCos / totalWeight) * 180 / Math.PI;
+    return (avg + 360) % 360;
+  }
+
+  function fetchAllWindData(callback) {
+    if (windDataLoading) return;
+    windDataLoading = true;
+    let ct = map.getCenter();
+    let apiUrl = 'https://api.open-meteo.com/v1/forecast?latitude=' + ct.lat + '&longitude=' + ct.lng + '&hourly=wind_speed_10m,wind_direction_10m&wind_speed_unit=kmh&forecast_days=7';
+    fetch(apiUrl).then(function(r){return r.json();}).then(function(data) {
+      windDataCache = data; windDataLoading = false;
+      if (callback) callback(data);
+    }).catch(function(err) {
+      windDataLoading = false; dir = 0; spd = 5; lastApiDir = 0;
+      if (callback) callback(null);
+    });
+  }
+
+  function fetchWind(dayOffset) {
+    const selected = Number.isFinite(dayOffset) ? dayOffset : 0;
+    if (windDataCache && windDataCache.hourly) {
+      applyWindFromCache(selected);
+    } else {
+      fetchAllWindData(function(){ applyWindFromCache(selected); });
+    }
+  }
+
+  function applyWindFromCache(dayOffset) {
+    if (!windDataCache || !windDataCache.hourly) { lastApiDir = 0; spd = 5; dir = 180; return; }
+    let hourly = windDataCache.hourly, times = hourly.time, speeds = hourly.wind_speed_10m, directions = hourly.wind_direction_10m;
+    let dayIndex = Number.isFinite(dayOffset) ? dayOffset : 0;
+    let today = new Date(); today.setHours(0,0,0,0);
+    let targetDate = new Date(today); targetDate.setDate(targetDate.getDate() + dayIndex);
+    let dateStr = targetDate.getFullYear() + '-' + String(targetDate.getMonth()+1).padStart(2,'0') + '-' + String(targetDate.getDate()).padStart(2,'0');
+    let daySpeeds = [], dayDirs = [];
+    for (let i = 0; i < times.length; i++) {
+      if (!times[i].startsWith(dateStr)) continue;
+      let hour = parseInt(times[i].slice(11, 13), 10);
+      if (hour >= 6 && hour <= 21) { daySpeeds.push(speeds[i]); dayDirs.push(directions[i]); }
+    }
+    if (daySpeeds.length === 0) { lastApiDir = 0; spd = 5; dir = 180; return; }
+    let avgSpeed = daySpeeds.reduce(function(s,v){return s+v;},0) / daySpeeds.length;
+    let avgDir = averageWindDirection(dayDirs, daySpeeds);
+    lastApiDir = Math.round(avgDir); spd = Math.round(avgSpeed * 10) / 10; dir = (avgDir + 90) % 360;
+    if (active && parts.length === 0 && c) { parts = [spawn()]; c.style.display = 'block'; loop(); }
+  }
+
+  function getSz() { let r = document.getElementById('map').getBoundingClientRect(); return {w:Math.round(r.width), h:Math.round(r.height)}; }
+  function spawn() {
+    let sz = getSz(), w = sz.w, h = sz.h, cx = w/2, cy = h/2;
+    let spawnArea = 1.5, randomX = (Math.random() - 0.5) * w * spawnArea, randomY = (Math.random() - 0.5) * h * spawnArea;
+    let angle = Math.random() * Math.PI * 2, dist = Math.sqrt(randomX * randomX + randomY * randomY);
+    let x = cx + Math.cos(angle) * dist, y = cy + Math.sin(angle) * dist;
+    let factor = Math.max(0.3, Math.min(1, spd / 40)), speed = 0.5 + factor * 1.5, rad = dir * Math.PI / 180;
+    return { x:x, y:y, vx:Math.cos(rad)*speed, vy:Math.sin(rad)*speed, trail:[] };
+  }
+  function update(dt) {
+    while (parts.length < COUNT) parts.push(spawn());
+    while (parts.length > COUNT) parts.pop();
+    let sz = getSz(), cx = sz.w/2, cy = sz.h/2, maxD = Math.max(sz.w, sz.h) * 1.2;
+    for (let i = 0; i < parts.length; i++) {
+      let p = parts[i]; p.x += p.vx * dt; p.y += p.vy * dt; p.trail.push({x:p.x, y:p.y});
+      if (p.trail.length > 100) p.trail.shift();
+      let d = Math.sqrt((p.x-cx)*(p.x-cx) + (p.y-cy)*(p.y-cy));
+      if (d > maxD) parts[i] = spawn();
+    }
+  }
+  function draw() {
+    let sz = getSz(), w = sz.w, h = sz.h;
+    if (!w || !h || !ctx) return; ctx.clearRect(0, 0, w, h);
+    let factor = Math.max(0.3, Math.min(1, spd / 40));
+    for (let i = 0; i < parts.length; i++) {
+      let p = parts[i], op = 0.85 * (0.7 + factor * 0.3);
+      if (p.trail.length >= 2) {
+        let tLen = Math.max(4, Math.min(80, Math.floor(60 * factor))), start = Math.max(0, p.trail.length - tLen);
+        for (let j = start; j < p.trail.length - 1; j++) {
+          let pos = (j-start) / (p.trail.length-1-start), tOp = pos * op * 0.85, tW = 2 + pos * (1 + factor * 3);
+          ctx.beginPath(); ctx.strokeStyle = 'rgba(255,80,80,'+tOp+')'; ctx.lineWidth = tW; ctx.lineCap = 'round';
+          ctx.moveTo(p.trail[j].x, p.trail[j].y); ctx.lineTo(p.trail[j+1].x, p.trail[j+1].y); ctx.stroke();
+        }
+      }
+      let hOp = Math.min(1, op * 1.3), hR = 1.5 + factor * 2;
+      ctx.beginPath(); ctx.fillStyle = 'rgba(255,80,80,'+(hOp*0.25)+')'; ctx.arc(p.x, p.y, hR*1.5, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.fillStyle = 'rgba(255,80,80,'+(hOp*0.25)+')'; ctx.arc(p.x, p.y, hR*2, 0, Math.PI*2); ctx.fill();
+    }
+  }
+  function loop(time) { if (!active) return; var dt = lastTime && time ? Math.min((time - lastTime) / 16.667, 3) : 1; update(dt); lastTime = time || 0; draw(); raf = requestAnimationFrame(loop); }
+  
+  function startWindAnimation(dayOffset) {
+    initCanvas(); if (!c) return; active = true;
+    windDayOffset = Number.isFinite(dayOffset) ? dayOffset : windDayOffset;
+    parts = [];
+    fetchWind(windDayOffset);
+    if (c) c.style.display = 'block';
+    loop();
+  }
+  function stopWindAnimation() {
+    active = false; if (c) c.style.display = 'none';
+    if (raf) { cancelAnimationFrame(raf); raf = null; }
+  }
+
+  function setWindDayOffset(dayOffset) {
+    windDayOffset = Number.isFinite(dayOffset) ? dayOffset : 0;
+    if (!active) return;
+    if (raf) { cancelAnimationFrame(raf); raf = null; }
+    if (ctx && c) ctx.clearRect(0, 0, c.width, c.height);
+    parts = [];
+    fetchWind(windDayOffset);
+    if (active) loop();
+  }
+
+  window.kvviWind = {
+    start: startWindAnimation,
+    stop: stopWindAnimation,
+    setDayOffset: setWindDayOffset,
+    setWindFromData: function(speed, directionDeg) {
+      if (!Number.isFinite(speed) || !Number.isFinite(directionDeg)) return;
+      spd = Math.round(speed * 10) / 10;
+      dir = (directionDeg + 90) % 360;
+      if (!active) { startWindAnimation(0); return; }
+      if (raf) { cancelAnimationFrame(raf); raf = null; }
+      if (ctx && c) ctx.clearRect(0, 0, c.width, c.height);
+      parts = [];
+      if (c) { c.style.display = 'block'; loop(); }
+    },
+    isActive: function() { return !!active; }
+  };
+
+
+  initMap().catch(function(e) { console.error('initMap failed:', e); });
+</script>

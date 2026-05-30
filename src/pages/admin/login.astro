@@ -1,0 +1,50 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+const ADMIN_KEY = (process.env.ADMIN_KEY || '').trim();
+let error = '';
+
+if (Astro.request.method === 'POST') {
+  const formData = await Astro.request.formData();
+  const key = (formData.get('key')?.toString() || '').trim();
+
+  if (key === ADMIN_KEY) {
+    Astro.cookies.set('admin_token', key, {
+      path: '/',
+      httpOnly: true,
+      sameSite: 'strict',
+      maxAge: 60 * 60 * 24 * 7
+    });
+    return Astro.redirect('/admin/wedstrijden');
+  } else {
+    error = 'Ongeldige sleutel';
+  }
+}
+---
+
+<Layout title="Admin Login">
+  <div class="min-h-[60vh] flex items-center justify-center">
+    <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-sm">
+      <h1 class="text-2xl font-bold text-center mb-6">Admin Login</h1>
+      <form method="POST" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">Sleutel</label>
+          <input type="password" name="key" required autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+            class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-kvvi-blue focus:border-transparent outline-none"
+            placeholder="Voer admin sleutel in" />
+        </div>
+        {error && <p class="text-red-600 text-sm">{error}</p>}
+        <button type="submit"
+          class="w-full bg-kvvi-blue text-white py-2 rounded-lg font-semibold hover:bg-blue-800 transition cursor-pointer">
+          Inloggen
+        </button>
+      </form>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  input[type="password"]:focus {
+    box-shadow: 0 0 0 3px rgba(0, 51, 102, 0.2);
+  }
+</style>

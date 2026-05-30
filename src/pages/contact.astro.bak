@@ -1,0 +1,108 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+const pageTitle = "Contact";
+
+<BaseLayout title={pageTitle}>
+  <main class="min-h-screen bg-gradient-to-b from-white to-slate-50">
+
+    <!-- Hero -->
+    <section class="relative bg-gradient-to-br from-[#003366] to-[#001a33] text-white overflow-hidden">
+      <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle at 20% 50%, #C5A059 0%, transparent 50%), radial-gradient(circle at 80% 50%, #C5A059 0%, transparent 50%);"></div>
+      <div class="relative max-w-6xl mx-auto px-6 py-20 md:py-28 text-center">
+        <h1 class="text-4xl md:text-6xl font-black uppercase tracking-tight mb-4">Contact</h1>
+        <p class="text-lg text-slate-300 max-w-2xl mx-auto">Heb je vragen, opmerkingen of wil je lid worden? Neem contact met ons op via onderstaand formulier.</p>
+      </div>
+    </section>
+
+    <!-- Form -->
+    <section class="max-w-3xl mx-auto px-6 py-16">
+      <div id="form-container" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 md:p-12">
+        <form id="contact-form" class="space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label htmlFor="name" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Naam</label>
+              <input type="text" id="name" name="name" required class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:border-[#004A99] focus:ring-2 focus:ring-[#004A99]/20 outline-none transition">
+            </div>
+            <div>
+              <label htmlFor="email" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">E-mailadres</label>
+              <input type="email" id="email" name="email" required class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:border-[#004A99] focus:ring-2 focus:ring-[#004A99]/20 outline-none transition">
+            </div>
+          </div>
+          <div>
+            <label htmlFor="message" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Bericht</label>
+            <textarea id="message" name="message" rows="6" required class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:border-[#004A99] focus:ring-2 focus:ring-[#004A99]/20 outline-none transition resize-y"></textarea>
+          </div>
+          <div class="flex items-center gap-4">
+            <button type="submit" id="submit-btn" class="bg-[#004A99] text-white font-bold px-8 py-3 rounded-xl hover:bg-[#003366] transition shadow-md shadow-[#004A99]/20 text-sm">Verzenden</button>
+            <span id="form-status" class="text-sm hidden"></span>
+          </div>
+        </form>
+      </div>
+    </section>
+
+  </main>
+</BaseLayout>
+
+<script>
+document.getElementById('contact-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('submit-btn');
+  const status = document.getElementById('form-status');
+  btn.disabled = true;
+  btn.textContent = 'Verzenden...';
+  status.className = 'text-sm text-blue-600';
+  status.textContent = 'Bezig met verzenden...';
+  status.classList.remove('hidden');
+
+  const formData = {
+    name: document.getElementById('name').value.trim(),
+    email: document.getElementById('email').value.trim(),
+    message: document.getElementById('message').value.trim()
+  };
+
+  try {
+    const res = await fetch('/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData)
+    });
+    const result = await res.json();
+    if (result.success) {
+      document.getElementById('form-container').innerHTML = `
+        <div class="text-center py-12">
+          <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <h2 class="text-2xl font-black text-[#003366] mb-3">Bericht verzonden!</h2>
+          <p class="text-slate-600">Bedankt voor je bericht. We nemen zo snel mogelijk contact met je op.</p>
+        </div>`;
+    } else {
+      showFallback(formData, result.error || 'Fout bij verzenden');
+    }
+  } catch (e) {
+    showFallback(formData, 'Serverfout');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Verzenden';
+  }
+});
+
+function showFallback(data, error) {
+  const status = document.getElementById('form-status');
+  const mailto = `mailto:kvvizegem@gmail.com?subject=Contactformulier%20KVVI&body=${encodeURIComponent('Naam: ' + data.name + '\nE-mail: ' + data.email + '\n\n' + data.message)}`;
+  document.getElementById('form-container').innerHTML = `
+    <div class="text-center py-8">
+      <div class="w-20 h-20 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-6">
+        <svg class="w-10 h-10 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+      </div>
+      <h2 class="text-xl font-black text-[#003366] mb-3">Verzenden via e-mailclient</h2>
+      <p class="text-sm text-slate-600 mb-6">Het formulier kon niet automatisch worden verzonden. Klik op onderstaande knop om je e-mailclient te openen.</p>
+      <a href="${mailto}" class="inline-block bg-[#004A99] text-white font-bold px-8 py-3 rounded-xl hover:bg-[#003366] transition text-sm">Open e-mailclient</a>
+      <p class="text-xs text-slate-400 mt-4">Of stuur een e-mail naar <strong>kvvizegem@gmail.com</strong></p>
+    </div>`;
+}
+</script>

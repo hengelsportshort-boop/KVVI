@@ -1,0 +1,34 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import { deleteWedstrijd } from '../../../lib/kalenderManager';
+
+export const prerender = false;
+
+const pageTitle = "Wedstrijd Verwijderen | KVVI Admin";
+
+// Handle form submission
+if (Astro.request.method === 'POST') {
+  try {
+    const formData = await Astro.request.formData();
+    const id = formData.get('id') as string;
+    
+    if (!id) {
+      throw new Error('ID is verplicht');
+    }
+    
+    const success = deleteWedstrijd(id);
+    
+    if (!success) {
+      throw new Error('Wedstrijd niet gevonden');
+    }
+    
+    // Redirect back to kalender page
+    return Astro.redirect('/admin/kalender');
+  } catch (error) {
+    console.error('Error deleting wedstrijd:', error);
+  }
+}
+
+// Always redirect back to kalender page
+return Astro.redirect('/admin/kalender');
+---

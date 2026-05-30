@@ -1,0 +1,517 @@
+---
+import Layout from '../../layouts/Layout.astro';
+export const prerender = false;
+
+const pageTitle = "Wedstrijden Beheer | KVVI Admin";
+const currentYear = new Date().getFullYear();
+const years = Array.from({length: currentYear + 4 - 2026 + 1}, (_, i) => 2026 + i).reverse();
+---
+
+<Layout title={pageTitle} noMainWrapper={true}>
+  <main class="min-h-screen bg-slate-50">
+    <div class="md:hidden bg-[#003366] text-white p-4 flex justify-between items-center">
+      <div><h1 class="text-lg font-bold tracking-widest">KVVI ADMIN</h1><p class="text-[10px] text-[#C5A059] font-bold">WEDSTRIJDEN</p></div>
+      <button id="mobile-menu-btn" class="p-2 hover:bg-white/10 rounded-lg transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/></svg>
+      </button>
+    </div>
+    <div class="flex">
+      <aside class="hidden md:flex w-64 bg-[#003366] text-white flex-col border-r-4 border-[#C5A059] min-h-[calc(100vh-60px)]">
+        <div class="p-6 border-b border-white/10"><h1 class="text-xl font-bold tracking-widest">KVVI ADMIN</h1><p class="text-[10px] text-[#C5A059] font-bold">CONTROL PANEL</p></div>
+        <nav class="flex-1 p-4 space-y-1">
+          <a href="/" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏠</span> Home</a>
+          <a href="/admin/wedstrijden" class="flex items-center gap-3 p-3 bg-white/10 rounded-lg border-l-4 border-[#C5A059] text-sm font-semibold"><span>🏆</span> Wedstrijden</a>
+          <a href="/admin/kalender" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📅</span> Kalender</a>
+          <a href="/admin/visstekken" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📍</span> Visstekken</a>
+          <a href="/admin/visstekken-abc" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🌐</span> ABC Visstekken</a>
+          <a href="/admin/legende" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📖</span> Legende</a>
+          
+          <a href="/admin/koppelwedstrijden" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏆</span> Koppelwedstrijden</a>
+          <a href="/admin/kamp-izegem" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏅</span> Kamp. Izegem</a>
+          <a href="/admin/specials/vrouwvissing" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>👩</span> Vrouwvissing</a>
+          <a href="/admin/specials/seniorenvissing" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>👴</span> Seniorenvissing</a>
+          <a href="/admin/tips-tricks" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>💡</span> Tips &amp; Tricks</a>
+          <a href="/admin/fotos" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📸</span> Foto's</a>
+        </nav>
+        <div class="p-4 border-t border-white/10"><a href="/" class="text-sm text-slate-400 hover:text-white transition-colors flex items-center gap-2"><span>←</span> Terug</a></div>
+      </aside>
+      <div id="mobile-overlay" class="fixed inset-0 bg-black/50 z-40 hidden" style="margin-top:60px;"></div>
+      <aside id="mobile-sidebar" class="md:hidden fixed top-[60px] left-0 w-72 bg-[#003366] text-white z-50 flex-col border-r-4 border-[#C5A059] h-[calc(100vh-60px)] hidden shadow-2xl">
+        <nav class="flex-1 p-4 space-y-1 pt-6">
+          <a href="/" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏠</span> Home</a>
+          <a href="/admin/wedstrijden" class="flex items-center gap-3 p-3 bg-white/10 rounded-lg border-l-4 border-[#C5A059] text-sm font-semibold"><span>🏆</span> Wedstrijden</a>
+          <a href="/admin/kalender" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📅</span> Kalender</a>
+          <a href="/admin/visstekken" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📍</span> Visstekken</a>
+          <a href="/admin/visstekken-abc" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🌐</span> ABC Visstekken</a>
+          <a href="/admin/legende" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📖</span> Legende</a>
+          
+          <a href="/admin/koppelwedstrijden" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏆</span> Koppelwedstrijden</a>
+          <a href="/admin/kamp-izegem" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏅</span> Kamp. Izegem</a>
+          <a href="/admin/specials/vrouwvissing" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>👩</span> Vrouwvissing</a>
+          <a href="/admin/specials/seniorenvissing" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>👴</span> Seniorenvissing</a>
+          <a href="/admin/tips-tricks" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>💡</span> Tips &amp; Tricks</a>
+          <a href="/admin/fotos" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📸</span> Foto's</a>
+        </nav>
+        <div class="p-4 border-t border-white/10"><a href="/" class="text-sm text-slate-400 hover:text-white transition-colors flex items-center gap-2"><span>←</span> Terug</a></div>
+      </aside>
+        <div class="p-4 border-t border-white/10"><a href="/" class="text-sm text-slate-400 hover:text-white transition-colors flex items-center gap-2"><span>←</span> Terug</a></div>
+      </aside>
+      <section class="flex-1 flex flex-col min-h-[calc(100vh-60px)]">
+        <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 md:px-8">
+          <div class="flex items-center gap-3">
+            <span class="text-slate-400 text-sm">Admin</span>
+            <span class="text-slate-300 text-sm">/</span>
+            <span class="font-semibold text-sm">Wedstrijden</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span id="save-status" class="text-xs text-slate-400 hidden"></span>
+          </div>
+        </header>
+        <div class="p-4 md:p-6 space-y-4 flex-1 overflow-y-auto">
+          
+          <!-- Groep selector -->
+          <div class="flex flex-col md:flex-row gap-3">
+            <select id="groep-select" class="px-4 py-3 rounded-xl border border-slate-200 text-sm bg-white font-semibold">
+              <option value="Zaterdagvissers">Zaterdagvissers</option>
+              <option value="Veteranen">Veteranen</option>
+            </select>
+            <select id="jaar-select" class="px-4 py-3 rounded-xl border border-slate-200 text-sm bg-white font-semibold">
+              {years.map(y => (
+                <option value={y} selected={y === currentYear}>{y}</option>
+              ))}
+            </select>
+            <div class="flex-1"></div>
+            <button id="save-csv-btn" class="bg-green-600 text-white text-xs font-bold px-6 py-3 rounded-xl hover:bg-green-700 transition disabled:opacity-50" disabled>
+              💾 Wijzigingen Opslaan
+            </button>
+          </div>
+
+          <!-- Info -->
+          <p class="text-xs text-slate-500">Klik op een cel om het gewicht aan te passen. Wijzigingen worden lokaal bijgehouden tot je opslaat.</p>
+
+          <!-- Wedstrijdtabel -->
+          <div id="table-container" class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mx-auto">
+            <div class="overflow-x-auto flex justify-center">
+              <table id="wedstrijd-table" class="mx-auto text-left border-collapse text-xs min-w-full">
+                <thead id="table-head"></thead>
+                <tbody id="table-body"></tbody>
+                <tfoot id="table-foot"></tfoot>
+              </table>
+            </div>
+          </div>
+
+          <p id="empty-msg" class="hidden text-center text-slate-400 italic p-8">Geen gegevens geladen.</p>
+
+        </div>
+      </section>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  body { overflow-x: hidden; }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: #f1f5f9; }
+  ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 3px; }
+  td.editing input { width: 100%; box-sizing: border-box; }
+  @media (max-width: 768px) {
+    td { padding: 10px 8px !important; }
+    .cell-display { min-height: 20px; display: inline-block; }
+  }
+</style>
+
+<script>
+(() => {
+  let currentData = null;
+  let hasChanges = false;
+
+  const groepSelect = document.getElementById('groep-select');
+  const jaarSelect = document.getElementById('jaar-select');
+  const tableHead = document.getElementById('table-head');
+  const tableBody = document.getElementById('table-body');
+  const tableFoot = document.getElementById('table-foot');
+  const emptyMsg = document.getElementById('empty-msg');
+  const saveBtn = document.getElementById('save-csv-btn');
+  const saveStatus = document.getElementById('save-status');
+
+  async function loadData() {
+    const groep = groepSelect.value;
+    const jaar = jaarSelect.value;
+    try {
+      const res = await fetch(`/api/wedstrijden?groep=${encodeURIComponent(groep)}&jaar=${encodeURIComponent(jaar)}`);
+      if (!res.ok) throw new Error('Niet gevonden');
+      currentData = await res.json();
+      hasChanges = false;
+      renderTable();
+      saveBtn.disabled = true;
+      emptyMsg.classList.add('hidden');
+    } catch (e) {
+      currentData = null;
+      // Probeer automatisch van vorig jaar te kopiëren
+      try {
+        const prevJaar = parseInt(jaar) - 1;
+        const prevRes = await fetch(`/api/wedstrijden?groep=${encodeURIComponent(groep)}&jaar=${prevJaar}`);
+        if (prevRes.ok) {
+          const prevData = await prevRes.json();
+          // Kopieer volledige data van vorig jaar
+          currentData = prevData;
+          currentData.year = jaar;
+          hasChanges = true;
+          saveBtn.disabled = false;
+          renderTable();
+          emptyMsg.classList.add('hidden');
+          showStatus(`📋 Layout van ${prevJaar} geladen — vul gewichten in en sla op`, 'text-amber-600');
+          return;
+        }
+      } catch (_) {}
+      // Fallback: toon lege boodschap
+      tableHead.innerHTML = '';
+      tableBody.innerHTML = '';
+      tableFoot.innerHTML = '';
+      emptyMsg.classList.remove('hidden');
+      emptyMsg.innerHTML = `Geen gegevens voor ${groep} in ${jaar}. <button id="copy-year-btn" class="text-[#004A99] font-bold underline hover:text-[#003366]">Kopieer van ${parseInt(jaar) - 1}</button>`;
+      saveBtn.disabled = true;
+
+      setTimeout(() => {
+        const copyBtn = document.getElementById('copy-year-btn');
+        if (copyBtn) copyBtn.onclick = async () => {
+          try {
+            const prevJaar = parseInt(jaar) - 1;
+            const prevRes = await fetch(`/api/wedstrijden?groep=${encodeURIComponent(groep)}&jaar=${prevJaar}`);
+            if (!prevRes.ok) throw new Error('Vorig jaar ook niet gevonden');
+            const prevData = await prevRes.json();
+            const saveRes = await fetch('/api/wedstrijden', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ groep, jaar, csvContent: prevData.raw })
+            });
+            const saveResult = await saveRes.json();
+            if (saveResult.success) {
+              showStatus(`✅ Gekopieerd van ${prevJaar}`, 'text-green-600');
+              loadData();
+            } else {
+              showStatus('❌ Fout bij kopiëren', 'text-red-600');
+            }
+          } catch (err) {
+            emptyMsg.innerHTML = `Kon niet kopiëren van ${parseInt(jaar) - 1}. <button id="copy-year-btn" class="text-[#004A99] font-bold underline">Probeer opnieuw</button>`;
+          }
+        };
+      }, 0);
+    }
+  }
+
+  function renderTable() {
+    if (!currentData || !currentData.rows.length) {
+      loadData();
+      return;
+    }
+
+    const headers = currentData.headers;
+    const rows = currentData.rows;
+
+    const placeIndex = headers.findIndex(h => (h || '').toString().toLowerCase().includes('plaats gewicht'));
+    const rankIndex = headers.findIndex((h, i) => i === 0 || (h || '').toString().toLowerCase().includes('rank') || (h || '').toString().toLowerCase().includes('plaats'));
+    const totalIndex = headers.findIndex(h => (h || '').toString().toLowerCase().includes('totaal gr') || (h || '').toString().toLowerCase().includes('totaal kg'));
+    const dateIndices = headers
+      .map((h, i) => ({ h: (h || '').toString(), i }))
+      .filter(item => item.h.includes('/') && item.i > 1)
+      .map(item => item.i);
+
+    
+    const columnOrder = [];
+    if (placeIndex >= 0) {
+      columnOrder.push(placeIndex);
+    } else if (rankIndex >= 0) {
+      columnOrder.push(rankIndex);
+    }
+    columnOrder.push(1);
+    dateIndices.forEach(i => {
+      if (i !== placeIndex && i !== totalIndex && i !== rankIndex) columnOrder.push(i);
+    });
+    if (totalIndex >= 0) columnOrder.push(totalIndex);
+
+    const visibleHeaders = columnOrder.map(i => headers[i] || '');
+    visibleHeaders[0] = '#';
+    visibleHeaders[1] = 'DEELNEMERS';
+
+    const totalRow = rows.find(row => (row[1] || '').toString().toLowerCase().includes('totaal'));
+    const parseWeight = (value) => {
+      if (!value) return 0;
+      // Vervang "--" door "0 gr" vooraleer we parsen
+      let cleaned = value.toString().replace(/--/g, '0 gr');
+      cleaned = cleaned.replace(/\./g, '').replace(/gr/gi, '').replace(/,/g, '.').trim();
+      const num = parseFloat(cleaned);
+      return Number.isFinite(num) ? num : 0;
+    };
+
+    const filteredRows = rows
+      .map((row, originalIndex) => ({ row, originalIndex }))
+      .filter(({ row }) => {
+        const label = (row[1] || '').toString().toLowerCase();
+        if (!row.some(cell => (cell || '').toString().trim())) return false;
+        if (label.includes('totaal') || label.includes('beste') || label.includes('slechtste')) return false;
+        return true;
+      })
+      .map(({ row, originalIndex }) => {
+        // Bereken Totaal kg voor elke deelnemer
+        if (totalIndex >= 0) {
+          // Alle gewichten voor totaal (inclusief 0)
+          const allWeights = dateIndices.map(dateIdx => parseWeight(row[dateIdx]));
+          const totalWeight = allWeights.reduce((sum, w) => sum + w, 0);
+          
+          // Alleen gewichten > 0 voor MINIFS
+          const positiveWeights = allWeights.filter(w => w > 0);
+          
+          // Numbers formule: ALS(AANTAL(C2:L2)<4; SOM(C2:L2); SOM(C2:L2)−MINIFS(C2:L2;C2:L2;">0"))
+          let finalTotal = totalWeight;
+          
+          // ALS aantal gewichten < 4 → SOM (geen aftrek)
+          if (positiveWeights.length >= 4) {
+            // ANDERS → SOM - MINIFS (laagste positieve score)
+            const lowestPositiveScore = Math.min(...positiveWeights);
+            finalTotal = totalWeight - lowestPositiveScore;
+          }
+          // Converteer gram naar kg en formatteer als "X.XXX gr"
+          const kgValue = finalTotal / 1000;
+          row[totalIndex] = kgValue > 0 ? `${kgValue.toFixed(3).replace('.', ',')} gr` : '0,000 gr';
+        }
+        return { row, originalIndex };
+      })
+      .map(({ row, originalIndex }) => {
+        // Calculate total weight for ranking
+        const totalWeight = dateIndices.reduce((sum, dateIdx) => sum + parseWeight(row[dateIdx]), 0);
+        return { row, originalIndex, totalWeight };
+      })
+      .sort((a, b) => {
+        // Sort by TOTAAL KG (descending)
+        return b.totalWeight - a.totalWeight;
+      });
+
+    const weightColumns = visibleHeaders.map((h, idx) => {
+      const label = (h || '').toString().toLowerCase();
+      return idx > 1 && !label.includes('plaats gewicht') && (/\//.test(label) || /kg|gr|totaal/.test(label));
+    });
+
+    const footerTotals = visibleHeaders.map((_, idx) => {
+      if (!weightColumns[idx]) return '';
+      return filteredRows.reduce((sum, { row }) => sum + parseWeight(row[columnOrder[idx]]), 0);
+    });
+
+    tableHead.innerHTML = `<tr class="bg-[#003366] text-white">${visibleHeaders.map((h, i) => {
+      let cls = 'p-2.5 font-bold text-[11px] uppercase tracking-wider whitespace-nowrap';
+      if (i === 0) cls += ' w-14 text-center';
+      else if (i === 1) cls += ' min-w-[160px] text-left';
+      else cls += ' text-center min-w-[85px]';
+      if (i === visibleHeaders.length - 1) cls += ' bg-[#C5A059] text-[#003366]';
+      else if (i > 1 && i < visibleHeaders.length - 1) cls += ' border-l border-blue-400/10 cursor-pointer hover:bg-blue-500/30 editable-header';
+      const isDateEditable = i > 1 && i < visibleHeaders.length - 1;
+      return `<th class="${cls}" data-header-col="${columnOrder[i]}" data-visible-idx="${i}" ${isDateEditable ? 'title="Klik om datum te wijzigen"' : ''}>${h || '#'}</th>`;
+    }).join('')}</tr>`;
+
+    tableFoot.innerHTML = `<tr class="bg-emerald-100 text-emerald-900 font-bold text-xs">
+      <td class="p-2 text-left uppercase tracking-wider" colspan="2">Totalen per wedstrijd</td>
+      ${visibleHeaders.slice(2).map((_, idx) => {
+        const total = footerTotals[idx + 2] || 0;
+        const display = total ? `${total.toLocaleString('nl-BE')} gr` : '';
+        const cls = idx === visibleHeaders.slice(2).length - 1 ? 'p-2 text-right bg-emerald-200 text-[#1E3D2C]' : 'p-2 text-center';
+        return `<td class="${cls}">${display}</td>`;
+      }).join('')}
+    </tr>`;
+
+    tableBody.innerHTML = filteredRows.map(({ row, originalIndex }, rowIdx) => {
+      const displayRow = columnOrder.map(i => row[i] || '');
+      const bgClass = rowIdx % 2 === 0 ? 'bg-white' : 'bg-blue-50/20';
+      return `<tr class="${bgClass} hover:bg-blue-100/30 transition-colors">${displayRow.map((cell, colIdx) => {
+        let cls = 'p-2';
+        if (colIdx === 0) cls += ' font-bold text-center text-slate-700 text-xs';
+        else if (colIdx === 1) cls += ' font-bold text-slate-800 text-xs min-w-[160px]';
+        else if (colIdx === displayRow.length - 1) cls += ' font-black text-[#1E3D2C] text-right font-mono text-xs bg-green-50/30';
+        else cls += ' text-center font-mono cursor-pointer hover:bg-blue-50 transition-colors editable';
+
+        const value = cell || '';
+        if (colIdx === 0 || colIdx === 1 || colIdx === displayRow.length - 1) {
+          return `<td class="${cls}">${value}</td>`;
+        }
+
+        return `<td class="${cls}" data-row="${originalIndex}" data-col="${columnOrder[colIdx]}">
+          <span class="cell-display">${value || '<span class="text-slate-200 italic">0</span>'}</span>
+        </td>`;
+      }).join('')}</tr>`;
+    }).join('');
+
+    // Editable header (date) click
+    tableHead.querySelectorAll('.editable-header').forEach(th => {
+      th.onclick = () => {
+        const col = parseInt(th.dataset.headerCol);
+        if (isNaN(col)) return;
+        const currentVal = currentData.headers[col] || '';
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.value = currentVal;
+        input.className = 'w-full px-1 py-0.5 border border-[#004A99] rounded text-xs font-bold outline-none bg-yellow-100 text-center';
+        th.innerHTML = '';
+        th.appendChild(input);
+        input.focus();
+        input.select();
+        input.onblur = () => {
+          const newVal = input.value.trim() || currentVal;
+          currentData.headers[col] = newVal;
+          hasChanges = true;
+          saveBtn.disabled = false;
+          renderTable();
+        };
+        input.onkeydown = (e) => {
+          if (e.key === 'Enter') input.blur();
+          if (e.key === 'Escape') { input.value = currentVal; input.blur(); }
+        };
+      };
+    });
+
+    // Editable cell click
+    tableBody.querySelectorAll('.editable').forEach(td => {
+      td.onclick = () => {
+        const row = parseInt(td.dataset.row);
+        const col = parseInt(td.dataset.col);
+        if (isNaN(row) || isNaN(col)) return;
+        
+        const span = td.querySelector('.cell-display');
+        const currentVal = currentData.rows[row][col] || '';
+
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.value = currentVal;
+        input.className = 'w-full px-1 py-0.5 border border-[#004A99] rounded text-xs font-mono outline-none';
+        input.style.background = '#f0f7ff';
+        td.innerHTML = '';
+        td.appendChild(input);
+        input.focus();
+        input.select();
+
+        input.onblur = () => {
+          let newVal = input.value.trim();
+          
+          // Formatteer het gewicht: 10000 -> 10.000 gr
+          if (newVal && !isNaN(newVal.replace(/[^0-9]/g, ''))) {
+            const num = parseInt(newVal.replace(/[^0-9]/g, ''));
+            newVal = num.toLocaleString('nl-BE') + ' gr';
+          }
+          
+          currentData.rows[row][col] = newVal;
+          hasChanges = true;
+          saveBtn.disabled = false;
+          
+          // Herstel display
+          td.innerHTML = `<span class="cell-display">${newVal || '<span class="text-slate-200 italic">0</span>'}</span>`;
+        };
+
+        input.onkeydown = (e) => {
+          if (e.key === 'Enter') input.blur();
+          if (e.key === 'Escape') { input.value = currentVal; input.blur(); }
+        };
+      };
+    });
+  }
+
+  // Opslaan
+  saveBtn.onclick = async () => {
+    if (!hasChanges || !currentData) return;
+
+    // Werk de totaalrij bij met herberekende totalen
+    const headers = currentData.headers;
+    const rows = currentData.rows;
+    const totalRow = rows.find(row => (row[1] || '').toString().toLowerCase().includes('totaal'));
+    if (totalRow) {
+      const dateIndices = headers
+        .map((h, i) => ({ h: (h || '').toString(), i }))
+        .filter(item => item.h.includes('/') && item.i > 1)
+        .map(item => item.i);
+      const totalIndex = headers.findIndex(h => (h || '').toString().toLowerCase().includes('totaal gr') || (h || '').toString().toLowerCase().includes('totaal kg'));
+      const parseW = v => { if (!v) return 0; let c = v.toString().replace(/\./g,'').replace(/gr/gi,'').replace(/,/g,'.').trim(); const n = parseFloat(c); return isFinite(n) ? n : 0; };
+      const filtered = rows.filter(row => {
+        const label = (row[1] || '').toString().toLowerCase();
+        if (!row.some(c => (c||'').toString().trim())) return false;
+        if (label.includes('totaal') || label.includes('beste') || label.includes('slechtste')) return false;
+        return true;
+      });
+      dateIndices.forEach(di => {
+        const som = filtered.reduce((s, row) => s + parseW(row[di]), 0);
+        totalRow[di] = som > 0 ? `${som.toLocaleString('nl-BE')} gr` : '--';
+      });
+      if (totalIndex >= 0 && totalIndex < totalRow.length) {
+        const totalDateSum = dateIndices.reduce((s, di) => s + parseW(totalRow[di]), 0);
+        totalRow[totalIndex] = totalDateSum > 0 ? `${totalDateSum.toLocaleString('nl-BE')} gr` : '0,000 gr';
+      }
+    }
+    
+    // Rebuild CSV
+    const lines = [currentData.headers.join(';')];
+    currentData.rows.forEach(row => {
+      lines.push(row.join(';'));
+    });
+    const csvContent = lines.join('\n');
+
+    try {
+      const res = await fetch('/api/wedstrijden', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          groep: groepSelect.value,
+          jaar: jaarSelect.value,
+          csvContent
+        })
+      });
+      const result = await res.json();
+      if (result.success) {
+        showStatus('✅ Opgeslagen!', 'text-green-600');
+        hasChanges = false;
+        saveBtn.disabled = true;
+      } else {
+        showStatus('❌ Fout bij opslaan', 'text-red-600');
+      }
+    } catch (e) {
+      showStatus('❌ Fout bij opslaan', 'text-red-600');
+    }
+  };
+
+  groepSelect.onchange = () => loadData();
+  jaarSelect.onchange = () => loadData();
+
+  let statusTimeout;
+  function showStatus(msg, cls) {
+    saveStatus.textContent = msg;
+    saveStatus.className = `text-xs ${cls} font-bold`;
+    saveStatus.classList.remove('hidden');
+    clearTimeout(statusTimeout);
+    statusTimeout = setTimeout(() => saveStatus.classList.add('hidden'), 3000);
+  }
+
+  // Mobiel
+  const menuBtn = document.getElementById('mobile-menu-btn');
+  const sidebar = document.getElementById('mobile-sidebar');
+  const overlay = document.getElementById('mobile-overlay');
+  if (menuBtn && sidebar && overlay) {
+    function toggleMenu() {
+      const hidden = sidebar.classList.contains('hidden');
+      sidebar.classList.toggle('hidden', !hidden);
+      overlay.classList.toggle('hidden', !hidden);
+    }
+    menuBtn.onclick = toggleMenu;
+    overlay.onclick = toggleMenu;
+    
+    // Menu items moeten menu open houden
+    const menuItems = sidebar.querySelectorAll('nav a');
+    menuItems.forEach(item => {
+      item.addEventListener('click', (e) => {
+        // Menu blijft open bij klik op menuitem
+        e.preventDefault();
+        // Navigeer naar de link na een korte vertraging
+        setTimeout(() => {
+          window.location.href = item.href;
+        }, 100);
+      });
+    });
+  }
+
+  loadData();
+})();
+</script>

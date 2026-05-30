@@ -1,0 +1,74 @@
+{
+  "title": "Vrouwvissing",
+  "type": "vrouwvissing",
+  "date": "",
+  "tables": [
+    {
+      "name": "Vrouwvissing",
+      "visible": false,
+      "rows": [
+        {
+          "deeln": "",
+          "gewicht": 0
+        },
+        {
+          "deeln": "",
+          "gewicht": 0
+        },
+        {
+          "deeln": "",
+          "gewicht": 0
+        },
+        {
+          "deeln": "",
+          "gewicht": 0
+        },
+        {
+          "deeln": "",
+          "gewicht": 0
+        },
+        {
+          "deeln": "",
+          "gewicht": 0
+        },
+        {
+          "deeln": "",
+          "gewicht": 0
+        },
+        {
+          "deeln": "",
+          "gewicht": 0
+        },
+        {
+          "deeln": "",
+          "gewicht": 0
+        },
+        {
+          "deeln": "",
+          "gewicht": 0
+        },
+        {
+          "deeln": "",
+          "gewicht": 0
+        },
+        {
+          "deeln": "",
+          "gewicht": 0
+        },
+        {
+          "deeln": "",
+          "gewicht": 0
+        },
+        {
+          "deeln": "",
+          "gewicht": 0
+        },
+        {
+          "deeln": "",
+          "gewicht": 0
+        }
+      ]
+    }
+  ],
+  "visible": true
+}

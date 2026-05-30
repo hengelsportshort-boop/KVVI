@@ -1,0 +1,30 @@
+---
+import { getWedstrijden, type Wedstrijd } from '../lib/kalenderManager';
+
+const wedstrijden: Wedstrijd[] = getWedstrijden();
+---
+
+<div class="w-full rounded-xl border border-gray-200 shadow-sm bg-white overflow-hidden">
+  <div class="bg-gradient-to-r from-[#004A99] to-[#002b59] text-white p-6">
+    <h3 class="text-2xl font-black uppercase tracking-tight text-center">Wedstrijden 2026</h3>
+  </div>
+  
+  <div class="overflow-x-auto">
+    <table class="w-full text-left">
+      <thead class="bg-gray-50 border-b border-gray-200">
+        <tr>
+          <th class="p-2 font-semibold text-gray-700">Datum</th>
+          <th class="p-2 font-semibold text-gray-700">Reeks</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-100">
+        {wedstrijden.map((wedstrijd) => (
+          <tr class="hover:bg-blue-50 transition-colors">
+            <td class="p-2 font-medium">{wedstrijd.datum} - {wedstrijd.dag}</td>
+            <td class="p-2">{wedstrijd.reeks}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,332 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+export const prerender = false;
+
+const pageTitle = "Kalender Beheer | KVVI Admin";
+---
+
+<Layout title={pageTitle} noMainWrapper={true}>
+  <main class="min-h-screen bg-slate-50">
+    <!-- MOBILE HEADER -->
+    <div class="md:hidden bg-[#003366] text-white p-4 flex justify-between items-center">
+      <div>
+        <h1 class="text-lg font-bold tracking-widest">KVVI ADMIN</h1>
+        <p class="text-[10px] text-[#C5A059] font-bold">KALENDER</p>
+      </div>
+      <button id="mobile-menu-btn" class="p-2 hover:bg-white/10 rounded-lg transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+        </svg>
+      </button>
+    </div>
+
+    <div class="flex">
+      <!-- DESKTOP SIDEBAR -->
+      <aside class="hidden md:flex w-64 bg-[#003366] text-white flex-col border-r-4 border-[#C5A059] min-h-[calc(100vh-60px)]">
+        <div class="p-6 border-b border-white/10 hidden md:block">
+          <h1 class="text-xl font-bold tracking-widest">KVVI ADMIN</h1>
+          <p class="text-[10px] text-[#C5A059] font-bold">CONTROL PANEL</p>
+        </div>
+        
+        <nav class="flex-1 p-4 space-y-1">
+          <a href="/" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold">
+            <span>🏠</span> Home
+          </a>
+          <a href="/admin/wedstrijden" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold">
+            <span>🏆</span> Wedstrijden
+          </a>
+          <a href="/admin/kalender" class="flex items-center gap-3 p-3 bg-white/10 rounded-lg border-l-4 border-[#C5A059] text-sm font-semibold">
+            <span>📅</span> Kalender
+          </a>
+          <a href="/admin/visstekken" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold">
+            <span>📍</span> Visstekken
+          </a>
+          <a href="/admin/visstekken-abc" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🌐</span> ABC Visstekken</a>
+          <a href="/admin/legende" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold">
+            <span>📖</span> Legende
+          </a>
+
+          <a href="/admin/koppelwedstrijden" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold">
+            <span>🏆</span> Koppelwedstrijden
+          </a>
+          <a href="/admin/kamp-izegem" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏅</span> Kamp. Izegem</a>
+          <a href="/admin/specials/vrouwvissing" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>👩</span> Vrouwvissing</a>
+          <a href="/admin/specials/seniorenvissing" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>👴</span> Seniorenvissing</a>
+          <a href="/admin/tips-tricks" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>💡</span> Tips &amp; Tricks</a>
+          <a href="/admin/fotos" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold">
+            <span>📸</span> Foto's
+          </a>
+        </nav>
+        
+        <div class="p-4 border-t border-white/10">
+          <a href="/" class="text-sm text-slate-400 hover:text-white transition-colors flex items-center gap-2">
+            <span>←</span> Terug naar Website
+          </a>
+        </div>
+      </aside>
+
+      <!-- MOBILE OVERLAY -->
+      <div id="mobile-overlay" class="fixed inset-0 bg-black/50 z-40 hidden" style="margin-top:60px;"></div>
+      
+      <!-- MOBILE SIDEBAR -->
+      <aside id="mobile-sidebar" class="md:hidden fixed top-[60px] left-0 w-72 bg-[#003366] text-white z-50 flex-col border-r-4 border-[#C5A059] h-[calc(100vh-60px)] hidden shadow-2xl">
+        <nav class="flex-1 p-4 space-y-1 pt-6">
+          <a href="/" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold">
+            <span>🏠</span> Home
+          </a>
+          <a href="/admin/wedstrijden" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold">
+            <span>🏆</span> Wedstrijden
+          </a>
+          <a href="/admin/kalender" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold">
+            <span>📅</span> Kalender
+          </a>
+          <a href="/admin/visstekken" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold">
+            <span>📍</span> Visstekken
+          </a>
+          <a href="/admin/visstekken-abc" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🌐</span> ABC Visstekken</a>
+          <a href="/admin/legende" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold">
+            <span>📖</span> Legende
+          </a>
+
+          <a href="/admin/koppelwedstrijden" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold">
+            <span>🏆</span> Koppelwedstrijden
+          </a>
+          <a href="/admin/kamp-izegem" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏅</span> Kamp. Izegem</a>
+          <a href="/admin/specials/vrouwvissing" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>👩</span> Vrouwvissing</a>
+          <a href="/admin/specials/seniorenvissing" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>👴</span> Seniorenvissing</a>
+          <a href="/admin/tips-tricks" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>💡</span> Tips &amp; Tricks</a>
+          <a href="/admin/fotos" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold">
+            <span>📸</span> Foto's
+          </a>
+        </nav>
+        <div class="p-4 border-t border-white/10">
+          <a href="/" class="text-sm text-slate-400 hover:text-white transition-colors flex items-center gap-2">
+            <span>←</span> Terug
+          </a>
+        </div>
+      </aside>
+
+      <!-- MAIN CONTENT -->
+      <section class="flex-1 flex flex-col min-h-[calc(100vh-60px)]">
+        <!-- Top Bar -->
+        <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 md:px-8">
+          <div class="flex items-center gap-3">
+            <span class="text-slate-400 text-sm">Admin</span>
+            <span class="text-slate-300 text-sm">/</span>
+            <span class="font-semibold text-sm">Kalender</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span id="save-status" class="text-xs text-slate-400 hidden"></span>
+            <button id="add-btn" class="bg-[#004A99] text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-[#003366] transition-colors">
+              + Wedstrijd Toevoegen
+            </button>
+          </div>
+        </header>
+
+        <!-- Content -->
+        <div class="p-4 md:p-8 flex-1 overflow-y-auto">
+          <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="p-5 border-b border-slate-100">
+              <h2 class="font-black text-[#003366] uppercase tracking-tight text-lg">📅 Wedstrijdkalender 2026</h2>
+              <p class="text-sm text-slate-500 mt-1">Beheer de wedstrijddata en reeksen — wijzigingen worden direct opgeslagen</p>
+            </div>
+            
+            <!-- Add form -->
+            <div id="add-form" class="hidden p-4 border-b border-slate-200 bg-blue-50">
+              <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                <input id="new-datum" type="text" placeholder="Datum (DD/MM)" class="px-3 py-2 rounded-lg border border-slate-200 text-sm">
+                <select id="new-dag" class="px-3 py-2 rounded-lg border border-slate-200 text-sm bg-white">
+                  <option value="Zaterdag">Zaterdag</option>
+                  <option value="Vrijdag">Vrijdag</option>
+                </select>
+                <input id="new-reeks" type="text" placeholder="Reeks (bv. Reeks 5)" class="px-3 py-2 rounded-lg border border-slate-200 text-sm">
+                <div class="flex gap-2">
+                  <button id="save-new-btn" class="flex-1 bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-green-700">Opslaan</button>
+                  <button id="cancel-add-btn" class="px-4 py-2 rounded-lg border border-slate-200 text-sm font-semibold hover:bg-slate-50">Annuleren</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-left">
+                <thead class="bg-gray-50 border-b border-gray-200">
+                  <tr>
+                    <th class="p-3 font-semibold text-gray-700 text-sm">Datum</th>
+                    <th class="p-3 font-semibold text-gray-700 text-sm">Dag</th>
+                    <th class="p-3 font-semibold text-gray-700 text-sm">Reeks</th>
+                    <th class="p-3 font-semibold text-gray-700 text-sm text-center">Acties</th>
+                  </tr>
+                </thead>
+                <tbody id="kalender-body" class="divide-y divide-gray-100">
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</Layout>
+
+<script>
+(async function() {
+  const menuBtn = document.getElementById('mobile-menu-btn');
+  const sidebar = document.getElementById('mobile-sidebar');
+  const overlay = document.getElementById('mobile-overlay');
+  if (menuBtn && sidebar && overlay) {
+    function toggleMenu() {
+      const hidden = sidebar.classList.contains('hidden');
+      sidebar.classList.toggle('hidden', !hidden);
+      overlay.classList.toggle('hidden', !hidden);
+    }
+    menuBtn.onclick = toggleMenu;
+    overlay.onclick = toggleMenu;
+    const menuItems = sidebar.querySelectorAll('nav a');
+    menuItems.forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.preventDefault();
+        setTimeout(() => { window.location.href = item.href; }, 100);
+      });
+    });
+  }
+
+  const tbody = document.getElementById('kalender-body');
+  const addBtn = document.getElementById('add-btn');
+  const addForm = document.getElementById('add-form');
+  const saveNewBtn = document.getElementById('save-new-btn');
+  const cancelAddBtn = document.getElementById('cancel-add-btn');
+  const saveStatus = document.getElementById('save-status');
+
+  let data = [];
+
+  async function loadData() {
+    try {
+      const resp = await fetch('/data/wedstrijdkalender.json');
+      data = await resp.json();
+      render();
+    } catch (e) {
+      tbody.innerHTML = '<tr><td colspan="4" class="p-6 text-center text-red-500">Fout bij laden</td></tr>';
+    }
+  }
+
+  function escapeHtml(s) {
+    const d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function render() {
+    if (!data.length) {
+      tbody.innerHTML = '<tr><td colspan="4" class="p-6 text-center text-slate-400 italic">Geen wedstrijden gevonden.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = data.map(w => `
+      <tr class="hover:bg-blue-50 transition-colors">
+        <td class="p-3 font-medium text-sm">${escapeHtml(w.datum)}</td>
+        <td class="p-3 text-sm">${escapeHtml(w.dag)}</td>
+        <td class="p-3 text-sm">${escapeHtml(w.reeks)}</td>
+        <td class="p-3 text-center">
+          <button class="delete-btn text-red-600 hover:text-red-800 text-sm font-semibold" data-id="${escapeHtml(w.id)}">Verwijder</button>
+        </td>
+      </tr>
+    `).join('');
+
+    tbody.querySelectorAll('.delete-btn').forEach(btn => {
+      btn.onclick = async () => {
+        const id = btn.dataset.id;
+        if (!confirm('Weet je zeker dat je deze wedstrijd wilt verwijderen?')) return;
+        try {
+          const res = await fetch('/api/kalender', {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id })
+          });
+          const result = await res.json();
+          if (result.success) {
+            showStatus('✅ Verwijderd', 'text-green-600');
+            await loadData();
+          } else {
+            showStatus('❌ Fout bij verwijderen', 'text-red-600');
+          }
+        } catch (e) {
+          showStatus('❌ Fout bij verwijderen', 'text-red-600');
+        }
+      };
+    });
+  }
+
+  addBtn.onclick = () => {
+    addForm.classList.toggle('hidden');
+  };
+
+  cancelAddBtn.onclick = () => {
+    addForm.classList.add('hidden');
+    document.getElementById('new-datum').value = '';
+    document.getElementById('new-reeks').value = '';
+  };
+
+  saveNewBtn.onclick = async () => {
+    const datum = document.getElementById('new-datum').value.trim();
+    const dag = document.getElementById('new-dag').value;
+    const reeks = document.getElementById('new-reeks').value.trim();
+
+    if (!datum || !reeks) {
+      showStatus('❌ Datum en reeks zijn verplicht', 'text-red-600');
+      return;
+    }
+    if (!/^\d{2}\/\d{2}$/.test(datum)) {
+      showStatus('❌ Datum moet in DD/MM formaat zijn', 'text-red-600');
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/kalender', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ datum, dag, reeks })
+      });
+      const result = await res.json();
+      if (result.success) {
+        showStatus('✅ Toegevoegd', 'text-green-600');
+        addForm.classList.add('hidden');
+        document.getElementById('new-datum').value = '';
+        document.getElementById('new-reeks').value = '';
+        await loadData();
+      } else {
+        showStatus('❌ ' + (result.error || 'Fout'), 'text-red-600');
+      }
+    } catch (e) {
+      showStatus('❌ Fout bij opslaan', 'text-red-600');
+    }
+  };
+
+  let statusTimeout;
+  function showStatus(msg, cls) {
+    saveStatus.textContent = msg;
+    saveStatus.className = `text-xs ${cls} font-bold`;
+    saveStatus.classList.remove('hidden');
+    clearTimeout(statusTimeout);
+    statusTimeout = setTimeout(() => saveStatus.classList.add('hidden'), 3000);
+  }
+
+  // Mobiel menu
+  if (menuBtn && sidebar && overlay) {
+    function toggleMenu() {
+      const hidden = sidebar.classList.contains('hidden');
+      sidebar.classList.toggle('hidden', !hidden);
+      overlay.classList.toggle('hidden', !hidden);
+    }
+    menuBtn.onclick = toggleMenu;
+    overlay.onclick = toggleMenu;
+  }
+
+  loadData();
+})();
+</script>
+
+<style>
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: #f1f5f9; }
+  ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 3px; }
+</style>

@@ -1,0 +1,287 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import fs from 'node:fs';
+import path from 'node:path';
+
+const homeDir = path.resolve('./public/Fotos Home');
+const extraDir = path.resolve('./public/Foto Fotos');
+const galleryJson = path.resolve('./public/data/gallery.json');
+
+let imageFiles = [];
+try {
+  const seen = new Set();
+  
+  // 1. Laad uit Fotos Home
+  if (fs.existsSync(homeDir)) {
+    fs.readdirSync(homeDir).forEach(f => {
+      if (/\.(png|jpe?g|webp|gif)$/i.test(f) && !f.includes('_640.')) {
+        seen.add(f.toLowerCase());
+        imageFiles.push(`/Fotos Home/${encodeURIComponent(f)}`);
+      }
+    });
+  }
+  
+  // 2. Laad uit Foto Fotos (zonder dubbelen)
+  if (fs.existsSync(extraDir)) {
+    fs.readdirSync(extraDir).forEach(f => {
+      if (/\.(png|jpe?g|webp|gif)$/i.test(f) && !f.includes('_640.') && !seen.has(f.toLowerCase())) {
+        imageFiles.push(`/Foto Fotos/${encodeURIComponent(f)}`);
+      }
+    });
+  }
+
+  imageFiles.sort();
+} catch (error) {
+  console.error("Fout bij laden foto's op schijf:", error);
+}
+
+const spanVariants = [
+  'xl:col-span-2 xl:row-span-2',
+  'xl:col-span-2',
+  'xl:row-span-2',
+  '',
+  'xl:col-span-2',
+  '',
+  'xl:row-span-2',
+  ''
+];
+
+const cards = imageFiles.map((url, index) => {
+  const variants = [
+    'rotate-0',
+    'rotate-1',
+    '-rotate-1',
+    'rotate-2',
+    '-rotate-2'
+  ];
+  const delay = `${(index % 4) * 0.2}s`;
+  return {
+    url,
+    transform: variants[index % variants.length],
+    spanClass: spanVariants[index % spanVariants.length],
+    delay
+  };
+});
+---
+
+<BaseLayout title="Foto's" description="Fotoalbums van KVVI Izegem viswedstrijden, evenementen en ledenactiviteiten.">
+  <main class="relative min-h-screen overflow-hidden bg-[#020913]">
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(212,175,55,0.15),_transparent_26%),radial-gradient(circle_at_bottom_left,_rgba(40,135,211,0.14),_transparent_22%)] pointer-events-none"></div>
+    <div class="relative mx-auto max-w-[1600px] px-4 py-10 lg:py-14">
+      <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {cards.map((card, index) => (
+          <button type="button" class={`relative overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/20 shadow-[0_30px_80px_rgba(0,0,0,0.35)] ${card.transform}`} style={`animation-delay: ${card.delay};`} data-index={index}>
+            <img src={card.url} alt="" class="h-full w-full object-cover transition duration-1000 ease-out hover:scale-105 hover:rotate-1" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent pointer-events-none"></div>
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <!-- Spectaculaire Foto Modal -->
+    <div id="photo-modal" class="fixed inset-0 z-50 hidden bg-black">
+      <!-- Achtergrond met gradient overlay -->
+      <div class="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black opacity-95"></div>
+      <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(212,175,55,0.08)_0%,_transparent_50%)]"></div>
+      
+      <!-- Sluit knop -->
+      <button id="close-modal" type="button" class="absolute top-6 right-6 z-50 w-12 h-12 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20 transition-all duration-300 flex items-center justify-center group">
+        <span class="text-2xl group-hover:rotate-90 transition-transform duration-300">×</span>
+      </button>
+      
+      <!-- Vorige knop -->
+      <button id="prev-photo" type="button" class="absolute left-4 md:left-6 top-1/2 -translate-y-1/2 z-40 w-16 h-16 md:w-14 md:h-14 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20 transition-all duration-300 flex items-center justify-center group hover:scale-110">
+        <svg class="w-7 h-7 md:w-6 md:h-6 group-hover:-translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+      
+      <!-- Volgende knop -->
+      <button id="next-photo" type="button" class="absolute right-4 md:right-6 top-1/2 -translate-y-1/2 z-40 w-16 h-16 md:w-14 md:h-14 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20 transition-all duration-300 flex items-center justify-center group hover:scale-110">
+        <svg class="w-7 h-7 md:w-6 md:h-6 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+      
+      <!-- Foto container met speciale effecten -->
+      <div class="relative h-full w-full flex items-center justify-center p-8">
+        <div class="relative max-w-7xl max-h-full">
+          <!-- Glow effect -->
+          <div class="absolute inset-0 bg-gradient-to-r from-[#C5A059]/20 via-transparent to-[#004A99]/20 blur-3xl scale-150 opacity-60"></div>
+          
+          <!-- Foto frame -->
+          <div class="relative overflow-hidden rounded-3xl border border-white/10 shadow-[0_0_100px_rgba(212,175,55,0.3)] bg-black/50 backdrop-blur-sm">
+            <img id="modal-image" src="" alt="" class="max-h-[85vh] max-w-[90vw] object-contain block transform transition-all duration-700" />
+            
+            <!-- Subtle overlay gradient -->
+            <div class="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent pointer-events-none"></div>
+            <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/20 pointer-events-none"></div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Photo counter -->
+      <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-40 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-sm font-medium">
+        <span id="photo-counter">1 / 1</span>
+      </div>
+      
+      <!-- Touch/swipe indicators (mobiel) -->
+      <div class="absolute bottom-20 left-1/2 -translate-x-1/2 z-30 text-white/40 text-xs uppercase tracking-widest md:hidden">
+        Swipe om te navigeren
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<script>
+  const modal = document.getElementById('photo-modal');
+  const modalImage = document.getElementById('modal-image');
+  const photoCounter = document.getElementById('photo-counter');
+  const photoCards = Array.from(document.querySelectorAll('[data-index]'));
+  const prevBtn = document.getElementById('prev-photo');
+  const nextBtn = document.getElementById('next-photo');
+  const closeBtn = document.getElementById('close-modal');
+  const urls = photoCards.map(card => card.querySelector('img')?.src || '');
+  let currentIndex = 0;
+  let touchStartX = 0;
+  let touchEndX = 0;
+
+  function updateCounter() {
+    photoCounter.textContent = `${currentIndex + 1} / ${urls.length}`;
+  }
+
+  function openModal(index) {
+    currentIndex = index;
+    modalImage.src = urls[currentIndex];
+    updateCounter();
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    // Add entrance animation
+    setTimeout(() => {
+      modalImage.style.transform = 'scale(1)';
+      modalImage.style.opacity = '1';
+    }, 50);
+  }
+
+  function closeModal() {
+    modalImage.style.transform = 'scale(0.95)';
+    modalImage.style.opacity = '0';
+    setTimeout(() => {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      modalImage.src = '';
+      modalImage.style.transform = 'scale(1)';
+      modalImage.style.opacity = '1';
+    }, 300);
+  }
+
+  function showNext() {
+    // Animate out
+    modalImage.style.transform = 'translateX(-20px) scale(0.95)';
+    modalImage.style.opacity = '0.7';
+    
+    setTimeout(() => {
+      currentIndex = (currentIndex + 1) % urls.length;
+      modalImage.src = urls[currentIndex];
+      updateCounter();
+      
+      // Animate in
+      modalImage.style.transform = 'translateX(20px) scale(0.95)';
+      modalImage.style.opacity = '0.7';
+      
+      setTimeout(() => {
+        modalImage.style.transform = 'translateX(0) scale(1)';
+        modalImage.style.opacity = '1';
+      }, 50);
+    }, 200);
+  }
+
+  function showPrev() {
+    // Animate out
+    modalImage.style.transform = 'translateX(20px) scale(0.95)';
+    modalImage.style.opacity = '0.7';
+    
+    setTimeout(() => {
+      currentIndex = (currentIndex - 1 + urls.length) % urls.length;
+      modalImage.src = urls[currentIndex];
+      updateCounter();
+      
+      // Animate in
+      modalImage.style.transform = 'translateX(-20px) scale(0.95)';
+      modalImage.style.opacity = '0.7';
+      
+      setTimeout(() => {
+        modalImage.style.transform = 'translateX(0) scale(1)';
+        modalImage.style.opacity = '1';
+      }, 50);
+    }, 200);
+  }
+
+  // Touch/swipe support
+  modal.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+  }, { passive: true });
+
+  modal.addEventListener('touchend', (e) => {
+    touchEndX = e.changedTouches[0].screenX;
+    handleSwipe();
+  }, { passive: true });
+
+  function handleSwipe() {
+    const swipeThreshold = 50;
+    const diff = touchStartX - touchEndX;
+    
+    if (Math.abs(diff) > swipeThreshold) {
+      if (diff > 0) {
+        showNext(); // Swipe left - next
+      } else {
+        showPrev(); // Swipe right - previous
+      }
+    }
+  }
+
+  // Event listeners
+  photoCards.forEach(card => {
+    card.addEventListener('click', () => openModal(Number(card.dataset.index)));
+  });
+
+  prevBtn.addEventListener('click', event => {
+    event.stopPropagation();
+    showPrev();
+  });
+
+  nextBtn.addEventListener('click', event => {
+    event.stopPropagation();
+    showNext();
+  });
+
+  closeBtn.addEventListener('click', closeModal);
+  modal.addEventListener('click', event => {
+    if (event.target === modal || event.target.classList.contains('absolute')) {
+      closeModal();
+    }
+  });
+
+  document.addEventListener('keydown', event => {
+    if (modal.classList.contains('hidden')) return;
+    if (event.key === 'Escape') closeModal();
+    if (event.key === 'ArrowLeft') showPrev();
+    if (event.key === 'ArrowRight') showNext();
+  });
+
+  // Initialize counter
+  updateCounter();
+</script>
+
+<style is:global>
+  main { min-height: 100vh; }
+  @keyframes float-slow {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+  .rotate-0 { animation: float-slow 10s ease-in-out infinite alternate; }
+  .rotate-1 { animation: float-slow 12s ease-in-out infinite alternate; }
+  .-rotate-1 { animation: float-slow 11s ease-in-out infinite alternate; }
+  .rotate-2 { animation: float-slow 9s ease-in-out infinite alternate; }
+  .-rotate-2 { animation: float-slow 13s ease-in-out infinite alternate; }
+</style>

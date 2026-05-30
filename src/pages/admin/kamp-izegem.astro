@@ -1,0 +1,350 @@
+---
+import Layout from '../../layouts/Layout.astro';
+export const prerender = false;
+
+const pageTitle = "Kampioenschap van Izegem | KVVI Admin";
+const currentYear = new Date().getFullYear();
+const years = Array.from({length: currentYear + 4 - 2026 + 1}, (_, i) => 2026 + i).reverse();
+---
+
+<Layout title={pageTitle} noMainWrapper={true}>
+  <main class="min-h-screen bg-slate-50">
+    <div class="md:hidden bg-[#003366] text-white p-4 flex justify-between items-center">
+      <div>
+        <h1 class="text-lg font-bold tracking-widest">KVVI ADMIN</h1>
+        <p class="text-[10px] text-[#C5A059] font-bold">KAMP IZEGEM</p>
+      </div>
+      <button id="mobile-menu-btn" class="p-2 hover:bg-white/10 rounded-lg transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+        </svg>
+      </button>
+    </div>
+    <div class="flex">
+      <aside class="hidden md:flex w-64 bg-[#003366] text-white flex-col border-r-4 border-[#C5A059] min-h-[calc(100vh-60px)]">
+        <div class="p-6 border-b border-white/10"><h1 class="text-xl font-bold tracking-widest">KVVI ADMIN</h1><p class="text-[10px] text-[#C5A059] font-bold">CONTROL PANEL</p></div>
+        <nav class="flex-1 p-4 space-y-1">
+          <a href="/" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏠</span> Home</a>
+          <a href="/admin/wedstrijden" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏆</span> Wedstrijden</a>
+          <a href="/admin/kalender" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📅</span> Kalender</a>
+          <a href="/admin/visstekken" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📍</span> Visstekken</a>
+          <a href="/admin/visstekken-abc" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🌐</span> ABC Visstekken</a>
+          <a href="/admin/legende" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📖</span> Legende</a>
+          
+          <a href="/admin/koppelwedstrijden" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏆</span> Koppelwedstrijden</a>
+          <a href="/admin/kamp-izegem" class="flex items-center gap-3 p-3 bg-white/10 rounded-lg border-l-4 border-[#C5A059] text-sm font-semibold"><span>🏅</span> Kamp. Izegem</a>
+          <a href="/admin/specials/vrouwvissing" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>👩</span> Vrouwvissing</a>
+          <a href="/admin/specials/seniorenvissing" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>👴</span> Seniorenvissing</a>
+          <a href="/admin/tips-tricks" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>💡</span> Tips &amp; Tricks</a>
+          <a href="/admin/fotos" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📸</span> Foto's</a>
+        </nav>
+        <div class="p-4 border-t border-white/10"><a href="/" class="text-sm text-slate-400 hover:text-white transition-colors flex items-center gap-2"><span>←</span> Terug naar Website</a></div>
+      </aside>
+      <div id="mobile-overlay" class="fixed inset-0 bg-black/50 z-40 hidden" style="margin-top:60px;"></div>
+      <aside id="mobile-sidebar" class="md:hidden fixed top-[60px] left-0 w-72 bg-[#003366] text-white z-50 flex-col border-r-4 border-[#C5A059] h-[calc(100vh-60px)] hidden shadow-2xl">
+        <nav class="flex-1 p-4 space-y-1 pt-6">
+          <a href="/" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏠</span> Home</a>
+          <a href="/admin/wedstrijden" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏆</span> Wedstrijden</a>
+          <a href="/admin/kalender" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📅</span> Kalender</a>
+          <a href="/admin/visstekken" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📍</span> Visstekken</a>
+          <a href="/admin/visstekken-abc" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🌐</span> ABC Visstekken</a>
+          <a href="/admin/legende" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📖</span> Legende</a>
+          
+          <a href="/admin/koppelwedstrijden" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏆</span> Koppelwedstrijden</a>
+          <a href="/admin/kamp-izegem" class="flex items-center gap-3 bg-white/10 rounded-lg border-l-4 border-[#C5A059] text-sm font-semibold"><span>🏅</span> Kamp. Izegem</a>
+          <a href="/admin/specials/vrouwvissing" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>👩</span> Vrouwvissing</a>
+          <a href="/admin/specials/seniorenvissing" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>👴</span> Seniorenvissing</a>
+          <a href="/admin/tips-tricks" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>💡</span> Tips &amp; Tricks</a>
+        </nav>
+        <div class="p-4 border-t border-white/10"><a href="/" class="text-sm text-slate-400 hover:text-white transition-colors flex items-center gap-2"><span>←</span> Terug</a></div>
+      </aside>
+      <section class="flex-1 flex flex-col min-h-[calc(100vh-60px)]">
+        <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 md:px-8">
+          <div class="flex items-center gap-3"><span class="text-slate-400 text-sm">Admin</span><span class="text-slate-300 text-sm">/</span><span class="font-semibold text-sm">Kamp. Izegem</span></div>
+          <div class="flex items-center gap-3">
+            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Jaar</label>
+            <select id="jaar-select" class="px-3 py-2 rounded-lg border border-slate-200 text-sm bg-white font-semibold">
+              {years.map(y => (
+                <option value={y} selected={y === currentYear}>{y}</option>
+              ))}
+            </select>
+            <span id="save-status" class="text-xs text-slate-400 hidden"></span>
+          </div>
+        </header>
+        <div class="p-4 md:p-6 space-y-4 flex-1 overflow-y-auto">
+
+          <div id="editor" class="space-y-3">
+            <div class="text-center text-slate-400 py-20 italic">
+              <div class="inline-block w-8 h-8 border-2 border-slate-300 border-t-[#003366] rounded-full animate-spin"></div>
+              <p class="mt-4">Laden...</p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </div>
+  </main>
+</Layout>
+
+<style is:global>
+  body { overflow-x: hidden; }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 3px; }
+  .wedstrijd-table table input[type=number] { -moz-appearance: textfield; }
+  .wedstrijd-table table input[type=number]::-webkit-outer-spin-button,
+  .wedstrijd-table table input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+</style>
+
+<script>
+(() => {
+  let data = null;
+  let currentYear = new Date().getFullYear();
+  const editor = document.getElementById('editor');
+  const saveStatus = document.getElementById('save-status');
+  const jaarSelect = document.getElementById('jaar-select');
+
+  async function loadData() {
+    currentYear = jaarSelect.value;
+    try {
+      const res = await fetch('/api/specials/kamp-izegem?year=' + currentYear);
+      if (!res.ok) {
+        data = { id: 'kamp-izegem', title: 'Kampioenschap van Izegem ' + currentYear, type: 'kamp-izegem', date: currentYear + '-01-01', tables: [
+          { name: 'Voormiddag', visible: true, rows: Array.from({length: 25}, () => ({deeln: '', gl1: 0, gl2: 0})) },
+          { name: 'Namiddag', visible: true, rows: Array.from({length: 25}, () => ({deeln: '', gl1: 0, gl2: 0})) }
+        ], visible: true };
+        render();
+        return;
+      }
+      data = await res.json();
+      render();
+    } catch (e) {
+      editor.innerHTML = '<div class="p-6 text-center text-red-500">Fout bij laden.</div>';
+    }
+  }
+
+  jaarSelect.onchange = () => loadData();
+
+  function render() {
+    if (!data) return;
+    const tables = data.tables && data.tables.length ? data.tables : [
+      { name: 'Voormiddag', visible: true, rows: Array.from({length: 25}, () => ({deeln: '', gl1: 0, gl2: 0})) },
+      { name: 'Namiddag', visible: true, rows: Array.from({length: 25}, () => ({deeln: '', gl1: 0, gl2: 0})) }
+    ];
+
+    let html = `<div class="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
+      <div class="flex items-center gap-4 mb-4">
+        <div class="flex-1">
+          <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Titel</label>
+          <input type="text" id="item-title" class="w-full mt-1 px-3 py-2 rounded-lg border border-slate-200 text-sm font-bold" value="${escapeHtml(data.title || 'Kampioenschap van Izegem')}">
+        </div>
+        <div class="w-48">
+          <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Datum</label>
+          <input type="date" id="item-date" class="w-full mt-1 px-3 py-2 rounded-lg border border-slate-200 text-sm bg-white" value="${escapeHtml(data.date || '')}">
+        </div>
+      </div>`;
+
+    tables.forEach((table, tIdx) => {
+      const computed = computeTable(table.rows);
+      const visible = table.visible !== false;
+      html += `<div class="wedstrijd-table bg-slate-50 rounded-lg p-4 border border-slate-200 mb-4">
+        <div class="flex items-center gap-3 mb-3">
+          <input type="text" class="table-name flex-1 px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm font-bold" value="${escapeHtml(table.name || 'Reeks ' + (tIdx + 1))}">
+          <label class="flex items-center gap-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider cursor-pointer">
+            <input type="checkbox" class="table-visible w-4 h-4 accent-[#003366] cursor-pointer" ${visible ? 'checked' : ''}>
+            Zichtbaar
+          </label>
+          ${tables.length > 1 ? `<button class="delete-table bg-red-50 text-red-600 text-xs font-bold px-3 py-2 rounded-lg hover:bg-red-100 transition border border-red-200" data-tidx="${tIdx}">🗑</button>` : ''}
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse">
+            <thead>
+              <tr class="bg-[#003366] text-white text-xs">
+                <th class="p-2 text-center font-bold">Ranking</th>
+                <th class="p-2 text-left font-bold">Deeln</th>
+                <th class="p-2 text-center font-bold">GL1</th>
+                <th class="p-2 text-center font-bold">GL2</th>
+                <th class="p-2 text-center font-bold">Totaal (gr)</th>
+              </tr>
+            </thead>
+            <tbody>`;
+      for (let rIdx = 0; rIdx < 25; rIdx++) {
+        const row = table.rows[rIdx] || { deeln: '', gl1: 0, gl2: 0 };
+        let gl1 = parseFloat(row.gl1) || 0;
+        let gl2 = parseFloat(row.gl2) || 0;
+        if (Math.abs(gl1) >= 1000) gl1 = gl1 / 1000;
+        if (Math.abs(gl2) >= 1000) gl2 = gl2 / 1000;
+        const totaal = gl1 + gl2;
+        const ranking = computed.rankings[rIdx] || (rIdx + 1);
+        html += `<tr class="border-b border-slate-200 text-xs hover:bg-white/60">
+          <td class="p-2 font-bold text-center">${ranking}</td>
+          <td class="p-2"><input type="text" class="deeln w-56 px-2 py-1 rounded border border-slate-200 bg-white" value="${escapeHtml(row.deeln || '')}"></td>
+          <td class="p-2 text-center"><input type="number" class="gl1 w-24 px-2 py-1 rounded border border-slate-200 bg-white" value="${gl1 || ''}"></td>
+          <td class="p-2 text-center"><input type="number" class="gl2 w-24 px-2 py-1 rounded border border-slate-200 bg-white" value="${gl2 || ''}"></td>
+          <td class="p-2 text-center font-bold">${totaal.toFixed(3)} gr</td>
+        </tr>`;
+      }
+      html += `</tbody></table></div></div>`;
+    });
+
+    html += `<div class="flex items-center gap-3">
+      <button id="add-table-btn" class="bg-[#003366] text-white text-xs font-bold px-4 py-2 rounded-lg hover:bg-[#002244] transition">➕ Nieuwe Tabel</button>
+    </div></div>`;
+    editor.innerHTML = html;
+
+    document.getElementById('add-table-btn').onclick = () => {
+      data.tables = data.tables || [];
+      data.tables.push({
+        name: 'Reeks ' + (data.tables.length + 1),
+        visible: true,
+        rows: Array.from({length: 25}, () => ({deeln: '', gl1: 0, gl2: 0}))
+      });
+      render();
+      autoSave();
+    };
+
+    document.querySelectorAll('.delete-table').forEach(btn => {
+      btn.onclick = () => {
+        const idx = parseInt(btn.dataset.tidx);
+        if (confirm('Deze tabel verwijderen?')) {
+          data.tables.splice(idx, 1);
+          render();
+          autoSave();
+        }
+      };
+    });
+
+    setupInputs();
+  }
+
+  function computeTable(rows) {
+    const withGl1 = rows.map((r, i) => ({
+      idx: i,
+      totaal: (parseFloat(r.gl1) || 0) + (parseFloat(r.gl2) || 0)
+    }));
+    const sorted = [...withGl1].sort((a, b) => b.totaal - a.totaal);
+    const rankings = {};
+    sorted.forEach((r, rank) => { rankings[r.idx] = rank + 1; });
+    return { rankings };
+  }
+
+  function setupInputs() {
+    editor.querySelectorAll('.gl1, .gl2').forEach(el => {
+      el.onblur = () => {
+        const v = parseFloat(el.value) || 0;
+        if (Math.abs(v) >= 1000) {
+          el.value = (v / 1000).toFixed(3);
+        }
+        el.oninput();
+      };
+      el.oninput = () => {
+        const table = el.closest('.wedstrijd-table');
+        if (!table) return;
+        const rows = table.querySelectorAll('tbody tr');
+        const waarden = [];
+        rows.forEach((tr, i) => {
+          const gl1 = parseFloat(tr.querySelector('.gl1')?.value) || 0;
+          const gl2 = parseFloat(tr.querySelector('.gl2')?.value) || 0;
+          waarden.push({ idx: i, totaal: gl1 + gl2 });
+        });
+        const sorted = [...waarden].sort((a, b) => b.totaal - a.totaal);
+        const rankings = {};
+        sorted.forEach((r, rank) => { rankings[r.idx] = rank + 1; });
+        rows.forEach((tr, i) => {
+          tr.querySelector('td:first-child').textContent = rankings[i];
+          const gl1 = parseFloat(tr.querySelector('.gl1')?.value) || 0;
+          const gl2 = parseFloat(tr.querySelector('.gl2')?.value) || 0;
+          const totaalTd = tr.querySelector('td:last-child');
+          if (totaalTd) totaalTd.textContent = (gl1 + gl2).toFixed(3) + ' gr';
+        });
+      };
+    });
+    editor.querySelectorAll('input').forEach(el => {
+      el.onchange = () => collectAndSave();
+    });
+  }
+
+  function escapeHtml(text) {
+    const d = document.createElement('div');
+    d.textContent = text;
+    return d.innerHTML;
+  }
+
+  function collectData() {
+    const title = document.getElementById('item-title')?.value.trim() || 'Kampioenschap van Izegem';
+    const date = document.getElementById('item-date')?.value || '';
+    const tableEls = editor.querySelectorAll('.wedstrijd-table');
+    const tables = [];
+    tableEls.forEach(tableEl => {
+      const name = tableEl.querySelector('.table-name')?.value || 'Reeks';
+      const visible = tableEl.querySelector('.table-visible')?.checked !== false;
+      const rows = [];
+      tableEl.querySelectorAll('tbody tr').forEach(tr => {
+        const rawGl1 = parseFloat(tr.querySelector('.gl1')?.value) || 0;
+        const rawGl2 = parseFloat(tr.querySelector('.gl2')?.value) || 0;
+        rows.push({
+          deeln: tr.querySelector('.deeln')?.value || '',
+          gl1: Math.abs(rawGl1) >= 1000 ? rawGl1 / 1000 : rawGl1,
+          gl2: Math.abs(rawGl2) >= 1000 ? rawGl2 / 1000 : rawGl2
+        });
+      });
+      tables.push({ name, visible, rows });
+    });
+    return { id: data.id || 'kamp-izegem', title, type: 'kamp-izegem', date, tables, visible: true };
+  }
+
+  let saveTimeout;
+  function collectAndSave() {
+    clearTimeout(saveTimeout);
+    saveTimeout = setTimeout(() => {
+      data = collectData();
+      autoSave();
+    }, 500);
+  }
+
+  async function autoSave() {
+    try {
+      const res = await fetch('/api/specials/kamp-izegem?year=' + currentYear, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      const result = await res.json();
+      if (result.success) showStatus('✅ Opgeslagen!', 'text-green-600');
+      else showStatus('❌ Fout', 'text-red-600');
+    } catch (e) {
+      showStatus('❌ Fout', 'text-red-600');
+    }
+  }
+
+  let statusTimeout;
+  function showStatus(msg, cls) {
+    saveStatus.textContent = msg;
+    saveStatus.className = `text-xs ${cls} font-bold`;
+    saveStatus.classList.remove('hidden');
+    clearTimeout(statusTimeout);
+    statusTimeout = setTimeout(() => saveStatus.classList.add('hidden'), 2000);
+  }
+
+  const menuBtn = document.getElementById('mobile-menu-btn');
+  const sidebar = document.getElementById('mobile-sidebar');
+  const overlay = document.getElementById('mobile-overlay');
+  if (menuBtn && sidebar && overlay) {
+    function toggleMenu() {
+      const hidden = sidebar.classList.contains('hidden');
+      sidebar.classList.toggle('hidden', !hidden);
+      overlay.classList.toggle('hidden', !hidden);
+    }
+    menuBtn.onclick = toggleMenu;
+    overlay.onclick = toggleMenu;
+    const menuItems = sidebar.querySelectorAll('nav a');
+    menuItems.forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.preventDefault();
+        setTimeout(() => { window.location.href = item.href; }, 100);
+      });
+    });
+  }
+
+  loadData();
+})();
+</script>

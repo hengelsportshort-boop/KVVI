@@ -1,0 +1,101 @@
+---
+interface Props {
+  headers: string[];
+  rows: string[][];
+  type: string;
+}
+
+const { headers, rows, type } = Astro.props as Props;
+
+if (!rows || rows.length === 0) return null;
+
+const isVrijdag = type === 'vrijdag';
+const INDEX_POS = 0;
+const INDEX_NAAM = 1;
+
+const datumIndices: number[] = [];
+headers.forEach((h: string, i: number) => {
+  if (h && h.includes('/')) datumIndices.push(i);
+});
+
+let INDEX_TOTAAL = rows[0].length - 1;
+headers.forEach((h: string, i: number) => {
+  const head = h.toLowerCase();
+  if (isVrijdag && head.includes('totaal kg adjust')) INDEX_TOTAAL = i;
+  else if (!isVrijdag && head === 'totaal') INDEX_TOTAAL = i;
+});
+---
+
+<div class="overflow-x-auto rounded-xl shadow-xl border border-slate-200 bg-white">
+  <table class="w-full text-left border-collapse">
+    <thead>
+      <tr class="bg-[#003366] text-white">
+        <th class="py-5 px-4 font-black italic text-[10px] uppercase tracking-widest border-r border-white/10 w-20 text-center">POS</th>
+        <th class="py-5 px-8 font-black italic text-[11px] uppercase tracking-widest border-r border-white/10 min-w-[220px]">VISSER</th>
+        
+        {datumIndices.map(idx => (
+          <th class="py-5 px-3 font-bold text-[9px] text-center border-r border-white/10 bg-white/5 whitespace-nowrap">
+            {headers[idx]}
+          </th>
+        ))}
+        
+        <th class="py-5 px-10 font-black italic text-[11px] uppercase tracking-widest bg-[#C5A059] text-white text-right font-serif">
+          TOTAAL
+        </th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-slate-100">
+      {rows.map((row: string[]) => {
+        const naam = row[INDEX_NAAM];
+        const plaats = row[INDEX_POS]?.toString().trim();
+        
+        if (!naam || naam.trim() === "" || naam.includes('---')) return null;
+
+        // Styling voor de top 3 posities
+        let podiumClass = "bg-slate-100 text-slate-400";
+        let rowHighlight = "";
+        
+        if (plaats === "1") {
+          podiumClass = "bg-[#D4AF37] text-white shadow-sm ring-2 ring-[#D4AF37]/20";
+          rowHighlight = "bg-[#D4AF37]/5";
+        } else if (plaats === "2") {
+          podiumClass = "bg-[#A8A8A8] text-white shadow-sm ring-2 ring-[#A8A8A8]/20";
+          rowHighlight = "bg-[#A8A8A8]/5";
+        } else if (plaats === "3") {
+          podiumClass = "bg-[#B08D57] text-white shadow-sm ring-2 ring-[#B08D57]/20";
+          rowHighlight = "bg-[#B08D57]/5";
+        }
+
+        return (
+          <tr class={`${rowHighlight} hover:bg-slate-50 transition-colors group`}>
+            <td class="py-4 px-4 border-r border-slate-50 text-center">
+              <div class="flex justify-center">
+                <span class={`${podiumClass} w-8 h-8 flex items-center justify-center rounded-full font-mono text-xs font-bold transition-transform group-hover:scale-110`}>
+                  {plaats}
+                </span>
+              </div>
+            </td>
+
+            <td class={`py-4 px-8 font-bold text-slate-700 uppercase tracking-tight border-r border-slate-50 text-sm ${parseInt(plaats) <= 3 ? 'text-[#003366]' : ''}`}>
+              {naam}
+            </td>
+
+            {datumIndices.map(idx => {
+              const waarde = row[idx];
+              const isLeeg = !waarde || waarde === "--" || waarde === "0" || waarde === "0 gr";
+              return (
+                <td class="py-4 px-3 text-center text-[10px] font-semibold text-slate-400 border-r border-slate-50">
+                  {isLeeg ? <span class="text-slate-200 font-normal italic">0</span> : waarde.replace(' gr', '')}
+                </td>
+              );
+            })}
+
+            <td class="py-4 px-10 text-right font-black text-[#003366] bg-[#C5A059]/5 text-sm italic">
+              {row[INDEX_TOTAAL]}
+            </td>
+          </tr>
+        );
+      })}
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,152 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import { getWedstrijden, updateWedstrijd, type Wedstrijd } from '../../../../lib/kalenderManager';
+
+export const prerender = false;
+
+const { id } = Astro.params;
+const pageTitle = "Wedstrijd Bewerken | KVVI Admin";
+
+// Get the wedstrijd to edit
+const wedstrijden = getWedstrijden();
+const wedstrijd = wedstrijden.find(w => w.id === id);
+
+if (!wedstrijd) {
+  return Astro.redirect('/admin/kalender');
+}
+
+// Handle form submission
+if (Astro.request.method === 'POST') {
+  try {
+    const formData = await Astro.request.formData();
+    const datum = formData.get('datum') as string;
+    const dag = formData.get('dag') as string;
+    const reeks = formData.get('reeks') as string;
+    
+    // Validate required fields
+    if (!datum || !dag || !reeks) {
+      throw new Error('Alle velden zijn verplicht');
+    }
+    
+    // Validate date format (DD/MM)
+    if (!/^\d{2}\/\d{2}$/.test(datum)) {
+      throw new Error('Datum moet in DD/MM formaat zijn');
+    }
+    
+    updateWedstrijd(id, { datum, dag, reeks });
+    
+    // Redirect back to kalender page
+    return Astro.redirect('/admin/kalender');
+  } catch (error) {
+    console.error('Error updating wedstrijd:', error);
+  }
+}
+---
+
+<Layout title={pageTitle} hideNav={true}>
+  <main class="min-h-screen bg-slate-50">
+    <div class="flex">
+      <!-- SIDEBAR -->
+      <aside class="hidden md:flex w-64 bg-[#003366] text-white flex-col border-r-4 border-[#C5A059] min-h-[calc(100vh-60px)]">
+        <div class="p-6 border-b border-white/10 hidden md:block">
+          <h1 class="text-xl font-bold tracking-widest">KVVI ADMIN</h1>
+          <p class="text-[10px] text-[#C5A059] font-bold">CONTROL PANEL</p>
+        </div>
+        
+        <nav class="flex-1 p-4 space-y-1">
+          <a href="/admin" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold">
+            <span>📊</span> Dashboard
+          </a>
+          <a href="/admin/wedstrijden" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold">
+            <span>🏆</span> Wedstrijdbeheer
+          </a>
+          <a href="/admin/kalender" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold">
+            <span>📅</span> Kalender Beheer
+          </a>
+          <a href="/admin/statistieken" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold">
+            <span>📈</span> Statistieken
+          </a>
+          <a href="/admin/visstekken" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold">
+            <span>📍</span> Visstekken Beheer
+          </a>
+          <a href="/admin/legende" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold">
+            <span>📖</span> Legende
+          </a>
+          <a href="/" class="text-sm text-slate-400 hover:text-white transition-colors flex items-center gap-2 mt-4">
+            <span>←</span> Terug naar Website
+          </a>
+        </nav>
+      </aside>
+
+      <!-- MAIN CONTENT -->
+      <section class="flex-1 flex flex-col min-h-[calc(100vh-60px)]">
+        <!-- Top Bar -->
+        <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 md:px-8">
+          <div class="flex items-center gap-3">
+            <span class="text-slate-400 text-sm">Admin</span>
+            <span class="text-slate-300 text-sm">/</span>
+            <span class="font-semibold text-sm">Kalender Beheer</span>
+            <span class="text-slate-300 text-sm">/</span>
+            <span class="font-semibold text-sm">Bewerken</span>
+          </div>
+          <a href="/admin/kalender" class="text-slate-600 hover:text-slate-800 text-sm font-semibold">
+            ← Terug
+          </a>
+        </header>
+
+        <!-- Content -->
+        <div class="p-4 md:p-8 flex-1 overflow-y-auto">
+          <div class="max-w-2xl mx-auto">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+              <h2 class="font-black text-[#003366] uppercase tracking-tight text-lg mb-6">📅 Wedstrijd Bewerken</h2>
+              
+              <form method="POST" class="space-y-6">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Datum (DD/MM)</label>
+                  <input type="text" name="datum" required pattern="[0-9]{2}/[0-9]{2}" value={wedstrijd.datum} 
+                         class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#004A99] focus:border-transparent">
+                  <p class="text-xs text-gray-500 mt-1">Formaat: DD/MM (bijvoorbeeld: 18/01)</p>
+                </div>
+                
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Dag</label>
+                  <select name="dag" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#004A99] focus:border-transparent">
+                    <option value="Zaterdag" selected={wedstrijd.dag === 'Zaterdag'}>Zaterdag</option>
+                    <option value="Zondag" selected={wedstrijd.dag === 'Zondag'}>Zondag</option>
+                    <option value="Vrijdag" selected={wedstrijd.dag === 'Vrijdag'}>Vrijdag</option>
+                    <option value="Maandag" selected={wedstrijd.dag === 'Maandag'}>Maandag</option>
+                    <option value="Dinsdag" selected={wedstrijd.dag === 'Dinsdag'}>Dinsdag</option>
+                    <option value="Woensdag" selected={wedstrijd.dag === 'Woensdag'}>Woensdag</option>
+                    <option value="Donderdag" selected={wedstrijd.dag === 'Donderdag'}>Donderdag</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Reeks</label>
+                  <input type="text" name="reeks" required value={wedstrijd.reeks}
+                         class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#004A99] focus:border-transparent">
+                  <p class="text-xs text-gray-500 mt-1">bijvoorbeeld: Reeks 1, Koppelwedstrijd 1, etc.</p>
+                </div>
+                
+                <div class="flex gap-4 pt-4">
+                  <button type="submit" class="flex-1 bg-[#004A99] text-white py-3 rounded-lg font-semibold hover:bg-[#003366] transition-colors">
+                    Bijwerken
+                  </button>
+                  <a href="/admin/kalender" class="flex-1 bg-gray-200 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-300 transition-colors text-center">
+                    Annuleren
+                  </a>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: #f1f5f9; }
+  ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 3px; }
+</style>

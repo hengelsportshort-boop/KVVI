@@ -1,0 +1,336 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+export const prerender = false;
+const pageTitle = "Seniorenvissing | KVVI Admin";
+const currentYear = new Date().getFullYear();
+const years = Array.from({length: currentYear + 4 - 2026 + 1}, (_, i) => 2026 + i).reverse();
+---
+
+<Layout title={pageTitle} noMainWrapper={true}>
+  <main class="min-h-screen bg-slate-50">
+    <div class="md:hidden bg-[#003366] text-white p-4 flex justify-between items-center">
+      <div>
+        <h1 class="text-lg font-bold tracking-widest">KVVI ADMIN</h1>
+        <p class="text-[10px] text-[#C5A059] font-bold">SENIORENVISSING</p>
+      </div>
+      <button id="mobile-menu-btn" class="p-2 hover:bg-white/10 rounded-lg transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+        </svg>
+      </button>
+    </div>
+
+    <div class="flex">
+      <aside class="hidden md:flex w-64 bg-[#003366] text-white flex-col border-r-4 border-[#C5A059] min-h-[calc(100vh-60px)]">
+        <div class="p-6 border-b border-white/10"><h1 class="text-xl font-bold tracking-widest">KVVI ADMIN</h1><p class="text-[10px] text-[#C5A059] font-bold">CONTROL PANEL</p></div>
+        <nav class="flex-1 p-4 space-y-1">
+          <a href="/admin" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏠</span> Home</a>
+          <a href="/admin/wedstrijden" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏆</span> Wedstrijden</a>
+          <a href="/admin/kalender" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📅</span> Kalender</a>
+          <a href="/admin/visstekken" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📍</span> Visstekken</a>
+          <a href="/admin/visstekken-abc" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🌐</span> ABC Visstekken</a>
+          <a href="/admin/legende" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📖</span> Legende</a>
+
+          <a href="/admin/koppelwedstrijden" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏆</span> Koppelwedstrijden</a>
+          <a href="/admin/kamp-izegem" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏅</span> Kamp. Izegem</a>
+          <a href="/admin/specials/vrouwvissing" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>👩</span> Vrouwvissing</a>
+          <a href="/admin/specials/seniorenvissing" class="flex items-center gap-3 p-3 bg-white/10 rounded-lg border-l-4 border-[#C5A059] text-sm font-semibold"><span>👴</span> Seniorenvissing</a>
+          <a href="/admin/tips-tricks" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>💡</span> Tips &amp; Tricks</a>
+          <a href="/admin/fotos" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📸</span> Foto's</a>
+        </nav>
+        <div class="p-4 border-t border-white/10"><a href="/" class="text-sm text-slate-400 hover:text-white transition-colors flex items-center gap-2"><span>←</span> Terug naar Website</a></div>
+      </aside>
+
+      <div id="mobile-overlay" class="fixed inset-0 bg-black/50 z-40 hidden" style="margin-top:60px;"></div>
+      <aside id="mobile-sidebar" class="fixed top-[60px] left-0 w-72 bg-[#003366] text-white z-50 flex-col border-r-4 border-[#C5A059] h-[calc(100vh-60px)] hidden shadow-2xl">
+        <nav class="flex-1 p-4 space-y-1 pt-6">
+          <a href="/admin" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏠</span> Home</a>
+          <a href="/admin/wedstrijden" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏆</span> Wedstrijden</a>
+          <a href="/admin/kalender" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📅</span> Kalender</a>
+          <a href="/admin/visstekken" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📍</span> Visstekken</a>
+          <a href="/admin/visstekken-abc" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🌐</span> ABC Visstekken</a>
+          <a href="/admin/legende" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📖</span> Legende</a>
+
+          <a href="/admin/koppelwedstrijden" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏆</span> Koppelwedstrijden</a>
+          <a href="/admin/kamp-izegem" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏅</span> Kamp. Izegem</a>
+          <a href="/admin/specials/vrouwvissing" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>👩</span> Vrouwvissing</a>
+          <a href="/admin/specials/seniorenvissing" class="flex items-center gap-3 p-3 bg-white/10 rounded-lg border-l-4 border-[#C5A059] text-sm font-semibold"><span>👴</span> Seniorenvissing</a>
+          <a href="/admin/tips-tricks" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>💡</span> Tips &amp; Tricks</a>
+          <a href="/admin/fotos" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📸</span> Foto's</a>
+        </nav>
+        <div class="p-4 border-t border-white/10"><a href="/" class="text-sm text-slate-400 hover:text-white transition-colors flex items-center gap-2"><span>←</span> Terug</a></div>
+      </aside>
+
+      <section class="flex-1 flex flex-col min-h-[calc(100vh-60px)]">
+        <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 md:px-8">
+          <div class="flex items-center gap-3"><span class="text-slate-400 text-sm">Admin</span><span class="text-slate-300 text-sm">/</span><span class="font-semibold text-sm">Seniorenvissing</span></div>
+          <div class="flex items-center gap-3">
+            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Jaar</label>
+            <select id="jaar-select" class="px-3 py-2 rounded-lg border border-slate-200 text-sm bg-white font-semibold">
+              {years.map(y => (
+                <option value={y} selected={y === currentYear}>{y}</option>
+              ))}
+            </select>
+            <span id="save-status" class="text-xs text-slate-400 hidden"></span>
+          </div>
+        </header>
+
+        <div class="p-4 md:p-8 space-y-6 flex-1 overflow-y-auto">
+          <div id="editor"></div>
+        </div>
+      </section>
+    </div>
+  </main>
+</Layout>
+
+<style is:global>
+  body { overflow-x: hidden; }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 3px; }
+  .photo-preview img { transition: opacity 0.2s; }
+</style>
+
+<script>
+(() => {
+  let data = null;
+  let currentYear = new Date().getFullYear();
+  const editor = document.getElementById('editor');
+  const saveStatus = document.getElementById('save-status');
+  const jaarSelect = document.getElementById('jaar-select');
+
+  async function loadData() {
+    currentYear = jaarSelect.value;
+    try {
+      const res = await fetch('/api/specials/seniorenvissing?year=' + currentYear);
+      if (!res.ok) {
+        data = { id: 'seniorenvissing', title: 'Seniorenvissing ' + currentYear, type: 'seniorenvissing', date: currentYear + '-01-01', visible: true, photos: [] };
+        render();
+        return;
+      }
+      data = await res.json();
+      render();
+    } catch (e) {
+      editor.innerHTML = '<div class="p-6 text-center text-red-500">Fout bij laden.</div>';
+    }
+  }
+
+  jaarSelect.onchange = () => loadData();
+
+  function render() {
+    if (!data) return;
+    const photos = data.photos || [];
+
+    let html = `<div class="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
+      <div class="flex items-center gap-4 mb-6">
+        <div class="flex-1">
+          <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Titel</label>
+          <input type="text" id="item-title" class="w-full mt-1 px-3 py-2 rounded-lg border border-slate-200 text-sm font-bold" value="${escapeHtml(data.title || 'Seniorenvissing')}">
+        </div>
+        <div class="w-48">
+          <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Datum</label>
+          <input type="date" id="item-date" class="w-full mt-1 px-3 py-2 rounded-lg border border-slate-200 text-sm bg-white" value="${escapeHtml(data.date || '')}">
+        </div>
+      </div>
+
+      <div class="border-t border-slate-200 pt-4 mb-4">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Foto's</h3>
+          <span class="text-xs text-slate-400">${photos.length} foto('s)</span>
+        </div>
+
+        <div class="flex gap-2 mb-4">
+          <input type="text" id="photo-url-input" class="flex-1 px-3 py-2 rounded-lg border border-slate-200 text-sm" placeholder="Afbeelding URL (bijv. /images/senioren/foto.jpg)">
+          <button id="add-photo-btn" class="bg-[#003366] text-white text-xs font-bold px-4 py-2 rounded-lg hover:bg-[#002244] transition">➕ Toevoegen</button>
+        </div>
+
+        <div class="border-2 border-dashed border-slate-300 rounded-2xl p-6 text-center hover:border-[#003366] transition-colors mb-4">
+          <input type="file" id="file-input" accept="image/*" class="hidden" />
+          <label for="file-input" class="cursor-pointer block">
+            <div class="w-12 h-12 bg-[#003366]/10 rounded-full flex items-center justify-center mx-auto mb-2">
+              <svg class="w-6 h-6 text-[#003366]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+              </svg>
+            </div>
+            <p class="text-xs font-medium text-slate-600">Upload een foto van je computer</p>
+            <p class="text-[10px] text-slate-400 mt-1">JPG, PNG, WebP, GIF</p>
+          </label>
+          <div id="upload-status" class="mt-2 text-xs hidden"></div>
+        </div>
+
+        <div id="photo-list" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
+      </div>
+    </div>`;
+
+    editor.innerHTML = html;
+
+    const photoList = document.getElementById('photo-list');
+    if (photos.length === 0) {
+      photoList.innerHTML = '<div class="col-span-full p-8 text-center text-slate-400 italic border-2 border-dashed border-slate-200 rounded-xl">Nog geen foto&#39;s. Voeg een URL toe hierboven.</div>';
+    } else {
+      photoList.innerHTML = photos.map((p, idx) => `
+        <div class="relative group photo-preview">
+          <div class="aspect-square bg-slate-100 rounded-xl overflow-hidden border border-slate-200">
+            <img src="${escapeHtml(p.url)}" alt="${escapeHtml(p.alt || 'Seniorenfoto')}" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML='<div class=\\'flex items-center justify-center h-full text-slate-400 text-xs\\'>Fout</div>'">
+          </div>
+          <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl flex flex-col items-center justify-center gap-2">
+            <input type="text" class="photo-alt w-11/12 px-2 py-1 rounded text-xs text-center bg-white/90 border-0" value="${escapeHtml(p.alt || '')}" placeholder="Alt tekst">
+            <button class="delete-photo bg-red-500 text-white text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-red-600 transition" data-idx="${idx}">🗑 Verwijder</button>
+          </div>
+          <p class="mt-1 text-[10px] text-slate-400 truncate">${escapeHtml(p.url)}</p>
+        </div>
+      `).join('');
+    }
+
+    setupInputs();
+  }
+
+  function setupInputs() {
+    document.getElementById('add-photo-btn').onclick = () => {
+      const urlInput = document.getElementById('photo-url-input');
+      const url = urlInput.value.trim();
+      if (!url) return;
+      data.photos = data.photos || [];
+      data.photos.push({ url, alt: '' });
+      urlInput.value = '';
+      render();
+      autoSave();
+    };
+
+    document.getElementById('photo-url-input').onkeydown = (e) => {
+      if (e.key === 'Enter') document.getElementById('add-photo-btn').click();
+    };
+
+    const fileInput = document.getElementById('file-input');
+    fileInput.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (file) await uploadFile(file);
+    });
+
+    const uploadArea = fileInput.parentElement;
+    uploadArea.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadArea.classList.add('border-[#003366]', 'bg-[#003366]/5');
+    });
+    uploadArea.addEventListener('dragleave', () => {
+      uploadArea.classList.remove('border-[#003366]', 'bg-[#003366]/5');
+    });
+    uploadArea.addEventListener('drop', async (e) => {
+      e.preventDefault();
+      uploadArea.classList.remove('border-[#003366]', 'bg-[#003366]/5');
+      const files = e.dataTransfer.files;
+      if (files.length > 0) await uploadFile(files[0]);
+    });
+
+    document.querySelectorAll('.delete-photo').forEach(btn => {
+      btn.onclick = () => {
+        const idx = parseInt(btn.dataset.idx);
+        if (confirm('Deze foto verwijderen?')) {
+          data.photos.splice(idx, 1);
+          render();
+          autoSave();
+        }
+      };
+    });
+
+    document.querySelectorAll('.photo-alt').forEach((input, idx) => {
+      input.onchange = () => {
+        if (data.photos[idx]) {
+          data.photos[idx].alt = input.value.trim();
+          autoSave();
+        }
+      };
+    });
+
+    document.getElementById('item-title').onchange = () => { data.title = document.getElementById('item-title').value.trim(); autoSave(); };
+    document.getElementById('item-date').onchange = () => { data.date = document.getElementById('item-date').value; autoSave(); };
+  }
+
+  function escapeHtml(text) {
+    const d = document.createElement('div');
+    d.textContent = text;
+    return d.innerHTML;
+  }
+
+  async function uploadFile(file) {
+    const status = document.getElementById('upload-status');
+    status.textContent = '⏳ Uploaden...';
+    status.className = 'mt-2 text-xs text-blue-600 font-medium';
+    status.classList.remove('hidden');
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const res = await fetch('/api/specials/seniorenvissing-upload', {
+        method: 'POST',
+        body: formData
+      });
+      const result = await res.json();
+      if (result.success) {
+        data.photos = data.photos || [];
+        data.photos.push({ url: result.url, alt: '' });
+        document.getElementById('file-input').value = '';
+        render();
+        autoSave();
+        status.textContent = '✅ Geüpload!';
+        status.className = 'mt-2 text-xs text-green-600 font-medium';
+      } else {
+        status.textContent = '❌ ' + (result.error || 'Fout bij uploaden');
+        status.className = 'mt-2 text-xs text-red-600 font-medium';
+      }
+    } catch (e) {
+      status.textContent = '❌ Fout bij uploaden';
+      status.className = 'mt-2 text-xs text-red-600 font-medium';
+    }
+    setTimeout(() => status.classList.add('hidden'), 3000);
+  }
+
+  function autoSave() {
+    clearTimeout(window._saveTimeout);
+    window._saveTimeout = setTimeout(async () => {
+      try {
+        const res = await fetch('/api/specials/seniorenvissing?year=' + currentYear, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        const result = await res.json();
+        if (result.success) showStatus('✅ Opgeslagen!', 'text-green-600');
+        else showStatus('❌ Fout', 'text-red-600');
+      } catch (e) {
+        showStatus('❌ Fout', 'text-red-600');
+      }
+    }, 500);
+  }
+
+  function showStatus(msg, cls) {
+    saveStatus.textContent = msg;
+    saveStatus.className = `text-xs ${cls} font-bold`;
+    saveStatus.classList.remove('hidden');
+    clearTimeout(window._statusTimeout);
+    window._statusTimeout = setTimeout(() => saveStatus.classList.add('hidden'), 2000);
+  }
+
+  const menuBtn = document.getElementById('mobile-menu-btn');
+  const sidebar = document.getElementById('mobile-sidebar');
+  const overlay = document.getElementById('mobile-overlay');
+  if (menuBtn && sidebar && overlay) {
+    function toggleMenu() {
+      const hidden = sidebar.classList.contains('hidden');
+      sidebar.classList.toggle('hidden', !hidden);
+      overlay.classList.toggle('hidden', !hidden);
+    }
+    menuBtn.onclick = toggleMenu;
+    overlay.onclick = toggleMenu;
+    const menuItems = sidebar.querySelectorAll('nav a');
+    menuItems.forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.preventDefault();
+        setTimeout(() => { window.location.href = item.href; }, 100);
+      });
+    });
+  }
+
+  loadData();
+})();
+</script>

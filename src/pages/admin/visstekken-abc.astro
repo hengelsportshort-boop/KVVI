@@ -1,0 +1,389 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import HengelKaart from '../../components/HengelKaart.astro';
+
+export const prerender = false;
+const pageTitle = "ABC Visstekken | KVVI Admin";
+---
+
+<Layout title={pageTitle} noMainWrapper={true}>
+<main class="min-h-screen bg-slate-50">
+<div class="md:hidden bg-[#003366] text-white p-4 flex justify-between items-center">
+  <div>
+    <h1 class="text-lg font-bold tracking-widest">KVVI ADMIN</h1>
+    <p class="text-[10px] text-[#C5A059] font-bold">ABC VISSTEKKEN</p>
+  </div>
+  <button id="mobile-menu-btn" class="p-2 hover:bg-white/10 rounded-lg transition">
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+  </button>
+</div>
+
+<div class="flex">
+  <aside class="hidden md:flex w-64 bg-[#003366] text-white flex-col min-h-screen shrink-0">
+    <div class="p-6 border-b border-white/10">
+      <h1 class="text-lg font-bold tracking-widest">KVVI ADMIN</h1>
+      <p class="text-[10px] text-[#C5A059] font-bold tracking-[2px]">CONTROL PANEL</p>
+    </div>
+    <nav class="flex-1 p-4 space-y-1 text-sm">
+      <a href="/admin/wedstrijden" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition"><span>🏆</span> Wedstrijden</a>
+      <a href="/admin/kalender" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition"><span>📅</span> Kalender</a>
+      <a href="/admin/visstekken" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition"><span>📍</span> Visstekken</a>
+      <a href="/admin/visstekken-abc" class="flex items-center gap-3 px-3 py-2 rounded-lg bg-white/10 border-l-4 border-[#C5A059] transition"><span>🌐</span> ABC Visstekken</a>
+      <a href="/admin/legende" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition"><span>📖</span> Legende</a>
+      <a href="/admin/koppelwedstrijden" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition"><span>🏆</span> Koppelwedstrijden</a>
+      <a href="/admin/kamp-izegem" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition"><span>🏅</span> Kamp. Izegem</a>
+      <a href="/admin/specials/vrouwvissing" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition"><span>👩</span> Vrouwvissing</a>
+      <a href="/admin/specials/seniorenvissing" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition"><span>👴</span> Seniorenvissing</a>
+      <a href="/admin/tips-tricks" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition"><span>💡</span> Tips &amp; Tricks</a>
+      <a href="/admin/fotos" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition"><span>📸</span> Foto's</a>
+    </nav>
+    <div class="p-4 border-t border-white/10"><a href="/" class="flex items-center gap-2 text-xs text-white/60 hover:text-white transition"><span>←</span> Terug naar Website</a></div>
+  </aside>
+
+  <div id="mobile-overlay" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden"></div>
+  <aside id="mobile-sidebar" class="md:hidden fixed top-[60px] left-0 w-64 bg-[#003366] text-white h-[calc(100vh-60px)] z-50 transform -translate-x-full transition-transform duration-200 shadow-xl">
+    <nav class="p-4 space-y-1 text-sm">
+      <a href="/admin/wedstrijden" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition"><span>🏆</span> Wedstrijden</a>
+      <a href="/admin/kalender" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition"><span>📅</span> Kalender</a>
+      <a href="/admin/visstekken" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition"><span>📍</span> Visstekken</a>
+      <a href="/admin/visstekken-abc" class="flex items-center gap-3 px-3 py-2 rounded-lg bg-white/10 border-l-4 border-[#C5A059] transition"><span>🌐</span> ABC Visstekken</a>
+      <a href="/admin/legende" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition"><span>📖</span> Legende</a>
+    </nav>
+  </aside>
+
+  <section class="flex-1 flex flex-col min-h-screen">
+    <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 md:px-8 shrink-0">
+      <div class="flex items-center gap-3">
+        <span class="text-slate-400 text-sm">Admin</span>
+        <span class="text-slate-300 text-sm">/</span>
+        <span class="font-semibold text-sm">ABC Visstekken</span>
+        <span id="feature-count" class="text-xs text-slate-400 ml-2"></span>
+      </div>
+      <div class="flex items-center gap-2">
+        <span id="save-status" class="text-xs hidden"></span>
+        <button id="save-btn" class="bg-green-600 text-white text-xs font-bold px-4 py-2 rounded-lg hover:bg-green-700 transition">💾 Opslaan</button>
+        <button id="rescraper-btn" class="bg-orange-500 text-white text-xs font-bold px-4 py-2 rounded-lg hover:bg-orange-600 transition">🔄 Herlaad ABC</button>
+      </div>
+    </header>
+
+    <div class="flex-1 flex overflow-hidden">
+      <div class="flex-1 relative" style="height: calc(100vh - 112px);">
+        <HengelKaart />
+      </div>
+      <div id="sidebar-list" class="w-96 bg-white border-l border-slate-200 shrink-0 hidden md:flex md:flex-col" style="height: calc(100vh - 64px);">
+        <div class="p-3 border-b border-slate-100">
+          <input id="filter-input" type="text" placeholder="Filter ABC visstekken..." class="w-full text-xs border border-slate-200 rounded-lg px-3 py-2 focus:outline-none focus:border-[#C5A059]">
+        </div>
+        <div id="features-list" class="flex-1 overflow-y-auto divide-y divide-slate-100">
+          <div class="p-6 text-center text-slate-400 text-xs italic">Laden...</div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+</main>
+</Layout>
+
+<style>
+  :global(body) { margin: 0; overflow: hidden; }
+  .hengel-wrapper { height: 100% !important; }
+  #map { min-height: 0 !important; }
+  .coords-input { width: 100px; }
+</style>
+
+<script>
+(async function() {
+  let features = [];
+  let changed = false;
+  let editingIdx = -1;
+  let markerLayer = null;
+
+  const listEl = document.getElementById('features-list');
+  const filterInput = document.getElementById('filter-input');
+  const saveBtn = document.getElementById('save-btn');
+  const saveStatus = document.getElementById('save-status');
+  const countEl = document.getElementById('feature-count');
+
+  async function loadData() {
+    try {
+      const res = await fetch('/api/visstekken-abc');
+      const data = await res.json();
+      features = data.features || [];
+      countEl.textContent = features.length + ' locaties';
+      renderList(features);
+    } catch (e) {
+      listEl.innerHTML = '<div class="p-6 text-center text-red-500 text-xs">Fout bij laden</div>';
+    }
+  }
+
+  function flyTo(f) {
+    const c = f.geometry?.coordinates;
+    if (c && window.kvviMap) {
+      window.kvviMap.setView([c[1], c[0]], 13, { animate: true });
+    }
+  }
+
+  function renderList(items) {
+    if (!items.length) {
+      listEl.innerHTML = '<div class="p-6 text-center text-slate-400 text-xs italic">Geen visstekken</div>';
+      return;
+    }
+
+    let html = '';
+    for (let i = 0; i < items.length; i++) {
+      const f = items[i];
+      const p = f.properties || {};
+      const c = f.geometry?.coordinates || [];
+      const hasCoords = c.length === 2 && (c[0] !== 3 || c[1] !== 51);
+
+      const isEditing = editingIdx >= 0 && editingIdx < features.length && features[editingIdx] === f;
+
+      if (isEditing) {
+        html += '<div class="px-3 py-3 bg-blue-50 border-b border-blue-100">' +
+          '<div class="flex items-center gap-1 mb-2">' +
+            '<label class="text-[10px] text-slate-500 shrink-0">Naam:</label>' +
+            '<input id="edit-title" type="text" class="flex-1 text-xs border border-slate-300 rounded px-2 py-1 focus:outline-none focus:border-blue-500" value="' + esc(p.title || '') + '">' +
+          '</div>' +
+          '<div class="flex items-center gap-1 mb-1">' +
+            '<label class="text-[10px] text-slate-500 w-8">Lat:</label>' +
+            '<input id="edit-lat" type="text" class="flex-1 text-xs border border-slate-300 rounded px-2 py-1 focus:outline-none focus:border-blue-500" value="' + (hasCoords ? c[1].toFixed(6) : '') + '">' +
+          '</div>' +
+          '<div class="flex items-center gap-1 mb-2">' +
+            '<label class="text-[10px] text-slate-500 w-8">Lng:</label>' +
+            '<input id="edit-lng" type="text" class="flex-1 text-xs border border-slate-300 rounded px-2 py-1 focus:outline-none focus:border-blue-500" value="' + (hasCoords ? c[0].toFixed(6) : '') + '">' +
+          '</div>' +
+          '<div class="flex gap-1">' +
+            '<button class="edit-save-btn text-[10px] font-bold bg-green-600 text-white px-3 py-1.5 rounded hover:bg-green-700">Opslaan</button>' +
+            '<button class="edit-cancel-btn text-[10px] font-bold bg-slate-300 text-slate-700 px-3 py-1.5 rounded hover:bg-slate-400">Annuleren</button>' +
+          '</div>' +
+        '</div>';
+      } else {
+        html += '<div class="feature-item px-3 py-2 hover:bg-slate-50 cursor-pointer transition border-b border-slate-50" data-index="' + i + '" data-feature-id="' + (f.id || i) + '">' +
+          '<div class="flex items-center justify-between">' +
+            '<div class="font-semibold text-sm truncate flex-1">' + esc(p.title || 'Onbekend') + '</div>' +
+            '<div class="flex gap-1 shrink-0 ml-2">' +
+              '<button class="edit-start-btn text-[10px] text-blue-600 hover:text-blue-800 font-bold" data-feature-id="' + (f.id || i) + '">✏️</button>' +
+              '<button class="delete-btn text-[10px] text-red-500 hover:text-red-700 font-bold" data-feature-id="' + (f.id || i) + '">🗑️</button>' +
+            '</div>' +
+          '</div>' +
+          '<div class="text-[10px] text-slate-400 mt-0.5">' + (hasCoords ? '📍 ' + c[1].toFixed(4) + ', ' + c[0].toFixed(4) : '⚠️ Geen coords') + '</div>' +
+        '</div>';
+      }
+    }
+    listEl.innerHTML = html;
+
+    // Feature item click → fly to
+    listEl.querySelectorAll('.feature-item').forEach(function(el) {
+      el.addEventListener('click', function(e) {
+        if (e.target.closest('.edit-start-btn')) return;
+        if (e.target.closest('.delete-btn')) return;
+        const id = parseInt(this.dataset.featureId);
+        const f = features.find(function(f) { return f.id === id; });
+        if (f) flyTo(f);
+      });
+    });
+
+    // Edit start
+    listEl.querySelectorAll('.edit-start-btn').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const id = parseInt(this.dataset.featureId);
+        const f = features.find(function(f) { return f.id === id; });
+        if (f) {
+          editingIdx = features.indexOf(f);
+          renderList(filtered.length && filterInput.value ? filtered : features);
+        }
+      });
+    });
+
+    // Delete
+    listEl.querySelectorAll('.delete-btn').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (!confirm('Visstek verwijderen? Deze actie wordt pas definitief na "Opslaan".')) return;
+        const id = parseInt(this.dataset.featureId);
+        const idx = features.findIndex(function(f) { return f.id === id; });
+        if (idx === -1) return;
+        features.splice(idx, 1);
+        changed = true;
+        saveBtn.classList.remove('hidden');
+        saveStatus.textContent = '✅ Visstek verwijderd';
+        saveStatus.className = 'text-xs text-green-600';
+        saveStatus.classList.remove('hidden');
+        setTimeout(function() { saveStatus.classList.add('hidden'); }, 2000);
+        countEl.textContent = features.length + ' locaties';
+        editingIdx = -1;
+        // Re-apply filter on remaining items
+        const q = filterInput.value.toLowerCase();
+        filtered = features.filter(function(f) {
+          const p = f.properties || {};
+          return (p.title || '').toLowerCase().includes(q) || (p.description || '').toLowerCase().includes(q);
+        });
+        renderList(filtered.length && filterInput.value ? filtered : features);
+      });
+    });
+
+    // Edit save
+    const saveEditBtn = listEl.querySelector('.edit-save-btn');
+    if (saveEditBtn) {
+      saveEditBtn.addEventListener('click', function() {
+        const title = document.getElementById('edit-title').value.trim();
+        const lat = parseFloat(document.getElementById('edit-lat').value);
+        const lng = parseFloat(document.getElementById('edit-lng').value);
+        if (isNaN(lat) || isNaN(lng)) return;
+        const f = features[editingIdx];
+        if (f) {
+          if (title) f.properties.title = title;
+          f.geometry.coordinates = [lng, lat];
+          changed = true;
+          saveBtn.classList.remove('hidden');
+          saveStatus.textContent = '✅ Opgeslagen';
+          saveStatus.className = 'text-xs text-green-600';
+          saveStatus.classList.remove('hidden');
+          editingIdx = -1;
+          renderList(filtered.length && filterInput.value ? filtered : features);
+          setTimeout(function() { saveStatus.classList.add('hidden'); }, 2000);
+        }
+      });
+    }
+
+    // Edit cancel
+    const cancelEditBtn = listEl.querySelector('.edit-cancel-btn');
+    if (cancelEditBtn) {
+      cancelEditBtn.addEventListener('click', function() {
+        editingIdx = -1;
+        renderList(filtered.length && filterInput.value ? filtered : features);
+      });
+    }
+
+    // Live marker update while typing
+    const editTitle = document.getElementById('edit-title');
+    const editLat = document.getElementById('edit-lat');
+    const editLng = document.getElementById('edit-lng');
+    if (editTitle && editLat && editLng && editingIdx !== -1) {
+      const f = features[editingIdx];
+      if (f && f.id && window.kvviMarkerGroup) {
+        let moveTimer = null;
+        function updateMarker() {
+          clearTimeout(moveTimer);
+          moveTimer = setTimeout(function() {
+            const lat = parseFloat(editLat.value);
+            const lng = parseFloat(editLng.value);
+            if (isNaN(lat) || isNaN(lng)) return;
+            const newTitle = editTitle.value.trim();
+            window.kvviMarkerGroup.eachLayer(function(layer) {
+              if (layer.feature && layer.feature.id === f.id) {
+                layer.setLatLng([lat, lng]);
+                if (newTitle) {
+                  layer.unbindTooltip();
+                  layer.bindTooltip(newTitle, {
+                    direction: 'top',
+                    offset: [0, -10],
+                    className: 'visstek-tooltip'
+                  });
+                  const el = layer.getElement();
+                  if (el) {
+                    const pin = el.querySelector('.kvvi-marker-pin');
+                    if (pin) pin.dataset.title = newTitle;
+                  }
+                }
+              }
+            });
+          }, 200);
+        }
+        editTitle.addEventListener('input', updateMarker);
+        editLat.addEventListener('input', updateMarker);
+        editLng.addEventListener('input', updateMarker);
+      }
+    }
+  }
+
+  let filtered = [];
+  filterInput.addEventListener('input', function() {
+    const q = this.value.toLowerCase();
+    filtered = features.filter(function(f) {
+      const p = f.properties || {};
+      return (p.title || '').toLowerCase().includes(q) || (p.description || '').toLowerCase().includes(q);
+    });
+    renderList(filtered);
+  });
+
+  function esc(s) {
+    const d = document.createElement('div');
+    d.textContent = s || '';
+    return d.innerHTML;
+  }
+
+  loadData();
+
+  saveBtn.addEventListener('click', async function() {
+    this.disabled = true;
+    this.textContent = '⏳ Bezig...';
+    try {
+      const res = await fetch('/api/visstekken-abc', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'FeatureCollection', features: features })
+      });
+      const result = await res.json();
+      if (result.success) {
+        saveStatus.textContent = '✅ Opgeslagen (' + result.count + ')';
+        saveStatus.className = 'text-xs text-green-600';
+        changed = false;
+      } else {
+        saveStatus.textContent = '❌ Fout';
+        saveStatus.className = 'text-xs text-red-600';
+      }
+      saveStatus.classList.remove('hidden');
+      setTimeout(function() { saveStatus.classList.add('hidden'); }, 3000);
+    } catch (e) {
+      saveStatus.textContent = '❌ Fout';
+      saveStatus.className = 'text-xs text-red-600';
+      saveStatus.classList.remove('hidden');
+    }
+    this.disabled = false;
+    this.textContent = '💾 Opslaan';
+  });
+
+  document.getElementById('rescraper-btn').addEventListener('click', async function() {
+    if (!confirm('Dit overschrijft alle huidige ABC data met een nieuwe scrape. Doorgaan?')) return;
+    this.textContent = '⏳ Bezig...';
+    this.disabled = true;
+    try {
+      const res = await fetch('/api/rescraper-abc', { method: 'POST' });
+      const result = await res.json();
+      if (result.success) {
+        saveStatus.textContent = '✅ Herladen voltooid: ' + result.count + ' locaties';
+        saveStatus.className = 'text-xs text-green-600';
+        editingIdx = -1;
+        await loadData();
+      } else {
+        saveStatus.textContent = '❌ ' + (result.error || 'Fout');
+        saveStatus.className = 'text-xs text-red-600';
+      }
+    } catch (e) {
+      saveStatus.textContent = '❌ Network error';
+      saveStatus.className = 'text-xs text-red-600';
+    }
+    saveStatus.classList.remove('hidden');
+    setTimeout(function() { saveStatus.classList.add('hidden'); }, 5000);
+    this.textContent = '🔄 Herlaad ABC';
+    this.disabled = false;
+  });
+
+  const mobBtn = document.getElementById('mobile-menu-btn');
+  const mobOverlay = document.getElementById('mobile-overlay');
+  const mobSidebar = document.getElementById('mobile-sidebar');
+  if (mobBtn && mobOverlay && mobSidebar) {
+    mobBtn.onclick = function() {
+      const show = mobSidebar.classList.contains('-translate-x-full');
+      mobSidebar.classList.toggle('-translate-x-full', !show);
+      mobOverlay.classList.toggle('hidden', !show);
+    };
+    mobOverlay.onclick = function() {
+      mobSidebar.classList.add('-translate-x-full');
+      mobOverlay.classList.add('hidden');
+    };
+  }
+})();
+</script>

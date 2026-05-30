@@ -1,0 +1,70 @@
+---
+/* 3D Logo Component - Grote weergave */
+---
+
+<div id="kvvi-3d-container" class="w-full h-full min-h-[50px] flex items-center justify-center overflow-hidden">
+</div>
+
+<script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<script is:inline>
+  function initKVVILogo() {
+    const container = document.getElementById('kvvi-3d-container');
+    if (!container || container.dataset.rendered === "true" || typeof THREE === 'undefined') return;
+
+    try {
+      const scene = new THREE.Scene();
+      
+      // Camera afstand aangepast voor groter logo zonder afknippen
+      const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
+      camera.position.set(0, 0, 3.8);
+
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      renderer.setSize(container.clientWidth, container.clientHeight);
+      renderer.setPixelRatio(window.devicePixelRatio);
+      container.appendChild(renderer.domElement);
+
+      const ambientLight = new THREE.AmbientLight(0xffffff, 1.8); // Iets feller licht
+      scene.add(ambientLight);
+
+      const textureLoader = new THREE.TextureLoader();
+      const texture = textureLoader.load('/logo/IMG_9054.PNG');
+
+      // Geometrie afmetingen aangepast voor groter logo zonder afknippen
+      // Iets grotere afmetingen voor betere impact
+      const geometry = new THREE.PlaneGeometry(3.6, 2.4); 
+      const material = new THREE.MeshBasicMaterial({ 
+        map: texture, 
+        transparent: true,
+        side: THREE.DoubleSide 
+      });
+
+      const logoMesh = new THREE.Mesh(geometry, material);
+      scene.add(logoMesh);
+
+      function animate() {
+        if (!document.getElementById('kvvi-3d-container')) return;
+        requestAnimationFrame(animate);
+        renderer.render(scene, camera);
+      }
+      
+      animate();
+      container.dataset.rendered = "true";
+
+      window.addEventListener('resize', () => {
+        if (!container.clientWidth) return;
+        camera.aspect = container.clientWidth / container.clientHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(container.clientWidth, container.clientHeight);
+      });
+
+    } catch (e) {
+      console.error("3D logo error:", e);
+    }
+  }
+
+  // Dubbele check voor opstarten
+  setTimeout(initKVVILogo, 100);
+  document.addEventListener('astro:page-load', initKVVILogo);
+  document.addEventListener('astro:after-swap', initKVVILogo);
+</script>

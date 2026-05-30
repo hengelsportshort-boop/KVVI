@@ -1,0 +1,350 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+export const prerender = false;
+---
+
+<BaseLayout title="Specials" description="Speciale viswedstrijden en evenementen van KVVI Izegem: Koppelwedstrijden, Kamp. Izegem, Vrouwvissing en Seniorenvissing.">
+  <style is:global>
+    .submenu-link { font-size: 11px; font-weight: 900; text-transform: uppercase; color: #003366; text-decoration: none; padding: 8px 16px; border-radius: 8px; transition: all .2s; white-space: nowrap; }
+    .submenu-link:hover { background: #003366; color: white; }
+
+  </style>
+  <main class="max-w-6xl mx-auto px-4 py-16" id="specials-page">
+    <h1 class="text-4xl font-black text-[#004A99] mb-12 uppercase tracking-tight text-center">Specials</h1>
+    <nav id="specials-nav" class="flex flex-wrap gap-2 mb-12 justify-center sticky top-4 z-50 bg-slate-50/90 backdrop-blur-sm p-3 rounded-xl border border-slate-200 shadow-sm">
+    </nav>
+    <div id="specials-content" class="space-y-12">
+      <div class="text-center text-slate-400 py-20">
+        <div class="inline-block w-8 h-8 border-2 border-slate-300 border-t-[#004A99] rounded-full animate-spin"></div>
+        <p class="mt-4">Laden...</p>
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<script>
+(async () => {
+  try {
+    const year = new Date().getFullYear();
+    const [specialsRes, vrouwRes, kampRes, seniorenRes] = await Promise.all([
+      fetch('/api/specials?year=' + year),
+      fetch('/api/specials/vrouwvissing?year=' + year),
+      fetch('/api/specials/kamp-izegem?year=' + year),
+      fetch('/api/specials/seniorenvissing?year=' + year)
+    ]);
+    const specialsItems = await specialsRes.json();
+    let vrouwData = null;
+    if (vrouwRes.ok) { try { vrouwData = await vrouwRes.json(); } catch (e) {} }
+    let kampData = null;
+    if (kampRes.ok) { try { kampData = await kampRes.json(); } catch (e) {} }
+    let seniorenData = null;
+    if (seniorenRes.ok) { try { seniorenData = await seniorenRes.json(); } catch (e) {} }
+    let items = Array.isArray(specialsItems) ? specialsItems : [];
+    if (vrouwData && vrouwData.visible !== false && vrouwData.type) {
+      items.push(vrouwData);
+    }
+    if (kampData && kampData.visible !== false && kampData.type) {
+      items.push(kampData);
+    }
+    if (seniorenData && seniorenData.visible !== false && seniorenData.type) {
+      items.push(seniorenData);
+    }
+
+    const container = document.getElementById('specials-content');
+    const nav = document.getElementById('specials-nav');
+    
+    const visible = items.filter(i => i.visible !== false);
+    
+    if (!visible.length) {
+      container.innerHTML = '<div class="text-center text-slate-400 py-20 italic">Nog geen specials.</div>';
+      return;
+    }
+
+    nav.innerHTML = visible.map(item =>
+      `<a href="#special-${item.id}" class="submenu-link">${escapeHtml(item.title)}</a>`
+    ).join('');
+
+    container.innerHTML = visible.map(item => {
+      const type = item.type || 'content';
+      return `<section id="special-${item.id}" class="scroll-mt-24 bg-white rounded-2xl shadow-sm border border-slate-200 p-8 md:p-12">
+        <h2 class="text-2xl md:text-3xl font-black text-[#004A99] mb-6 uppercase tracking-tight">${escapeHtml(item.title)}</h2>
+        ${type === 'seniorenvissing' ? renderSeniorenvissing(item) : type === 'kamp-izegem' ? renderKampIzegem(item) : type === 'vrouwvissing' ? renderVrouwvissing(item) : type === 'wedstrijd' ? renderWedstrijd(item) : renderContent(item)}
+      </section>`;
+    }).join('');
+    setupLightbox();
+  } catch (e) {
+    document.getElementById('specials-content').innerHTML = '<div class="text-center text-red-500 py-20">Fout bij laden van specials.</div>';
+  }
+
+  function setupLightbox() {
+    const container = document.getElementById('specials-content');
+    container.addEventListener('click', (e) => {
+      const thumb = e.target.closest('.photo-thumb');
+      if (!thumb) return;
+      const lb = document.getElementById('lightbox');
+      if (!lb) return;
+      const idx = parseInt(thumb.dataset.idx);
+      const photos = window._seniorenPhotos || [];
+      if (!photos.length) return;
+      lb._idx = idx;
+      document.getElementById('lb-img').src = photos[idx];
+      lb.classList.remove('hidden');
+      lb.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+    });
+    document.addEventListener('click', (e) => {
+      if (e.target.closest('#lightbox') && !e.target.closest('#lb-img') && !e.target.closest('#lb-prev') && !e.target.closest('#lb-next')) {
+        closeLightbox();
+      }
+    });
+    document.addEventListener('keydown', (e) => {
+      const lb = document.getElementById('lightbox');
+      if (!lb || lb.classList.contains('hidden')) return;
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowLeft') navigateLightbox(-1);
+      if (e.key === 'ArrowRight') navigateLightbox(1);
+    });
+    const lbPrev = document.getElementById('lb-prev');
+    const lbNext = document.getElementById('lb-next');
+    if (lbPrev) lbPrev.addEventListener('click', (e) => { e.stopPropagation(); navigateLightbox(-1); });
+    if (lbNext) lbNext.addEventListener('click', (e) => { e.stopPropagation(); navigateLightbox(1); });
+  }
+
+  function closeLightbox() {
+    const lb = document.getElementById('lightbox');
+    if (!lb) return;
+    lb.classList.add('hidden');
+    lb.classList.remove('flex');
+    document.body.style.overflow = '';
+  }
+
+  function navigateLightbox(dir) {
+    const lb = document.getElementById('lightbox');
+    if (!lb) return;
+    const photos = window._seniorenPhotos || [];
+    if (!photos.length) return;
+    lb._idx = ((lb._idx || 0) + dir + photos.length) % photos.length;
+    document.getElementById('lb-img').src = photos[lb._idx];
+  }
+
+  function renderContent(item) {
+    const imgHtml = item.image
+      ? `<img src="${item.image}" alt="${escapeHtml(item.title)}" class="w-full max-w-2xl mx-auto rounded-xl shadow-md mb-6" />`
+      : '';
+    return `${imgHtml}<div class="text-slate-700 leading-relaxed text-lg">${item.content || ''}</div>`;
+  }
+
+  function renderWedstrijd(item) {
+    const dateHtml = item.date ? `<p class="text-sm font-bold text-[#C5A059] uppercase mb-6">${formatDate(item.date)}</p>` : '';
+    let html = (item.date ? dateHtml : '');
+    (item.tables || []).filter(t => t.visible !== false).forEach((table, tIdx) => {
+      const rows = computeRanking(table.rows || []);
+      html += `<div class="wedstrijd-table bg-slate-50 rounded-lg p-4 border border-slate-200 mb-4">
+        <h3 class="text-xs font-bold text-[#003366] mb-3 uppercase">${escapeHtml(table.name || 'Reeks ' + (tIdx + 1))}</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse">
+            <thead>
+              <tr class="bg-[#003366] text-white text-xs">
+                <th class="p-2 text-center font-bold w-8 md:w-14 sticky left-0 z-20 bg-[#003366]">Ranking</th>
+                <th class="p-2 text-left font-bold w-20 md:w-48 sticky left-8 md:left-14 z-20 bg-[#003366]">Deeln 1</th>
+                <th class="p-2 text-left font-bold w-20 md:w-48 sticky left-[7rem] md:left-[15.5rem] z-20 bg-[#003366]">Deeln 2</th>
+                <th class="p-2 text-center font-bold">Gewicht 1 (gr)</th>
+                <th class="p-2 text-center font-bold">Gewicht 2 (gr)</th>
+                <th class="p-2 text-center font-bold">Totaal (gr)</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows.map(r => `
+                <tr class="border-b border-slate-200 text-xs hover:bg-white/60">
+                  <td class="p-2 font-bold text-center w-8 md:w-14 sticky left-0 z-10 bg-slate-50">${r.ranking}</td>
+                  <td class="p-2 w-20 md:w-48 sticky left-8 md:left-14 z-10 bg-slate-50 hover:bg-white/60">${escapeHtml(r.deeln1 || '')}</td>
+                  <td class="p-2 w-20 md:w-48 sticky left-[7rem] md:left-[15.5rem] z-10 bg-slate-50 hover:bg-white/60">${escapeHtml(r.deeln2 || '')}</td>
+                  <td class="p-2 text-center">${(r.gewicht1 || 0).toFixed(3)} gr</td>
+                  <td class="p-2 text-center">${(r.gewicht2 || 0).toFixed(3)} gr</td>
+                  <td class="p-2 text-center font-bold">${r.totaal.toFixed(3)} gr</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>`;
+    });
+    return html;
+  }
+
+  function renderVrouwvissing(item) {
+    let html = '';
+    (item.tables || []).filter(t => t.visible !== false).forEach((table, tIdx) => {
+      const rows = computeRankingVrouw(table.rows || []);
+      html += `<div class="wedstrijd-table bg-slate-50 rounded-lg p-4 border border-slate-200 mb-4">
+        <h3 class="text-xs font-bold text-[#003366] mb-3 uppercase">${escapeHtml(table.name || 'Vrouwvissing')}</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse">
+            <thead>
+              <tr class="bg-[#003366] text-white text-xs">
+                <th class="p-2 text-center font-bold">Ranking</th>
+                <th class="p-2 text-left font-bold">Deeln</th>
+                <th class="p-2 text-center font-bold">Totaal (gr)</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows.map(r => `
+                <tr class="border-b border-slate-200 text-xs hover:bg-white/60">
+                  <td class="p-2 font-bold text-center">${r.ranking}</td>
+                  <td class="p-2">${escapeHtml(r.deeln || '')}</td>
+                  <td class="p-2 text-center font-bold">${r.totaal.toFixed(3)} gr</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>`;
+    });
+    return html;
+  }
+
+  function renderSeniorenvissing(item) {
+    const dateHtml = item.date ? `<p class="text-sm font-bold text-[#C5A059] uppercase mb-6">${formatDate(item.date)}</p>` : '';
+    const photos = item.photos || [];
+    if (!photos.length) return dateHtml + '<div class="text-center text-slate-400 py-10 italic">Nog geen foto&#39;s.</div>';
+    window._seniorenPhotos = photos.map(p => p.url);
+    let html = dateHtml + '<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">';
+    photos.forEach((p, idx) => {
+      html += `<div class="cursor-pointer photo-thumb" data-idx="${idx}">
+        <div class="aspect-square bg-slate-100 rounded-xl overflow-hidden border border-slate-200 hover:border-[#004A99] transition-colors shadow-sm hover:shadow-md">
+          <img src="${escapeHtml(p.url)}" alt="${escapeHtml(p.alt || 'Seniorenfoto')}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-300" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'flex items-center justify-center h-full text-slate-400 text-xs\\'>Fout</div>'">
+        </div>
+      </div>`;
+    });
+    html += '</div>';
+    html += `<div id="lightbox" class="fixed inset-0 z-50 bg-black/90 hidden items-center justify-center" onclick="closeLightbox()">
+      <button class="absolute top-4 right-4 text-white text-3xl hover:text-slate-300 transition">&times;</button>
+      <button id="lb-prev" class="absolute left-4 top-1/2 -translate-y-1/2 text-white text-4xl hover:text-slate-300 transition">&lsaquo;</button>
+      <img id="lb-img" class="max-w-[90vw] max-h-[90vh] object-contain rounded-lg" src="" alt="">
+      <button id="lb-next" class="absolute right-4 top-1/2 -translate-y-1/2 text-white text-4xl hover:text-slate-300 transition">&rsaquo;</button>
+    </div>`;
+    return html;
+  }
+
+  function renderKampIzegem(item) {
+    const dateHtml = item.date ? `<p class="text-sm font-bold text-[#C5A059] uppercase mb-6">${formatDate(item.date)}</p>` : '';
+    let html = dateHtml;
+    const visibleTables = (item.tables || []).filter(t => t.visible !== false);
+    visibleTables.forEach((table, tIdx) => {
+      const rows = computeRankingKamp(table.rows || []);
+      html += `<div class="wedstrijd-table bg-slate-50 rounded-lg p-4 border border-slate-200 mb-4">
+        <h3 class="text-xs font-bold text-[#003366] mb-3 uppercase">${escapeHtml(table.name || 'Reeks ' + (tIdx + 1))}</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse">
+            <thead>
+              <tr class="bg-[#003366] text-white text-xs">
+                <th class="p-2 text-center font-bold">Ranking</th>
+                <th class="p-2 text-left font-bold">Deeln</th>
+                <th class="p-2 text-center font-bold">GL1</th>
+                <th class="p-2 text-center font-bold">GL2</th>
+                <th class="p-2 text-center font-bold">Totaal (gr)</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows.map(r => `
+                <tr class="border-b border-slate-200 text-xs hover:bg-white/60">
+                  <td class="p-2 font-bold text-center">${r.ranking}</td>
+                  <td class="p-2">${escapeHtml(r.deeln || '')}</td>
+                  <td class="p-2 text-center">${r.gl1.toFixed(3)} gr</td>
+                  <td class="p-2 text-center">${r.gl2.toFixed(3)} gr</td>
+                  <td class="p-2 text-center font-bold">${r.totaal.toFixed(3)} gr</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>`;
+    });
+
+    if (visibleTables.length >= 2) {
+      const sorted = visibleTables.map(t => computeRankingKamp(t.rows || []));
+      const combined = [];
+      let a = 0, b = 0;
+      const topA = sorted[0][0]?.totaal || 0;
+      const topB = sorted[1][0]?.totaal || 0;
+      let takeA = topA >= topB;
+      while (a < sorted[0].length || b < sorted[1].length) {
+        if (takeA && a < sorted[0].length) {
+          combined.push({ ...sorted[0][a++] });
+        } else if (!takeA && b < sorted[1].length) {
+          combined.push({ ...sorted[1][b++] });
+        }
+        takeA = !takeA;
+      }
+      html += `<div class="bg-[#003366] rounded-xl p-6 border-2 border-[#C5A059] shadow-lg mt-6">
+        <h3 class="text-sm font-black text-[#C5A059] uppercase tracking-wider mb-4 text-center">Eindrangschikking</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse">
+            <thead>
+              <tr class="text-[#C5A059] text-xs border-b border-[#C5A059]/30">
+                <th class="p-2 text-center font-bold">Ranking</th>
+                <th class="p-2 text-left font-bold">Naam</th>
+                <th class="p-2 text-center font-bold">Totaal (gr)</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${combined.map((r, i) => `
+                <tr class="border-b border-white/10 text-xs ${i === 0 ? 'text-[#C5A059] font-bold' : 'text-white'}">
+                  <td class="p-2 text-center">${i + 1}</td>
+                  <td class="p-2">${escapeHtml(r.deeln || '')}</td>
+                  <td class="p-2 text-center">${r.totaal.toFixed(3)} gr</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>`;
+    }
+
+    return html;
+  }
+
+  function computeRanking(rows) {
+    const withTotal = rows.map(r => ({
+      ...r,
+      totaal: (parseFloat(r.gewicht1) || 0) + (parseFloat(r.gewicht2) || 0),
+      gewicht1: parseFloat(r.gewicht1) || 0,
+      gewicht2: parseFloat(r.gewicht2) || 0
+    }));
+    const sorted = [...withTotal].sort((a, b) => b.totaal - a.totaal);
+    return sorted.map((r, i) => ({ ...r, ranking: i + 1 }));
+  }
+
+  function computeRankingVrouw(rows) {
+    const withTotal = rows.map(r => ({
+      ...r,
+      totaal: parseFloat(r.gewicht) || 0
+    }));
+    const sorted = [...withTotal].sort((a, b) => b.totaal - a.totaal);
+    return sorted.map((r, i) => ({ ...r, ranking: i + 1 }));
+  }
+
+  function computeRankingKamp(rows) {
+    const withTotal = rows.map(r => ({
+      ...r,
+      gl1: parseFloat(r.gl1) || 0,
+      gl2: parseFloat(r.gl2) || 0,
+      totaal: (parseFloat(r.gl1) || 0) + (parseFloat(r.gl2) || 0)
+    }));
+    const sorted = [...withTotal].sort((a, b) => b.totaal - a.totaal);
+    return sorted.map((r, i) => ({ ...r, ranking: i + 1 }));
+  }
+
+  function formatDate(dateStr) {
+    if (!dateStr) return '';
+    const d = new Date(dateStr + 'T00:00:00');
+    return d.toLocaleDateString('nl-BE', { day: 'numeric', month: 'long', year: 'numeric' });
+  }
+
+  function escapeHtml(text) {
+    const d = document.createElement('div');
+    d.textContent = text;
+    return d.innerHTML;
+  }
+})();
+</script>

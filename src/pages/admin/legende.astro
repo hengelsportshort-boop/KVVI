@@ -1,0 +1,261 @@
+---
+import Layout from '../../layouts/Layout.astro';
+export const prerender = false;
+
+const pageTitle = "Legende Beheer | KVVI Admin";
+---
+
+<Layout title={pageTitle} noMainWrapper={true}>
+  <main class="min-h-screen bg-slate-50">
+    <div class="md:hidden bg-[#003366] text-white p-4 flex justify-between items-center">
+      <div>
+        <h1 class="text-lg font-bold tracking-widest">KVVI ADMIN</h1>
+        <p class="text-[10px] text-[#C5A059] font-bold">LEGENDE</p>
+      </div>
+      <button id="mobile-menu-btn" class="p-2 hover:bg-white/10 rounded-lg transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+        </svg>
+      </button>
+    </div>
+    <div class="flex">
+      <aside class="hidden md:flex w-64 bg-[#003366] text-white flex-col border-r-4 border-[#C5A059] min-h-[calc(100vh-60px)]">
+        <div class="p-6 border-b border-white/10"><h1 class="text-xl font-bold tracking-widest">KVVI ADMIN</h1><p class="text-[10px] text-[#C5A059] font-bold">CONTROL PANEL</p></div>
+        <nav class="flex-1 p-4 space-y-1">
+          <a href="/" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏠</span> Home</a>
+          <a href="/admin/wedstrijden" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏆</span> Wedstrijden</a>
+          <a href="/admin/kalender" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📅</span> Kalender</a>
+          <a href="/admin/visstekken" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📍</span> Visstekken</a>
+          <a href="/admin/visstekken-abc" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🌐</span> ABC Visstekken</a>
+          <a href="/admin/legende" class="flex items-center gap-3 p-3 bg-white/10 rounded-lg border-l-4 border-[#C5A059] text-sm font-semibold"><span>📖</span> Legende</a>
+          
+          <a href="/admin/koppelwedstrijden" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏆</span> Koppelwedstrijden</a>
+          <a href="/admin/kamp-izegem" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏅</span> Kamp. Izegem</a>
+          <a href="/admin/specials/vrouwvissing" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>👩</span> Vrouwvissing</a>
+          <a href="/admin/specials/seniorenvissing" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>👴</span> Seniorenvissing</a>
+          <a href="/admin/tips-tricks" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>💡</span> Tips &amp; Tricks</a>
+          <a href="/admin/fotos" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📸</span> Foto's</a>
+        </nav>
+        <div class="p-4 border-t border-white/10"><a href="/" class="text-sm text-slate-400 hover:text-white transition-colors flex items-center gap-2"><span>←</span> Terug naar Website</a></div>
+      </aside>
+      <div id="mobile-overlay" class="fixed inset-0 bg-black/50 z-40 hidden" style="margin-top:60px;"></div>
+      <aside id="mobile-sidebar" class="md:hidden fixed top-[60px] left-0 w-72 bg-[#003366] text-white z-50 flex-col border-r-4 border-[#C5A059] h-[calc(100vh-60px)] hidden shadow-2xl">
+        <nav class="flex-1 p-4 space-y-1 pt-6">
+          <a href="/" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏠</span> Home</a>
+          <a href="/admin/wedstrijden" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏆</span> Wedstrijden</a>
+          <a href="/admin/kalender" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📅</span> Kalender</a>
+          <a href="/admin/visstekken" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📍</span> Visstekken</a>
+          <a href="/admin/visstekken-abc" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🌐</span> ABC Visstekken</a>
+          <a href="/admin/legende" class="flex items-center gap-3 p-3 bg-white/10 rounded-lg border-l-4 border-[#C5A059] text-sm font-semibold"><span>📖</span> Legende</a>
+          
+          <a href="/admin/koppelwedstrijden" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏆</span> Koppelwedstrijden</a>
+          <a href="/admin/kamp-izegem" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏅</span> Kamp. Izegem</a>
+          <a href="/admin/specials/vrouwvissing" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>👩</span> Vrouwvissing</a>
+          <a href="/admin/specials/seniorenvissing" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>👴</span> Seniorenvissing</a>
+          <a href="/admin/tips-tricks" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>💡</span> Tips &amp; Tricks</a>
+          <a href="/admin/fotos" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📸</span> Foto's</a>
+        </nav>
+        <div class="p-4 border-t border-white/10"><a href="/" class="text-sm text-slate-400 hover:text-white transition-colors flex items-center gap-2"><span>←</span> Terug</a></div>
+      </aside>
+      <section class="flex-1 flex flex-col min-h-[calc(100vh-60px)]">
+        <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 md:px-8">
+          <div class="flex items-center gap-3"><span class="text-slate-400 text-sm">Admin</span><span class="text-slate-300 text-sm">/</span><span class="font-semibold text-sm">Legende</span></div>
+          <div class="flex items-center gap-2">
+            <span id="save-status" class="text-xs text-slate-400 hidden"></span>
+            
+          </div>
+        </header>
+        <div class="p-4 md:p-6 space-y-4 flex-1 overflow-y-auto">
+          
+          <div class="flex items-center justify-between">
+            <p class="text-xs text-slate-500">Beheer de legende-categorieën voor de hengelmap. <span id="count-nr" class="font-bold text-[#003366]">0</span> categorieën</p>
+            <button id="add-btn" class="bg-[#003366] text-white text-xs font-bold px-4 py-2 rounded-lg hover:bg-[#002244] transition">➕ Nieuwe Categorie</button>
+          </div>
+
+          <div id="legende-list" class="space-y-3">
+            <!-- Wordt gevuld door JS -->
+          </div>
+
+        </div>
+      </section>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  body { overflow-x: hidden; }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: #f1f5f9; }
+  ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 3px; }
+</style>
+
+<script>
+(() => {
+  let items = [];
+  let idCounter = Date.now();
+
+  const list = document.getElementById('legende-list');
+  const countNr = document.getElementById('count-nr');
+  const saveStatus = document.getElementById('save-status');
+
+  async function loadData() {
+    try {
+      const res = await fetch('/api/legende');
+      items = await res.json();
+      render();
+    } catch (e) {
+      list.innerHTML = '<div class="p-6 text-center text-red-500">Fout bij laden.</div>';
+    }
+  }
+
+  function render() {
+    countNr.textContent = items.length;
+    if (!items.length) {
+      list.innerHTML = '<div class="p-8 text-center text-slate-400 italic border-2 border-dashed border-slate-200 rounded-xl">Nog geen categorieën. Klik op "➕ Nieuwe Categorie" om te beginnen.</div>';
+      return;
+    }
+
+    let html = '';
+    items.forEach((item, idx) => {
+      html += `<div class="bg-white rounded-xl border border-slate-200 shadow-sm p-5" data-idx="${idx}">
+        <div class="flex items-center gap-4">
+          <div class="w-10 h-10 rounded-lg" style="background-color: ${item.kleur || '#3cc954'}; border: 2px solid #e2e8f0;"></div>
+          <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div>
+              <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Naam</label>
+              <input type="text" class="item-naam w-full mt-1 px-3 py-2 rounded-lg border border-slate-200 text-sm font-bold" value="${escapeHtml(item.naam)}">
+            </div>
+            <div>
+              <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Kleur</label>
+              <div class="flex gap-2 mt-1">
+                <input type="color" class="item-kleur w-9 h-9 rounded border-0 cursor-pointer p-0" value="${item.kleur || '#3cc954'}">
+                <input type="text" class="item-kleur-text w-20 px-2 py-2 rounded-lg border border-slate-200 text-xs font-mono" value="${item.kleur || '#3cc954'}" readonly>
+              </div>
+            </div>
+            <div>
+              <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Acties</label>
+              <div class="flex gap-2 mt-1">
+                <button class="delete-btn bg-red-50 text-red-600 text-xs font-bold px-3 py-2 rounded-lg hover:bg-red-100 transition border border-red-200">🗑 Verwijder</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>`;
+    });
+    list.innerHTML = html;
+
+    // Delete handlers
+    list.querySelectorAll('.delete-btn').forEach((btn, idx) => {
+      btn.onclick = () => {
+        if (confirm(`Verwijder categorie "${items[idx].naam}"?`)) {
+          items.splice(idx, 1);
+          render();
+          autoSave();
+        }
+      };
+    });
+
+    // Auto-save on change
+    list.querySelectorAll('input').forEach(input => {
+      input.onchange = () => collectAndSave();
+    });
+  }
+
+  function escapeHtml(text) {
+    const d = document.createElement('div');
+    d.textContent = text;
+    return d.innerHTML;
+  }
+
+  function collectData() {
+    const cards = list.querySelectorAll('[data-idx]');
+    const newItems = [];
+    cards.forEach(card => {
+      const idx = parseInt(card.dataset.idx);
+      const orig = items[idx] || {};
+      newItems.push({
+        id: orig.id || Date.now() + Math.random(),
+        naam: card.querySelector('.item-naam').value.trim() || 'Onbekend',
+        icoon: orig.icoon || '📍',
+        kleur: card.querySelector('.item-kleur').value || '#3cc954',
+        zichtbaar: true
+      });
+    });
+    return newItems;
+  }
+
+  let saveTimeout;
+  function collectAndSave() {
+    clearTimeout(saveTimeout);
+    saveTimeout = setTimeout(() => {
+      items = collectData();
+      autoSave();
+    }, 500);
+  }
+
+  async function autoSave() {
+    try {
+      const res = await fetch('/api/legende', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(items)
+      });
+      const result = await res.json();
+      if (result.success) showStatus('✅ Opgeslagen!', 'text-green-600');
+      else showStatus('❌ Fout', 'text-red-600');
+    } catch (e) {
+      showStatus('❌ Fout', 'text-red-600');
+    }
+  }
+
+  let statusTimeout;
+  function showStatus(msg, cls) {
+    saveStatus.textContent = msg;
+    saveStatus.className = `text-xs ${cls} font-bold`;
+    saveStatus.classList.remove('hidden');
+    clearTimeout(statusTimeout);
+    statusTimeout = setTimeout(() => saveStatus.classList.add('hidden'), 2000);
+  }
+
+  document.getElementById('add-btn').onclick = () => {
+    items.push({
+      id: Date.now(),
+      naam: 'Nieuwe categorie',
+      icoon: '📍',
+      kleur: '#3cc954',
+      zichtbaar: true
+    });
+    render();
+    autoSave();
+  };
+
+  // Mobiel menu
+  const menuBtn = document.getElementById('mobile-menu-btn');
+  const sidebar = document.getElementById('mobile-sidebar');
+  const overlay = document.getElementById('mobile-overlay');
+  if (menuBtn && sidebar && overlay) {
+    function toggleMenu() {
+      const hidden = sidebar.classList.contains('hidden');
+      sidebar.classList.toggle('hidden', !hidden);
+      overlay.classList.toggle('hidden', !hidden);
+    }
+    menuBtn.onclick = toggleMenu;
+    overlay.onclick = toggleMenu;
+    
+    // Menu items moeten menu open houden
+    const menuItems = sidebar.querySelectorAll('nav a');
+    menuItems.forEach(item => {
+      item.addEventListener('click', (e) => {
+        // Menu blijft open bij klik op menuitem
+        e.preventDefault();
+        // Navigeer naar de link na een korte vertraging
+        setTimeout(() => {
+          window.location.href = item.href;
+        }, 100);
+      });
+    });
+  }
+
+  loadData();
+})();
+</script>

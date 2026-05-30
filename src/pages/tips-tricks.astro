@@ -1,0 +1,67 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+export const prerender = false;
+---
+
+<BaseLayout title="Tips &amp; Tricks" description="Handige vis tips &amp; tricks van KVVI Izegem. Leer bij over technieken, materiaal en visplekken in West-Vlaanderen.">
+  <main class="max-w-5xl mx-auto px-4 py-16">
+    <h1 class="text-4xl font-black text-[#004A99] mb-12 uppercase tracking-tight text-center">Tips &amp; Tricks</h1>
+    <div id="tips-container" class="space-y-8">
+      <div class="text-center text-slate-400 py-20">
+        <div class="inline-block w-8 h-8 border-2 border-slate-300 border-t-[#004A99] rounded-full animate-spin"></div>
+        <p class="mt-4">Laden...</p>
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<script>
+(async () => {
+  try {
+    const res = await fetch('/api/tips-tricks');
+    const data = await res.json();
+    const container = document.getElementById('tips-container');
+    if (!data.pageVisible || !data.tips || !data.tips.length) {
+      container.innerHTML = '<div class="text-center text-slate-400 py-20 italic">Nog geen tips &amp; tricks beschikbaar.</div>';
+      return;
+    }
+    const visible = data.tips.filter(t => t.visible !== false);
+    if (!visible.length) {
+      container.innerHTML = '<div class="text-center text-slate-400 py-20 italic">Nog geen tips &amp; tricks beschikbaar.</div>';
+      return;
+    }
+    container.innerHTML = visible.map(function(tip, idx) {
+      var mediaHtml = '';
+      if (tip.mediaUrl) {
+        var isVideo = /youtube\.com|youtu\.be|vimeo\.com/i.test(tip.mediaUrl);
+        if (isVideo) {
+          var videoId = '';
+          var m = tip.mediaUrl.match(/(?:youtu\.be\/|youtube\.com(?:\/embed\/|\/v\/|\/watch\?v=))([\w\-]{11})/);
+          if (m) videoId = m[1];
+          if (videoId) {
+            mediaHtml = '<div class="aspect-video rounded-xl overflow-hidden shadow-md"><iframe src="https://www.youtube.com/embed/' + videoId + '" class="w-full h-full" allowfullscreen loading="lazy"></iframe></div>';
+          } else {
+            mediaHtml = '<div class="aspect-video rounded-xl overflow-hidden shadow-md"><iframe src="' + tip.mediaUrl + '" class="w-full h-full" allowfullscreen loading="lazy"></iframe></div>';
+          }
+        } else {
+          mediaHtml = '<img src="' + tip.mediaUrl + '" alt="' + (tip.name ? tip.name.replace(/"/g,'&quot;') : '') + '" class="w-full rounded-xl shadow-md object-cover max-h-80" loading="lazy" onerror="this.parentNode.innerHTML=\'<div class=\\\'bg-slate-100 rounded-xl p-8 text-center text-slate-400\\\'><span class=\\\'text-3xl\\\'>📷</span><p class=\\\'mt-2\\\'>Media niet beschikbaar</p></div>\'" />';
+        }
+      }
+      var linkHtml = '';
+      if (tip.link) {
+        linkHtml = '<a href="' + tip.link + '" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-sm font-bold text-white bg-[#C5A059] hover:bg-[#b8923f] px-5 py-2.5 rounded-lg transition-colors">Bekijk meer →</a>';
+      }
+      return '<div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex flex-col md:flex-row' + (idx % 2 === 1 ? ' md:flex-row-reverse' : '') + '">' +
+        (mediaHtml ? '<div class="md:w-1/2 shrink-0">' + mediaHtml + '</div>' : '') +
+        '<div class="p-6 md:p-8 flex flex-col justify-center' + (mediaHtml ? ' md:w-1/2' : '') + '">' +
+        '<h2 class="text-2xl font-bold text-[#003366] mb-3">' + tip.name.replace(/"/g,'&quot;') + '</h2>' +
+        (tip.info ? '<p class="text-slate-600 leading-relaxed mb-4 whitespace-pre-line">' + tip.info.replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br/>') + '</p>' : '') +
+        (linkHtml ? '<div>' + linkHtml + '</div>' : '') +
+        '</div>' +
+        '</div>';
+    }).join('');
+  } catch (e) {
+    document.getElementById('tips-container').innerHTML = '<div class="text-center text-red-400 py-20 italic">Fout bij laden van tips &amp; tricks.</div>';
+  }
+})();
+</script>

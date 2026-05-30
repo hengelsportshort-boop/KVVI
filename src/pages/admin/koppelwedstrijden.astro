@@ -1,0 +1,486 @@
+---
+import Layout from '../../layouts/Layout.astro';
+export const prerender = false;
+
+const pageTitle = "Koppelwedstrijden Beheer | KVVI Admin";
+const currentYear = new Date().getFullYear();
+const years = Array.from({length: currentYear + 4 - 2026 + 1}, (_, i) => 2026 + i).reverse();
+---
+
+<Layout title={pageTitle} noMainWrapper={true}>
+  <main class="min-h-screen bg-slate-50">
+    <div class="md:hidden bg-[#003366] text-white p-4 flex justify-between items-center">
+      <div>
+        <h1 class="text-lg font-bold tracking-widest">KVVI ADMIN</h1>
+        <p class="text-[10px] text-[#C5A059] font-bold">KOPPELWEDSTRIJDEN</p>
+      </div>
+      <button id="mobile-menu-btn" class="p-2 hover:bg-white/10 rounded-lg transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+        </svg>
+      </button>
+    </div>
+    <div class="flex">
+      <aside class="hidden md:flex w-64 bg-[#003366] text-white flex-col border-r-4 border-[#C5A059] min-h-[calc(100vh-60px)]">
+        <div class="p-6 border-b border-white/10"><h1 class="text-xl font-bold tracking-widest">KVVI ADMIN</h1><p class="text-[10px] text-[#C5A059] font-bold">CONTROL PANEL</p></div>
+        <nav class="flex-1 p-4 space-y-1">
+          <a href="/" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏠</span> Home</a>
+          <a href="/admin/wedstrijden" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏆</span> Wedstrijden</a>
+          <a href="/admin/kalender" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📅</span> Kalender</a>
+          <a href="/admin/visstekken" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📍</span> Visstekken</a>
+          <a href="/admin/visstekken-abc" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🌐</span> ABC Visstekken</a>
+          <a href="/admin/legende" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📖</span> Legende</a>
+          
+          <a href="/admin/koppelwedstrijden" class="flex items-center gap-3 p-3 bg-white/10 rounded-lg border-l-4 border-[#C5A059] text-sm font-semibold"><span>🏆</span> Koppelwedstrijden</a>
+          <a href="/admin/kamp-izegem" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏅</span> Kamp. Izegem</a>
+          <a href="/admin/specials/vrouwvissing" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>👩</span> Vrouwvissing</a>
+          <a href="/admin/specials/seniorenvissing" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>👴</span> Seniorenvissing</a>
+          <a href="/admin/tips-tricks" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>💡</span> Tips &amp; Tricks</a>
+          <a href="/admin/fotos" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📸</span> Foto's</a>
+        </nav>
+        <div class="p-4 border-t border-white/10"><a href="/" class="text-sm text-slate-400 hover:text-white transition-colors flex items-center gap-2"><span>←</span> Terug naar Website</a></div>
+      </aside>
+      <div id="mobile-overlay" class="fixed inset-0 bg-black/50 z-40 hidden" style="margin-top:60px;"></div>
+      <aside id="mobile-sidebar" class="md:hidden fixed top-[60px] left-0 w-72 bg-[#003366] text-white z-50 flex-col border-r-4 border-[#C5A059] h-[calc(100vh-60px)] hidden shadow-2xl">
+        <nav class="flex-1 p-4 space-y-1 pt-6">
+          <a href="/" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏠</span> Home</a>
+          <a href="/admin/wedstrijden" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏆</span> Wedstrijden</a>
+          <a href="/admin/kalender" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📅</span> Kalender</a>
+          <a href="/admin/visstekken" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📍</span> Visstekken</a>
+          <a href="/admin/visstekken-abc" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🌐</span> ABC Visstekken</a>
+          <a href="/admin/legende" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📖</span> Legende</a>
+          
+          <a href="/admin/koppelwedstrijden" class="flex items-center gap-3 bg-white/10 rounded-lg border-l-4 border-[#C5A059] text-sm font-semibold"><span>🏆</span> Koppelwedstrijden</a>
+          <a href="/admin/kamp-izegem" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏅</span> Kamp. Izegem</a>
+          <a href="/admin/specials/vrouwvissing" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>👩</span> Vrouwvissing</a>
+          <a href="/admin/specials/seniorenvissing" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>👴</span> Seniorenvissing</a>
+          <a href="/admin/tips-tricks" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>💡</span> Tips &amp; Tricks</a>
+          <a href="/admin/fotos" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📸</span> Foto's</a>
+        </nav>
+        <div class="p-4 border-t border-white/10"><a href="/" class="text-sm text-slate-400 hover:text-white transition-colors flex items-center gap-2"><span>←</span> Terug</a></div>
+      </aside>
+      <section class="flex-1 flex flex-col min-h-[calc(100vh-60px)]">
+        <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 md:px-8">
+          <div class="flex items-center gap-3"><span class="text-slate-400 text-sm">Admin</span><span class="text-slate-300 text-sm">/</span><span class="font-semibold text-sm">Koppelwedstrijden</span></div>
+          <div class="flex items-center gap-3">
+            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Jaar</label>
+            <select id="jaar-select" class="px-3 py-2 rounded-lg border border-slate-200 text-sm bg-white font-semibold">
+              {years.map(y => (
+                <option value={y} selected={y === currentYear}>{y}</option>
+              ))}
+            </select>
+            <span id="save-status" class="text-xs text-slate-400 hidden"></span>
+          </div>
+        </header>
+        <div class="p-4 md:p-6 space-y-4 flex-1 overflow-y-auto">
+          
+          <div class="flex items-center justify-between">
+            <p class="text-xs text-slate-500">Beheer de Specials-pagina inhoud. <span id="count-nr" class="font-bold text-[#003366]">0</span> secties</p>
+            <button id="add-btn" class="bg-[#003366] text-white text-xs font-bold px-4 py-2 rounded-lg hover:bg-[#002244] transition">➕ Nieuwe Sectie</button>
+          </div>
+
+          <div id="specials-list" class="space-y-3">
+          </div>
+
+        </div>
+      </section>
+    </div>
+  </main>
+</Layout>
+
+<style is:global>
+  body { overflow-x: hidden; }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 3px; }
+  .spec-content { min-height: 80px; font-family: monospace; font-size: 13px; }
+  .wedstrijd-table table { font-size: 12px; }
+  .wedstrijd-table table input { font-size: 12px; }
+  .wedstrijd-table table input[type=number] { -moz-appearance: textfield; }
+  .wedstrijd-table table input[type=number]::-webkit-outer-spin-button,
+  .wedstrijd-table table input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  .ranking-cell, .totaal-cell { min-width: 60px; }
+  .wedstrijd-table th { white-space: nowrap; }
+</style>
+
+<script>
+(() => {
+  let items = [];
+  let currentYear = new Date().getFullYear();
+
+  const list = document.getElementById('specials-list');
+  const countNr = document.getElementById('count-nr');
+  const saveStatus = document.getElementById('save-status');
+  const jaarSelect = document.getElementById('jaar-select');
+
+  async function loadData() {
+    currentYear = jaarSelect.value;
+    try {
+      const res = await fetch('/api/specials?year=' + currentYear);
+      items = await res.json();
+      if (!Array.isArray(items)) items = [];
+      render();
+    } catch (e) {
+      list.innerHTML = '<div class="p-6 text-center text-red-500">Fout bij laden.</div>';
+    }
+  }
+
+  jaarSelect.onchange = () => loadData();
+
+  function render() {
+    countNr.textContent = items.length;
+    if (!items.length) {
+      list.innerHTML = '<div class="p-8 text-center text-slate-400 italic border-2 border-dashed border-slate-200 rounded-xl">Nog geen secties. Klik op "➕ Nieuwe Sectie" om te beginnen.</div>';
+      return;
+    }
+
+    let html = '';
+    items.forEach((item, idx) => {
+      const checked = item.visible !== false ? 'checked' : '';
+      const type = item.type || 'content';
+      const isWedstrijd = type === 'wedstrijd';
+
+      const wedstrijdHtml = renderWedstrijdFields(item, idx);
+
+      html += `<div class="bg-white rounded-xl border border-slate-200 shadow-sm p-5" data-idx="${idx}">
+        <div class="flex items-center gap-4 mb-4">
+          <div class="flex-1">
+            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Titel</label>
+            <input type="text" class="item-title w-full mt-1 px-3 py-2 rounded-lg border border-slate-200 text-sm font-bold" value="${escapeHtml(item.title || '')}">
+          </div>
+          <div class="w-48 wedstrijd-date-field" style="${isWedstrijd ? '' : 'display:none'}">
+            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Datum</label>
+            <input type="date" class="item-date w-full mt-1 px-3 py-2 rounded-lg border border-slate-200 text-sm bg-white" value="${escapeHtml(item.date || '')}">
+          </div>
+          <div class="w-20">
+            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Zichtbaar</label>
+            <div class="mt-2 flex justify-center">
+              <input type="checkbox" class="item-visible w-5 h-5 accent-[#003366] cursor-pointer" ${checked}>
+            </div>
+          </div>
+          <div>
+            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Acties</label>
+            <div class="flex gap-2 mt-1">
+              <button class="delete-btn bg-red-50 text-red-600 text-xs font-bold px-3 py-2 rounded-lg hover:bg-red-100 transition border border-red-200">🗑</button>
+            </div>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Type</label>
+          <select class="item-type block w-full mt-1 px-3 py-2 rounded-lg border border-slate-200 text-sm bg-white">
+            <option value="content" ${type === 'content' ? 'selected' : ''}>📄 HTML Inhoud</option>
+            <option value="wedstrijd" ${isWedstrijd ? 'selected' : ''}>🎣 Koppelwedstrijd</option>
+          </select>
+        </div>
+        <div class="content-fields" style="${isWedstrijd ? 'display:none' : ''}">
+          <div class="mb-3">
+            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Inhoud (HTML)</label>
+            <textarea class="item-content spec-content w-full mt-1 px-3 py-2 rounded-lg border border-slate-200 text-sm">${escapeHtml(item.content || '')}</textarea>
+          </div>
+          <div>
+            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Afbeelding URL (optioneel)</label>
+            <input type="text" class="item-image w-full mt-1 px-3 py-2 rounded-lg border border-slate-200 text-sm" value="${escapeHtml(item.image || '')}">
+          </div>
+        </div>
+        <div class="wedstrijd-fields" style="${isWedstrijd ? '' : 'display:none'}">
+          ${wedstrijdHtml}
+        </div>
+      </div>`;
+    });
+    list.innerHTML = html;
+
+    list.querySelectorAll('.item-type').forEach(sel => {
+      sel.onchange = () => {
+        const card = sel.closest('[data-idx]');
+        const contentFields = card.querySelector('.content-fields');
+        const wedstrijdFields = card.querySelector('.wedstrijd-fields');
+        const dateField = card.querySelector('.wedstrijd-date-field');
+        if (sel.value === 'wedstrijd') {
+          contentFields.style.display = 'none';
+          wedstrijdFields.style.display = 'block';
+          if (dateField) dateField.style.display = 'block';
+        } else {
+          contentFields.style.display = 'block';
+          wedstrijdFields.style.display = 'none';
+          if (dateField) dateField.style.display = 'none';
+        }
+        collectAndSave();
+      };
+    });
+
+    list.querySelectorAll('.delete-btn').forEach((btn, idx) => {
+      btn.onclick = () => {
+        if (confirm(`Verwijder sectie "${items[idx].title || 'onbekend'}"?`)) {
+          items.splice(idx, 1);
+          render();
+          autoSave();
+        }
+      };
+    });
+
+    list.querySelectorAll('.add-table-btn').forEach(btn => {
+      btn.onclick = () => {
+        const sectionIdx = parseInt(btn.dataset.sectionIdx);
+        const item = items[sectionIdx];
+        if (!item) return;
+        item.tables = item.tables || [];
+        item.tables.push({
+          name: 'Reeks ' + (item.tables.length + 1),
+          visible: true,
+          rows: Array.from({length: 15}, () => ({deeln1: '', deeln2: '', gewicht1: 0, gewicht2: 0}))
+        });
+        render();
+        autoSave();
+      };
+    });
+
+    list.querySelectorAll('.delete-table').forEach(btn => {
+      btn.onclick = () => {
+        const card = btn.closest('[data-idx]');
+        const sectionIdx = parseInt(card.dataset.idx);
+        const tIdx = parseInt(btn.dataset.tidx);
+        const item = items[sectionIdx];
+        if (!item || !item.tables) return;
+        if (confirm('Deze tabel verwijderen?')) {
+          item.tables.splice(tIdx, 1);
+          render();
+          autoSave();
+        }
+      };
+    });
+
+    list.querySelectorAll('input:not(.gewicht1):not(.gewicht2), textarea, select').forEach(el => {
+      el.onchange = () => collectAndSave();
+    });
+
+    setupWedstrijdInputs();
+  }
+
+  function renderWedstrijdFields(item, sectionIdx) {
+    const tables = item.tables && item.tables.length ? item.tables : emptyTables();
+    let html = '';
+    tables.forEach((table, tIdx) => {
+      const computed = computeTable(table.rows);
+      const visible = table.visible !== false;
+      html += `<div class="wedstrijd-table bg-slate-50 rounded-lg p-4 border border-slate-200 mb-4">
+        <div class="flex items-center gap-3 mb-3">
+          <input type="text" class="table-name flex-1 px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm font-bold" value="${escapeHtml(table.name || 'Reeks ' + (tIdx + 1))}">
+          <label class="flex items-center gap-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider cursor-pointer">
+            <input type="checkbox" class="table-visible w-4 h-4 accent-[#003366] cursor-pointer" ${visible ? 'checked' : ''}>
+            Zichtbaar
+          </label>
+          ${tables.length > 1 ? `<button class="delete-table bg-red-50 text-red-600 text-xs font-bold px-3 py-2 rounded-lg hover:bg-red-100 transition border border-red-200" data-tidx="${tIdx}">🗑</button>` : ''}
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse">
+            <thead>
+              <tr class="bg-[#003366] text-white text-xs">
+                <th class="p-2 text-center font-bold">Ranking</th>
+                <th class="p-2 text-left font-bold">Deeln 1</th>
+                <th class="p-2 text-left font-bold">Deeln 2</th>
+                <th class="p-2 text-center font-bold">Gewicht 1 (gr)</th>
+                <th class="p-2 text-center font-bold">Gewicht 2 (gr)</th>
+                <th class="p-2 text-center font-bold">Totaal (gr)</th>
+              </tr>
+            </thead>
+            <tbody>`;
+      for (let rIdx = 0; rIdx < 15; rIdx++) {
+        const row = table.rows[rIdx] || { deeln1: '', deeln2: '', gewicht1: 0, gewicht2: 0 };
+        let g1 = parseFloat(row.gewicht1) || 0;
+        let g2 = parseFloat(row.gewicht2) || 0;
+        if (Math.abs(g1) >= 1000) g1 = g1 / 1000;
+        if (Math.abs(g2) >= 1000) g2 = g2 / 1000;
+        const totaal = (g1 + g2).toFixed(3);
+        const ranking = computed.rankings[rIdx] || (rIdx + 1);
+        html += `<tr class="border-b border-slate-200 text-xs hover:bg-white/60">
+          <td class="p-2 font-bold text-center">${ranking}</td>
+          <td class="p-2"><input type="text" class="deeln1 w-56 px-2 py-1 rounded border border-slate-200 bg-white" value="${escapeHtml(row.deeln1 || '')}"></td>
+          <td class="p-2"><input type="text" class="deeln2 w-56 px-2 py-1 rounded border border-slate-200 bg-white" value="${escapeHtml(row.deeln2 || '')}"></td>
+          <td class="p-2 text-center"><input type="number" class="gewicht1 w-20 px-2 py-1 rounded border border-slate-200 bg-white" value="${g1 || ''}"></td>
+          <td class="p-2 text-center"><input type="number" class="gewicht2 w-20 px-2 py-1 rounded border border-slate-200 bg-white" value="${g2 || ''}"></td>
+          <td class="p-2 text-center font-bold">${totaal} gr</td>
+        </tr>`;
+      }
+      html += `</tbody></table></div></div>`;
+    });
+    html += `<button class="add-table-btn bg-[#003366]/10 text-[#003366] text-xs font-bold px-4 py-2 rounded-lg hover:bg-[#003366]/20 transition border border-[#003366]/20 mt-2" data-section-idx="${sectionIdx}">➕ Tabel toevoegen</button>`;
+    return html;
+  }
+
+  function emptyTables() {
+    return [0,1,2].map(i => ({
+      name: 'Reeks ' + (i + 1),
+      visible: true,
+      rows: Array.from({length: 15}, () => ({deeln1: '', deeln2: '', gewicht1: 0, gewicht2: 0}))
+    }));
+  }
+
+  function computeTable(rows) {
+    const withTotal = rows.map((r, i) => ({
+      idx: i,
+      totaal: (parseFloat(r.gewicht1) || 0) + (parseFloat(r.gewicht2) || 0)
+    }));
+    const sorted = [...withTotal].sort((a, b) => b.totaal - a.totaal);
+    const rankings = {};
+    sorted.forEach((r, rank) => { rankings[r.idx] = rank + 1; });
+    return { rankings, totals: Object.fromEntries(withTotal.map(r => [r.idx, r.totaal])) };
+  }
+
+  function setupWedstrijdInputs() {
+    list.querySelectorAll('.wedstrijd-fields input').forEach(el => {
+      el.onchange = () => collectAndSave();
+    });
+    list.querySelectorAll('.gewicht1, .gewicht2').forEach(el => {
+      el.onblur = () => {
+        const v = parseFloat(el.value) || 0;
+        if (Math.abs(v) >= 1000) {
+          el.value = (v / 1000).toFixed(3);
+        }
+        el.oninput();
+      };
+      el.oninput = () => {
+        const table = el.closest('.wedstrijd-table');
+        if (!table) return;
+        const inputs = table.querySelectorAll('.gewicht1, .gewicht2');
+        const rows = table.querySelectorAll('tbody tr');
+        const gewichten = [];
+        rows.forEach((tr, i) => {
+          const g1 = parseFloat(tr.querySelector('.gewicht1')?.value) || 0;
+          const g2 = parseFloat(tr.querySelector('.gewicht2')?.value) || 0;
+          gewichten.push({ idx: i, g1, g2, totaal: g1 + g2 });
+        });
+        const sorted = [...gewichten].sort((a, b) => b.totaal - a.totaal);
+        const rankings = {};
+        sorted.forEach((r, rank) => { rankings[r.idx] = rank + 1; });
+        rows.forEach((tr, i) => {
+          const data = gewichten[i];
+          const tds = tr.querySelectorAll('td');
+          if (tds.length >= 6) {
+            tds[0].textContent = rankings[i];
+            tds[5].textContent = data.totaal.toFixed(3) + ' gr';
+          }
+        });
+      };
+    });
+  }
+
+  function escapeHtml(text) {
+    const d = document.createElement('div');
+    d.textContent = text;
+    return d.innerHTML;
+  }
+
+  function collectData() {
+    const cards = list.querySelectorAll('[data-idx]');
+    const newItems = [];
+    cards.forEach(card => {
+      const idx = parseInt(card.dataset.idx);
+      const orig = items[idx] || {};
+      const type = card.querySelector('.item-type')?.value || 'content';
+      const base = {
+        id: orig.id || Date.now() + Math.random(),
+        title: card.querySelector('.item-title').value.trim() || 'Onbekend',
+        type: type,
+        order: orig.order || 0,
+        visible: card.querySelector('.item-visible').checked
+      };
+      if (type === 'content') {
+        base.content = card.querySelector('.item-content')?.value.trim() || '';
+        base.image = card.querySelector('.item-image')?.value.trim() || '';
+      } else {
+        base.content = '';
+        base.image = '';
+        base.date = card.querySelector('.item-date')?.value || '';
+        const tableEls = card.querySelectorAll('.wedstrijd-table');
+        base.tables = [];
+        tableEls.forEach(tableEl => {
+          const name = tableEl.querySelector('.table-name')?.value || 'Reeks';
+          const visible = tableEl.querySelector('.table-visible')?.checked !== false;
+          const rows = [];
+          tableEl.querySelectorAll('tbody tr').forEach(tr => {
+            const raw1 = parseFloat(tr.querySelector('.gewicht1')?.value) || 0;
+            const raw2 = parseFloat(tr.querySelector('.gewicht2')?.value) || 0;
+            rows.push({
+              deeln1: tr.querySelector('.deeln1')?.value || '',
+              deeln2: tr.querySelector('.deeln2')?.value || '',
+              gewicht1: Math.abs(raw1) >= 1000 ? raw1 / 1000 : raw1,
+              gewicht2: Math.abs(raw2) >= 1000 ? raw2 / 1000 : raw2
+            });
+          });
+          base.tables.push({ name, visible, rows });
+        });
+      }
+      newItems.push(base);
+    });
+    return newItems;
+  }
+
+  let saveTimeout;
+  function collectAndSave() {
+    clearTimeout(saveTimeout);
+    saveTimeout = setTimeout(() => {
+      items = collectData();
+      autoSave();
+    }, 500);
+  }
+
+  async function autoSave() {
+    try {
+      const res = await fetch('/api/specials?year=' + currentYear, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(items)
+      });
+      const result = await res.json();
+      if (result.success) showStatus('✅ Opgeslagen!', 'text-green-600');
+      else showStatus('❌ Fout', 'text-red-600');
+    } catch (e) {
+      showStatus('❌ Fout', 'text-red-600');
+    }
+  }
+
+  let statusTimeout;
+  function showStatus(msg, cls) {
+    saveStatus.textContent = msg;
+    saveStatus.className = `text-xs ${cls} font-bold`;
+    saveStatus.classList.remove('hidden');
+    clearTimeout(statusTimeout);
+    statusTimeout = setTimeout(() => saveStatus.classList.add('hidden'), 2000);
+  }
+
+  document.getElementById('add-btn').onclick = () => {
+    items.push({
+      id: Date.now(),
+      title: 'Nieuwe sectie',
+      type: 'content',
+      content: '<p>Vul hier de inhoud in...</p>',
+      image: '',
+      order: items.length + 1,
+      visible: true
+    });
+    render();
+    autoSave();
+  };
+
+  const menuBtn = document.getElementById('mobile-menu-btn');
+  const sidebar = document.getElementById('mobile-sidebar');
+  const overlay = document.getElementById('mobile-overlay');
+  if (menuBtn && sidebar && overlay) {
+    function toggleMenu() {
+      const hidden = sidebar.classList.contains('hidden');
+      sidebar.classList.toggle('hidden', !hidden);
+      overlay.classList.toggle('hidden', !hidden);
+    }
+    menuBtn.onclick = toggleMenu;
+    overlay.onclick = toggleMenu;
+    const menuItems = sidebar.querySelectorAll('nav a');
+    menuItems.forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.preventDefault();
+        setTimeout(() => { window.location.href = item.href; }, 100);
+      });
+    });
+  }
+
+  loadData();
+})();
+</script>

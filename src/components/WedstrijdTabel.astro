@@ -1,0 +1,56 @@
+---
+import { getWedstrijdData, type VisserResultaat } from '../lib/csvParser';
+
+interface Props {
+    groep: string;
+    jaar: string;
+}
+
+const { groep, jaar } = Astro.props;
+const vissers: VisserResultaat[] = getWedstrijdData(groep, jaar);
+
+// Kleuren voor de trendpijltjes
+const trendIcons: Record<string, { char: string; color: string }> = {
+    stijger: { char: '▲', color: 'text-green-600' },
+    daler: { char: '▼', color: 'text-red-600' },
+    gelijk: { char: '▬', color: 'text-gray-400' }
+};
+---
+
+<div class="w-full rounded-xl border border-gray-200 shadow-sm bg-white overflow-x-auto uitslagen-table-container">
+    <table class="w-full text-left border-collapse">
+        <thead class="bg-kvvi-blue text-white">
+            <tr>
+                <th class="p-4 font-semibold w-20">Stand</th>
+                <th class="p-4 font-semibold min-w-[180px]">Visser</th>
+                <th class="p-4 font-semibold hidden md:table-cell">Plaats</th>
+                <th class="p-4 font-semibold">Totaal (gr)</th>
+                <th class="p-4 font-semibold text-center">Trend</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+            {vissers.map((visser) => (
+                <tr class="hover:bg-blue-50 transition-colors">
+                    <td class="p-4 font-bold text-lg">#{visser.huidigeStand}</td>
+                    <td class="p-4">
+                        <span class="block font-medium">{visser.naam}</span>
+                        <span class="text-xs text-gray-500 md:hidden">{visser.plaats}</span>
+                    </td>
+                    <td class="p-4 hidden md:table-cell text-gray-600">{visser.plaats}</td>
+                    <td class="p-4 font-mono font-semibold">{visser.totaalGewicht.toLocaleString('nl-BE')}</td>
+                    <td class="p-4 text-center">
+                        <span class={`text-xl ${trendIcons[visser.trend].color}`} title={`Vorige stand: ${visser.vorigeStand}`}>
+                            {trendIcons[visser.trend].char}
+                        </span>
+                    </td>
+                </tr>
+            ))}
+        </tbody>
+    </table>
+</div>
+
+{vissers.length === 0 && (
+    <div class="p-8 text-center bg-gray-100 rounded-xl border-2 border-dashed border-gray-300">
+        <p class="text-gray-500 italic">Geen gegevens gevonden voor {groep} in {jaar}.</p>
+    </div>
+)}

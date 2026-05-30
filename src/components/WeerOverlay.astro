@@ -1,0 +1,182 @@
+---
+// Weather overlay for the fishing map
+// Open-Meteo API (free, no key needed)
+// Coordinates: Izegem, Belgium ~50.92, 3.21
+---
+<div id="weather-overlay">
+  <div class="weather-scroll" id="weather-scroll">
+    <div class="weather-card loading" id="weather-loading">
+      <span class="weather-spinner"></span>
+    </div>
+  </div>
+</div>
+
+<style>
+  #weather-overlay {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform-origin: top center;
+    transform: translateX(-50%) scale(0.75);
+    z-index: 9999;
+    pointer-events: none;
+    max-width: 95vw;
+  }
+  .weather-scroll {
+    display: flex;
+    gap: 14px;
+    overflow-x: auto;
+    padding: 8px 6px;
+    scrollbar-width: thin;
+    pointer-events: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .weather-scroll::-webkit-scrollbar { height: 4px; }
+  .weather-scroll::-webkit-scrollbar-track { background: transparent; }
+  .weather-scroll::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.3);
+    border-radius: 4px;
+  }
+
+  /* Global styles: JS-generated elements miss scoped data attributes */
+  :global(.weather-card) {
+    flex: 0 0 auto;
+    min-width: 70px;
+    padding: 14px 16px 12px;
+    border-radius: 14px;
+    background: rgba(0, 51, 102, 0.45);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+    text-align: center;
+    color: #fff;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    transition: transform 0.2s, box-shadow 0.2s;
+    pointer-events: auto;
+  }
+  :global(.weather-card:hover) {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 28px rgba(0,0,0,0.4);
+  }
+  .weather-card.loading {
+    min-width: 200px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .weather-spinner {
+    width: 24px;
+    height: 24px;
+    border: 3px solid rgba(255,255,255,0.15);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  :global(.weather-top) {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 2px;
+  }
+  :global(.weather-day) {
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: rgba(255,255,255,0.85);
+  }
+  :global(.weather-date) {
+    font-size: 16px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.55);
+  }
+  :global(.weather-icon) {
+    font-size: 90px;
+    line-height: 1;
+    margin-bottom: 2px;
+  }
+  :global(.weather-temp) {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    text-align: center;
+    margin-bottom: 4px;
+  }
+  :global(.weather-temp::after) {
+    content: "\00B0";
+  }
+
+  @media (min-width: 1025px) and (max-width: 1199px) {
+    #weather-overlay { transform: translateX(calc(-50% - 80px)) scale(0.75); }
+    :global(.weather-card) {
+      min-width: 55px !important;
+      padding: 8px 10px 6px !important;
+    }
+    .weather-scroll { gap: 6px; }
+    :global(.weather-icon) { font-size: 48px !important; }
+    :global(.weather-day),
+    :global(.weather-date) { font-size: 12px !important; }
+    :global(.weather-temp) { font-size: 13px !important; }
+  }
+  @media (max-width: 1024px) {
+    #weather-overlay { display: none; }
+  }
+</style>
+
+<script>
+(async function() {
+  const LAT = 50.92;
+  const LON = 3.21;
+  const URL = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_sum,windspeed_10m_max&current_weather=true&timezone=Europe%2FBrussels&forecast_days=8`;
+
+  const container = document.getElementById('weather-scroll');
+  if (!container) return;
+
+  const weekdayShort = ['zo','ma','di','wo','do','vr','za'];
+
+  function weatherIcon(wmo) {
+    if (wmo >= 0 && wmo <= 1) return '☀️';
+    if (wmo === 2) return '⛅';
+    if (wmo === 3) return '☁️';
+    if (wmo >= 45 && wmo <= 48) return '🌫';
+    if (wmo >= 51 && wmo <= 67) return '🌧';
+    if (wmo >= 80 && wmo <= 82) return '🌦';
+    if (wmo >= 95 && wmo <= 99) return '⛈';
+    return '☀️';
+  }
+
+  try {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 8000);
+    const res = await fetch(URL, { signal: controller.signal });
+    clearTimeout(timer);
+    if (!res.ok) throw new Error('Open-Meteo: ' + res.status);
+    const json = await res.json();
+    const daily = json.daily;
+    const today = new Date();
+    let html = '';
+    for (let i = 0; i < daily.time.length; i++) {
+      const date = new Date(daily.time[i] + 'T12:00:00');
+      const dayName = weekdayShort[date.getDay()];
+      const dayNum = String(date.getDate());
+      const temp = Math.round(daily.temperature_2m_max[i]);
+      const icon = weatherIcon(daily.weathercode[i]);
+      html += `<div class="weather-card">
+        <div class="weather-top">
+          <span class="weather-day">${dayName}</span>
+          <span class="weather-date">${dayNum}</span>
+        </div>
+        <div class="weather-icon">${icon}</div>
+        <div class="weather-temp">${temp}</div>
+      </div>`;
+    }
+    container.innerHTML = html;
+  } catch (e) {
+    container.innerHTML = '<div class="weather-card" style="min-width:140px;padding:10px 14px;font-size:12px;color:rgba(255,255,255,0.5);">Weer niet beschikbaar</div>';
+  }
+})();
+</script>

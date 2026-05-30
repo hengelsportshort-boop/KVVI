@@ -1,0 +1,666 @@
+---
+/**
+ * MODULE 5 — FAI UI SYSTEM
+ * 
+ * Fishing Activity Index panel.
+ * Grafieken gebruiken echte weerdata (wind km/u, druk hPa, neerslag mm, W/m²).
+ * Toont richting pas als data geladen is.
+ * Vaste canvas hoogte voor alle elementen voorkomt layout shifts.
+ */
+export interface Props { width?: number; }
+const { width = 440 } = Astro.props;
+---
+
+<div id="fai-panel" class="fai-panel hidden">
+  <div class="fai-header">
+    <span class="fai-title">
+      <span class="fai-icon">🎯</span> FAI — Visactiviteit Index
+    </span>
+    <div class="fai-header-actions">
+      <button id="fai-windanim" class="fai-wind-btn" type="button" title="Wind-animatie op de kaart">
+        💨 Wind animatie
+      </button>
+      <button id="fai-close" class="fai-close-btn" aria-label="Sluiten">&times;</button>
+    </div>
+  </div>
+
+  <div id="fai-loading" class="fai-loading">
+    <div class="fai-spinner"></div>
+    <span>Weerdata laden...</span>
+  </div>
+
+  <div id="fai-content" class="fai-content hidden">
+    <!-- Zone + dag -->
+    <div id="fai-zone" class="fai-zone-badge">
+      <span id="fai-zone-name">Zone</span>
+      <span id="fai-zone-desc" class="fai-zone-desc"></span>
+    </div>
+    <div class="fai-day-selector">
+      <label class="fai-label">Dag:</label>
+      <select id="fai-day" class="fai-select">
+        <!-- Wordt dynamisch gevuld met datum labels -->
+      </select>
+    </div>
+
+    <!-- Weather grafieken -->
+    <div class="fai-detail-buttons">
+      <button class="fai-detail-btn active" data-mode="wind">
+        <span class="fai-detail-icon">🌬️</span> Wind
+      </button>
+      <button class="fai-detail-btn" data-mode="pressure">
+        <span class="fai-detail-icon">🧭</span> Druk
+      </button>
+      <button class="fai-detail-btn" data-mode="rain">
+        <span class="fai-detail-icon">🌧️</span> Neerslag
+      </button>
+      <button class="fai-detail-btn" data-mode="radiation">
+        <span class="fai-detail-icon">☀️</span> W/m²
+      </button>
+    </div>
+
+    <div id="fai-detail-view" style="min-height:155px">
+      <div id="fai-detail-header" class="fai-detail-header">Windsnelheid (km/u) & richting</div>
+      <div style="overflow-x:auto;overflow-y:hidden">
+        <canvas id="fai-detail-canvas" width="380" height="133"></canvas>
+      </div>
+    </div>
+
+    <!-- FAI score -->
+    <div class="fai-fai-section">
+      <div class="fai-fai-title">Fishing Activity Index</div>
+      <div style="min-height:140px;overflow-x:auto;overflow-y:hidden">
+        <canvas id="fai-fai-canvas" width="380" height="113"></canvas>
+      </div>
+      <div id="fai-fai-average" class="fai-fai-avg">
+        <span class="fai-fai-avg-label">Gemiddelde visscore</span>
+        <span id="fai-fai-avg-score" class="fai-fai-avg-score">--</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+    .fai-panel {
+    position: absolute !important; top: 80px !important; left: 10px !important; right: auto !important; z-index: 1000 !important;
+    width: 440px !important; max-width: calc(100vw - 20px) !important;
+    max-height: calc(100vh - 20px) !important; overflow-y: auto !important;
+    overflow-x: hidden !important;
+    background: white !important; border: 1px solid #e2e8f0 !important; border-radius: 12px !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15) !important;
+    font-family: system-ui, -apple-system, sans-serif !important; font-size: 13px !important; color: #1e293b !important;
+    display: block;
+    visibility: visible;
+  }
+  .fai-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 14px; border-bottom: 1px solid #e2e8f0;
+    background: #f8fafc; border-radius: 12px 12px 0 0;
+  }
+  .fai-header-actions { display: flex; align-items: center; gap: 8px; }
+  .fai-title { font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 6px; }
+  .fai-wind-btn {
+    border: 1px solid #e2e8f0;
+    background: #fff;
+    color: #0f172a;
+    font-weight: 800;
+    font-size: 10px;
+    padding: 7px 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+    white-space: nowrap;
+  }
+  .fai-wind-btn:hover { background: #f1f5f9; }
+  .fai-wind-btn.active { background: #004A99; color: #fff; border-color: #004A99; }
+  .fai-close-btn { 
+    border: none; 
+    background: #ef4444; 
+    color: white; 
+    font-size: 20px; 
+    cursor: pointer; 
+    width: 32px; 
+    height: 32px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    border-radius: 6px; 
+    transition: all 0.2s; 
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    line-height: 1;
+  }
+  .fai-close-btn:hover { 
+    background: #dc2626; 
+    transform: scale(1.1); 
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  }
+  .fai-loading { display: flex; flex-direction: column; align-items: center; padding: 40px 20px; gap: 12px; color: #64748b; }
+  .fai-spinner { width: 28px; height: 28px; border: 3px solid #e2e8f0; border-top-color: #004A99; border-radius: 50%; animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .hidden { display: none !important; }
+
+  .fai-content { padding: 10px 14px; }
+
+  .fai-zone-badge {
+    background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 6px;
+    padding: 6px 10px; margin-bottom: 8px; display: flex; flex-direction: column; gap: 2px;
+  }
+  #fai-zone-name { font-weight: 700; color: #1e40af; font-size: 12px; }
+  #fai-zone-desc { font-size: 10px; color: #64748b; }
+
+  .fai-day-selector {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
+  .fai-label { font-weight: 600; color: #475569; font-size: 12px; }
+  .fai-select {
+    flex: none; min-width: 130px; width: 140px;
+    padding: 4px 8px; border: 1px solid #cbd5e1; border-radius: 6px;
+    font-size: 12px; background: white; cursor: pointer; white-space: nowrap;
+  }
+
+  .fai-detail-buttons {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin-bottom: 6px;
+  }
+  .fai-detail-btn {
+    display: flex; flex-direction: column; align-items: center; gap: 1px;
+    padding: 5px 2px; border: 1px solid #e2e8f0; border-radius: 6px;
+    background: #f8fafc; cursor: pointer;
+    font-size: 10px; font-weight: 600; color: #475569; transition: all 0.12s;
+  }
+  .fai-detail-btn:hover { background: #e2e8f0; }
+  .fai-detail-btn.active { background: #004A99; color: white; border-color: #004A99; }
+  .fai-detail-header { font-size: 10px; font-weight: 600; color: #64748b; margin-bottom: 3px; padding-left: 2px; }
+  .fai-chart-canvas { width: 100%; height: auto; border-radius: 4px; background: #fafafa; display: block; }
+
+  .fai-fai-section {
+    margin-top: 8px; padding-top: 8px; border-top: 1px solid #e2e8f0;
+  }
+  .fai-fai-title { font-size: 11px; font-weight: 700; color: #475569; margin-bottom: 4px; display: flex; align-items: center; gap: 4px; }
+  .fai-fai-avg {
+    display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 4px;
+  }
+  .fai-fai-avg-label { font-size: 11px; color: #64748b; }
+  .fai-fai-avg-score { font-size: 20px; font-weight: 800; }
+
+  .fai-best {
+    background: #fffbeb; border: 1px solid #fde68a; border-radius: 6px;
+    padding: 6px 10px; margin-top: 6px;
+    display: flex; align-items: center; gap: 4px; flex-wrap: wrap;
+    min-height: 28px; box-sizing: border-box;
+    visibility: visible; opacity: 1;
+  }
+  .fai-best.hidden {
+    display: flex !important;
+    visibility: hidden; opacity: 0;
+    pointer-events: none;
+  }
+  .fai-best-label { font-weight: 600; color: #92400e; font-size: 11px; }
+  .fai-best-hours { font-weight: 700; color: #b45309; font-size: 11px; }
+
+  @media (max-width: 1024px) {
+    .fai-panel { left: 0 !important; right: 0 !important; max-width: 100vw !important; width: 100vw !important; border-radius: 0 !important; top: 56px !important; max-height: calc(100vh - 106px) !important; bottom: 50px !important; }
+    .fai-header { border-radius: 0 !important; }
+    .fai-detail-btn { font-size: 9px !important; gap: 0 !important; }
+  }
+</style>
+
+<script>
+(function() {
+  const toggleBtn = document.getElementById('fai-toggle');
+  const panel = document.getElementById('fai-panel');
+  const loading = document.getElementById('fai-loading');
+  const content = document.getElementById('fai-content');
+  const zoneName = document.getElementById('fai-zone-name');
+  const zoneDesc = document.getElementById('fai-zone-desc');
+  const daySelect = document.getElementById('fai-day');
+  const detailBtns = document.querySelectorAll('.fai-detail-btn');
+  const detailHeader = document.getElementById('fai-detail-header');
+  const detailCanvas = document.getElementById('fai-detail-canvas');
+  const faiCanvas = document.getElementById('fai-fai-canvas');
+  const faiAvgScore = document.getElementById('fai-fai-avg-score');
+  const bestSection = document.getElementById('fai-best');
+  const bestHours = document.getElementById('fai-best-hours');
+  const closeBtn = document.getElementById('fai-close');
+  const windAnimBtn = document.getElementById('fai-windanim');
+
+  let faiData = null;
+  let isOpen = false;
+  let currentMode = 'wind';
+  let resizeTimer = null;
+  let windAnimActive = false;
+
+  if (toggleBtn) toggleBtn.addEventListener('click', function() {
+    if (isOpen) close(); else open();
+  });
+  if (closeBtn) closeBtn.addEventListener('click', close);
+
+  function open() {
+    isOpen = true;
+    panel.classList.remove('hidden');
+    if (toggleBtn) toggleBtn.classList.add('active');
+    loadData();
+  }
+  function close() {
+    isOpen = false;
+    panel.classList.add('hidden');
+    if (toggleBtn) toggleBtn.classList.remove('active');
+  }
+
+  window.openFAI = open;
+  window.closeFAI = close;
+
+  async function loadData() {
+    if (loading) loading.classList.remove('hidden');
+    if (content) content.classList.add('hidden');
+    try {
+      let lat = 51.05, lng = 3.0;
+      if (typeof map !== 'undefined' && map && map.getCenter) {
+        const c = map.getCenter(); lat = c.lat; lng = c.lng;
+      }
+      const r = await fetch('/api/fai.json?lat=' + lat + '&lng=' + lng + '&days=7');
+      if (!r.ok) throw new Error('Fout: ' + r.status);
+      faiData = await r.json();
+      render();
+    } catch (e) {
+      console.error('FAI load:', e);
+      if (loading) loading.innerHTML = '<span style="color:#dc2626;"> ' + e.message + '</span>';
+    }
+  }
+
+  function render() {
+    if (!faiData || !faiData.daily || faiData.daily.length === 0) {
+      if (loading) loading.innerHTML = '<span style="color:#dc2626;"> Geen data</span>';
+      return;
+    }
+    if (zoneName && faiData.zone) zoneName.textContent = 'Zone ' + faiData.zone.id + '  ' + faiData.zone.name;
+    if (zoneDesc && faiData.zone) zoneDesc.textContent = faiData.zone.description;
+
+    if (daySelect) {
+      daySelect.innerHTML = '';
+      for (let i = 0; i < faiData.daily.length; i++) {
+        const d = faiData.daily[i];
+        const opt = document.createElement('option');
+        opt.value = '' + d.dayOffset;
+        opt.textContent = d.date || 'Dag ' + (i + 1);
+        daySelect.appendChild(opt);
+      }
+    }
+
+    if (loading) loading.classList.add('hidden');
+    if (content) content.classList.remove('hidden');
+
+    const offset = parseInt(daySelect ? daySelect.value : '0');
+    renderDay(offset);
+  }
+
+  function renderDay(offset) {
+    if (!faiData || !faiData.daily) return;
+    const day = faiData.daily.find(d => d.dayOffset === offset);
+    if (!day) return;
+
+    drawFAIGraph(day);
+
+    if (faiAvgScore) {
+      faiAvgScore.textContent = day.averageScore + '/100';
+      const a = day.averageScore;
+      faiAvgScore.style.color = a >= 65 ? '#166534' : a >= 40 ? '#92400e' : '#991b1b';
+    }
+
+    if (bestSection && bestHours && day.bestHours && day.bestHours.length > 0) {
+      bestSection.classList.remove('hidden');
+      bestHours.textContent = day.bestHours.map(h => h + ':00').join('  ');
+    } else if (bestSection) {
+      bestSection.classList.add('hidden');
+    }
+
+    drawDetailGraph(currentMode, day);
+  }
+
+  detailBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      const mode = this.getAttribute('data-mode');
+      if (mode === currentMode) return;
+      currentMode = mode;
+      detailBtns.forEach(function(b) { b.classList.remove('active'); });
+      this.classList.add('active');
+      var titles = {
+        wind: 'Windsnelheid (km/u) & richting ( )',
+        pressure: 'Luchtdruk (hPa)',
+        rain: 'Neerslag (mm)',
+        radiation: 'Zoninstraling (W/m )'
+      };
+      if (detailHeader) detailHeader.textContent = titles[mode] || mode;
+      var offset = daySelect ? parseInt(daySelect.value) : 0;
+      var day = faiData && faiData.daily.find(function(d) { return d.dayOffset === offset; });
+      if (day) drawDetailGraph(mode, day);
+    });
+  });
+
+  function pushWindVanFAIData(offset) {
+    if (!faiData || !faiData.daily) return;
+    const day = faiData.daily.find(d => d.dayOffset === offset);
+    if (!day || !day.rawWeather || day.rawWeather.length === 0) return;
+    let sumSin = 0, sumCos = 0, sumSpeed = 0, count = 0;
+    for (const h of day.rawWeather) {
+      const wd = h.windDirection, ws = h.windSpeed;
+      if (wd == null || ws == null) continue;
+      const rad = wd * Math.PI / 180;
+      sumSin += Math.sin(rad) * ws;
+      sumCos += Math.cos(rad) * ws;
+      sumSpeed += ws;
+      count++;
+    }
+    if (count === 0) return;
+    const avgDir = (Math.atan2(sumSin, sumCos) * 180 / Math.PI + 360) % 360;
+    const avgSpeed = sumSpeed / count;
+    if (window.kvviWind && window.kvviWind.setWindFromData) {
+      window.kvviWind.setWindFromData(avgSpeed, avgDir);
+    }
+  }
+
+  if (daySelect) {
+    daySelect.addEventListener('change', function() {
+      const offset = parseInt(this.value);
+      renderDay(offset);
+      pushWindVanFAIData(offset);
+    });
+  }
+
+  if (windAnimBtn) {
+    windAnimBtn.addEventListener('click', function() {
+      const offset = daySelect ? parseInt(daySelect.value || '0') : 0;
+      windAnimActive = !windAnimActive;
+      windAnimBtn.classList.toggle('active', windAnimActive);
+      try {
+        if (!window.kvviWind) throw new Error('Wind systeem niet geladen');
+        if (windAnimActive) {
+          if (window.kvviWind.setWindFromData) {
+            pushWindVanFAIData(offset);
+          } else if (window.kvviWind.start) {
+            window.kvviWind.start(offset);
+          }
+        } else {
+          if (window.kvviWind.stop) window.kvviWind.stop();
+        }
+      } catch (e) {
+        windAnimActive = false;
+        windAnimBtn.classList.remove('active');
+        console.error(e);
+      }
+    });
+  }
+
+  window.addEventListener('resize', function() {
+    if (resizeTimer) clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function() {
+      if (isOpen && faiData) {
+        const offset = daySelect ? parseInt(daySelect.value) : 0;
+        const day = faiData.daily.find(function(d) { return d.dayOffset === offset; });
+        if (day) { drawFAIGraph(day); drawDetailGraph(currentMode, day); }
+      }
+    }, 250);
+  });
+
+  // === GRAFIEKEN ===
+  faiCanvas.width = 380;
+  faiCanvas.height = 113;
+  detailCanvas.width = 380;
+  detailCanvas.height = 133;
+
+  var CW = 380;
+
+  // Hover data (opgeslagen voor mouse move)
+  var _detailHours = [], _detailValues = [], _detailMode = '';
+  var _faiHours = [], _faiScores = [];
+
+  function formatWaarde(mode, val) {
+    if (mode === 'wind') return (val || 0).toFixed(0) + ' km/u';
+    if (mode === 'pressure') return (val || 0).toFixed(0) + ' hPa';
+    if (mode === 'rain') return (val || 0).toFixed(1) + ' mm';
+    if (mode === 'radiation') return (val || 0).toFixed(0) + ' W/m²';
+    return val;
+  }
+
+  function addCanvasHover(canvas) {
+    var isFai = canvas === faiCanvas;
+    var padLeft = isFai ? 24 : 32;
+    var padRight = 8;
+
+    canvas.addEventListener('mousemove', function(e) {
+      var rect = canvas.getBoundingClientRect();
+      var mx = (e.clientX - rect.left) * (canvas.width / rect.width);
+
+      var hours = isFai ? _faiHours : _detailHours;
+      var values = isFai ? _faiScores : _detailValues;
+      var mode = isFai ? 'fai' : _detailMode;
+      if (hours.length < 2) return;
+
+      var cw = CW - padLeft - padRight;
+      var i = Math.round((mx - padLeft) / cw * (hours.length - 1));
+      i = Math.max(0, Math.min(hours.length - 1, i));
+      var xx = padLeft + (i / (hours.length - 1)) * cw;
+
+      var ctx = canvas.getContext('2d');
+      var ch = canvas.height;
+
+      // Herteken de graph (clear vorige tooltip)
+      if (isFai) drawFAIGraph(_lastDayData);
+      else drawDetailGraph(_detailMode, _lastDayData);
+
+      // Verticale lijn
+      ctx.strokeStyle = 'rgba(0,0,0,0.3)'; ctx.lineWidth = 0.8;
+      ctx.beginPath(); ctx.moveTo(xx, 0); ctx.lineTo(xx, ch); ctx.stroke();
+
+      // Waarde label
+      var label;
+      if (isFai) {
+        label = hours[i] + ':00  ' + values[i] + '/100';
+      } else if (mode === 'wind') {
+        var spd = values[i].windSpeed || 0;
+        var dir = values[i].windDirection || 0;
+        label = hours[i] + ':00  ' + spd.toFixed(0) + ' km/u  ' + dir.toFixed(0) + '°';
+      } else if (mode === 'pressure') {
+        label = hours[i] + ':00  ' + (values[i].pressure || 0).toFixed(0) + ' hPa';
+      } else if (mode === 'rain') {
+        label = hours[i] + ':00  ' + (values[i].precipitation || 0).toFixed(1) + ' mm';
+      } else if (mode === 'radiation') {
+        label = hours[i] + ':00  ' + (values[i].radiation || 0).toFixed(0) + ' W/m²';
+      }
+
+      if (label) {
+        ctx.font = 'bold 12px -apple-system, Helvetica, Arial, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+        var tw = ctx.measureText(label).width;
+        var tx = Math.max(tw/2 + 4, Math.min(CW - tw/2 - 4, xx));
+        var ty = 12;
+        ctx.fillStyle = 'rgba(0,0,0,0.8)';
+        ctx.beginPath(); ctx.roundRect ? ctx.roundRect(tx - tw/2 - 4, ty - 8, tw + 8, 18, 3) : null;
+        if (ctx.roundRect) { ctx.fill(); } else {
+          ctx.fillRect(tx - tw/2 - 4, ty - 8, tw + 8, 18);
+        }
+        ctx.fillStyle = '#fff'; ctx.fillText(label, tx, ty + 8);
+      }
+    });
+
+    canvas.addEventListener('mouseleave', function() {
+      if (_lastDayData) {
+        if (canvas === faiCanvas) drawFAIGraph(_lastDayData);
+        else drawDetailGraph(_detailMode, _lastDayData);
+      }
+    });
+  }
+
+  var _lastDayData = null;
+
+  addCanvasHover(faiCanvas);
+  addCanvasHover(detailCanvas);
+
+  function drawFAIGraph(dayData) {
+    _lastDayData = dayData;
+    if (!faiCanvas) return;
+    var ctx = faiCanvas.getContext('2d');
+    if (!ctx) return;
+    ctx.clearRect(0, 0, CW, 113);
+
+    var pad = { top: 10, bottom: 18, left: 24, right: 8 };
+    var cw = CW - pad.left - pad.right;
+    var ch = 113 - pad.top - pad.bottom;
+
+    var hours = [];
+    var scores = [];
+    for (var hh = 7; hh <= 18; hh++) {
+      var d = dayData.hourly && dayData.hourly.find(function(r) { return r.hour === hh; });
+      if (d) { hours.push(hh); scores.push(d.score); }
+    }
+    _faiHours = hours; _faiScores = scores;
+    if (hours.length === 0) {
+      ctx.fillStyle = '#94a3b8'; ctx.font = '11px system-ui'; ctx.textAlign = 'center';
+      ctx.fillText('Bezig met laden...', CW/2, 56);
+      return;
+    }
+
+    function x(i) { return pad.left + (i / (hours.length - 1 || 1)) * cw; }
+    function y(s) { return pad.top + ch - (s / 100) * ch; }
+
+    for (var v = 0; v <= 100; v += 25) { var yy = y(v);
+      ctx.strokeStyle = 'rgba(148,163,184,0.08)'; ctx.lineWidth = 0.5;
+      ctx.beginPath(); ctx.moveTo(pad.left, yy); ctx.lineTo(CW - pad.right, yy); ctx.stroke(); }
+    for (var v = 0; v <= 100; v += 25) { var yy = y(v);
+      ctx.fillStyle = '#94a3b8'; ctx.font = '8px system-ui'; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+      ctx.fillText(''+v, pad.left - 4, yy); }
+
+    ctx.fillStyle = 'rgba(0,74,153,0.04)';
+    ctx.beginPath();
+    for (var i = 0; i < hours.length; i++) {
+      if (i === 0) ctx.moveTo(x(i), y(scores[i]));
+      else { var px = x(i-1), py = y(scores[i-1]); ctx.bezierCurveTo((px+x(i))/2, py, (px+x(i))/2, y(scores[i]), x(i), y(scores[i])); }
+    }
+    ctx.lineTo(x(hours.length-1), pad.top+ch); ctx.lineTo(x(0), pad.top+ch); ctx.closePath(); ctx.fill();
+
+    ctx.strokeStyle = '#004A99'; ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    for (var i = 0; i < hours.length; i++) {
+      var xx = x(i), yy = y(scores[i]);
+      if (i === 0) ctx.moveTo(xx, yy);
+      else { var px = x(i-1), py = y(scores[i-1]); ctx.bezierCurveTo((px+xx)/2, py, (px+xx)/2, yy, xx, yy); }
+    }
+    ctx.stroke();
+    for (var i = 0; i < hours.length; i++) {
+      var xx = x(i), yy = y(scores[i]);
+      ctx.beginPath(); ctx.arc(xx, yy, 2.5, 0, Math.PI*2); ctx.fillStyle = '#fff'; ctx.fill(); ctx.strokeStyle = '#004A99'; ctx.lineWidth = 1.2; ctx.stroke();
+    }
+
+    ctx.fillStyle = '#94a3b8'; ctx.font = '8px system-ui'; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    for (var i = 0; i < hours.length; i++) {
+      var xx = pad.left + (i / (hours.length-1 || 1)) * cw;
+      ctx.fillText(hours[i]+':00', xx, pad.top+ch+3); }
+  }
+
+  function getDayHours(dayData) {
+    var h = [], v = [];
+    if (dayData.rawWeather) {
+      for (var hh = 7; hh <= 18; hh++) { var d = dayData.rawWeather.find(function(r) { return r.hour === hh; }); if (d) { h.push(hh); v.push(d); } }
+    } else if (dayData.hourly) {
+      for (var hh = 7; hh <= 18; hh++) { var d = dayData.hourly.find(function(r) { return r.hour === hh; }); if (d) { h.push(hh); v.push({hour:hh,windSpeed:0,pressure:0,precipitation:0,radiation:0}); } }
+    }
+    return {hours:h, values:v};
+  }
+
+  function drawDetailGraph(mode, dayData) {
+    if (!detailCanvas) return;
+    var ctx = detailCanvas.getContext('2d');
+    if (!ctx) return;
+    ctx.clearRect(0, 0, CW, 133);
+
+    var pad = { top: 12, bottom: 20, left: 32, right: 8 };
+    var cw = CW - pad.left - pad.right;
+    var ch = 133 - pad.top - pad.bottom;
+
+    var data = getDayHours(dayData);
+    var hours = data.hours, values = data.values;
+    _detailHours = hours; _detailValues = values; _detailMode = mode;
+    if (hours.length === 0) {
+      ctx.fillStyle = '#94a3b8'; ctx.font = '11px system-ui'; ctx.textAlign = 'center';
+      ctx.fillText('Bezig met laden...', CW/2, 66); return;
+    }
+
+    var minY, maxY, yStep, color;
+    switch (mode) {
+      case 'wind':     minY = 0; maxY = 40; yStep = 10; color = '#3b82f6'; break;
+      case 'pressure': minY = 990; maxY = 1040; yStep = 10; color = '#8b5cf6'; break;
+      case 'rain':     minY = 0; maxY = 15; yStep = 3; color = '#0284c7'; break;
+      case 'radiation':minY = 0; maxY = 800; yStep = 200; color = '#f59e0b'; break;
+      default: return;
+    }
+
+    function x(i) { return pad.left + (i / (hours.length-1 || 1)) * cw; }
+    function y(v) { return pad.top + ch - ((v - minY) / (maxY - minY)) * ch; }
+
+    for (var vv = minY; vv <= maxY; vv += yStep) {
+      var yy = y(vv);
+      ctx.strokeStyle = 'rgba(148,163,184,0.08)'; ctx.lineWidth = 0.5;
+      ctx.beginPath(); ctx.moveTo(pad.left, yy); ctx.lineTo(CW - pad.right, yy); ctx.stroke();
+      ctx.fillStyle = '#94a3b8'; ctx.font = '8px system-ui'; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+      ctx.fillText(''+vv, pad.left - 4, yy);
+    }
+
+    if (mode === 'rain') {
+      var bw = cw / hours.length * 0.5;
+      for (var i = 0; i < hours.length; i++) {
+        var val = values[i].precipitation || 0;
+        var bx = x(i) - bw/2, by = y(Math.max(0,val)), bh = Math.abs(y(val) - y(0));
+        if (bh < 0.5) continue;
+        var grad = ctx.createLinearGradient(bx, by, bx+bw, by+bh);
+        grad.addColorStop(0, 'rgba(2,132,199,0.85)'); grad.addColorStop(1, 'rgba(2,132,199,0.35)');
+        ctx.beginPath(); ctx.roundRect ? ctx.roundRect(bx,by,bw,bh,1.5) : ctx.rect(bx,by,bw,bh); ctx.fillStyle = grad; ctx.fill();
+      }
+    } else if (mode === 'wind') {
+      ctx.strokeStyle = color; ctx.lineWidth = 1.8;
+      ctx.beginPath();
+      for (var i = 0; i < hours.length; i++) {
+        var xx = x(i), yy = y(values[i].windSpeed);
+        if (i === 0) ctx.moveTo(xx, yy);
+        else { var px = x(i-1), py = y(values[i-1].windSpeed); ctx.bezierCurveTo((px+xx)/2, py, (px+xx)/2, yy, xx, yy); }
+      }
+      ctx.stroke();
+      for (var i = 0; i < hours.length; i++) {
+        var xx = x(i), yy = y(values[i].windSpeed);
+        ctx.beginPath(); ctx.arc(xx, yy, 2.5, 0, Math.PI*2); ctx.fillStyle = '#fff'; ctx.fill(); ctx.strokeStyle = color; ctx.lineWidth = 1.2; ctx.stroke();
+      }
+      var dirMin = 0, dirMax = 360;
+      function yDir(d) { return pad.top + ch - ((d - dirMin) / (dirMax - dirMin)) * ch; }
+      ctx.strokeStyle = 'rgba(59,130,246,0.15)'; ctx.lineWidth = 0.8; ctx.setLineDash([2,3]);
+      ctx.beginPath();
+      for (var i = 0; i < hours.length; i++) {
+        var px = x(i), py = yDir(values[i].windDirection);
+        if (i === 0) ctx.moveTo(px, py);
+        else { var ppx = x(i-1), ppy = yDir(values[i-1].windDirection); ctx.bezierCurveTo((ppx+px)/2, ppy, (ppx+px)/2, py, px, py); }
+      }
+      ctx.stroke(); ctx.setLineDash([]);
+    } else {
+      var extract = mode === 'pressure' ? 'pressure' : 'radiation';
+      ctx.strokeStyle = color; ctx.lineWidth = 1.8;
+      ctx.beginPath();
+      for (var i = 0; i < hours.length; i++) {
+        var xx = x(i), yy = y(values[i][extract]);
+        if (i === 0) ctx.moveTo(xx, yy);
+        else { var px = x(i-1), py = y(values[i-1][extract]); ctx.bezierCurveTo((px+xx)/2, py, (px+xx)/2, yy, xx, yy); }
+      }
+      ctx.stroke();
+      for (var i = 0; i < hours.length; i++) {
+        var xx = x(i), yy = y(values[i][extract]);
+        ctx.beginPath(); ctx.arc(xx, yy, 2.5, 0, Math.PI*2); ctx.fillStyle = '#fff'; ctx.fill(); ctx.strokeStyle = color; ctx.lineWidth = 1.2; ctx.stroke();
+      }
+    }
+
+    ctx.fillStyle = '#94a3b8'; ctx.font = '8px system-ui'; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    for (var i = 0; i < hours.length; i++) {
+      var xx = pad.left + (i / (hours.length-1 || 1)) * cw;
+      ctx.fillText(hours[i]+':00', xx, pad.top+ch+3); }
+  }
+})();
+</script>

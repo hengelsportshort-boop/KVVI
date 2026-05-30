@@ -1,0 +1,561 @@
+---
+/**
+ * Zoekcomponent voor visstekken op de hengelmap
+ * - Tekstzoeken: typt naam (vanaf 4 letters)
+ * - Locatiezoeken: "zoek rondom Brugge 5km" of "vind stekken nabij Ieper"
+ */
+---
+
+<div class="visstekken-zoek" id="visstekken-zoek">
+  <div class="zoek-container">
+    <div class="zoek-input-wrapper">
+      <input 
+        type="text" 
+        class="zoek-input" 
+        id="visstekken-input"
+        placeholder="Zoek naam of 'Brugge 15 km'"
+        autocomplete="off"
+      />
+      <button class="zoek-knop" id="zoek-knop" type="button">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="m21 21-4.35-4.35"></path>
+        </svg>
+      </button>
+    </div>
+    
+    <div class="zoek-resultaten" id="zoek-resultaten"></div>
+  </div>
+</div>
+
+<style>
+  .visstekken-zoek {
+    position: fixed;
+    top: 90px;
+    right: 20px;
+    z-index: 9999;
+    font-family: system-ui, -apple-system, sans-serif;
+    pointer-events: auto;
+  }
+
+  .zoek-container {
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(20px);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 51, 102, 0.15), 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    min-width: 340px;
+    max-width: 460px;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  .zoek-input-wrapper {
+    display: flex;
+    align-items: center;
+    padding: 14px 16px;
+    gap: 12px;
+    background: linear-gradient(135deg, rgba(248, 250, 252, 0.9) 0%, rgba(255, 255, 255, 0.95) 100%);
+  }
+
+  .zoek-input {
+    flex: 1;
+    border: none;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 15px;
+    font-weight: 500;
+    outline: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+
+  .zoek-input:focus {
+    background: white;
+    box-shadow: 0 0 0 3px rgba(0, 51, 102, 0.15), 0 4px 12px rgba(0, 51, 102, 0.1);
+    transform: translateY(-1px);
+  }
+
+  .zoek-input::placeholder {
+    color: #94a3b8;
+    font-weight: 400;
+    font-size: 13px;
+  }
+
+  .zoek-knop {
+    background: linear-gradient(135deg, #003366 0%, #004A99 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 12px rgba(0, 51, 102, 0.2);
+    min-width: 44px;
+    height: 44px;
+  }
+
+  .zoek-knop:hover {
+    background: linear-gradient(135deg, #004A99 0%, #0055aa 100%);
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 6px 20px rgba(0, 51, 102, 0.3);
+  }
+
+  .zoek-knop:active {
+    transform: translateY(-1px) scale(1.02);
+  }
+
+  .zoek-resultaten {
+    max-height: 500px;
+    overflow-y: auto;
+    border-top: 1px solid rgba(0, 51, 102, 0.08);
+    background: rgba(255, 255, 255, 0.6);
+    padding: 6px 8px;
+  }
+
+  .zoek-resultaten:empty {
+    display: none;
+  }
+
+  .zoek-resultaat {
+    padding: 10px 14px !important;
+    border: 1px solid rgba(0, 0, 0, 0.18);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    border-radius: 10px;
+    margin: 4px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .zoek-resultaat:last-child {
+    border-bottom: none;
+  }
+
+  .zoek-resultaat:hover {
+    background: rgba(0, 51, 102, 0.04);
+    border-left-color: #003366;
+    transform: translateX(3px);
+  }
+
+  .resultaat-kleur-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    border: 2px solid rgba(255,255,255,0.8);
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.1);
+  }
+
+  .resultaat-naam {
+    font-weight: 600;
+    color: #003366;
+    font-size: 14px;
+    line-height: 1.4;
+    letter-spacing: 0.01em;
+    flex: 1;
+  }
+
+  .resultaat-type {
+    font-size: 10px;
+    color: #64748b;
+    margin-top: 2px;
+  }
+
+  .locatie-header {
+    padding: 12px 16px;
+    background: linear-gradient(135deg, rgba(0, 51, 102, 0.06), rgba(0, 74, 153, 0.03));
+    border-bottom: 1px solid rgba(0, 51, 102, 0.08);
+    font-size: 13px;
+    line-height: 1.5;
+    color: #1e293b;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    border-radius: 8px;
+    margin: 4px 0;
+  }
+
+  .locatie-header strong {
+    color: #003366;
+  }
+
+  .locatie-type-badge {
+    display: inline-block;
+    font-size: 10px;
+    color: #64748b;
+    background: rgba(100, 116, 139, 0.1);
+    padding: 1px 8px;
+    border-radius: 10px;
+    font-weight: 500;
+    margin-left: 8px;
+  }
+
+  .geen-resultaten {
+    padding: 28px 20px;
+    text-align: center;
+    color: #64748b;
+    font-size: 14px;
+    font-weight: 500;
+    background: linear-gradient(135deg, rgba(248, 250, 252, 0.8) 0%, rgba(241, 245, 249, 0.6) 100%);
+    border-radius: 12px;
+    margin: 8px;
+  }
+
+  .laden {
+    padding: 28px 20px;
+    text-align: center;
+    color: #64748b;
+    font-size: 14px;
+    font-weight: 500;
+    background: linear-gradient(135deg, rgba(248, 250, 252, 0.8) 0%, rgba(241, 245, 249, 0.6) 100%);
+    border-radius: 12px;
+    margin: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .laden::before {
+    content: '';
+    width: 16px;
+    height: 16px;
+    border: 2px solid #e2e8f0;
+    border-top: 2px solid #003366;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .zoek-resultaten::-webkit-scrollbar { width: 6px; }
+  .zoek-resultaten::-webkit-scrollbar-track { background: rgba(248, 250, 252, 0.5); border-radius: 3px; }
+  .zoek-resultaten::-webkit-scrollbar-thumb { background: rgba(0, 51, 102, 0.3); border-radius: 3px; }
+  .zoek-resultaten::-webkit-scrollbar-thumb:hover { background: rgba(0, 51, 102, 0.5); }
+
+  @media (prefers-color-scheme: dark) {
+    .zoek-container { background: rgba(30, 30, 30, 0.95); border: 1px solid rgba(255, 255, 255, 0.1); }
+    .zoek-input { background: rgba(50, 50, 50, 0.8); color: white; }
+    .zoek-input:focus { background: rgba(60, 60, 60, 0.9); }
+    .zoek-input::placeholder { color: #9ca3af; font-size: 13px; }
+    .zoek-resultaat:hover { background: rgba(255, 255, 255, 0.05); }
+    .resultaat-naam { color: #60a5fa; }
+    .geen-resultaten, .laden { color: #9ca3af; }
+    .locatie-header { background: rgba(255, 255, 255, 0.03); }
+    .locatie-header strong { color: #60a5fa; }
+    .zoek-resultaat:hover { border-left-color: #60a5fa; }
+  }
+
+  @media (max-width: 1024px) {
+    .visstekken-zoek { top: auto; bottom: 10px; right: 10px; left: 10px; }
+    .zoek-container { min-width: auto; max-width: none; border-radius: 12px !important; display: flex; flex-direction: column-reverse; }
+    .zoek-input-wrapper { padding: 8px 12px; }
+    .zoek-input { font-size: 13px; padding: 6px 10px; }
+    .zoek-knop { padding: 6px; }
+    .zoek-resultaten { max-height: 40vh; border-top: none; border-bottom: 1px solid rgba(0, 51, 102, 0.08); border-radius: 12px 12px 0 0; }
+  }
+
+
+</style>
+
+<script>
+(() => {
+  const input = document.getElementById('visstekken-input');
+  const knop = document.getElementById('zoek-knop');
+  const resultaten = document.getElementById('zoek-resultaten');
+  
+  let zoekTimeout;
+  let huidigeZoekopdracht = '';
+
+  if (!input || !knop || !resultaten) return;
+
+  function escapeHtml(s) {
+    return (s || '').toString()
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
+
+  function resetMarkers() {
+    window.dispatchEvent(new CustomEvent('kvvi:reset-zoekresultaten'));
+    window.dispatchEvent(new CustomEvent('kvvi:highlight-radius-resultaten', { detail: null }));
+  }
+
+  function deg2rad(deg) { return deg * (Math.PI / 180); }
+
+  function afstandHaversine(lat1, lon1, lat2, lon2) {
+    const R = 6371;
+    const dLat = deg2rad(lat2 - lat1);
+    const dLon = deg2rad(lon2 - lon1);
+    const a = Math.sin(dLat / 2) ** 2 +
+              Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+              Math.sin(dLon / 2) ** 2;
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  }
+
+  function toonLocatieHeader(plaats, straal, aantal) {
+    const div = document.createElement('div');
+    div.className = 'locatie-header';
+    div.innerHTML = `<strong>${escapeHtml(plaats)}</strong> <span class="locatie-type-badge">binnen ${straal} km</span> — ${aantal} visstekken`;
+    resultaten.appendChild(div);
+  }
+
+  function toonResultaten(data) {
+    resultaten.innerHTML = '';
+
+    if (data.locatie) {
+      toonLocatieHeader(data.locatie.plaats, data.locatie.straal, data.results.length);
+    }
+
+    if (!data.results || data.results.length === 0) {
+      if (!data.locatie) {
+        resultaten.innerHTML += '<div class="geen-resultaten">Geen visstekken gevonden</div>';
+      }
+      resetMarkers();
+      return;
+    }
+
+    window.dispatchEvent(new CustomEvent('kvvi:highlight-zoekresultaten', { 
+      detail: data.results 
+    }));
+
+    if (data.locatie) {
+      window.dispatchEvent(new CustomEvent('kvvi:highlight-radius-resultaten', { 
+        detail: { straal: data.locatie.straal, middelpunt: data.locatie.middelpunt } 
+      }));
+    }
+
+    data.results.forEach(visstek => {
+      const div = document.createElement('div');
+      div.className = 'zoek-resultaat';
+      
+      const naam = escapeHtml(visstek.naam || 'Onbekend');
+      const color = visstek.color || '#94a3b8';
+      const afstand = visstek.afstand ? Math.round(visstek.afstand * 10) / 10 : null;
+      
+      div.innerHTML = `
+        <span class="resultaat-kleur-dot" style="background:${color}"></span>
+        <span class="resultaat-naam">${naam}</span>
+        ${afstand !== null ? `<span style="font-size:11px;color:#64748b;white-space:nowrap">${afstand} km</span>` : ''}
+      `;
+
+      div.addEventListener('mouseenter', () => {
+        window.dispatchEvent(new CustomEvent('kvvi:hover-marker', { detail: visstek }));
+      });
+
+      div.addEventListener('mouseleave', () => {
+        window.dispatchEvent(new CustomEvent('kvvi:unhover-marker', { detail: visstek }));
+      });
+
+      div.addEventListener('click', () => {
+        window.dispatchEvent(new CustomEvent('kvvi:select-visplaats', { detail: visstek }));
+        input.value = '';
+        resultaten.innerHTML = '';
+        resetMarkers();
+      });
+
+      resultaten.appendChild(div);
+    });
+  }
+
+  function toonLaden() {
+    resultaten.innerHTML = '<div class="laden">Zoeken...</div>';
+  }
+
+  function toonFout(message) {
+    resultaten.innerHTML = '<div class="geen-resultaten">Fout: ' + escapeHtml(message) + '</div>';
+  }
+
+  function parseLocatieQuery(query) {
+    const q = query.toLowerCase().trim();
+    if (q.length < 2) return null;
+
+    const locKw = ['rondom', 'nabij', 'in de buurt van', 'rond'];
+    const heeftLocKw = locKw.some(kw => q.startsWith(kw));
+    const heeftKm = /(\d+)\s*(km|kilometer)\s*$/.test(q);
+
+    // Alleen locatiezoekopdracht bij expliciete keywords of km
+    if (!heeftLocKw && !heeftKm) return null;
+
+    const kmMatch = q.match(/(\d+)\s*(?:km|kilometer)\s*$/);
+    const straal = kmMatch ? parseInt(kmMatch[1]) : 10;
+
+    let plaats = q;
+    for (const kw of locKw) {
+      if (plaats.startsWith(kw)) {
+        plaats = plaats.slice(kw.length).trim();
+        break;
+      }
+    }
+    plaats = plaats.replace(/\s*\d+\s*(?:km|kilometer)\s*$/, '').trim();
+
+    if (plaats.length < 2) return null;
+    const negeer = ['zoek', 'vind', 'de', 'het', 'een'];
+    if (negeer.includes(plaats)) return null;
+    return { plaats, straal };
+  }
+
+  async function zoekOpLocatie(plaats, straal) {
+    try {
+      const geoRes = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(plaats)},Belgie&format=json&limit=1`);
+      if (!geoRes.ok) throw new Error('Geen verbinding met nominatim');
+      const geoData = await geoRes.json();
+      if (!geoData || geoData.length === 0) throw new Error(`Plaats "${plaats}" niet gevonden`);
+
+      const lat = parseFloat(geoData[0].lat);
+      const lon = parseFloat(geoData[0].lon);
+
+      const [resKvvi, resAbc] = await Promise.all([
+        fetch('/api/visstekken'),
+        fetch('/api/visstekken-abc')
+      ]);
+      if (!resKvvi.ok) throw new Error('Data laden mislukt');
+      const visstekData = await resKvvi.json();
+      const abcData = resAbc.ok ? await resAbc.json() : { features: [] };
+      const allFeatures = (visstekData.features || []).concat(abcData.features || []);
+
+      const binnenStraal = [];
+      for (const feature of allFeatures) {
+        const coords = feature.geometry?.coordinates || [];
+        if (coords.length < 2) continue;
+        const stekLat = coords[1];
+        const stekLon = coords[0];
+        const afstand = afstandHaversine(lat, lon, stekLat, stekLon);
+        if (afstand <= straal) {
+          const properties = feature.properties || {};
+          binnenStraal.push({
+            naam: properties.title || 'Onbekend',
+            lat: stekLat.toString(),
+            lng: stekLon.toString(),
+            type: properties.group ? `Groep ${properties.group}` : 'Visstek',
+            link: properties.url || '#',
+            description: properties.description || '',
+            color: properties['marker-color'] || '#94a3b8',
+            afstand: afstand
+          });
+        }
+      }
+
+      binnenStraal.sort((a, b) => a.afstand - b.afstand);
+
+      return {
+        query: `${plaats} ${straal}km`,
+        results: binnenStraal.slice(0, 50),
+        total: allFeatures.length,
+        locatie: { plaats, straal, middelpunt: { lat, lon } }
+      };
+    } catch (e) {
+      console.error('Locatiezoekfout:', e);
+      return null;
+    }
+  }
+
+  async function zoekVisstekken(query) {
+    if (query.length < 4) {
+      resultaten.innerHTML = '';
+      resetMarkers();
+      return;
+    }
+
+    toonLaden();
+
+    const locatieMatch = parseLocatieQuery(query);
+    if (locatieMatch) {
+      const locData = await zoekOpLocatie(locatieMatch.plaats, locatieMatch.straal);
+      if (locData) {
+        toonResultaten(locData);
+        return;
+      }
+    }
+
+    try {
+      const [resKvvi, resAbc] = await Promise.all([
+        fetch('/api/visstekken'),
+        fetch('/api/visstekken-abc')
+      ]);
+      if (!resKvvi.ok) throw new Error('Data laden mislukt');
+      
+      const geoData = await resKvvi.json();
+      const abcData = resAbc.ok ? await resAbc.json() : { features: [] };
+      
+      const allFeatures = (geoData.features || []).concat(abcData.features || []);
+      
+      const normalizedQuery = query.toLowerCase();
+      const results = allFeatures
+        .filter(feature => {
+          const p = feature.properties || {};
+          const title = (p.title || '').toLowerCase();
+          const desc = (p.description || '').toLowerCase();
+          return title.includes(normalizedQuery) || desc.includes(normalizedQuery);
+        })
+        .map(feature => {
+          const properties = feature.properties || {};
+          const coords = feature.geometry?.coordinates || [];
+          return {
+            naam: properties.title || 'Onbekend',
+            lat: coords[1]?.toString() || '',
+            lng: coords[0]?.toString() || '',
+            type: properties.group ? `Groep ${properties.group}` : 'Visstek',
+            link: properties.url || '#',
+            description: properties.description || '',
+            color: properties['marker-color'] || '#94a3b8'
+          };
+        })
+        .slice(0, 25);
+
+      const searchData = {
+        query: query,
+        results: results,
+        total: allFeatures.length
+      };
+
+      toonResultaten(searchData);
+    } catch (error) {
+      console.error('Zoekfout:', error);
+      toonFout(error.message);
+    }
+  }
+
+  function performZoek() {
+    const query = input.value.trim();
+    if (query === huidigeZoekopdracht) return;
+    huidigeZoekopdracht = query;
+    
+    clearTimeout(zoekTimeout);
+    zoekTimeout = setTimeout(() => {
+      zoekVisstekken(query);
+    }, 300);
+  }
+
+  input.addEventListener('input', performZoek);
+  input.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      performZoek();
+    }
+  });
+
+  knop.addEventListener('click', performZoek);
+
+  document.addEventListener('click', (e) => {
+    const zoekComponent = document.getElementById('visstekken-zoek');
+    if (!zoekComponent.contains(e.target)) {
+      setTimeout(() => {
+        resultaten.innerHTML = '';
+      }, 150);
+    }
+  });
+
+  setTimeout(() => {
+    input.focus();
+  }, 100);
+})();
+</script>

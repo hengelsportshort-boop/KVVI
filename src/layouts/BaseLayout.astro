@@ -1,0 +1,478 @@
+---
+/* src/layouts/BaseLayout.astro */
+const { title, description } = Astro.props;
+
+const isAdmin = Astro.url.pathname.startsWith('/admin');
+const isHengelmap = Astro.url.pathname === '/hengelmap';
+const siteOrigin = Astro.site ? Astro.site.origin : Astro.url.origin;
+const canonical = siteOrigin + Astro.url.pathname;
+const defaultDesc = 'KVVI — Koninklijke Vrije Vissers Izegem. Viswedstrijden, uitslagen, hengelkaart en tips & tricks voor vissers in West-Vlaanderen.';
+const metaDesc = description || defaultDesc;
+const siteName = 'KVVI Izegem';
+const schemaOrg = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Koninklijke Vrije Vissers Izegem",
+  "url": siteOrigin,
+  "logo": siteOrigin + "/logo/IMG_9054.PNG",
+  "description": defaultDesc,
+  "address": { "@type": "PostalAddress", "addressLocality": "Izegem", "addressCountry": "BE" }
+};
+---
+<!doctype html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title} | {siteName}</title>
+    <meta name="description" content={metaDesc} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:title" content={`${title} | ${siteName}`} />
+    <meta property="og:description" content={metaDesc} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={`${siteOrigin}/logo/IMG_9054.PNG`} />
+    <meta property="og:site_name" content={siteName} />
+    <meta name="twitter:card" content="summary" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <script type="application/ld+json" set:html={JSON.stringify(schemaOrg)}></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+      {isHengelmap && (
+        <>
+          <link rel="preconnect" href="https://api.open-meteo.com">
+          <link rel="preconnect" href="https://tile.openstreetmap.org">
+          <link rel="dns-prefetch" href="https://api.open-meteo.com">
+          <link rel="dns-prefetch" href="https://tile.openstreetmap.org">
+        </>
+      )}
+  </head>
+  <body class="bg-slate-50 text-slate-900 font-['Inter',_sans-serif] antialiased">
+    <header id="main-header" class="bg-[#003366] text-white shadow-2xl fixed top-0 left-0 right-0 z-[9999]">
+      <div class="max-w-7xl mx-auto px-4 flex justify-between items-center h-14 lg:h-16 xl:h-20">
+        <!-- Logo (kleine weergave op mobiel, KVVI tekst op tablet/desktop) -->
+        <a href="/" class="flex items-center gap-2 shrink-0">
+          <img src="/logo/IMG_9054.PNG" alt="KVVI" class="h-10 w-auto lg:hidden" />
+          <span class="hidden lg:block text-2xl xl:text-3xl font-black uppercase tracking-tighter text-white">KVVI</span>
+        </a>
+
+        <!-- Mobile: hengelmap knoppen in header (enkel op GSM & Tablet Portrait <1024px) -->
+        {isHengelmap && (
+          <div id="mobile-header-bar" class="lg:hidden flex items-center gap-0.5 overflow-x-auto shrink min-w-0 px-0.5">
+            <button id="mobile-hdr-legende" class="mobile-hdr-btn" title="Legende">📖</button>
+            <button id="mobile-hdr-locate" class="mobile-hdr-btn" title="Mijn locatie">📍</button>
+            <input type="number" id="mobile-hdr-radius" class="mobile-hdr-radius-sm" value="5" min="1" max="100" step="1" title="Straal (km)" />
+            <span class="mobile-hdr-unit-sm">km</span>
+            <button id="mobile-hdr-fai" class="mobile-hdr-btn" title="FAI Wind">🎯</button>
+            <button id="mobile-hdr-help" class="mobile-hdr-btn" title="Hulp">❓</button>
+          </div>
+        )}
+
+        <!-- Desktop/tablet nav (vanaf 1024px - iPad Landscape) -->
+        <nav class="hidden lg:flex items-center h-full">
+          <ul class="flex gap-4 xl:gap-6 h-full items-center m-0 p-0 list-none">
+            <li><a href="/" class="nav-link">Home</a></li>
+            
+            {!isAdmin && (
+              <>
+                <li><a href="/hengelmap" class="nav-link">Hengelmap</a></li>
+                <li class="relative h-full flex items-center dropdown-trigger" data-dropdown="uitslagen">
+                  <button class="nav-link border-b-2 border-[#C5A059] uppercase flex items-center gap-2 bg-transparent outline-none cursor-pointer">
+                    Uitslagen <span>▼</span>
+                  </button>
+                  <div class="dropdown-menu absolute left-0 top-full w-64 pt-0 opacity-0 invisible transition-all duration-200 z-[10000]">
+                    <div class="bg-white rounded-b-xl shadow-2xl py-2 border border-slate-200 border-t-0">
+                      <a href="/uitslagen/Zaterdagvissers" class="drop-item">Zaterdagvissers</a>
+                      <a href="/uitslagen/Veteranen" class="drop-item">Veteranen</a>
+                    </div>
+                  </div>
+                </li>
+              </>
+            )}
+            
+            <li><a href="/uitslagen/fotos" class="nav-link">Foto's</a></li>
+
+            <li class="relative h-full flex items-center dropdown-trigger" data-dropdown="specials">
+              <button class="nav-link border-b-2 border-[#C5A059] uppercase flex items-center gap-2 bg-transparent outline-none cursor-pointer">
+                Specials <span>▼</span>
+              </button>
+              <div class="dropdown-menu absolute left-0 top-full w-64 pt-0 opacity-0 invisible transition-all duration-200 z-[10000]">
+                <div id="specials-dropdown" class="bg-white rounded-b-xl shadow-2xl py-2 border border-slate-200 border-t-0">
+                  <div class="px-6 py-3 text-xs text-slate-400 italic">Laden...</div>
+                </div>
+              </div>
+            </li>
+
+            <li><a href="/tips-tricks" class="nav-link" id="nav-tips">Tips &amp; Tricks</a></li>
+            <li><a href="/contact" class="nav-link">Contact</a></li>
+          </ul>
+        </nav>
+
+        <!-- Mobile hamburger (enkel op GSM & Tablet Portrait <1024px) -->
+        <button class="lg:hidden p-2 relative z-50 shrink-0" id="mobile-nav-btn" aria-label="Menu">
+          <svg id="mobile-nav-open" xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+          </svg>
+          <svg id="mobile-nav-close" xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Mobile drawer (enkel op GSM & Tablet Portrait) -->
+      <div id="mobile-drawer" class="hidden lg:hidden fixed inset-0 z-[10001]">
+        <div class="absolute inset-0 bg-black/40" id="mobile-drawer-backdrop"></div>
+        <div class="absolute right-0 top-0 h-full w-72 max-w-[80vw] bg-[#003366] shadow-2xl overflow-y-auto">
+          <div class="px-6 py-6 space-y-1">
+            <a href="/" class="mobile-nav-link" onclick="sluitMobielNav()">Home</a>
+            {!isAdmin && (
+              <>
+                <a href="/hengelmap" class="mobile-nav-link" onclick="sluitMobielNav()">Hengelmap</a>
+                <div class="border-t border-blue-700/30 my-2"></div>
+                <div class="text-xs text-blue-300 font-semibold uppercase px-3 py-1">Uitslagen</div>
+                <a href="/uitslagen/Zaterdagvissers" class="mobile-nav-link pl-6" onclick="sluitMobielNav()">Zaterdagvissers</a>
+                <a href="/uitslagen/Veteranen" class="mobile-nav-link pl-6" onclick="sluitMobielNav()">Veteranen</a>
+              </>
+            )}
+            <div class="border-t border-blue-700/30 my-2"></div>
+            <a href="/uitslagen/fotos" class="mobile-nav-link" onclick="sluitMobielNav()">Foto's</a>
+            <div class="border-t border-blue-700/30 my-2"></div>
+            {isHengelmap && (
+            <div class="space-y-1">
+              <div class="border-t border-blue-700/30 my-2"></div>
+              <div class="text-xs text-blue-300 font-semibold uppercase px-3 py-1">Kaart</div>
+              <button class="mobile-nav-link w-full text-left" id="mobile-fai-btn">🎯 FAI</button>
+            </div>
+            )}
+            <div class="border-t border-blue-700/30 my-2"></div>
+            <div class="text-xs text-blue-300 font-semibold uppercase px-3 py-1">Specials</div>
+            <div id="mobile-specials" class="space-y-1">
+              <div class="px-6 py-2 text-xs text-blue-300 italic">Laden...</div>
+            </div>
+            <div class="border-t border-blue-700/30 my-2"></div>
+            <a href="/tips-tricks" class="mobile-nav-link" id="mobile-nav-tips" onclick="sluitMobielNav()">Tips &amp; Tricks</a>
+            <a href="/contact" class="mobile-nav-link" onclick="sluitMobielNav()">Contact</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="relative z-10 pt-14 lg:pt-16 xl:pt-20">
+      <slot />
+    </main>
+
+    <script>
+    // Specials laden (zowel desktop als mobiel)
+    (async () => {
+      try {
+        const [specialsRes, vrouwRes, kampRes, seniorenRes] = await Promise.all([
+          fetch('/api/specials'),
+          fetch('/api/specials/vrouwvissing'),
+          fetch('/api/specials/kamp-izegem'),
+          fetch('/api/specials/seniorenvissing')
+        ]);
+        const specialsItems = await specialsRes.json();
+        let vrouwData = null;
+        try { vrouwData = await vrouwRes.json(); } catch (e) {}
+        let kampData = null;
+        try { kampData = await kampRes.json(); } catch (e) {}
+        let seniorenData = null;
+        try { seniorenData = await seniorenRes.json(); } catch (e) {}
+        const items = Array.isArray(specialsItems) ? specialsItems : [];
+        if (vrouwData && vrouwData.visible !== false) items.push(vrouwData);
+        if (kampData && kampData.visible !== false) items.push(kampData);
+        if (seniorenData && seniorenData.visible !== false) items.push(seniorenData);
+        const visible = items.filter(i => i.visible !== false);
+        function escapeHtml(text) {
+          var d = document.createElement('div');
+          d.textContent = text;
+          return d.innerHTML;
+        }
+        // Desktop dropdown
+        var dd = document.getElementById('specials-dropdown');
+        if (dd) {
+          if (!visible.length) {
+            dd.innerHTML = '<div class="px-6 py-3 text-xs text-slate-400 italic">Geen specials</div>';
+          } else {
+            dd.innerHTML = visible.map(function(item) {
+              return '<a href="/specials#special-' + item.id + '" class="drop-item">' + escapeHtml(item.title) + '</a>';
+            }).join('');
+          }
+        }
+        // Mobiel menu
+        var mob = document.getElementById('mobile-specials');
+        if (mob) {
+          if (!visible.length) {
+            mob.innerHTML = '<div class="px-6 py-2 text-xs text-blue-300 italic">Geen specials</div>';
+          } else {
+            mob.innerHTML = visible.map(function(item) {
+              return '<a href="/specials#special-' + item.id + '" class="mobile-nav-link pl-6" onclick="sluitMobielNav()">' + escapeHtml(item.title) + '</a>';
+            }).join('');
+          }
+        }
+      } catch (e) {
+        var dd = document.getElementById('specials-dropdown');
+        if (dd) dd.innerHTML = '<div class="px-6 py-3 text-xs text-red-400 italic">Fout bij laden</div>';
+        var mob = document.getElementById('mobile-specials');
+        if (mob) mob.innerHTML = '<div class="px-6 py-2 text-xs text-red-400 italic">Fout bij laden</div>';
+      }
+    })();
+
+    // Tips & Tricks zichtbaarheid
+    (async () => {
+      try {
+        var res = await fetch('/api/tips-tricks');
+        var d = await res.json();
+        var show = d.pageVisible !== false;
+        var tipNav = document.getElementById('nav-tips');
+        var tipMob = document.getElementById('mobile-nav-tips');
+        if (tipNav) tipNav.style.display = show ? '' : 'none';
+        if (tipMob) tipMob.style.display = show ? '' : 'none';
+      } catch (e) {}
+    })();
+
+    // Mobiele nav toggle
+    function sluitMobielNav() {
+      var drawer = document.getElementById('mobile-drawer');
+      var openIcon = document.getElementById('mobile-nav-open');
+      var closeIcon = document.getElementById('mobile-nav-close');
+      if (drawer) drawer.classList.add('hidden');
+      if (openIcon) openIcon.classList.remove('hidden');
+      if (closeIcon) closeIcon.classList.add('hidden');
+      document.body.classList.remove('overflow-hidden');
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+      var btn = document.getElementById('mobile-nav-btn');
+      if (btn) {
+        btn.addEventListener('click', function() {
+          var drawer = document.getElementById('mobile-drawer');
+          var openIcon = document.getElementById('mobile-nav-open');
+          var closeIcon = document.getElementById('mobile-nav-close');
+          if (!drawer) return;
+          var isOpen = !drawer.classList.contains('hidden');
+          drawer.classList.toggle('hidden');
+          if (openIcon) openIcon.classList.toggle('hidden');
+          if (closeIcon) closeIcon.classList.toggle('hidden');
+          document.body.classList.toggle('overflow-hidden');
+        });
+      }
+      // Backdrop sluiten
+      var backdrop = document.getElementById('mobile-drawer-backdrop');
+      if (backdrop) backdrop.addEventListener('click', sluitMobielNav);
+
+      // Desktop dropdowns: click-toggle
+      var triggers = document.querySelectorAll('.dropdown-trigger');
+      triggers.forEach(function(el) {
+        el.addEventListener('click', function(e) {
+          if (e.target.closest('a')) return;
+          var menu = el.querySelector('.dropdown-menu');
+          if (!menu) return;
+          var isOpen = menu.classList.contains('show-dropdown');
+          document.querySelectorAll('.dropdown-menu.show-dropdown').forEach(function(m) {
+            m.classList.remove('show-dropdown');
+            m.classList.add('invisible');
+          });
+          if (!isOpen) {
+            menu.classList.remove('invisible');
+            menu.classList.add('show-dropdown');
+          }
+          e.preventDefault();
+        });
+      });
+      // Close dropdowns on click outside
+      document.addEventListener('click', function(e) {
+        if (!e.target.closest('.dropdown-trigger')) {
+          document.querySelectorAll('.dropdown-menu.show-dropdown').forEach(function(m) {
+            m.classList.remove('show-dropdown');
+            m.classList.add('invisible');
+          });
+        }
+      });
+
+      // FAI knop in mobiel menu
+      var faiBtn = document.getElementById('mobile-fai-btn');
+      if (faiBtn) {
+        faiBtn.addEventListener('click', function() {
+          sluitMobielNav();
+          var toggle = document.getElementById('fai-toggle');
+          if (toggle) toggle.dispatchEvent(new Event('click'));
+        });
+      }
+
+      // Mobiele header knoppen (hengelmap) koppelen
+      function koppelHeaderKnop(id, targetId) {
+        var btn = document.getElementById(id);
+        var target = targetId ? document.getElementById(targetId) : null;
+        if (btn && target) {
+          btn.addEventListener('click', function(e) {
+            target.dispatchEvent(new Event('click'));
+          });
+        }
+      }
+      koppelHeaderKnop('mobile-hdr-legende', 'legende-toggle');
+      koppelHeaderKnop('mobile-hdr-locate', 'locate-btn');
+      koppelHeaderKnop('mobile-hdr-fai', 'fai-toggle');
+      koppelHeaderKnop('mobile-hdr-help', 'help-btn');
+    });
+    </script>
+
+</body>
+</html>
+
+<style is:global>
+  /* Mobiele optimalisaties */
+  body {
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior: none;
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+  .mobile-nav-link:active {
+    background: rgba(255,255,255,0.2);
+    transform: scale(0.97);
+  }
+  .mobile-bar-btn:active {
+    background: rgba(255,255,255,0.3) !important;
+    transform: scale(0.95);
+  }
+  /* Mobiele header knoppen (op hengelmap) - compacte weergave */
+  #mobile-header-bar { overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
+  #mobile-header-bar::-webkit-scrollbar { display: none; }
+  .mobile-hdr-btn {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 5px;
+    color: white;
+    font-size: 13px;
+    padding: 4px 6px;
+    cursor: pointer;
+    line-height: 1;
+    transition: background 0.15s;
+    white-space: nowrap;
+    min-height: 28px;
+    flex-shrink: 0;
+  }
+  .mobile-hdr-btn:active { background: rgba(255,255,255,0.3); }
+  .mobile-hdr-radius-sm {
+    width: 30px;
+    border: none;
+    background: rgba(255,255,255,0.12);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    text-align: center;
+    outline: none;
+    -moz-appearance: textfield;
+    padding: 3px 1px;
+    border-radius: 5px;
+    flex-shrink: 0;
+    min-height: 28px;
+  }
+  .mobile-hdr-radius-sm::-webkit-inner-spin-button,
+  .mobile-hdr-radius-sm::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+  .mobile-hdr-unit-sm {
+    font-size: 8px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.5);
+    margin-left: -2px;
+    flex-shrink: 0;
+  }
+
+  .nav-link { 
+    font-size: 11px; 
+    font-weight: 900; 
+    text-transform: uppercase; 
+    color: white !important; 
+    text-decoration: none; 
+    height: 100%; 
+    display: flex; 
+    align-items: center; 
+    padding: 0 10px;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+  }
+  
+  .drop-item { 
+    display: block; 
+    padding: 16px 24px; 
+    font-size: 11px; 
+    font-weight: 900; 
+    text-transform: uppercase; 
+    color: #003366 !important; 
+    text-decoration: none !important; 
+    transition: all 0.2s;
+  }
+  .drop-item:hover { 
+    background-color: #f8fafc; 
+    color: #C5A059 !important; 
+    padding-left: 30px;
+  }
+
+  /* Dropdown open state for click (desktop/touch) */
+  .dropdown-menu.show-dropdown {
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+  
+  /* Dropdown open state for hover (desktop) */
+  @media (hover: hover) {
+    .dropdown-trigger:hover .dropdown-menu {
+      opacity: 1 !important;
+      visibility: visible !important;
+    }
+  }
+  
+  .mobile-nav-link {
+    display: block;
+    padding: 12px 12px;
+    font-size: 14px;
+    font-weight: 700;
+    color: white !important;
+    text-decoration: none !important;
+    border-radius: 8px;
+    transition: background 0.2s;
+  }
+  .mobile-nav-link:hover {
+    background: rgba(255,255,255,0.1);
+  }
+
+  /* Header moet ALTIJD boven de kaart */
+  header { z-index: 10000 !important; }
+  .leaflet-container { z-index: 1 !important; }
+
+  /* Sticky Participant Names in Results Tables */
+  .uitslagen-table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .uitslagen-table-container table {
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+  /* Eerste kolom (Stand) */
+  .uitslagen-table-container th:nth-child(1),
+  .uitslagen-table-container td:nth-child(1) {
+    position: sticky; left: 0; z-index: 20;
+  }
+  /* Tweede kolom (Visser) - offset van 80px komt overeen met breedte van kolom 1 */
+  .uitslagen-table-container th:nth-child(2),
+  .uitslagen-table-container td:nth-child(2) {
+    position: sticky; left: 80px; z-index: 20;
+    border-right: 2px solid #e2e8f0;
+    box-shadow: 2px 0 4px -2px rgba(0,0,0,0.1);
+  }
+  /* Zorg dat sticky cellen ondoorzichtig zijn */
+  .uitslagen-table-container td:nth-child(1),
+  .uitslagen-table-container td:nth-child(2) {
+    background: #fff;
+  }
+  .uitslagen-table-container th:nth-child(1),
+  .uitslagen-table-container th:nth-child(2) {
+    background: #003366; /* Match kvvi-blue */
+  }
+</style>

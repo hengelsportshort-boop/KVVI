@@ -1,0 +1,162 @@
+---
+interface Props {
+  images: string[];
+  autoPlay?: boolean;
+  interval?: number;
+}
+
+const { images, autoPlay = true, interval = 4000 } = Astro.props;
+---
+
+<div class="relative w-full overflow-hidden rounded-3xl shadow-2xl border border-white/40 bg-slate-900" data-carousel data-autoplay={autoPlay ? 'true' : 'false'} data-interval={interval}>
+  <div class="flex transition-transform duration-700 ease-in-out carousel-track">
+    {images.map((src, index) => (
+      <div class="w-full flex-shrink-0 h-[420px] md:h-[520px] lg:h-[580px]">
+        <img 
+          src={src} 
+          srcset={src.replace(/(\.\w+)$/, '_640$1') + ' 640w, ' + src + ' 1920w'}
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1200px"
+          alt={`KVVI foto ${index + 1}`} 
+          class="w-full h-full object-cover"
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
+    ))}
+  </div>
+  
+  <!-- Navigation buttons -->
+  <button 
+    class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-slate-800 rounded-full w-12 h-12 flex items-center justify-center shadow-2xl transition-all"
+    data-action="prev"
+    aria-label="Vorige foto"
+  >
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+    </svg>
+  </button>
+  
+  <button 
+    class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-slate-800 rounded-full w-12 h-12 flex items-center justify-center shadow-2xl transition-all"
+    data-action="next"
+    aria-label="Volgende foto"
+  >
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+    </svg>
+  </button>
+  
+  <!-- Indicators -->
+  <div class="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2">
+    {images.map((_, index) => (
+      <button 
+        class={`h-3 rounded-full transition-all ${index === 0 ? 'bg-white w-8' : 'bg-white/50 w-3'}`}
+        data-slide={index}
+        aria-label={`Ga naar foto ${index + 1}`}
+      />
+    ))}
+  </div>
+</div>
+
+<script>
+  let currentSlide = 0;
+  const carouselElement = document.currentScript?.previousElementSibling || document.querySelector('[data-carousel]');
+  const track = carouselElement?.querySelector('.carousel-track');
+  const totalSlides = track?.children.length || 0;
+  let autoPlayInterval = null;
+  const autoPlayEnabled = carouselElement?.dataset?.autoplay === 'true';
+  const intervalMs = Number(carouselElement?.dataset?.interval) || 4000;
+
+  function updateSlide() {
+    if (!track) return;
+    track.style.transform = `translateX(-${currentSlide * 100}%)`;
+    
+    const dots = carouselElement?.querySelectorAll('[data-slide]') || [];
+    dots.forEach((indicator, index) => {
+      if (index === currentSlide) {
+        indicator.classList.add('bg-white', 'w-8');
+        indicator.classList.remove('bg-white/50');
+      } else {
+        indicator.classList.remove('bg-white', 'w-8');
+        indicator.classList.add('bg-white/50');
+      }
+    });
+  }
+
+  function nextSlide() {
+    if (totalSlides === 0) return;
+    currentSlide = (currentSlide + 1) % totalSlides;
+    updateSlide();
+  }
+
+  function previousSlide() {
+    if (totalSlides === 0) return;
+    currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+    updateSlide();
+  }
+
+  function goToSlide(index) {
+    currentSlide = index;
+    updateSlide();
+  }
+
+  function startAutoPlay() {
+    stopAutoPlay();
+    if (autoPlayEnabled && totalSlides > 1) {
+      autoPlayInterval = window.setInterval(nextSlide, intervalMs);
+    }
+  }
+
+  function stopAutoPlay() {
+    if (autoPlayInterval !== null) {
+      window.clearInterval(autoPlayInterval);
+      autoPlayInterval = null;
+    }
+  }
+
+  function bindControls() {
+    if (!carouselElement) return;
+    const prevBtn = carouselElement.querySelector('[data-action="prev"]');
+    const nextBtn = carouselElement.querySelector('[data-action="next"]');
+    const dots = carouselElement.querySelectorAll('[data-slide]');
+
+    prevBtn?.addEventListener('click', previousSlide);
+    nextBtn?.addEventListener('click', nextSlide);
+    dots.forEach(dot => {
+      dot.addEventListener('click', () => goToSlide(Number(dot.dataset.slide)));
+    });
+    carouselElement.addEventListener('mouseenter', stopAutoPlay);
+    carouselElement.addEventListener('mouseleave', startAutoPlay);
+    
+    // Touch/swipe support
+    let touchStartX = 0;
+    let touchEndX = 0;
+    
+    carouselElement.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+    
+    carouselElement.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleSwipe();
+    }, { passive: true });
+    
+    function handleSwipe() {
+      const swipeThreshold = 50;
+      const diff = touchStartX - touchEndX;
+      
+      if (Math.abs(diff) > swipeThreshold) {
+        if (diff > 0) {
+          nextSlide(); // Swipe left - next
+        } else {
+          previousSlide(); // Swipe right - previous
+        }
+      }
+    }
+  }
+
+  // Start autoplay
+  updateSlide();
+  bindControls();
+  startAutoPlay();
+</script>

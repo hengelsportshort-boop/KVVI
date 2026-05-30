@@ -1,0 +1,312 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { parse } from 'csv-parse/sync';
+import fs from 'node:fs';
+import path from 'node:path';
+
+export function getStaticPaths() {
+  return [
+    { params: { competitie: 'Veteranen' } },
+    { params: { competitie: 'Zaterdagvissers' } },
+  ];
+}
+
+const { competitie } = Astro.params;
+const currentYear = new Date().getFullYear();
+const jaar = String(currentYear);
+const years = Array.from({length: currentYear + 4 - 2026 + 1}, (_, i) => 2026 + i).reverse();
+
+const filePath = path.join(process.cwd(), 'public', 'data', jaar, `${competitie}.csv`);
+
+const parseWeight = (value: string | undefined): number => {
+  if (!value) return 0;
+  const cleaned = value.toString().replace(/\./g, '').replace(/gr/gi, '').replace(/,/g, '.').trim();
+  const num = parseFloat(cleaned);
+  return Number.isFinite(num) ? num : 0;
+};
+
+let headers: string[] = [];
+let rows: any[] = [];
+let columnOrder: number[] = [];
+let footerTotals: any[] = [];
+
+try {
+  if (fs.existsSync(filePath)) {
+    const fileContent = fs.readFileSync(filePath, 'utf-8');
+    const lines = fileContent.split('\n').filter(l => l.trim());
+    headers = lines[0].split(';').map(h => h.trim());
+    rows = lines.slice(1).map(l => l.split(';').map(c => c.trim()));
+
+    const placeIndex = headers.findIndex(h => (h || '').toLowerCase().includes('plaats gewicht'));
+    const rankIndex = headers.findIndex((h, i) => i === 0 || (h || '').toLowerCase().includes('plaats'));
+    const totalIndex = headers.findIndex(h => (h || '').toLowerCase().includes('totaal gr') || (h || '').toLowerCase().includes('totaal kg'));
+    const dateIndices = headers
+      .map((h, i) => ({ h: (h || '').toString(), i }))
+      .filter(item => item.h.includes('/') && item.i > 1)
+      .map(item => item.i);
+
+    columnOrder = [];
+    if (placeIndex >= 0) {
+      columnOrder.push(placeIndex);
+    } else if (rankIndex >= 0) {
+      columnOrder.push(rankIndex);
+    }
+    columnOrder.push(1);
+    dateIndices.forEach(i => {
+      if (i !== placeIndex && i !== totalIndex && i !== rankIndex) columnOrder.push(i);
+    });
+    if (totalIndex >= 0) columnOrder.push(totalIndex);
+
+    const computeFinalTotal = (row: any[]): number => {
+      const allWeights = dateIndices.map(dateIdx => parseWeight(row[dateIdx]));
+      const totalWeight = allWeights.reduce((sum, w) => sum + w, 0);
+      const positiveWeights = allWeights.filter(w => w > 0);
+
+      // Zelfde logica als in admin/wedstrijden:
+      // ALS aantal gewichten < 4 -> SOM
+      // ANDERS -> SOM - MINIFS(>0) (laagste positieve score)
+      if (positiveWeights.length >= 4) {
+        return totalWeight - Math.min(...positiveWeights);
+      }
+      return totalWeight;
+    };
+
+    const filteredRows = rows
+      .filter(row => {
+        const label = (row[1] || '').toLowerCase();
+        if (!row.some(cell => (cell || '').toString().trim())) return false;
+        if (label.includes('totaal') || label.includes('beste') || label.includes('slechtste')) return false;
+        return true;
+      })
+      .map(row => {
+        // Zorg dat "Totaal kg" kolom consistent is met admin
+        if (totalIndex >= 0) {
+          const finalTotal = computeFinalTotal(row);
+          const kgValue = finalTotal / 1000;
+          row[totalIndex] = kgValue > 0 ? `${kgValue.toFixed(3).replace('.', ',')} gr` : '0,000 gr';
+        }
+        return row;
+      })
+      .sort((a, b) => {
+        // Match admin-rangschikking: op totaal (descending) als mogelijk
+        if (totalIndex >= 0 && dateIndices.length) {
+          return computeFinalTotal(b) - computeFinalTotal(a);
+        }
+        if (placeIndex >= 0) {
+          return parseWeight(a[placeIndex]) - parseWeight(b[placeIndex]);
+        }
+        if (rankIndex >= 0) {
+          return parseInt(a[rankIndex], 10) - parseInt(b[rankIndex], 10);
+        }
+        return 0;
+      });
+
+    const visibleHeaders = columnOrder.map(i => headers[i] || '');
+    visibleHeaders[0] = '#';
+    visibleHeaders[1] = 'DEELNEMERS';
+
+    const weightColumns = visibleHeaders.map((h, idx) => {
+      const label = (h || '').toLowerCase();
+      return idx > 1 && !label.includes('plaats gewicht') && (/\//.test(label) || /kg|gr|totaal/.test(label));
+    });
+
+    footerTotals = visibleHeaders.map((_, idx) => {
+      if (!weightColumns[idx]) return '';
+      return filteredRows.reduce((sum, row) => sum + parseWeight(row[columnOrder[idx]]), 0);
+    });
+
+    rows = filteredRows.map(row => ({ row, displayRow: columnOrder.map(i => row[i] || '') }));
+    headers = visibleHeaders;
+  }
+} catch (e) {
+  console.error("Fout bij laden:", e);
+}
+---
+
+<BaseLayout title={competitie} description={`Uitslagen van ${competitie} — KVVI Izegem viswedstrijden met deelnemers, punten, gewichten en rangschikking per wedstrijd.`}>
+  <div class="max-w-full mx-auto py-8 px-4">
+    <div class="flex items-center gap-4 mb-6 flex-wrap">
+      <h1 class="text-4xl font-black text-[#004A99] uppercase italic tracking-tighter">
+        {competitie} <span class="text-[#D4AF37]" id="jaar-label">{jaar}</span>
+      </h1>
+      <select id="jaar-select" data-competitie={competitie} class="ml-auto px-3 py-2 rounded-lg border border-slate-200 text-sm bg-white font-semibold">
+              {years.map(y => (
+                <option value={y} selected={y === currentYear}>{y}</option>
+              ))}
+            </select>
+    </div>
+
+    <div id="table-wrapper" class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+    {rows.length > 0 ? (
+      <div class="max-w-7xl mx-auto">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs min-w-[800px] max-w-full">
+            <thead>
+              <tr class="bg-[#003366] text-white">
+                {headers.map((h, i) => {
+                  let cls = 'p-2.5 font-bold text-[11px] uppercase tracking-wider whitespace-nowrap';
+                  if (i === 0) cls += ' w-14 text-center sticky left-0 z-20 bg-[#003366]';
+                  else if (i === 1) cls += ' min-w-[160px] text-left sticky left-14 z-20 bg-[#003366]';
+                  else cls += ' text-center min-w-[85px]';
+                  if (i === headers.length - 1) cls += ' bg-[#C5A059] text-[#003366]';
+                  else if (i > 1 && i < headers.length - 1) cls += ' border-l border-blue-400/10';
+                  return <th class={cls}>{h}</th>;
+                })}
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map(({ row, displayRow }, rowIdx) => {
+                const bgClass = rowIdx % 2 === 0 ? 'bg-white' : 'bg-blue-50/20';
+                return (
+                  <tr class={`${bgClass} hover:bg-blue-100/30 transition-colors`}>
+                    {displayRow.map((cell, colIdx) => {
+                      let cls = 'p-2';
+                      if (colIdx === 0) cls += ' font-bold text-center text-slate-700 text-xs sticky left-0 z-10 ' + (rowIdx % 2 === 0 ? 'bg-white' : 'bg-blue-50/20');
+                      else if (colIdx === 1) cls += ' font-bold text-slate-800 text-xs min-w-[160px] sticky left-14 z-10 ' + (rowIdx % 2 === 0 ? 'bg-white' : 'bg-blue-50/20') + ' border-r shadow-[5px_0_10px_rgba(0,0,0,0.03)]';
+                      else if (colIdx === displayRow.length - 1) cls += ' font-black text-[#1E3D2C] text-right font-mono text-xs bg-green-50/30';
+                      else cls += ' text-center font-mono text-slate-600';
+
+                      const value = colIdx === 0 ? String(rowIdx + 1) : (cell || '');
+                      if (colIdx === 0 || colIdx === 1 || colIdx === displayRow.length - 1) {
+                        return <td class={cls}>{value}</td>;
+                      }
+                      return <td class={cls}>{value || '<span class="text-slate-200">0</span>'}</td>;
+                    })}
+                  </tr>
+                );
+              })}
+            </tbody>
+            <tfoot>
+              <tr class="bg-emerald-100 text-emerald-900 font-bold text-xs">
+                <td class="p-2 text-left uppercase tracking-wider sticky left-0 z-30 bg-emerald-100" colspan="2">Totalen per wedstrijd</td>
+                {headers.slice(2).map((_, idx) => {
+                  const total = footerTotals[idx + 2] || 0;
+                  const display = total ? `${total.toLocaleString('nl-BE')} gr` : '';
+                  const cls = idx === headers.slice(2).length - 1 ? 'p-2 text-right bg-emerald-200 text-[#1E3D2C]' : 'p-2 text-center';
+                  return <td class={cls}>{display}</td>;
+                })}
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    ) : (
+      <div class="max-w-7xl mx-auto">
+      <p class="text-center p-8 text-slate-400">Geen gegevens gevonden.</p>
+    </div>
+  )}
+</div>
+</BaseLayout>
+
+<style>
+  body { overflow-x: hidden; }
+</style>
+
+<script>
+(function() {
+  const jaarSelect = document.getElementById('jaar-select');
+  const competitie = jaarSelect ? jaarSelect.dataset.competitie : '';
+  const jaarLabel = document.getElementById('jaar-label');
+  const wrapper = document.getElementById('table-wrapper');
+  if (!jaarSelect || !wrapper) return;
+
+  async function loadJaar(jaar) {
+    jaarLabel.textContent = jaar;
+    wrapper.innerHTML = '<div class="p-8 text-center text-slate-400">Laden...</div>';
+    try {
+      const res = await fetch(`/api/wedstrijden?groep=${encodeURIComponent(competitie)}&jaar=${jaar}`);
+      if (!res.ok) throw new Error('Niet gevonden');
+      const data = await res.json();
+      const lines = data.raw.split('\n').filter(l => l.trim());
+      const headers = lines[0].split(';').map(h => h.trim());
+      const rows = lines.slice(1).map(l => l.split(';').map(c => c.trim()));
+
+      const placeIdx = headers.findIndex(h => h.toLowerCase().includes('plaats gewicht'));
+      const rankIdx = headers.findIndex((h, i) => i === 0 || h.toLowerCase().includes('plaats'));
+      const totalIdx = headers.findIndex(h => h.toLowerCase().includes('totaal gr') || h.toLowerCase().includes('totaal kg'));
+      const dateIndices = headers.map((h, i) => ({ h, i })).filter(item => item.h.includes('/') && item.i > 1).map(item => item.i);
+
+      const colOrder = [];
+      if (placeIdx >= 0) colOrder.push(placeIdx);
+      else if (rankIdx >= 0) colOrder.push(rankIdx);
+      colOrder.push(1);
+      dateIndices.forEach(i => { if (i !== placeIdx && i !== totalIdx && i !== rankIdx) colOrder.push(i); });
+      if (totalIdx >= 0) colOrder.push(totalIdx);
+
+      const visHeaders = colOrder.map(i => headers[i] || '');
+      visHeaders[0] = '#';
+      visHeaders[1] = 'DEELNEMERS';
+
+      const parseW = v => { if (!v) return 0; const c = v.toString().replace(/\./g,'').replace(/gr/gi,'').replace(/,/g,'.').trim(); const n = parseFloat(c); return isFinite(n) ? n : 0; };
+
+      const computeTotal = row => {
+        const allWeights = dateIndices.map(di => parseW(row[di]));
+        const totalWeight = allWeights.reduce((s, w) => s + w, 0);
+        const positiveWeights = allWeights.filter(w => w > 0);
+        if (positiveWeights.length >= 4) return totalWeight - Math.min(...positiveWeights);
+        return totalWeight;
+      };
+
+      const filtered = rows.filter(row => {
+        const label = (row[1] || '').toLowerCase();
+        if (!row.some(c => (c||'').toString().trim())) return false;
+        if (label.includes('totaal') || label.includes('beste') || label.includes('slechtste')) return false;
+        return true;
+      }).sort((a,b) => {
+        if (totalIdx >= 0 && dateIndices.length) {
+          return computeTotal(b) - computeTotal(a);
+        }
+        return placeIdx >= 0 ? parseW(a[placeIdx]) - parseW(b[placeIdx]) : 0;
+      });
+
+      const footerTotals = visHeaders.map((_, idx) => {
+        const weightLabel = (visHeaders[idx] || '').toLowerCase();
+        const isWeight = idx > 1 && !weightLabel.includes('plaats gewicht') && (/\//.test(weightLabel) || /kg|gr|totaal/.test(weightLabel));
+        if (!isWeight) return 0;
+        return filtered.reduce((sum, row) => sum + parseW(row[colOrder[idx]]), 0);
+      });
+
+      let html = '<div class="max-w-7xl mx-auto"><div class="overflow-x-auto"><table class="w-full text-left border-collapse text-xs min-w-[800px] max-w-full"><thead><tr class="bg-[#003366] text-white">';
+      visHeaders.forEach((h, i) => {
+        let cls = 'p-2.5 font-bold text-[11px] uppercase tracking-wider whitespace-nowrap';
+        if (i === 0) cls += ' w-14 text-center sticky left-0 z-20 bg-[#003366]';
+        else if (i === 1) cls += ' min-w-[160px] text-left sticky left-14 z-20 bg-[#003366]';
+        else cls += ' text-center min-w-[85px]';
+        if (i === visHeaders.length - 1) cls += ' bg-[#C5A059] text-[#003366]';
+        else if (i > 1 && i < visHeaders.length - 1) cls += ' border-l border-blue-400/10';
+        html += '<th class="' + cls + '">' + h + '</th>';
+      });
+      html += '</tr></thead><tbody>';
+      filtered.forEach((row, idx) => {
+        const bg = idx % 2 === 0 ? 'bg-white' : 'bg-blue-50/20';
+        html += '<tr class="' + bg + ' hover:bg-blue-100/30 transition-colors">';
+        const bgCls = idx % 2 === 0 ? 'bg-white' : 'bg-blue-50/20';
+        colOrder.forEach((ci, colIdx) => {
+          let cls = 'p-2';
+          if (colIdx === 0) cls += ' font-bold text-center text-slate-700 text-xs sticky left-0 z-10 ' + bgCls;
+          else if (colIdx === 1) cls += ' font-bold text-slate-800 text-xs min-w-[160px] sticky left-14 z-10 ' + bgCls + ' border-r shadow-[5px_0_10px_rgba(0,0,0,0.03)]';
+          else if (colIdx === colOrder.length - 1) cls += ' font-black text-[#1E3D2C] text-right font-mono text-xs bg-green-50/30';
+          else cls += ' text-center font-mono text-slate-600';
+          const cell = row[ci] || '';
+          html += '<td class="' + cls + '">' + (ci === colOrder[0] ? (idx + 1) : (cell || '<span class="text-slate-200">0</span>')) + '</td>';
+        });
+        html += '</tr>';
+      });
+      html += '</tbody><tfoot><tr class="bg-emerald-100 text-emerald-900 font-bold text-xs">';
+      html += '<td class="p-2 text-left uppercase tracking-wider sticky left-0 z-30 bg-emerald-100" colspan="2">Totalen per wedstrijd</td>';
+      visHeaders.slice(2).forEach((_, idx) => {
+        const total = footerTotals[idx + 2] || 0;
+        const display = total ? total.toLocaleString('nl-BE') + ' gr' : '';
+        const cls = idx === visHeaders.slice(2).length - 1 ? 'p-2 text-right bg-emerald-200 text-[#1E3D2C]' : 'p-2 text-center';
+        html += '<td class="' + cls + '">' + display + '</td>';
+      });
+      html += '</tr></tfoot></table></div></div>';
+      wrapper.innerHTML = html;
+    } catch (e) {
+      wrapper.innerHTML = '<div class="p-8 text-center text-slate-400">Geen gegevens voor ' + jaar + '.</div>';
+    }
+  };
+
+  jaarSelect.onchange = () => loadJaar(jaarSelect.value);
+})();
+</script>

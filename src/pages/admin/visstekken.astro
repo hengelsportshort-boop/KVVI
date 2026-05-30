@@ -1,0 +1,704 @@
+---
+import Layout from '../../layouts/Layout.astro';
+export const prerender = false;
+
+const pageTitle = "Visstekken Beheer | KVVI Admin";
+---
+
+<Layout title={pageTitle} noMainWrapper={true}>
+  <main class="min-h-screen bg-slate-50">
+
+    <!-- MOBILE HEADER -->
+    <div class="md:hidden bg-[#003366] text-white p-4 flex justify-between items-center">
+      <div>
+        <h1 class="text-lg font-bold tracking-widest">KVVI ADMIN</h1>
+        <p class="text-[10px] text-[#C5A059] font-bold">VISSTEKKEN</p>
+      </div>
+      <button id="mobile-menu-btn" class="p-2 hover:bg-white/10 rounded-lg transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+        </svg>
+      </button>
+    </div>
+
+    <div class="flex">
+      <!-- SIDEBAR -->
+      <aside class="hidden md:flex w-64 bg-[#003366] text-white flex-col border-r-4 border-[#C5A059] min-h-[calc(100vh-60px)]">
+        <div class="p-6 border-b border-white/10 hidden md:block">
+          <h1 class="text-xl font-bold tracking-widest">KVVI ADMIN</h1>
+          <p class="text-[10px] text-[#C5A059] font-bold">CONTROL PANEL</p>
+        </div>
+        <nav class="flex-1 p-4 space-y-1">
+          <a href="/" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold">
+            <span>🏠</span> Home
+          </a>
+          <a href="/admin/wedstrijden" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold">
+            <span>🏆</span> Wedstrijden
+          </a>
+          <a href="/admin/kalender" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold">
+            <span>📅</span> Kalender
+          </a>
+          <a href="/admin/visstekken" class="flex items-center gap-3 p-3 bg-white/10 rounded-lg border-l-4 border-[#C5A059] text-sm font-semibold">
+            <span>📍</span> Visstekken
+          </a>
+          <a href="/admin/visstekken-abc" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold">
+            <span>🌐</span> ABC Visstekken
+          </a>
+          <a href="/admin/legende" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold">
+            <span>📖</span> Legende
+          </a>
+
+          <a href="/admin/koppelwedstrijden" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold">
+            <span>🏆</span> Koppelwedstrijden
+          </a>
+          <a href="/admin/kamp-izegem" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏅</span> Kamp. Izegem</a>
+          <a href="/admin/specials/vrouwvissing" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>👩</span> Vrouwvissing</a>
+          <a href="/admin/specials/seniorenvissing" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>👴</span> Seniorenvissing</a>
+          <a href="/admin/tips-tricks" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>💡</span> Tips &amp; Tricks</a>
+          <a href="/admin/fotos" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold">
+            <span>📸</span> Foto's
+          </a>
+        </nav>
+        <div class="p-4 border-t border-white/10">
+          <a href="/" class="text-sm text-slate-400 hover:text-white transition-colors flex items-center gap-2">
+            <span>←</span> Terug naar Website
+          </a>
+        </div>
+      </aside>
+
+      <!-- MOBILE OVERLAY -->
+      <div id="mobile-overlay" class="fixed inset-0 bg-black/50 z-40 hidden" style="margin-top:60px;"></div>
+      <aside id="mobile-sidebar" class="md:hidden fixed top-[60px] left-0 w-72 bg-[#003366] text-white z-50 flex-col border-r-4 border-[#C5A059] h-[calc(100vh-60px)] hidden shadow-2xl">
+        <nav class="flex-1 p-4 space-y-1 pt-6">
+          <a href="/" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold">
+            <span>🏠</span> Home
+          </a>
+          <a href="/admin/wedstrijden" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold">
+            <span>🏆</span> Wedstrijden
+          </a>
+          <a href="/admin/kalender" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold">
+            <span>📅</span> Kalender
+          </a>
+          <a href="/admin/visstekken" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold">
+            <span>📍</span> Visstekken
+          </a>
+          <a href="/admin/visstekken-abc" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold">
+            <span>🌐</span> ABC Visstekken
+          </a>
+          <a href="/admin/legende" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold">
+            <span>📖</span> Legende
+          </a>
+
+          <a href="/admin/koppelwedstrijden" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold">
+            <span>🏆</span> Koppelwedstrijden
+          </a>
+          <a href="/admin/kamp-izegem" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏅</span> Kamp. Izegem</a>
+          <a href="/admin/specials/vrouwvissing" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>👩</span> Vrouwvissing</a>
+          <a href="/admin/specials/seniorenvissing" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>👴</span> Seniorenvissing</a>
+          <a href="/admin/tips-tricks" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>💡</span> Tips &amp; Tricks</a>
+          <a href="/admin/fotos" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold">
+            <span>📸</span> Foto's
+          </a>
+        </nav>
+        <div class="p-4 border-t border-white/10">
+          <a href="/" class="text-sm text-slate-400 hover:text-white transition-colors flex items-center gap-2">
+            <span>←</span> Terug naar Website
+          </a>
+        </div>
+      </aside>
+
+      <!-- MAIN CONTENT -->
+      <section class="flex-1 flex flex-col min-h-[calc(100vh-60px)]">
+        <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 md:px-8">
+          <div class="flex items-center gap-3">
+            <span class="text-slate-400 text-sm">Admin</span>
+            <span class="text-slate-300 text-sm">/</span>
+            <span class="font-semibold text-sm">Visstekken</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span id="save-status" class="text-xs text-slate-400 hidden"></span>
+            <button id="add-btn" class="bg-[#003366] text-white text-xs font-bold px-4 py-2 rounded-lg hover:bg-[#002244] transition shadow">
+              ➕ Nieuwe visstek
+            </button>
+            <button id="save-btn" class="bg-green-600 text-white text-xs font-bold px-4 py-2 rounded-lg hover:bg-green-700 transition shadow hidden">
+              💾 Opslaan
+            </button>
+            
+          </div>
+        </header>
+
+        <div class="p-4 md:p-6 space-y-4 flex-1 overflow-y-auto">
+
+          <!-- Search + Filter -->
+          <div class="flex flex-col md:flex-row gap-3">
+            <div class="flex-1 relative">
+              <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+              <input id="search-input" type="text" placeholder="Zoek op naam van visstek..." class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#004A99]/20 focus:border-[#004A99]">
+            </div>
+            <select id="color-filter" class="px-4 py-3 rounded-xl border border-slate-200 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#004A99]/20">
+              <option value="">Alle kleuren</option>
+            </select>
+            <span id="count-badge" class="bg-[#003366] text-white text-xs font-bold px-4 py-3 rounded-xl flex items-center gap-1 whitespace-nowrap">
+              <span id="count-nr">0</span> visstekken
+            </span>
+          </div>
+
+          <!-- Visstekken grid -->
+          <div id="visstekken-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          </div>
+
+          <!-- Bewerk / Nieuwe Modal -->
+          <div id="edit-modal" class="fixed inset-0 bg-black/50 z-[99998] hidden flex items-center justify-center p-4" style="margin-top:0;">
+            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto">
+              <div class="sticky top-0 bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center rounded-t-2xl z-10">
+                <h2 class="font-black text-[#003366] text-sm uppercase tracking-wider" id="modal-title">📍 Visstek Bewerken</h2>
+                <button id="close-modal" class="text-slate-400 hover:text-slate-600 text-2xl leading-none">&times;</button>
+              </div>
+              <div class="p-6 space-y-5">
+                
+                <div>
+                  <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Naam / Titel</label>
+                  <input id="edit-title" type="text" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#004A99]/20">
+                </div>
+
+                <div>
+                  <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Marker Kleur</label>
+                  <div id="color-swatches" class="flex gap-2 flex-wrap mb-2">
+                    <input id="edit-color-input" type="color" class="w-8 h-8 rounded-full border-0 cursor-pointer p-0" value="#3cc954">
+                  </div>
+                  <input id="edit-color-text" type="text" class="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs font-mono" readonly>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Beschrijving (vissoorten)</label>
+                  <textarea id="edit-description" rows="4" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#004A99]/20 font-mono text-xs" placeholder="Baars&#10;Blankvoorn&#10;Karper"></textarea>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Afbeelding URL</label>
+                  <input id="edit-image" type="url" placeholder="https://..." class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#004A99]/20">
+                  <div id="edit-image-preview" class="mt-2 hidden">
+                    <img id="edit-image-img" class="max-h-32 rounded-lg border border-slate-200" alt="preview">
+                    <button id="remove-image" class="text-xs text-red-500 hover:underline mt-1">Verwijder afbeelding</button>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Video URL (YouTube)</label>
+                  <input id="edit-video" type="url" placeholder="https://youtu.be/... of https://youtube.com/watch?v=..." class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#004A99]/20">
+                  <div id="edit-video-preview" class="mt-2 hidden">
+                    <iframe id="edit-video-iframe" class="w-full aspect-video rounded-lg border border-slate-200" allowfullscreen></iframe>
+                    <button id="remove-video" class="text-xs text-red-500 hover:underline mt-1">Verwijder video</button>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Website URL</label>
+                  <input id="edit-url" type="url" placeholder="https://..." class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#004A99]/20">
+                </div>
+
+                <div>
+                  <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Legende Categorie</label>
+                  <select id="edit-group" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#004A99]/20 bg-white">
+                    <option value="">-- Geen categorie --</option>
+                  </select>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Latitude</label>
+                    <input id="edit-lat" type="text" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm bg-slate-50 font-mono" placeholder="51.234567">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Longitude</label>
+                    <input id="edit-lng" type="text" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm bg-slate-50 font-mono" placeholder="2.987654">
+                  </div>
+                </div>
+
+                <div class="flex gap-3 pt-2">
+                  <button id="save-feature-btn" class="flex-1 bg-[#003366] text-white font-bold py-3.5 rounded-xl hover:bg-[#002244] transition text-sm uppercase tracking-wider shadow">
+                    💾 Opslaan
+                  </button>
+                  <button id="delete-feature-btn" class="px-6 py-3.5 rounded-xl bg-red-50 text-red-600 font-bold text-sm hover:bg-red-100 transition border border-red-200">
+                    🗑 Verwijder
+                  </button>
+                  <button id="cancel-modal" class="px-6 py-3.5 rounded-xl border border-slate-200 text-slate-600 font-bold text-sm hover:bg-slate-50 transition">
+                    Annuleren
+                  </button>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  body { overflow-x: hidden; }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: #f1f5f9; }
+  ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 3px; }
+  .color-swatch.selected { border-color: #003366 !important; transform: scale(1.15); }
+</style>
+
+<script>
+(() => {
+  let geoData = null;
+  let allFeatures = [];
+  let editingIndex = -1;
+  let isNew = false;
+  let legendeCategories = [];
+  let abcGeoData = null;
+
+  const grid = document.getElementById('visstekken-grid');
+  const searchInput = document.getElementById('search-input');
+  const colorFilter = document.getElementById('color-filter');
+  const countNr = document.getElementById('count-nr');
+  const modal = document.getElementById('edit-modal');
+  const modalTitle = document.getElementById('modal-title');
+  const saveStatus = document.getElementById('save-status');
+  const saveBtn = document.getElementById('save-btn');
+  const addBtn = document.getElementById('add-btn');
+  const deleteBtn = document.getElementById('delete-feature-btn');
+
+  // Laad legende categorieën
+  async function loadLegenda() {
+    try {
+      const res = await fetch('/api/legende');
+      legendeCategories = await res.json();
+      // Vul de group dropdown
+      const groupSelect = document.getElementById('edit-group');
+      legendeCategories.forEach(cat => {
+        const opt = document.createElement('option');
+        opt.value = cat.id;
+        opt.textContent = cat.naam;
+        groupSelect.appendChild(opt);
+      });
+      // Bij wijzigen groep -> kleur automatisch aanpassen
+      groupSelect.addEventListener('change', function() {
+        const cat = legendeCategories.find(c => c.id == groupSelect.value);
+        if (cat) setSelectedColor(cat.kleur);
+      });
+      // Vul de color filter dropdown
+      const colorFilter = document.getElementById('color-filter');
+      legendeCategories.forEach(cat => {
+        const opt = document.createElement('option');
+        opt.value = cat.kleur;
+        opt.textContent = `${cat.naam} (${cat.kleur})`;
+        colorFilter.appendChild(opt);
+      });
+      // Vul de color swatches
+      const swatchesContainer = document.getElementById('color-swatches');
+      // Voeg een swatch toe voor elke legendecategorie
+      legendeCategories.forEach(cat => {
+        const btn = document.createElement('button');
+        btn.className = 'color-swatch w-8 h-8 rounded-full border-2 border-transparent hover:scale-110 transition';
+        btn.style.background = cat.kleur;
+        btn.dataset.color = cat.kleur;
+        if (cat.kleur.toLowerCase() === '#ffffff') {
+          btn.style.border = '2px solid #e2e8f0';
+        }
+        btn.onclick = () => setSelectedColor(cat.kleur);
+        swatchesContainer.insertBefore(btn, document.getElementById('edit-color-input'));
+      });
+      // Extra swatches: zwart en wit
+      const extraColors = ['#000000', '#ffffff'];
+      extraColors.forEach(col => {
+        const btn = document.createElement('button');
+        btn.className = 'color-swatch w-8 h-8 rounded-full border-2 border-transparent hover:scale-110 transition';
+        btn.style.background = col;
+        btn.dataset.color = col;
+        if (col === '#ffffff') {
+          btn.style.border = '2px solid #e2e8f0';
+        }
+        btn.onclick = () => setSelectedColor(col);
+        swatchesContainer.insertBefore(btn, document.getElementById('edit-color-input'));
+      });
+      // Herstel geselecteerde kleur nadat swatches zijn aangemaakt
+      var huidigeKleur = document.getElementById('edit-color-text').value;
+      if (huidigeKleur) setSelectedColor(huidigeKleur);
+    } catch (e) {
+      console.error('Fout bij laden legende:', e);
+    }
+  }
+
+  async function loadData() {
+    try {
+      const [resKvvi, resAbc] = await Promise.all([
+        fetch('/api/visstekken'),
+        fetch('/api/visstekken-abc')
+      ]);
+      geoData = await resKvvi.json();
+      abcGeoData = await resAbc.json();
+      const kvviFeatures = (geoData.features || []).map(f => { f._abc = false; return f; });
+      const abcFeatures = (abcGeoData.features || []).map(f => { f._abc = true; return f; });
+      allFeatures = kvviFeatures.concat(abcFeatures);
+      renderGrid(allFeatures);
+    } catch (e) {
+      grid.innerHTML = '<div class="col-span-full p-8 text-center text-red-500">Fout bij laden.</div>';
+    }
+  }
+
+  function getColorName(hex) {
+    const entry = legendeCategories.find(c => c.kleur.toLowerCase() === hex.toLowerCase());
+    return entry ? `${entry.naam} (${entry.kleur})` : hex;
+  }
+
+  function renderGrid(features) {
+    if (!features.length) {
+      grid.innerHTML = '<div class="col-span-full p-8 text-center text-slate-400 italic">Geen visstekken gevonden.</div>';
+      countNr.textContent = '0';
+      return;
+    }
+    countNr.textContent = features.length;
+    saveBtn.classList.remove('hidden');
+
+    grid.innerHTML = features.map((f, idx) => {
+      const p = f.properties || {};
+      const color = p['marker-color'] || '#94a3b8';
+      const title = p.title || 'Onbekend';
+      const desc = p.description || '';
+      const descLines = desc.split('\n').filter(Boolean);
+      const imageUrl = typeof p.image === 'string' ? p.image : '';
+      const videoUrl = p.video || '';
+      const url = p.url || '';
+      const isAbc = f._abc;
+      const originalIdx = allFeatures.indexOf(f);
+      return `<div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden hover:shadow-md transition cursor-pointer relative group" data-idx="${originalIdx}">
+        <div class="flex items-start gap-4 p-4">
+          <div class="w-5 h-5 rounded-full flex-shrink-0 mt-1" style="background:${color};border:2px solid ${color === '#ffffff' ? '#ddd' : 'transparent'}"></div>
+          <div class="flex-1 min-w-0">
+            <h3 class="font-bold text-slate-800 text-sm truncate pr-6">${title}</h3>
+            ${isAbc ? '<div class="mt-1"><span class="text-[9px] font-bold uppercase tracking-wider bg-yellow-300 text-yellow-900 px-1.5 py-0.5 rounded">ABC</span></div>' : ''}
+            ${descLines.length ? `<div class="mt-1 flex flex-wrap gap-1">${descLines.slice(0, 4).map(d => `<span class="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-medium">${d.trim()}</span>`).join('')}${descLines.length > 4 ? `<span class="text-[10px] text-slate-400">+${descLines.length - 4}</span>` : ''}</div>` : '<div class="text-[10px] text-slate-400 mt-1 italic">Geen beschrijving</div>'}
+            <div class="flex gap-2 mt-2 flex-wrap">
+              <span class="text-[9px] font-bold uppercase text-slate-400 bg-slate-100 px-2 py-0.5 rounded">${getColorName(color)}</span>
+              ${imageUrl ? '<span class="text-[9px] font-bold uppercase text-blue-500">📷 Foto</span>' : ''}
+              ${videoUrl ? '<span class="text-[9px] font-bold uppercase text-red-500">🎬 Video</span>' : ''}
+              ${url ? '<span class="text-[9px] font-bold uppercase text-green-600">🔗 Link</span>' : ''}
+            </div>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+
+    grid.querySelectorAll('[data-idx]').forEach(el => {
+      el.onclick = () => openEdit(parseInt(el.dataset.idx));
+    });
+  }
+
+  function filterFeatures() {
+    const query = searchInput.value.toLowerCase().trim();
+    const colorVal = colorFilter.value.toLowerCase();
+    let filtered = allFeatures;
+    if (query) {
+      filtered = filtered.filter(f => {
+        const p = f.properties || {};
+        return (p.title || '').toLowerCase().includes(query) || (p.description || '').toLowerCase().includes(query);
+      });
+    }
+    if (colorVal) {
+      filtered = filtered.filter(f => (f.properties?.['marker-color'] || '').toLowerCase() === colorVal);
+    }
+    return filtered;
+  }
+
+  searchInput.oninput = () => renderGrid(filterFeatures());
+  colorFilter.onchange = () => renderGrid(filterFeatures());
+
+  function openModal(isNewFlag, isAbc) {
+    isNew = isNewFlag;
+    if (isNew) {
+      modalTitle.textContent = '📍 Nieuwe Visstek Toevoegen';
+      deleteBtn.classList.add('hidden');
+      document.getElementById('save-feature-btn').innerHTML = '💾 Visstek Toevoegen';
+      // Leeg alle velden
+      document.getElementById('edit-title').value = '';
+      document.getElementById('edit-description').value = '';
+      document.getElementById('edit-image').value = '';
+      document.getElementById('edit-image-preview').classList.add('hidden');
+      document.getElementById('edit-video').value = '';
+      document.getElementById('edit-video-preview').classList.add('hidden');
+      document.getElementById('edit-url').value = '';
+      document.getElementById('edit-group').value = '';
+      document.getElementById('edit-lat').value = '';
+      document.getElementById('edit-lng').value = '';
+      // Maak lat/lng bewerkbaar
+      document.getElementById('edit-lat').readOnly = false;
+      document.getElementById('edit-lng').readOnly = false;
+      document.getElementById('edit-lat').classList.remove('bg-slate-50');
+      document.getElementById('edit-lng').classList.remove('bg-slate-50');
+      document.getElementById('edit-lat').classList.add('bg-white');
+      document.getElementById('edit-lng').classList.add('bg-white');
+      setSelectedColor('#3cc954');
+    } else {
+      modalTitle.textContent = '📍 Visstek Bewerken';
+      deleteBtn.classList.remove('hidden');
+      document.getElementById('save-feature-btn').innerHTML = '💾 Wijzigingen Opslaan';
+      // ABC coördinaten zijn bewerkbaar, KVVI niet
+      const readonly = !isAbc;
+      document.getElementById('edit-lat').readOnly = readonly;
+      document.getElementById('edit-lng').readOnly = readonly;
+      if (readonly) {
+        document.getElementById('edit-lat').classList.add('bg-slate-50');
+        document.getElementById('edit-lng').classList.add('bg-slate-50');
+        document.getElementById('edit-lat').classList.remove('bg-white');
+        document.getElementById('edit-lng').classList.remove('bg-white');
+      } else {
+        document.getElementById('edit-lat').classList.remove('bg-slate-50');
+        document.getElementById('edit-lng').classList.remove('bg-slate-50');
+        document.getElementById('edit-lat').classList.add('bg-white');
+        document.getElementById('edit-lng').classList.add('bg-white');
+      }
+    }
+    modal.classList.remove('hidden');
+  }
+
+  function openEdit(idx) {
+    editingIndex = idx;
+    const f = allFeatures[idx];
+    if (!f) return;
+    const isAbc = f._abc;
+    const p = f.properties || {};
+    document.getElementById('edit-title').value = p.title || '';
+    document.getElementById('edit-description').value = p.description || '';
+    document.getElementById('edit-image').value = (typeof p.image === 'string') ? p.image : '';
+    document.getElementById('edit-video').value = p.video || '';
+    document.getElementById('edit-url').value = p.url || '';
+    document.getElementById('edit-group').value = p.group || '';
+    document.getElementById('edit-lat').value = f.geometry?.coordinates?.[1]?.toFixed(6) || '';
+    document.getElementById('edit-lng').value = f.geometry?.coordinates?.[0]?.toFixed(6) || '';
+    const color = p['marker-color'] || '#94a3b8';
+    setSelectedColor(color);
+    updateImagePreview();
+    updateVideoPreview();
+    openModal(false, isAbc);
+  }
+
+  // Nieuwe visstek knop
+  addBtn.onclick = () => {
+    editingIndex = -1;
+    openModal(true);
+  };
+
+  function closeModal() {
+    modal.classList.add('hidden');
+    editingIndex = -1;
+    isNew = false;
+  }
+
+  document.getElementById('close-modal').onclick = closeModal;
+  document.getElementById('cancel-modal').onclick = closeModal;
+  modal.onclick = (e) => { if (e.target === modal) closeModal(); };
+
+  function setSelectedColor(color) {
+    document.querySelectorAll('.color-swatch').forEach(el => el.classList.toggle('selected', el.dataset.color === color));
+    document.getElementById('edit-color-input').value = color;
+    document.getElementById('edit-color-text').value = color;
+    // Auto-selecteer de bijbehorende legende groep
+    const cat = legendeCategories.find(c => c.kleur.toLowerCase() === color.toLowerCase());
+    if (cat) {
+      document.getElementById('edit-group').value = cat.id;
+    }
+  }
+
+  function getCategoryByGroupId(groupId) {
+    return legendeCategories.find(c => String(c.id) === String(groupId));
+  }
+
+  document.getElementById('edit-color-input').oninput = (e) => setSelectedColor(e.target.value);
+
+  document.getElementById('edit-image').oninput = updateImagePreview;
+  function updateImagePreview() {
+    const url = document.getElementById('edit-image').value.trim();
+    const c = document.getElementById('edit-image-preview');
+    const img = document.getElementById('edit-image-img');
+    if (url) { c.classList.remove('hidden'); img.src = url; }
+    else { c.classList.add('hidden'); }
+  }
+  document.getElementById('remove-image').onclick = () => {
+    document.getElementById('edit-image').value = '';
+    document.getElementById('edit-image-preview').classList.add('hidden');
+  };
+
+  document.getElementById('edit-video').oninput = updateVideoPreview;
+  function updateVideoPreview() {
+    const url = document.getElementById('edit-video').value.trim();
+    const c = document.getElementById('edit-video-preview');
+    const ifr = document.getElementById('edit-video-iframe');
+    if (url) {
+      const m = url.match(/(?:youtu\.be\/|youtube\.com(?:\/embed\/|\/v\/|\/watch\?v=))([\w\-]{11})/);
+      if (m) { c.classList.remove('hidden'); ifr.src = `https://www.youtube.com/embed/${m[1]}`; }
+      else { c.classList.add('hidden'); }
+    } else { c.classList.add('hidden'); }
+  }
+  document.getElementById('remove-video').onclick = () => {
+    document.getElementById('edit-video').value = '';
+    document.getElementById('edit-video-preview').classList.add('hidden');
+  };
+
+  // Opslaan (nieuw + bewerken)
+  document.getElementById('save-feature-btn').onclick = async () => {
+    if (isNew) {
+      // Valideer coördinaten
+      const lat = parseFloat(document.getElementById('edit-lat').value);
+      const lng = parseFloat(document.getElementById('edit-lng').value);
+      if (isNaN(lat) || isNaN(lng)) {
+        alert('Voer geldige Latitude en Longitude coördinaten in.');
+        return;
+      }
+
+      const newFeature = {
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: [lng, lat]
+        },
+        properties: {
+          title: document.getElementById('edit-title').value.trim() || 'Nieuwe visstek',
+          'marker-color': document.getElementById('edit-color-text').value || '#3cc954',
+          description: document.getElementById('edit-description').value.trim() || '',
+          marker_id: 'vko' + Math.random().toString(36).substr(2, 9),
+        }
+      };
+
+      // Optionele velden
+      const img = document.getElementById('edit-image').value.trim();
+      if (img) newFeature.properties.image = img;
+      const vid = document.getElementById('edit-video').value.trim();
+      if (vid) newFeature.properties.video = vid;
+      const url = document.getElementById('edit-url').value.trim();
+      if (url) newFeature.properties.url = url;
+      const groupVal = document.getElementById('edit-group').value.trim();
+      if (groupVal) newFeature.properties.group = parseInt(groupVal);
+
+      allFeatures.push(newFeature);
+      await saveToServer();
+      closeModal();
+      renderGrid(filterFeatures());
+    } else {
+      // Bestaande bewerken
+      if (editingIndex < 0 || !allFeatures[editingIndex]) return;
+      const f = allFeatures[editingIndex];
+      const p = f.properties || {};
+      
+      p.title = document.getElementById('edit-title').value.trim() || 'Onbekend';
+      p['marker-color'] = document.getElementById('edit-color-text').value || '#94a3b8';
+      p.description = document.getElementById('edit-description').value.trim();
+      const img = document.getElementById('edit-image').value.trim();
+      p.image = img || undefined;
+      const vid = document.getElementById('edit-video').value.trim();
+      p.video = vid || undefined;
+      p.url = document.getElementById('edit-url').value.trim() || undefined;
+      const groupVal = document.getElementById('edit-group').value.trim();
+      p.group = groupVal ? parseInt(groupVal) : undefined;
+      f.properties = p;
+      // Coördinaten opslaan
+      const lat = parseFloat(document.getElementById('edit-lat').value);
+      const lng = parseFloat(document.getElementById('edit-lng').value);
+      if (!isNaN(lat) && !isNaN(lng)) {
+        f.geometry = f.geometry || {};
+        f.geometry.type = 'Point';
+        f.geometry.coordinates = [lng, lat];
+      }
+      allFeatures[editingIndex] = f;
+      
+      await saveToServer();
+      closeModal();
+      renderGrid(filterFeatures());
+    }
+  };
+
+  // Verwijderen
+  document.getElementById('delete-feature-btn').onclick = async () => {
+    if (editingIndex < 0 || !allFeatures[editingIndex]) return;
+    const naam = allFeatures[editingIndex].properties?.title || 'deze visstek';
+    if (!confirm(`🗑 Weet je zeker dat je "${naam}" wilt verwijderen? Dit kan niet ongedaan gemaakt worden.`)) return;
+    allFeatures.splice(editingIndex, 1);
+    await saveToServer();
+    closeModal();
+    renderGrid(filterFeatures());
+  };
+
+  async function saveToServer() {
+    try {
+      const kvviFeatures = allFeatures.filter(function(f) { return !f._abc; }).map(function(f) {
+        var clean = JSON.parse(JSON.stringify(f));
+        delete clean._abc;
+        return clean;
+      });
+      const abcFeatures = allFeatures.filter(function(f) { return f._abc; }).map(function(f) {
+        var clean = JSON.parse(JSON.stringify(f));
+        delete clean._abc;
+        return clean;
+      });
+      var results = [];
+      if (kvviFeatures.length) {
+        var r1 = await fetch('/api/visstekken', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ type: 'FeatureCollection', features: kvviFeatures })
+        });
+        results.push(await r1.json());
+      }
+      if (abcFeatures.length) {
+        var r2 = await fetch('/api/visstekken-abc', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ type: 'FeatureCollection', features: abcFeatures })
+        });
+        results.push(await r2.json());
+      }
+      var allOk = results.every(function(r) { return r.success; });
+      if (allOk) showSaveStatus('✅ Opgeslagen!', 'text-green-600');
+      else showSaveStatus('❌ Fout bij opslaan', 'text-red-600');
+    } catch (e) {
+      showSaveStatus('❌ Fout bij opslaan', 'text-red-600');
+    }
+  }
+
+  saveBtn.onclick = saveToServer;
+
+  let statusTimeout;
+  function showSaveStatus(msg, cls) {
+    saveStatus.textContent = msg;
+    saveStatus.className = `text-xs ${cls} font-bold`;
+    saveStatus.classList.remove('hidden');
+    clearTimeout(statusTimeout);
+    statusTimeout = setTimeout(() => saveStatus.classList.add('hidden'), 3000);
+  }
+
+  const menuBtn = document.getElementById('mobile-menu-btn');
+  const sidebar = document.getElementById('mobile-sidebar');
+  const overlay = document.getElementById('mobile-overlay');
+  if (menuBtn && sidebar && overlay) {
+    function toggleMenu() {
+      const hidden = sidebar.classList.contains('hidden');
+      sidebar.classList.toggle('hidden', !hidden);
+      overlay.classList.toggle('hidden', !hidden);
+    }
+    menuBtn.onclick = toggleMenu;
+    overlay.onclick = toggleMenu;
+    
+    // Menu items moeten menu open houden
+    const menuItems = sidebar.querySelectorAll('nav a');
+    menuItems.forEach(item => {
+      item.addEventListener('click', (e) => {
+        // Menu blijft open bij klik op menuitem
+        e.preventDefault();
+        // Navigeer naar de link na een korte vertraging
+        setTimeout(() => {
+          window.location.href = item.href;
+        }, 100);
+      });
+    });
+  }
+
+  loadLegenda();
+  loadData();
+})();
+</script>

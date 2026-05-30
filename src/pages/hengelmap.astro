@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HengelKaart from '../components/HengelKaart.astro';
+import FAIPanel from '../components/FAIPanel.astro';
+import VisstekkenZoek from '../components/VisstekkenZoek.astro';
+---
+
+<BaseLayout title="Hengelmap" description="Interactieve hengelkaart met visstekken in West-Vlaanderen. Zoek locaties, bekijk weersverwachtingen en FAI-score per dag en uur.">
+  <div class="hengelmap-wrap">
+    <HengelKaart />
+    <FAIPanel width={440} />
+    <VisstekkenZoek />
+  </div>
+</BaseLayout>
+
+<style>
+  :global(html), :global(body) { height: 100%; overflow: hidden; margin: 0; }
+  :global(body) { overscroll-behavior: none; }
+  .hengelmap-wrap { width: 100%; height: calc(100vh - 56px); }
+  @media (min-width: 1024px) { .hengelmap-wrap { height: calc(100vh - 64px); } }
+  @media (min-width: 1280px) { .hengelmap-wrap { height: calc(100vh - 80px); } }
+</style>

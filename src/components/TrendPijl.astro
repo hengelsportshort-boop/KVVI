@@ -1,0 +1,24 @@
+---
+const { huidigeStand, vorigeStand } = Astro.props;
+
+// Bereken het verschil (vorige - huidige omdat 1 beter is dan 5)
+const verschil = vorigeStand ? vorigeStand - huidigeStand : 0;
+const absoluutVerschil = Math.abs(verschil);
+---
+<div class="flex items-center justify-center gap-1 font-mono text-[10px] font-black">
+  {verschil > 0 && (
+    <span class="text-green-600 flex items-center bg-green-50 px-1.5 py-0.5 rounded border border-green-200">
+      ▲ <span class="ml-0.5">{absoluutVerschil}</span>
+    </span>
+  )}
+  
+  {verschil < 0 && (
+    <span class="text-red-600 flex items-center bg-red-50 px-1.5 py-0.5 rounded border border-red-200">
+      ▼ <span class="ml-0.5">{absoluutVerschil}</span>
+    </span>
+  )}
+  
+  {(verschil === 0 || !vorigeStand) && (
+    <span class="text-slate-300">▬</span>
+  )}
+</div>
