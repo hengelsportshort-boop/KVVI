@@ -19,7 +19,7 @@ const MIME = {
 
 const STATIC_RX = /\.(js|css|png|jpg|jpeg|webp|svg|ico|woff2?|json|xml|txt)$/;
 const NO_CACHE = ['/sw.js', '/manifest.json', '/offline.html'];
-const CACHE_RX = /^\/_astro\/|\.(js|css|png|jpg|jpeg|webp|svg|ico|woff2?)$/;
+const CACHE_RX = /^\/_astro\/|\.(js|css|png|jpg|jpeg|webp|svg|ico|woff2?)$/i;
 
 function serveStatic(req, res) {
   let filePath = path.join(CLIENT_DIR, decodeURIComponent(req.url));
