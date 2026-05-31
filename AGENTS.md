@@ -60,17 +60,14 @@
 
 ## Admin
 - Login via `/admin/login`
-- ADMIN_KEY wordt ingesteld als Fly.io secret: `fly secrets set ADMIN_KEY=<waarde>`
 - **WAARSCHUWING**: `.env` staat in `.dockerignore`, dus `import.meta.env` wordt leeg tijdens Docker build. Gebruik ALTIJD `process.env` voor runtime secrets.
 
-## Fly.io
+## Railway
 - Host: `kvvi-production.up.railway.app`
-- Free tier: VM stopt na 30 min inactiviteit
-- Keep-alive: cron-job.org pingt elke minuut
-- Deploy: `fly deploy`
-- Secrets: `fly secrets set KEY=VAL`
-- Machine starten: `fly machine start 8dd629ced22228`
-- Build arg voor env vars: `fly deploy --build-arg ADMIN_KEY=<waarde>` (indien nodig tijdens build)
+- Deploy trigger: `curl -s -X POST "https://backboard.railway.app/graphql/v2" -H "Authorization: Bearer <token>" -H "Content-Type: application/json" -d '{"query":"mutation { environmentTriggersDeploy(input: { environmentId: \"6d070451-3a0e-478d-91f7-aed2b7104d1c\", projectId: \"19766c01-d253-4bd7-96fe-bdbcbe1bc78f\", serviceId: \"b1442851-f031-4433-a041-4881dc33bbce\" }) }"}'`
+- Project: `distinguished-presence`, Service: `kvvi`
+- Persistent volume: `/app/public/data` — seed data in `/app/public/data-seed`, `start.sh` kopieert alleen ontbrekende bestanden (behoudt admin-wijzigingen)
+- ADMIN_KEY is runtime env var via Railway dashboard of `fly secrets` (niet meer van toepassing — Railway secrets via dashboard)
 
 ## Visstekken-data locaties
 - **`public/data/hengelmap.csv`** — KVVI eigen visstekken (Clubvijver, Kanaal Roeselare-Leie, Blankaart, Gaverbeek)
