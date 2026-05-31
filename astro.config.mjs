@@ -4,7 +4,7 @@ import node from '@astrojs/node';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  site: 'https://kvvi.fly.dev',
+  site: 'https://kvvi-production.up.railway.app',
   integrations: [tailwind(), sitemap()],
   output: 'server',
   adapter: node({

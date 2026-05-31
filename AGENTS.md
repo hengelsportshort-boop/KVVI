@@ -42,7 +42,7 @@
    - **Homepage**: compactere hero padding/buttons op mobiel, logo kleiner `w-48 h-48` op kleine schermen
    - **Fotos modal**: grotere touch targets (`w-16 h-16` op mobiel, `w-14 h-14` op desktop)
 8. **Leaflet CSS lokaal (29-05-2026)**: `/public/lib/leaflet.css` ipv unpkg.com preload — sneller (geen externe DNS/SSL), immutable cache (1 jaar), gzip via server.mjs
-9. **cron-job.org keep-alive (29-05-2026)**: elke minuut naar `https://kvvi.fly.dev/` — voorkomt Fly.io VM suspension na 30 min inactiviteit
+9. **cron-job.org keep-alive (29-05-2026)**: elke minuut naar `https://kvvi-production.up.railway.app/` — voorkomt VM suspension na 30 min inactiviteit
 10. **ETag caching visstekken (30-05-2026)**: `?t=Date.now()` verwijderd uit fetch URLs, vervangen door `If-None-Match` headers. Server antwoordt met `304` (0 KB) zolang data niet wijzigt — bespaart ~45-90 MB/u op mobiel.
 
 ## Structuur
@@ -64,7 +64,7 @@
 - **WAARSCHUWING**: `.env` staat in `.dockerignore`, dus `import.meta.env` wordt leeg tijdens Docker build. Gebruik ALTIJD `process.env` voor runtime secrets.
 
 ## Fly.io
-- Host: `kvvi.fly.dev`
+- Host: `kvvi-production.up.railway.app`
 - Free tier: VM stopt na 30 min inactiviteit
 - Keep-alive: cron-job.org pingt elke minuut
 - Deploy: `fly deploy`

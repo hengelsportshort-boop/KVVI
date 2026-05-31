@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://kvvi.fly.dev/sitemap-index.xml
+Sitemap: https://kvvi-production.up.railway.app/sitemap-index.xml
