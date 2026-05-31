@@ -18,6 +18,7 @@ const MIME = {
 };
 
 const STATIC_RX = /\.(js|css|png|jpg|jpeg|webp|svg|ico|woff2?|json|xml|txt)$/;
+const NO_CACHE = ['/sw.js', '/manifest.json', '/offline.html'];
 const CACHE_RX = /^\/_astro\/|\.(js|css|png|jpg|jpeg|webp|svg|ico|woff2?)$/;
 
 function serveStatic(req, res) {
@@ -28,7 +29,7 @@ function serveStatic(req, res) {
     if (stat.isFile()) {
       const ext = path.extname(filePath).toLowerCase();
       const mime = MIME[ext] || 'application/octet-stream';
-      const cache = CACHE_RX.test(req.url);
+      const cache = CACHE_RX.test(req.url) && !NO_CACHE.includes(req.url);
       res.writeHead(200, {
         'Content-Type': mime,
         'Content-Length': stat.size,

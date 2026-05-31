@@ -1,0 +1,26 @@
+{
+  "name": "KVVI Izegem",
+  "short_name": "KVVI",
+  "description": "Koninklijke Vrije Vissers Izegem — Viswedstrijden, uitslagen, hengelkaart en tips & tricks",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#003366",
+  "background_color": "#f8fafc",
+  "categories": ["sports", "recreation"],
+  "icons": [
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
