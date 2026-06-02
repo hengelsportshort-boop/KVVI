@@ -18,7 +18,7 @@ export async function GET({ request }) {
     return new Response(JSON.stringify(data), {
       headers: {
         'Content-Type': 'application/json',
-        'Cache-Control': 'public, max-age=3600',
+        'Cache-Control': 'public, no-cache',
         'ETag': etag,
       },
     });

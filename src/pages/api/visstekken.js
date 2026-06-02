@@ -95,7 +95,7 @@ export async function GET({ request }) {
       status: 200,
       headers: {
         'Content-Type': 'application/json',
-        'Cache-Control': 'public, max-age=3600',
+        'Cache-Control': 'public, no-cache',
         'ETag': etag,
       }
     });
