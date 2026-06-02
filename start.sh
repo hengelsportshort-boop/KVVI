@@ -11,7 +11,7 @@ fi
 for f in "$SEED_DIR"/*; do
   [ -e "$f" ] || continue
   name=$(basename "$f")
-  if [ ! -e "$DATA_DIR/$name" ] || [ "$name" = "fisheries.geojson" ]; then
+  if [ ! -e "$DATA_DIR/$name" ]; then
     echo "  seeding $name..."
     cp -r "$f" "$DATA_DIR/"
   fi

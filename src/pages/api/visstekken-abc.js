@@ -17,7 +17,7 @@ export async function GET({ request }) {
     const data = JSON.parse(raw);
     return new Response(JSON.stringify(data), {
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json; charset=utf-8',
         'Cache-Control': 'public, no-cache',
         'ETag': etag,
       },
@@ -25,7 +25,7 @@ export async function GET({ request }) {
   } catch (e) {
     return new Response(JSON.stringify({ error: e.message }), {
       status: 500,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json; charset=utf-8' },
     });
   }
 }
@@ -37,7 +37,7 @@ export async function POST({ request }) {
     if (body.type !== 'FeatureCollection' || !Array.isArray(body.features)) {
       return new Response(JSON.stringify({ error: 'Invalid GeoJSON' }), {
         status: 400,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json; charset=utf-8' },
       });
     }
 
@@ -49,12 +49,12 @@ export async function POST({ request }) {
 
     writeFileSync(GEOJSON_PATH, JSON.stringify(body, null, 2), 'utf-8');
     return new Response(JSON.stringify({ success: true, count: body.features.length }), {
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json; charset=utf-8' },
     });
   } catch (e) {
     return new Response(JSON.stringify({ error: e.message }), {
       status: 500,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json; charset=utf-8' },
     });
   }
 }
