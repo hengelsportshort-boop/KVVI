@@ -13,21 +13,31 @@ export async function GET({ request }) {
       data = JSON.parse(raw);
     } catch {}
 
-    const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
-    const now = Date.now();
+    // Admin visits niet tellen
+    const cookies = request.headers.get('cookie') || '';
+    const adminKey = process.env.ADMIN_KEY;
+    const isAdmin = adminKey && cookies.split(';').some(c => {
+      const parts = c.trim().split('=');
+      return parts[0] === 'admin_token' && parts[1] === adminKey;
+    });
 
-    let visits = {};
-    try {
-      const v = fs.readFileSync(DATA_PATH.replace('.json', '-ips.json'), 'utf-8');
-      visits = JSON.parse(v);
-    } catch {}
+    if (!isAdmin) {
+      const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
+      const now = Date.now();
 
-    const lastVisit = visits[ip] || 0;
-    if (now - lastVisit > 3600000) {
-      data.count += 1;
-      visits[ip] = now;
-      fs.writeFileSync(DATA_PATH, JSON.stringify(data), 'utf-8');
-      fs.writeFileSync(DATA_PATH.replace('.json', '-ips.json'), JSON.stringify(visits), 'utf-8');
+      let visits = {};
+      try {
+        const v = fs.readFileSync(DATA_PATH.replace('.json', '-ips.json'), 'utf-8');
+        visits = JSON.parse(v);
+      } catch {}
+
+      const lastVisit = visits[ip] || 0;
+      if (now - lastVisit > 3600000) {
+        data.count += 1;
+        visits[ip] = now;
+        fs.writeFileSync(DATA_PATH, JSON.stringify(data), 'utf-8');
+        fs.writeFileSync(DATA_PATH.replace('.json', '-ips.json'), JSON.stringify(visits), 'utf-8');
+      }
     }
 
     return new Response(JSON.stringify(data), {

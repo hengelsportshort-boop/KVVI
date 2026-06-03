@@ -7,6 +7,16 @@
 
 ## Opgelost
 
+### UK search vond geen UK entries (03-06-2026)
+- **Oorzaak**: `VisstekkenZoek.astro` (`zoekVisstekken()` en `zoekOpLocatie()`) fetchten alleen `/api/visstekken` en `/api/visstekken-abc`, maar niet `/api/visstekken-en`. De 20 UK entries uit `fisheries.geojson` waren onzichtbaar in de zoekbalk, ook al stonden ze wel op de kaart.
+- **Fix**: `/api/visstekken-en` toegevoegd aan beide fetch calls + `enData` samengevoegd in `allFeatures`.
+
+### Encoding: 204 corrupte karakters in abc-sportvissen.geojson (03-06-2026)
+- **Oorzaak**: Tijdens scraping zijn alle niet-ASCII karakters (é, ë, ï, °, à, è, ê, ó, ², etc.) vervangen door U+FFFD (�). De data in `abc-sportvissen.geojson` bevatte 204 van deze vervangingskarakters, zichtbaar in de infopaneel op de hengelmap.
+- **Fix**: Python script (`/tmp/fix_geo.py`) met context-afhankelijke mapping (~150 patronen) — hersteld op basis van Nederlands, Frans en GPS-coördinaat context. Via `json.load()`/`json.dump()` i.p.v. raw text replacement om JSON-validiteit te garanderen.
+- **Aanvullend**: `charset=utf-8` toegevoegd aan Content-Type in `visstekken.js`, `visstekken-abc.js` en `visstekken-en.js` — voorkomt dat browser JSON als Latin-1 interpreteert.
+- **Let op**: Persistent volume op Railway (`/app/public/data`) behoudt oude data — `start.sh` overschrijft bestaande bestanden niet. Bij encoding-fixes in data files moet de admin het bestand herladen via de admin interface of `start.sh` aanpassen.
+
 ### ETag 304 markers verdwijnen (30-05-2026)
 - **Oorzaak**: `laadVisstekken()` resette `alleVisstekkenFeaturesKvvi` en `alleVisstekkenFeaturesAbc` naar `null` voordat async API calls terugkwamen. Bij 304 waren de caches leeg → geen markers toegevoegd aan nieuwe `markerGroup`.
 - **Fix**: per-API caches niet resetten in `laadVisstekken()`, alleen in initialisatie. Ze blijven behouden tussen 30s refreshes.
@@ -48,9 +58,9 @@
 ## Structuur
 - `src/layouts/BaseLayout.astro` — hoofdnavigatie (Uitslagen/Specials dropdown via click)
 - `src/components/HengelKaart.astro` — kaart, wind, FAI, help, lokalisator
+- `src/components/VisstekkenZoek.astro` — zoekbalk voor visstekken (tekst + locatie) op hengelmap
 - `src/components/FAIPanel.astro` — FAI score panel (weerdata, wind animatie)
 - `src/components/WeerOverlay.astro` — weerkaartjes op hengelmap
-- `src/pages/hengelmap.astro` — root, importeert componenten
 - `src/pages/admin/login.astro` — admin login (POST form, vergelijkt met `process.env.ADMIN_KEY`)
 - `src/middleware.ts` — admin auth middleware (controleert cookie `admin_token` tegen `process.env.ADMIN_KEY`)
 - `server.mjs` — productieserver (starten met `node server.mjs`)
@@ -73,6 +83,7 @@
 - **`public/data/hengelmap.csv`** — KVVI eigen visstekken (Clubvijver, Kanaal Roeselare-Leie, Blankaart, Gaverbeek)
 - **`public/data/abc-sportvissen.geojson`** — ABC Sportvissen vislocaties (~45+ locaties, 341 KB)
 - **`public/data/claudedenys-Hengelen-West-Vlaanderen.geojson`** — West-Vlaamse visstekken (~40+ locaties, 403 KB)
+- **`public/data/fisheries.geojson`** — UK vislocaties (~20 locaties, 403 KB)
 - **`public/data/legende.json`** — Groeperingstypes voor visstekken (Polderrivier, Rivier, Kanaal, Commercial, etc.)
 
 ## Back-ups
