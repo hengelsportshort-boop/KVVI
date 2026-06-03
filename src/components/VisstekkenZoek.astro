@@ -413,14 +413,16 @@
       const lat = parseFloat(geoData[0].lat);
       const lon = parseFloat(geoData[0].lon);
 
-      const [resKvvi, resAbc] = await Promise.all([
+      const [resKvvi, resAbc, resEn] = await Promise.all([
         fetch('/api/visstekken'),
-        fetch('/api/visstekken-abc')
+        fetch('/api/visstekken-abc'),
+        fetch('/api/visstekken-en')
       ]);
       if (!resKvvi.ok) throw new Error('Data laden mislukt');
       const visstekData = await resKvvi.json();
       const abcData = resAbc.ok ? await resAbc.json() : { features: [] };
-      const allFeatures = (visstekData.features || []).concat(abcData.features || []);
+      const enData = resEn.ok ? await resEn.json() : { features: [] };
+      const allFeatures = (visstekData.features || []).concat(abcData.features || [], enData.features || []);
 
       const binnenStraal = [];
       for (const feature of allFeatures) {
@@ -477,16 +479,18 @@
     }
 
     try {
-      const [resKvvi, resAbc] = await Promise.all([
+      const [resKvvi, resAbc, resEn] = await Promise.all([
         fetch('/api/visstekken'),
-        fetch('/api/visstekken-abc')
+        fetch('/api/visstekken-abc'),
+        fetch('/api/visstekken-en')
       ]);
       if (!resKvvi.ok) throw new Error('Data laden mislukt');
       
       const geoData = await resKvvi.json();
       const abcData = resAbc.ok ? await resAbc.json() : { features: [] };
+      const enData = resEn.ok ? await resEn.json() : { features: [] };
       
-      const allFeatures = (geoData.features || []).concat(abcData.features || []);
+      const allFeatures = (geoData.features || []).concat(abcData.features || [], enData.features || []);
       
       const normalizedQuery = query.toLowerCase();
       const results = allFeatures
