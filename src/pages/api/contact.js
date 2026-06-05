@@ -20,7 +20,7 @@ export async function POST({ request }) {
 
     try {
       const { execSync } = await import('node:child_process');
-      execSync(`echo ${JSON.stringify(text)} | mail -s "Contactformulier KVVI" kvvizegem@gmail.com`, {
+      execSync(`echo ${JSON.stringify(text)} | mail -s "Contactformulier KVVI" hengelsport.short@gmail.com`, {
         timeout: 10000,
         shell: true
       });

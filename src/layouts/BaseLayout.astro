@@ -8,11 +8,12 @@ const siteOrigin = Astro.site ? Astro.site.origin : Astro.url.origin;
 const canonical = siteOrigin + Astro.url.pathname;
 const defaultDesc = 'KVVI — Koninklijke Vrije Vissers Izegem. Viswedstrijden, uitslagen, hengelkaart en tips & tricks voor vissers in West-Vlaanderen.';
 const metaDesc = description || defaultDesc;
-const siteName = 'KVVI Izegem';
+const siteName = 'KVVI';
+const pageTitleFull = title === 'Home' ? siteName : `${siteName} - ${title}`;
 const schemaOrg = {
   "@context": "https://schema.org",
   "@type": "Organization",
-  "name": "Koninklijke Vrije Vissers Izegem",
+  "name": "KVVI — Koninklijke Vrije Vissers Izegem",
   "url": siteOrigin,
   "logo": siteOrigin + "/logo/IMG_9054.PNG",
   "description": defaultDesc,
@@ -25,10 +26,10 @@ const schemaOrg = {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="google-site-verification" content="ngGaI_9wwZH5wAujAGQZWRDdtejIbnxH5bLrlR2wTzA" />
-    <title>{title} | {siteName}</title>
+    <title>{pageTitleFull}</title>
     <meta name="description" content={metaDesc} />
     <link rel="canonical" href={canonical} />
-    <meta property="og:title" content={`${title} | ${siteName}`} />
+    <meta property="og:title" content={pageTitleFull} />
     <meta property="og:description" content={metaDesc} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonical} />
