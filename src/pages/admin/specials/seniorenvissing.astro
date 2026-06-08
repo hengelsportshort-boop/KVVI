@@ -158,6 +158,12 @@ const years = Array.from({length: currentYear + 4 - 2026 + 1}, (_, i) => 2026 + 
         </div>
 
         <div id="photo-list" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
+        
+        <!-- Lightbox overlay for fullscreen image viewing -->
+        <div id="lightbox" class="fixed inset-0 z-[999] bg-black/90 hidden items-center justify-center" style="cursor:default;">
+          <button id="lightbox-close" class="absolute top-4 right-4 w-10 h-10 bg-red-600 text-white rounded-full flex items-center justify-center text-xl font-bold hover:bg-red-700 transition z-10 shadow-lg" style="cursor:pointer;">✕</button>
+          <img id="lightbox-img" class="max-w-[90vw] max-h-[90vh] object-contain rounded-lg shadow-2xl" alt="Vergroot">
+        </div>
       </div>
     </div>`;
 
@@ -243,6 +249,41 @@ const years = Array.from({length: currentYear + 4 - 2026 + 1}, (_, i) => 2026 + 
 
     document.getElementById('item-title').onchange = () => { data.title = document.getElementById('item-title').value.trim(); autoSave(); };
     document.getElementById('item-date').onchange = () => { data.date = document.getElementById('item-date').value; autoSave(); };
+
+    // Lightbox: click on photo to open fullscreen
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const lightboxClose = document.getElementById('lightbox-close');
+
+    function openLightbox(src) {
+      lightboxImg.src = src;
+      lightbox.classList.remove('hidden');
+      lightbox.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+      lightbox.classList.add('hidden');
+      lightbox.classList.remove('flex');
+      document.body.style.overflow = '';
+    }
+
+    lightboxClose.onclick = closeLightbox;
+    lightbox.onclick = (e) => {
+      if (e.target === lightbox) closeLightbox();
+    };
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !lightbox.classList.contains('hidden')) closeLightbox();
+    });
+
+    // Bind click to open lightbox on all photo thumbnails
+    document.querySelectorAll('.photo-preview img').forEach((img) => {
+      img.style.cursor = 'pointer';
+      img.onclick = (e) => {
+        e.stopPropagation();
+        openLightbox(img.src);
+      };
+    });
   }
 
   function escapeHtml(text) {
