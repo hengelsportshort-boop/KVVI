@@ -3,9 +3,14 @@ set -e
 
 DATA_DIR="/app/public/data"
 SEED_DIR="/app/public/data-seed"
+SENIOREN_DIR="/app/public/images/senioren"
 
 if [ ! -d "$DATA_DIR" ]; then
   mkdir -p "$DATA_DIR"
+fi
+
+if [ ! -d "$SENIOREN_DIR" ]; then
+  mkdir -p "$SENIOREN_DIR"
 fi
 
 for f in "$SEED_DIR"/*; do

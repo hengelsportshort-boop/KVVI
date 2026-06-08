@@ -7,6 +7,7 @@ import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const CLIENT_DIR = path.join(__dirname, 'dist', 'client');
+const PUBLIC_DIR = path.join(__dirname, 'public');
 const PORT = parseInt(process.env.PORT || '4321');
 
 const MIME = {
@@ -22,6 +23,7 @@ const NO_CACHE = ['/sw.js', '/manifest.json', '/offline.html'];
 const CACHE_RX = /^\/_astro\/|\.(js|css|png|jpg|jpeg|webp|svg|ico|woff2?)$/i;
 
 function serveStatic(req, res) {
+  // Check dist/client first (build assets)
   let filePath = path.join(CLIENT_DIR, decodeURIComponent(req.url));
   if (filePath.includes('\0')) { res.writeHead(400); res.end(); return true; }
   try {
@@ -39,6 +41,25 @@ function serveStatic(req, res) {
       return true;
     }
   } catch { }
+
+  // Fallback to public directory (runtime uploaded files)
+  let publicFilePath = path.join(PUBLIC_DIR, decodeURIComponent(req.url));
+  if (!publicFilePath.includes('\0')) {
+    try {
+      const publicStat = fs.statSync(publicFilePath);
+      if (publicStat.isFile()) {
+        const ext = path.extname(publicFilePath).toLowerCase();
+        const mime = MIME[ext] || 'application/octet-stream';
+        res.writeHead(200, {
+          'Content-Type': mime,
+          'Content-Length': publicStat.size,
+        });
+        fs.createReadStream(publicFilePath).pipe(res);
+        return true;
+      }
+    } catch { }
+  }
+
   return false;
 }
 
