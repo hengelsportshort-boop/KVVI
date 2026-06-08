@@ -158,12 +158,6 @@ const years = Array.from({length: currentYear + 4 - 2026 + 1}, (_, i) => 2026 + 
         </div>
 
         <div id="photo-list" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
-        
-        <!-- Lightbox overlay for fullscreen image viewing -->
-        <div id="lightbox" class="fixed inset-0 z-[999] bg-black/90 hidden items-center justify-center" style="cursor:default;">
-          <button id="lightbox-close" class="absolute top-4 right-4 w-10 h-10 bg-red-600 text-white rounded-full flex items-center justify-center text-xl font-bold hover:bg-red-700 transition z-10 shadow-lg" style="cursor:pointer;">✕</button>
-          <img id="lightbox-img" class="max-w-[90vw] max-h-[90vh] object-contain rounded-lg shadow-2xl" alt="Vergroot">
-        </div>
       </div>
     </div>`;
 
@@ -250,10 +244,17 @@ const years = Array.from({length: currentYear + 4 - 2026 + 1}, (_, i) => 2026 + 
     document.getElementById('item-title').onchange = () => { data.title = document.getElementById('item-title').value.trim(); autoSave(); };
     document.getElementById('item-date').onchange = () => { data.date = document.getElementById('item-date').value; autoSave(); };
 
-    // Lightbox: click on photo to open fullscreen
-    const lightbox = document.getElementById('lightbox');
-    const lightboxImg = document.getElementById('lightbox-img');
-    const lightboxClose = document.getElementById('lightbox-close');
+    // Lightbox: create element directly on body (avoid overflow container issues)
+    let lightbox = document.getElementById('kvvi-lightbox');
+    if (!lightbox) {
+      lightbox = document.createElement('div');
+      lightbox.id = 'kvvi-lightbox';
+      lightbox.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.92);display:none;align-items:center;justify-content:center;';
+      lightbox.innerHTML = '<button id="kvvi-lb-close" style="position:absolute;top:12px;right:12px;width:48px;height:48px;background:#dc2626;color:white;border:none;border-radius:50%;font-size:24px;font-weight:bold;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10;box-shadow:0 4px 12px rgba(0,0,0,0.3);line-height:1;">&#10005;</button><img id="kvvi-lb-img" style="max-width:90vw;max-height:90vh;object-fit:contain;border-radius:8px;box-shadow:0 8px 40px rgba(0,0,0,0.5);" alt="Vergroot">';
+      document.body.appendChild(lightbox);
+    }
+    const lightboxImg = document.getElementById('kvvi-lb-img');
+    const lightboxClose = document.getElementById('kvvi-lb-close');
 
     function openLightbox(src) {
       lightboxImg.src = src;
