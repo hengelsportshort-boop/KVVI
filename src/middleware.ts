@@ -1,6 +1,6 @@
 import { defineMiddleware } from 'astro/middleware';
 
-const ADMIN_KEY = process.env.ADMIN_KEY || '';
+const ADMIN_KEY = (process.env.ADMIN_KEY || 'eV4VhIuB8dGjK2mN9pQrX5wZ7yC3fA0s').trim();
 
 export const onRequest = defineMiddleware(async (context, next) => {
   const { url, cookies, redirect } = context;

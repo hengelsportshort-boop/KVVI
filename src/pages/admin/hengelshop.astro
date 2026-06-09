@@ -1,0 +1,665 @@
+---
+import Layout from '../../layouts/Layout.astro';
+export const prerender = false;
+
+const pageTitle = "Hengelshop | KVVI Admin";
+---
+
+<Layout title={pageTitle} noMainWrapper={true}>
+  <main class="min-h-screen bg-slate-50">
+    <!-- MOBILE HEADER -->
+    <div class="md:hidden bg-[#003366] text-white p-4 flex justify-between items-center">
+      <div>
+        <h1 class="text-lg font-bold tracking-widest">KVVI ADMIN</h1>
+        <p class="text-[10px] text-[#C5A059] font-bold">HENGELSHOP</p>
+      </div>
+      <button id="mobile-menu-btn" class="p-2 hover:bg-white/10 rounded-lg transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+        </svg>
+      </button>
+    </div>
+
+    <div class="flex">
+      <!-- SIDEBAR -->
+      <aside class="hidden md:flex w-64 bg-[#003366] text-white flex-col border-r-4 border-[#C5A059] min-h-[calc(100vh-60px)]">
+        <div class="p-6 border-b border-white/10">
+          <h1 class="text-xl font-bold tracking-widest">KVVI ADMIN</h1>
+          <p class="text-[10px] text-[#C5A059] font-bold">CONTROL PANEL</p>
+        </div>
+        <nav class="flex-1 p-4 space-y-1">
+          <a href="/" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏠</span> Home</a>
+          <a href="/admin/wedstrijden" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏆</span> Wedstrijden</a>
+          <a href="/admin/kalender" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📅</span> Kalender</a>
+          <a href="/admin/visstekken" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📍</span> Visstekken</a>
+          <a href="/admin/legende" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📖</span> Legende</a>
+          <a href="/admin/hengelshop" class="flex items-center gap-3 p-3 bg-white/10 rounded-lg border-l-4 border-[#C5A059] text-sm font-semibold"><span>📦</span> Hengelshop</a>
+          <a href="/admin/koppelwedstrijden" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏆</span> Koppelwedstrijden</a>
+          <a href="/admin/kamp-izegem" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏅</span> Kamp. Izegem</a>
+          <a href="/admin/specials/vrouwvissing" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>👩</span> Vrouwvissing</a>
+          <a href="/admin/specials/seniorenvissing" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>👴</span> Seniorenvissing</a>
+          <a href="/admin/tips-tricks" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>💡</span> Tips & Tricks</a>
+          <a href="/admin/fotos" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📸</span> Foto's</a>
+        </nav>
+        <div class="p-4 border-t border-white/10">
+          <a href="/" class="text-sm text-slate-400 hover:text-white transition-colors flex items-center gap-2"><span>←</span> Terug</a>
+        </div>
+      </aside>
+
+      <!-- MOBILE OVERLAY & SIDEBAR -->
+      <div id="mobile-overlay" class="fixed inset-0 bg-black/50 z-40 hidden" style="margin-top:60px;"></div>
+      <aside id="mobile-sidebar" class="md:hidden fixed top-[60px] left-0 w-72 bg-[#003366] text-white z-50 flex-col border-r-4 border-[#C5A059] h-[calc(100vh-60px)] hidden shadow-2xl">
+        <nav class="flex-1 p-4 space-y-1 pt-6">
+          <a href="/" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏠</span> Home</a>
+          <a href="/admin/wedstrijden" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏆</span> Wedstrijden</a>
+          <a href="/admin/kalender" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📅</span> Kalender</a>
+          <a href="/admin/visstekken" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📍</span> Visstekken</a>
+          <a href="/admin/legende" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📖</span> Legende</a>
+          <a href="/admin/hengelshop" class="flex items-center gap-3 p-3 bg-white/10 rounded-lg border-l-4 border-[#C5A059] text-sm font-semibold"><span>📦</span> Hengelshop</a>
+          <a href="/admin/koppelwedstrijden" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏆</span> Koppelwedstrijden</a>
+          <a href="/admin/kamp-izegem" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏅</span> Kamp. Izegem</a>
+          <a href="/admin/specials/vrouwvissing" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>👩</span> Vrouwvissing</a>
+          <a href="/admin/specials/seniorenvissing" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>👴</span> Seniorenvissing</a>
+          <a href="/admin/tips-tricks" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>💡</span> Tips & Tricks</a>
+          <a href="/admin/fotos" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📸</span> Foto's</a>
+        </nav>
+        <div class="p-4 border-t border-white/10"><a href="/" class="text-sm text-slate-400 hover:text-white transition-colors flex items-center gap-2"><span>←</span> Terug</a></div>
+      </aside>
+
+      <!-- MAIN CONTENT -->
+      <section class="flex-1 flex flex-col min-h-[calc(100vh-60px)]">
+        <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 md:px-8">
+          <div class="flex items-center gap-3">
+            <span class="text-slate-400 text-sm">Admin</span>
+            <span class="text-slate-300 text-sm">/</span>
+            <span class="font-semibold text-sm">Hengelshop</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span id="save-status" class="text-xs text-slate-400 hidden"></span>
+          </div>
+        </header>
+
+        <div class="flex-1 overflow-y-auto p-4 md:p-6">
+          <!-- Shop tabs -->
+          <div class="flex gap-2 mb-4 no-print">
+            <button class="shop-tab px-6 py-3 rounded-xl font-bold text-sm transition" data-shop="Carpshop24">Carpshop24</button>
+            <button class="shop-tab px-6 py-3 rounded-xl font-bold text-sm transition" data-shop="Lisarde">Lisarde</button>
+            <div class="flex-1"></div>
+            <button id="btn-print" class="border border-slate-300 text-slate-700 px-4 py-2 rounded-lg font-bold text-sm hover:bg-slate-50 transition">🖨️ PRINT</button>
+            <button id="btn-reset-bestel" class="border border-orange-300 text-orange-600 px-4 py-2 rounded-lg font-bold text-sm hover:bg-orange-50 transition">🔁 RESET</button>
+          </div>
+
+          <!-- Import box -->
+          <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 mb-4 no-print">
+            <div class="flex gap-2 mb-3">
+              <textarea id="import-text" class="flex-1 border border-slate-200 rounded-lg p-3 text-sm font-mono" rows="3" placeholder="Plak hier de winkelwagen tekst..."></textarea>
+              <button id="btn-import" class="bg-[#004A99] text-white px-6 py-2 rounded-lg font-bold text-sm hover:bg-[#003366] transition self-end whitespace-nowrap">📥 IMPORT</button>
+            </div>
+            <div class="flex gap-2 items-center flex-wrap">
+              <input id="manual-naam" type="text" class="border border-slate-200 rounded-lg px-3 py-2 text-sm flex-1 min-w-[200px]" placeholder="Productnaam">
+              <input id="manual-prijs" type="text" class="border border-slate-200 rounded-lg px-3 py-2 text-sm w-24" placeholder="€ 0,00">
+              <select id="manual-cat" class="border border-slate-200 rounded-lg px-3 py-2 text-sm bg-white">
+                <option value="00_IMPORT">00_IMPORT</option>
+              </select>
+              <input id="manual-new-cat" type="text" class="border border-[#004A99] rounded-lg px-3 py-2 text-sm w-40 hidden" placeholder="Nieuwe categorie...">
+              <button id="btn-add-manual" class="bg-green-600 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-green-700 transition">➕ TOEVOEGEN</button>
+            </div>
+          </div>
+
+          <!-- Bulk bar -->
+          <div id="bulk-bar" class="bg-white rounded-xl shadow-sm border border-slate-200 p-3 mb-4 items-center gap-3 hidden no-print flex">
+            <span class="text-sm font-bold text-slate-600">☑ <span id="sel-count">0</span> geselecteerd →</span>
+            <select id="bulk-cat-select" class="border border-slate-200 rounded-lg px-3 py-2 text-sm bg-white max-w-[200px]">
+              <option value="">Kies categorie...</option>
+            </select>
+            <input id="bulk-new-cat" type="text" class="border border-[#004A99] rounded-lg px-3 py-2 text-sm w-40 hidden" placeholder="Nieuwe categorie...">
+            <button id="btn-bulk-move" class="bg-[#004A99] text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-[#003366] transition">VERPLAATS</button>
+            <button id="btn-bulk-delete" class="border border-red-300 text-red-600 px-4 py-2 rounded-lg font-bold text-sm hover:bg-red-50 transition">✕ VERWIJDER</button>
+            <button id="btn-clear-shop" class="border border-red-300 text-red-600 px-4 py-2 rounded-lg font-bold text-sm hover:bg-red-50 transition">🗑️ WIS</button>
+          </div>
+
+          <!-- Product list -->
+          <div id="product-list" class="space-y-4"></div>
+
+          <p id="empty-msg" class="text-center text-slate-400 italic p-8 hidden">Geen producten in deze shop.</p>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <style>
+    @media print {
+      body { background: white; }
+      .no-print { display: none !important; }
+      #product-list .cat-header {
+        color: black; border-bottom: 3px solid black; background: none;
+        font-size: 20px; padding: 10px 0; margin-top: 20px;
+      }
+      #product-list td { font-size: 18px; border: none; padding: 8px 0; }
+      .product-row.bestel-0 { display: none !important; }
+      .product-totaal { font-size: 18px; }
+      #grand-total { border: 2px solid black !important; background: none !important; box-shadow: none !important; }
+      #grand-total .text-xl { font-size: 24px; }
+      @page { margin: 1.5cm; }
+    }
+    .shop-tab.active { background: #004A99; color: white; }
+    .shop-tab:not(.active) { background: white; color: #334155; border: 1px solid #e2e8f0; }
+    .shop-tab:not(.active):hover { background: #f8fafc; }
+  </style>
+</Layout>
+
+<script>
+(async () => {
+  // Mobile menu
+  const menuBtn = document.getElementById('mobile-menu-btn');
+  const sidebar = document.getElementById('mobile-sidebar');
+  const overlay = document.getElementById('mobile-overlay');
+  if (menuBtn && sidebar && overlay) {
+    function toggleMenu() {
+      const hidden = sidebar.classList.contains('hidden');
+      sidebar.classList.toggle('hidden', !hidden);
+      overlay.classList.toggle('hidden', !hidden);
+    }
+    menuBtn.onclick = toggleMenu;
+    overlay.onclick = toggleMenu;
+    sidebar.querySelectorAll('nav a').forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.preventDefault();
+        setTimeout(() => { window.location.href = item.href; }, 100);
+      });
+    });
+  }
+
+  let currentShop = 'Carpshop24';
+  let products = [];
+  let allCats = ['00_IMPORT'];
+  let selectedIds = new Set();
+
+  const productList = document.getElementById('product-list');
+  const emptyMsg = document.getElementById('empty-msg');
+  const importText = document.getElementById('import-text');
+  const btnImport = document.getElementById('btn-import');
+  const btnAddManual = document.getElementById('btn-add-manual');
+  const manualNaam = document.getElementById('manual-naam');
+  const manualPrijs = document.getElementById('manual-prijs');
+  const manualCat = document.getElementById('manual-cat');
+  const manualNewCat = document.getElementById('manual-new-cat');
+  const bulkCatSelect = document.getElementById('bulk-cat-select');
+  const bulkNewCat = document.getElementById('bulk-new-cat');
+  const btnBulkMove = document.getElementById('btn-bulk-move');
+  const btnPrint = document.getElementById('btn-print');
+  const btnClearShop = document.getElementById('btn-clear-shop');
+  const selCount = document.getElementById('sel-count');
+  const saveStatus = document.getElementById('save-status');
+
+  // Shop tabs
+  document.querySelectorAll('.shop-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.shop-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      currentShop = tab.dataset.shop;
+      loadProducts();
+    });
+  });
+  document.querySelector('.shop-tab').classList.add('active');
+
+  // Toggle new cat
+  manualCat.addEventListener('change', () => {
+    manualNewCat.classList.toggle('hidden', manualCat.value !== 'NEW');
+  });
+  bulkCatSelect.addEventListener('change', () => {
+    bulkNewCat.classList.toggle('hidden', bulkCatSelect.value !== 'NEW');
+  });
+
+  function esc(s) {
+    const d = document.createElement('div');
+    d.textContent = s || '';
+    return d.innerHTML;
+  }
+
+  function parsePrice(s) {
+    if (!s) return 0;
+    const cleaned = s.replace('€', '').replace(/\s/g, '').replace(',', '.').trim();
+    return parseFloat(cleaned) || 0;
+  }
+
+  function fmtPrice(n) {
+    return '€ ' + n.toFixed(2).replace('.', ',');
+  }
+
+  async function loadProducts() {
+    try {
+      const res = await fetch(`/api/hengelshop?shop=${encodeURIComponent(currentShop)}`);
+      const data = await res.json();
+      products = data.products || [];
+      allCats = data.categories && data.categories.length ? [...data.categories] : ['00_IMPORT'];
+      if (!allCats.includes('00_IMPORT')) allCats.unshift('00_IMPORT');
+      selectedIds.clear();
+      render();
+    } catch (e) {
+      showStatus('❌ Fout bij laden', 'text-red-600');
+    }
+  }
+
+  function render() {
+    if (!products.length) {
+      productList.innerHTML = '';
+      emptyMsg.classList.remove('hidden');
+      return;
+    }
+    emptyMsg.classList.add('hidden');
+
+    const groups = {};
+    for (const p of products) {
+      const cat = p.categorie || '00_IMPORT';
+      if (!groups[cat]) groups[cat] = [];
+      groups[cat].push(p);
+    }
+
+    const sortedCats = Object.keys(groups).sort();
+    const catOpts = allCats.map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join('') + '<option value="NEW">+ NIEUWE</option>';
+    let html = '';
+
+    for (const cat of sortedCats) {
+      const items = groups[cat];
+      const hasOrder = items.some(i => i.bestel && i.bestel !== '0');
+      html += `<div class="cat-group bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden ${hasOrder ? '' : 'empty-print'}">`;
+      html += `<div class="cat-header bg-slate-100 px-4 py-2 font-bold text-sm text-slate-700 uppercase flex items-center gap-2 cursor-pointer select-none">📂 ${cat} <span class="collapse-icon text-xs ml-auto">▼</span></div>`;
+      html += `<table class="w-full text-sm"><tbody>`;
+
+      let catSubtotal = 0;
+      items.sort((a, b) => (a.naam || '').localeCompare(b.naam || '')).forEach(p => {
+        const isSelected = selectedIds.has(p.id);
+        const bestel = parseInt(p.bestel || '0');
+        const prijsNum = parsePrice(p.prijs);
+        const rowTotaal = bestel * prijsNum;
+        catSubtotal += rowTotaal;
+        const bestelOpts = Array.from({ length: 11 }, (_, i) =>
+          `<option value="${i}" ${bestel === i ? 'selected' : ''}>${i}</option>`
+        ).join('');
+        const pCat = p.categorie || '00_IMPORT';
+        const rowCatOpts = allCats.map(c =>
+          `<option value="${esc(c)}" ${c === pCat ? 'selected' : ''}>${esc(c)}</option>`
+        ).join('') + '<option value="NEW">+ NIEUWE</option>';
+        html += `<tr class="product-row border-b border-slate-100 bestel-${bestel} hover:bg-slate-50 transition">
+          <td class="px-3 py-2 w-10 no-print">
+            <input type="checkbox" class="product-check" data-id="${p.id}" ${isSelected ? 'checked' : ''}>
+          </td>
+          <td class="px-2 py-2 text-xs text-slate-500 font-semibold w-28 product-merk" data-id="${p.id}" contenteditable="true">${esc(p.merk)}</td>
+          <td class="px-2 py-2 font-medium product-name" data-id="${p.id}" contenteditable="true">${esc(p.naam)}</td>
+          <td class="px-2 py-2 text-right w-24 font-mono product-price" data-id="${p.id}" contenteditable="true">${esc(p.prijs)}</td>
+          <td class="px-2 py-2 w-28 text-right no-print">
+            <select class="cat-select border border-slate-200 rounded px-1 py-1 text-xs bg-white" data-id="${p.id}">${rowCatOpts}</select>
+          </td>
+          <td class="px-2 py-2 w-20 text-right no-print">
+            <select class="bestel-select border border-slate-200 rounded px-1 py-1 text-xs bg-white" data-id="${p.id}">${bestelOpts}</select>
+          </td>
+          <td class="px-2 py-2 w-28 text-right font-bold text-slate-800 product-totaal">${bestel > 0 ? fmtPrice(rowTotaal) : ''}</td>
+          <td class="px-2 py-2 w-10 no-print">
+            <button class="delete-btn text-red-500 hover:text-red-700 text-sm font-bold" data-id="${p.id}">✕</button>
+          </td>
+        </tr>`;
+      });
+      if (catSubtotal > 0) {
+        html += `<tr class="cat-subtotal bg-slate-50 font-bold border-t-2 border-slate-300" data-cat="${esc(cat)}" ${catSubtotal > 0 ? '' : 'style="display:none"'}>
+          <td class="px-3 py-2 no-print"></td>
+          <td colspan="4" class="px-2 py-2 text-right text-sm text-slate-700 uppercase">Subtotaal ${cat}</td>
+          <td class="px-2 py-2 no-print"></td>
+          <td class="px-2 py-2 text-right font-mono text-sm subtotaal-bedrag">${fmtPrice(catSubtotal)}</td>
+          <td class="px-2 py-2 no-print"></td>
+        </tr>`;
+      }
+
+      html += `</tbody></table></div>`;
+    }
+
+    // Grand total
+    const grandTotal = products.reduce((sum, p) => {
+      return sum + parseInt(p.bestel || '0') * parsePrice(p.prijs);
+    }, 0);
+    html += `<div id="grand-total" class="bg-white rounded-xl shadow-sm border-2 border-slate-400 p-4 mt-4 ${grandTotal > 0 ? '' : 'hidden'}">
+      <div class="text-left text-xl font-bold font-mono">TOTAAL: ${fmtPrice(grandTotal)}</div>
+    </div>`;
+
+    productList.innerHTML = html;
+
+    // Update category selects (manual add + bulk bar)
+    const updateSelect = (sel) => {
+      const current = sel.value;
+      sel.innerHTML = allCats.map(c => `<option value="${c}" ${c === (current && allCats.includes(current) ? current : '') ? 'selected' : ''}>${c}</option>`).join('');
+      sel.innerHTML += `<option value="NEW">+ NIEUWE CAT...</option>`;
+    };
+    updateSelect(manualCat);
+    updateSelect(bulkCatSelect);
+
+    // Collapse/expand categories
+    document.querySelectorAll('.cat-header').forEach(header => {
+      header.addEventListener('click', () => {
+        const group = header.closest('.cat-group');
+        const table = group.querySelector('table');
+        const icon = header.querySelector('.collapse-icon');
+        const hidden = table.style.display === 'none';
+        table.style.display = hidden ? '' : 'none';
+        icon.textContent = hidden ? '▼' : '▶';
+      });
+    });
+
+    // Bind events
+    document.querySelectorAll('.product-check').forEach(cb => {
+      cb.addEventListener('change', () => {
+        const id = parseFloat(cb.dataset.id);
+        if (cb.checked) selectedIds.add(id);
+        else selectedIds.delete(id);
+        selCount.textContent = selectedIds.size;
+        document.getElementById('bulk-bar').classList.toggle('hidden', selectedIds.size === 0);
+      });
+    });
+
+    document.querySelectorAll('.cat-select').forEach(sel => {
+      sel.addEventListener('change', async () => {
+        const id = parseFloat(sel.dataset.id);
+        let val = sel.value;
+        if (val === 'NEW') {
+          val = prompt('Nieuwe categorienaam:');
+          if (!val || !val.trim()) { render(); return; }
+          val = val.trim().toUpperCase();
+        }
+        const p = products.find(pr => pr.id === id);
+        if (p && p.categorie !== val) {
+          p.categorie = val;
+          if (!allCats.includes(val)) allCats.push(val);
+          await fetch('/api/hengelshop', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'update_product', shop: currentShop, productId: id, categorie: val })
+          });
+        }
+        render();
+      });
+    });
+
+    document.querySelectorAll('.bestel-select').forEach(sel => {
+      sel.addEventListener('change', async () => {
+        const id = parseFloat(sel.dataset.id);
+        const val = sel.value;
+        const p = products.find(pr => pr.id === id);
+        if (p) p.bestel = val;
+        const row = sel.closest('tr');
+        const countSpan = row.querySelector('.bestel-count');
+        if (countSpan) countSpan.textContent = val + 'x';
+        const totaalCell = row.querySelector('.product-totaal');
+        const prijsNum = parsePrice(p ? p.prijs : '');
+        const rowTotaal = parseInt(val || '0') * prijsNum;
+        if (totaalCell) totaalCell.textContent = rowTotaal > 0 ? fmtPrice(rowTotaal) : '';
+        // Update category subtotal
+        const catGroup = row.closest('.cat-group');
+        if (catGroup) {
+          const subtotaalRow = catGroup.querySelector('.cat-subtotal');
+          if (subtotaalRow) {
+            const catRows = catGroup.querySelectorAll('.product-row');
+            let subtotaal = 0;
+            catRows.forEach(r => {
+              const bestel = parseInt(r.querySelector('.bestel-select')?.value || '0');
+              const id2 = parseFloat(r.querySelector('.bestel-select')?.dataset.id);
+              const p2 = products.find(pr => pr.id === id2);
+              if (p2) subtotaal += bestel * parsePrice(p2.prijs);
+            });
+            subtotaalRow.style.display = subtotaal > 0 ? '' : 'none';
+            const bedrag = subtotaalRow.querySelector('.subtotaal-bedrag');
+            if (bedrag) bedrag.textContent = fmtPrice(subtotaal);
+          }
+        }
+        // Update grand total
+        const grandTotalDiv = document.getElementById('grand-total');
+        if (grandTotalDiv) {
+          const gt = products.reduce((sum, pr) => sum + parseInt(pr.bestel || '0') * parsePrice(pr.prijs), 0);
+          grandTotalDiv.classList.toggle('hidden', gt <= 0);
+          grandTotalDiv.querySelector('.text-xl').textContent = 'TOTAAL: ' + fmtPrice(gt);
+        }
+        // Save to API (async, don't wait)
+        fetch('/api/hengelshop', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'update_bestel', shop: currentShop, productId: id, bestel: val })
+        });
+      });
+    });
+
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id = parseFloat(btn.dataset.id);
+        if (!confirm('Verwijder dit product?')) return;
+        await fetch(`/api/hengelshop?id=${id}&shop=${encodeURIComponent(currentShop)}`, { method: 'DELETE' });
+        selectedIds.delete(id);
+        loadProducts();
+      });
+    });
+
+    // Inline edit (naam, prijs, merk)
+    document.querySelectorAll('.product-name, .product-price, .product-merk').forEach(el => {
+      el.addEventListener('blur', async () => {
+        const id = parseFloat(el.dataset.id);
+        const cls = el.classList;
+        let field;
+        if (cls.contains('product-name')) field = 'naam';
+        else if (cls.contains('product-price')) field = 'prijs';
+        else field = 'merk';
+        const value = el.textContent.trim();
+        const p = products.find(pr => pr.id === id);
+        if (p && p[field] !== value) {
+          p[field] = value;
+          await fetch('/api/hengelshop', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'update_product', shop: currentShop, productId: id, [field]: value })
+          });
+        }
+      });
+      el.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); el.blur(); }
+      });
+    });
+  }
+
+  // Import
+  btnImport.addEventListener('click', async () => {
+    const content = importText.value.trim();
+    if (!content) return;
+    btnImport.disabled = true;
+    btnImport.textContent = '⏳ Bezig...';
+    try {
+      const res = await fetch('/api/hengelshop', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'import', shop: currentShop, content })
+      });
+      const data = await res.json();
+      if (data.success) {
+        showStatus(`✅ ${data.count} producten geïmporteerd`, 'text-green-600');
+        importText.value = '';
+        loadProducts();
+      } else {
+        showStatus('❌ Fout bij importeren', 'text-red-600');
+      }
+    } catch (e) {
+      showStatus('❌ Fout bij importeren', 'text-red-600');
+    }
+    btnImport.disabled = false;
+    btnImport.textContent = '📥 IMPORT';
+  });
+
+  // Manual add
+  btnAddManual.addEventListener('click', async () => {
+    const naam = manualNaam.value.trim();
+    if (!naam) { showStatus('❌ Vul een productnaam in', 'text-red-600'); return; }
+    const prijs = manualPrijs.value.trim() || '€ 0,00';
+    let cat = manualCat.value;
+    if (cat === 'NEW') {
+      cat = manualNewCat.value.trim().toUpperCase() || 'OVERIG';
+    }
+    try {
+      const res = await fetch('/api/hengelshop', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'add_manual', shop: currentShop, naam, prijs, newCatName: cat })
+      });
+      const data = await res.json();
+      if (data.success) {
+        showStatus('✅ Toegevoegd', 'text-green-600');
+        manualNaam.value = '';
+        manualPrijs.value = '';
+        manualNewCat.value = '';
+        manualNewCat.classList.add('hidden');
+        loadProducts();
+      }
+    } catch (e) {
+      showStatus('❌ Fout bij toevoegen', 'text-red-600');
+    }
+  });
+
+  // Bulk move
+  btnBulkMove.addEventListener('click', async () => {
+    let target = bulkCatSelect.value;
+    if (target === 'NEW') {
+      target = bulkNewCat.value.trim().toUpperCase() || 'OVERIG';
+    }
+    if (!target) { showStatus('❌ Kies een categorie', 'text-red-600'); return; }
+    if (selectedIds.size === 0) { showStatus('❌ Geen items geselecteerd', 'text-red-600'); return; }
+    try {
+      const res = await fetch('/api/hengelshop', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'bulk_move', shop: currentShop, itemIds: [...selectedIds], newCatName: target })
+      });
+      const data = await res.json();
+      if (data.success) {
+        showStatus(`✅ Verplaatst naar ${target}`, 'text-green-600');
+        selectedIds.clear();
+        loadProducts();
+      }
+    } catch (e) {
+      showStatus('❌ Fout bij verplaatsen', 'text-red-600');
+    }
+  });
+
+  // Bulk delete
+  document.getElementById('btn-bulk-delete').addEventListener('click', async () => {
+    if (selectedIds.size === 0) { showStatus('❌ Geen items geselecteerd', 'text-red-600'); return; }
+    if (!confirm(`${selectedIds.size} product(en) verwijderen?`)) return;
+    try {
+      for (const id of selectedIds) {
+        await fetch(`/api/hengelshop?id=${id}&shop=${encodeURIComponent(currentShop)}`, { method: 'DELETE' });
+      }
+      showStatus(`✅ ${selectedIds.size} verwijderd`, 'text-green-600');
+      selectedIds.clear();
+      loadProducts();
+    } catch (e) {
+      showStatus('❌ Fout bij verwijderen', 'text-red-600');
+    }
+  });
+
+  // Print
+  btnPrint.addEventListener('click', () => {
+    const ordered = products.filter(p => parseInt(p.bestel || '0') > 0).sort((a, b) => (a.categorie || '').localeCompare(b.categorie || '') || (a.naam || '').localeCompare(b.naam || ''));
+    if (!ordered.length) { showStatus('❌ Geen producten met bestelhoeveelheid', 'text-red-600'); return; }
+
+    const groups = {};
+    for (const p of ordered) {
+      const cat = p.categorie || '00_IMPORT';
+      if (!groups[cat]) groups[cat] = [];
+      groups[cat].push(p);
+    }
+
+    let bodyHtml = '';
+    let grandTotal = 0;
+    for (const [cat, items] of Object.entries(groups).sort()) {
+      let catTotal = 0;
+      let rows = '';
+      items.forEach((p, idx) => {
+        const prijsNum = parsePrice(p.prijs);
+        const totaal = parseInt(p.bestel) * prijsNum;
+        catTotal += totaal;
+        grandTotal += totaal;
+        rows += `<tr>
+          <td class="num">${idx + 1}</td>
+          <td>${esc(p.merk)}</td>
+          <td>${esc(p.naam)}</td>
+          <td class="prijs">${esc(p.prijs)}</td>
+          <td class="num">${p.bestel}</td>
+          <td class="prijs">${fmtPrice(totaal)}</td>
+        </tr>`;
+      });
+      bodyHtml += `<h2>${esc(cat)}</h2>
+        <table>${rows}
+          <tr class="subtotal"><td colspan="5" class="subtotal-label">Subtotaal ${esc(cat)}</td><td class="prijs">${fmtPrice(catTotal)}</td></tr>
+        </table>`;
+    }
+
+    const w = window.open('', '_blank');
+    w.document.write(`<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>Bestellijst ${esc(currentShop)}</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Helvetica','Arial',sans-serif; padding: 2.5cm 2cm; color: #000; }
+  h1 { font-size: 22px; margin-bottom: 4px; text-align: center; }
+  .shop { text-align: center; font-size: 14px; color: #555; margin-bottom: 20px; border-bottom: 2px solid #000; padding-bottom: 8px; }
+  h2 { font-size: 14px; margin: 16px 0 4px; padding-bottom: 2px; border-bottom: 1px solid #999; text-transform: uppercase; }
+  table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
+  th { font-size: 11px; padding: 4px 6px; text-align: left; text-transform: uppercase; }
+  td { font-size: 12px; padding: 3px 6px; border-bottom: 1px solid #ddd; }
+  td.num { text-align: center; width: 24px; }
+  td.prijs { text-align: right; width: 80px; font-family: 'Courier New',monospace; }
+  .subtotal td { font-weight: bold; border-top: 2px solid #000; padding-top: 4px; }
+  .subtotal-label { text-align: right; }
+  #grand-total-print { text-align: right; font-size: 18px; font-weight: bold; margin-top: 16px; padding-top: 8px; border-top: 2px solid #000; font-family: 'Courier New',monospace; }
+  @page { margin: 0; }
+</style></head><body>
+<h1>KVVI Hengelshop</h1>
+<div class="shop">Bestellijst — ${esc(currentShop)}</div>
+${bodyHtml}
+<div id="grand-total-print">TOTAAL: ${fmtPrice(grandTotal)}</div>
+<script>window.onload=function(){window.print()};<\/script>
+</body></html>`);
+    w.document.close();
+  });
+
+  // Reset all bestel to 0
+  document.getElementById('btn-reset-bestel').addEventListener('click', async () => {
+    if (!confirm(`Alle bestelhoeveelheden in ${currentShop} terug op 0 zetten?`)) return;
+    try {
+      await fetch('/api/hengelshop', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'reset_bestel', shop: currentShop })
+      });
+      showStatus('✅ Alle hoeveelheden terug op 0', 'text-green-600');
+      loadProducts();
+    } catch (e) {
+      showStatus('❌ Fout bij resetten', 'text-red-600');
+    }
+  });
+
+  // Clear shop
+  btnClearShop.addEventListener('click', async () => {
+    if (!confirm(`Zeker? Alle producten in ${currentShop} worden verwijderd!`)) return;
+    try {
+      await fetch(`/api/hengelshop?shop=${encodeURIComponent(currentShop)}`, { method: 'DELETE' });
+      showStatus('✅ Shop gewist', 'text-green-600');
+      loadProducts();
+    } catch (e) {
+      showStatus('❌ Fout bij wissen', 'text-red-600');
+    }
+  });
+
+  let statusTimeout;
+  function showStatus(msg, cls) {
+    saveStatus.textContent = msg;
+    saveStatus.className = `text-xs ${cls} font-bold`;
+    saveStatus.classList.remove('hidden');
+    clearTimeout(statusTimeout);
+    statusTimeout = setTimeout(() => saveStatus.classList.add('hidden'), 3000);
+  }
+
+  loadProducts();
+})();
+</script>
