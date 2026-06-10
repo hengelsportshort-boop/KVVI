@@ -67,7 +67,7 @@
     {
       "id": 1780989816943.8813,
       "merk": "Preston",
-      "naam": "Reflo power 💰 - 0.17mm",
+      "naam": "Reflo power - 0.17mm",
       "prijs": "€7,99",
       "categorie": "VISLIJN",
       "bestel": "0"
@@ -75,7 +75,7 @@
     {
       "id": 1780989816943.6235,
       "merk": "Preston",
-      "naam": "Reflo power 💰 - 0.19mm",
+      "naam": "Reflo power - 0.19mm",
       "prijs": "€7,99",
       "categorie": "VISLIJN",
       "bestel": "0"
@@ -118,22 +118,6 @@
       "naam": "Slik elastic 8m - 2.2mm green - size 16-18",
       "prijs": "€23,99",
       "categorie": "ELASTIEK EN TOEBEHOREN",
-      "bestel": "0"
-    },
-    {
-      "id": 1780990123728.2976,
-      "merk": "Matrix",
-      "naam": "Power micron 100m 💰 - 0.16mm",
-      "prijs": "€5,99",
-      "categorie": "VISLIJN",
-      "bestel": "0"
-    },
-    {
-      "id": 1780990123728.2234,
-      "merk": "Matrix",
-      "naam": "Power micron 100m 💰 - 0.14mm",
-      "prijs": "€5,99",
-      "categorie": "VISLIJN",
       "bestel": "0"
     },
     {
@@ -203,7 +187,7 @@
     {
       "id": 1780990314284.7026,
       "merk": "Matrix",
-      "naam": "Pro over brolly 115cm - 45 inch",
+      "naam": "Pro over brolly 115cm",
       "prijs": "€104,39",
       "categorie": "ZITKISTEN EN ACCESSOIRES",
       "bestel": "0"
@@ -315,7 +299,7 @@
     {
       "id": 1780990475764.6084,
       "merk": "Preston",
-      "naam": "Pole safe sock + combo - 2 opties - sock",
+      "naam": "Pole safe sock sock",
       "prijs": "€15,99",
       "categorie": "ZITKISTEN EN ACCESSOIRES",
       "bestel": "0"
@@ -355,7 +339,7 @@
     {
       "id": 1780990639216.5916,
       "merk": "Preston",
-      "naam": "Reflo power 💰 - 0.15mm",
+      "naam": "Reflo power - 0.15mm",
       "prijs": "€7,99",
       "categorie": "VISLIJN",
       "bestel": "0"
@@ -403,7 +387,7 @@
     {
       "id": 1780990827348.0745,
       "merk": "Preston",
-      "naam": "Reflo power 💰 - 0.13mm",
+      "naam": "Reflo power - 0.13mm",
       "prijs": "€7,99",
       "categorie": "VISLIJN",
       "bestel": "0"
@@ -411,7 +395,7 @@
     {
       "id": 1780990827348.6511,
       "merk": "Preston",
-      "naam": "Reflo power 💰 - 0.11mm",
+      "naam": "Reflo power - 0.11mm",
       "prijs": "€7,99",
       "categorie": "VISLIJN",
       "bestel": "0"
@@ -447,6 +431,182 @@
       "prijs": "€3,99",
       "categorie": "KLEIN MATERIAAL",
       "bestel": "0"
+    },
+    {
+      "id": 1780999247784.9814,
+      "merk": "Sonubaits",
+      "naam": "One to one paste 500g - chocolate-orange",
+      "prijs": "€7,99",
+      "categorie": "HAAKAAS",
+      "bestel": "0"
+    },
+    {
+      "id": 1780999300641.4685,
+      "merk": "Preston",
+      "naam": "Preston stotz refills - 10",
+      "prijs": "€2,99",
+      "categorie": "LOOD",
+      "bestel": "0"
+    },
+    {
+      "id": 1780999300641.7832,
+      "merk": "Preston",
+      "naam": "Preston stotz refills - 12",
+      "prijs": "€2,99",
+      "categorie": "LOOD",
+      "bestel": "0"
+    },
+    {
+      "id": 1780999300641.643,
+      "merk": "Preston",
+      "naam": "Double slider winders - 18cm rood",
+      "prijs": "€10,99",
+      "categorie": "KLEIN MATERIAAL",
+      "bestel": "0"
+    },
+    {
+      "id": 1780999300642.1567,
+      "merk": "Guru",
+      "naam": "Qm1 barbless - 12",
+      "prijs": "€4,49",
+      "categorie": "HAKEN",
+      "bestel": "0"
+    },
+    {
+      "id": 1780999401401.8418,
+      "merk": "Preston",
+      "naam": "Loop sizer",
+      "prijs": "€2,49",
+      "categorie": "KLEIN MATERIAAL",
+      "bestel": "0"
+    },
+    {
+      "id": 1780999401402.7334,
+      "merk": "Preston",
+      "naam": "Feeder bead",
+      "prijs": "€3,29",
+      "categorie": "METHOD FEEDER",
+      "bestel": "0"
+    },
+    {
+      "id": 1780999401402.601,
+      "merk": "Guru",
+      "naam": "Qm1 discorger",
+      "prijs": "€4,99",
+      "categorie": "KLEIN MATERIAAL",
+      "bestel": "0"
+    },
+    {
+      "id": 1780999401402.4426,
+      "merk": "Preston",
+      "naam": "Side tray - small",
+      "prijs": "€27,99",
+      "categorie": "ZITKISTEN EN ACCESSOIRES",
+      "bestel": "0"
+    },
+    {
+      "id": 1780999497587.4724,
+      "merk": "Guru",
+      "naam": "0.3mm micro silicone tube 1.5m",
+      "prijs": "€4,49",
+      "categorie": "KLEIN MATERIAAL",
+      "bestel": "0"
+    },
+    {
+      "id": 1780999497587.0088,
+      "merk": "Preston",
+      "naam": "Stopz - medium",
+      "prijs": "€2,99",
+      "categorie": "KLEIN MATERIAAL",
+      "bestel": "0"
+    },
+    {
+      "id": 1780999497587.9717,
+      "merk": "Preston",
+      "naam": "Latex bait bands - medium",
+      "prijs": "€3,29",
+      "categorie": "KLEIN MATERIAAL",
+      "bestel": "0"
+    },
+    {
+      "id": 1780999497587.4075,
+      "merk": "Preston",
+      "naam": "Mag store system hooklength box - 15cm",
+      "prijs": "€22,99",
+      "categorie": "HAKEN",
+      "bestel": "0"
+    },
+    {
+      "id": 1780999618322.7832,
+      "merk": "Preston",
+      "naam": "Kkm-b banded hair rigs barbless 10cm & 38cm - 10cm - haak 16 - 0.17mm",
+      "prijs": "€4,99",
+      "categorie": "HAKEN",
+      "bestel": "0"
+    },
+    {
+      "id": 1780999618322.9229,
+      "merk": "Sonubaits",
+      "naam": "Robin red feed pellets 900g - 2mm",
+      "prijs": "€7,99",
+      "categorie": "AAS",
+      "bestel": "0"
+    },
+    {
+      "id": 1780999618322.356,
+      "merk": "Sonubaits",
+      "naam": "Pro feed pellets 1kg - 2mm",
+      "prijs": "€6,99",
+      "categorie": "AAS",
+      "bestel": "0"
+    },
+    {
+      "id": 1780999618322.196,
+      "merk": "Preston",
+      "naam": "Mag store system unloaded - 10cm",
+      "prijs": "€12,99",
+      "categorie": "HAKEN",
+      "bestel": "0"
+    },
+    {
+      "id": 1780999618322.2666,
+      "merk": "Preston",
+      "naam": "Quick release method mould - large",
+      "prijs": "€4,99",
+      "categorie": "METHOD FEEDER",
+      "bestel": "0"
+    },
+    {
+      "id": 1781000542402.9626,
+      "merk": "Alltech coppens",
+      "naam": "Premium coarse pellets 4.5mm, verpakking: 5kg",
+      "prijs": "€16,99",
+      "categorie": "METHOD FEEDER",
+      "bestel": "0"
+    },
+    {
+      "id": 1781000542402.4487,
+      "merk": "Preston",
+      "naam": "Ics in-line dura flat method feeders large 20 gram",
+      "prijs": "€3,89",
+      "categorie": "METHOD FEEDER",
+      "bestel": "0"
+    },
+    {
+      "id": 1781000599912.8843,
+      "merk": "Alltech coppens",
+      "naam": "Premium coarse pellets 2mm, verpakking: 5kg",
+      "prijs": "€16,99",
+      "categorie": "METHOD FEEDER",
+      "bestel": "0"
+    },
+    {
+      "id": 1781000662727.5457,
+      "merk": "Carpe extrudee (purple pellet)",
+      "naam": "5mm, verpakking: 5kg",
+      "prijs": "€12,99",
+      "categorie": "AAS",
+      "bestel": "0"
     }
   ],
   "Lisarde": [
@@ -473,11 +633,108 @@
       "prijs": "€ 3,79",
       "categorie": "METHOD FEEDER",
       "bestel": "0"
+    },
+    {
+      "id": 1780999893278.8276,
+      "merk": "Guru",
+      "naam": "Qm1 hook (barbless/eyed) - size 12",
+      "prijs": "€ 8,38",
+      "categorie": "HAKEN",
+      "bestel": "0"
+    },
+    {
+      "id": 1780999893278.7668,
+      "merk": "Guru",
+      "naam": "Qm1 hook (barbless/eyed) - size 14",
+      "prijs": "€ 4,19",
+      "categorie": "HAKEN",
+      "bestel": "0"
+    },
+    {
+      "id": 1780999893278.712,
+      "merk": "Preston",
+      "naam": "Dura pellet wagglers slim 10mm - 8g",
+      "prijs": "€ 4,99",
+      "categorie": "METHOD FEEDER",
+      "bestel": "0"
+    },
+    {
+      "id": 1780999893278.5886,
+      "merk": "Preston",
+      "naam": "Ics in-line dura flat method - large - 20g",
+      "prijs": "€ 11,25",
+      "categorie": "METHOD FEEDER",
+      "bestel": "0"
+    },
+    {
+      "id": 1781000180309.8213,
+      "merk": "Kingraal",
+      "naam": "Soft pellet natural spicy crab - 6mm",
+      "prijs": "€ 5,95",
+      "categorie": "HAAKAAS",
+      "bestel": "0"
+    },
+    {
+      "id": 1781000180309.638,
+      "merk": "Kingraal",
+      "naam": "Soft pellet natural scopex sweetcorn - 6mm",
+      "prijs": "€ 5,95",
+      "categorie": "HAAKAAS",
+      "bestel": "0"
+    },
+    {
+      "id": 1781000180309.9497,
+      "merk": "Kingraal",
+      "naam": "Soft pellet natural pineapple - 6mm",
+      "prijs": "€ 5,95",
+      "categorie": "HAAKAAS",
+      "bestel": "0"
+    },
+    {
+      "id": 1781000180309.8677,
+      "merk": "Kingraal",
+      "naam": "Soft pellet natural ocean - 6mm",
+      "prijs": "€ 5,95",
+      "categorie": "HAAKAAS",
+      "bestel": "0"
+    },
+    {
+      "id": 1781000180309.734,
+      "merk": "Kingraal",
+      "naam": "Soft pellet natural milky sweet - 6mm",
+      "prijs": "€ 5,95",
+      "categorie": "HAAKAAS",
+      "bestel": "0"
+    },
+    {
+      "id": 1781000180309.9858,
+      "merk": "Kingraal",
+      "naam": "Soft pellet natural hot spice - 6mm",
+      "prijs": "€ 5,95",
+      "categorie": "HAAKAAS",
+      "bestel": "0"
+    },
+    {
+      "id": 1781000180309.3542,
+      "merk": "Kingraal",
+      "naam": "Soft pellet natural garlic - 6mm",
+      "prijs": "€ 5,95",
+      "categorie": "HAAKAAS",
+      "bestel": "0"
+    },
+    {
+      "id": 1781000180309.2092,
+      "merk": "Preston",
+      "naam": "Hardcase pole safe - standaard",
+      "prijs": "€ 138,99",
+      "categorie": "BAGAGERIE",
+      "bestel": "0"
     }
   ],
   "_categories": [
     "00_IMPORT",
     "AAS",
+    "BAGAGERIE",
     "DOBBERS",
     "ELASTIEK EN TOEBEHOREN",
     "HAAKAAS",

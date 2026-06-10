@@ -56,7 +56,7 @@ tr.wedstrijd td { border-bottom-color: #facc15; }
 <div style="max-width:1400px;margin:0 auto">
 
 <h1>Visstanden</h1>
-<p class="sub">Admin voor wedstrijdgegevens — alles opgeslagen in localStorage</p>
+<p class="sub">Admin voor wedstrijdgegevens — gesynchroniseerd met server</p>
 
 <div class="sticky-header">
   <div class="flex" style="margin-bottom:8px">
@@ -488,7 +488,7 @@ function render() {
         <td contenteditable="true" data-idx="${idx}" data-month="${month}" data-field="einde">${c.einde}</td>
         <td class="num">${fmtTime(c.duurMin)}</td>
         <td class="num">${c.duurVangst}</td>
-        <td>${c.pijl}</td>
+        <td class="${pijlClass}" style="font-size:18px;line-height:1">${c.pijl}</td>
         <td>${c.beoordeling}</td>
         <td class="num">${fmtEenheid(c.tijdMin)}</td>
         <td class="num">${fmtDecimal(c.gramMin)}</td>

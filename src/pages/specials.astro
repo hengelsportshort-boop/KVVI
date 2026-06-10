@@ -72,6 +72,15 @@ export const prerender = false;
       </section>`;
     }).join('');
     setupLightbox();
+
+    // Scroll to section if URL has hash
+    const hash = window.location.hash;
+    if (hash) {
+      setTimeout(() => {
+        const target = document.getElementById(hash.substring(1));
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
   } catch (e) {
     document.getElementById('specials-content').innerHTML = '<div class="text-center text-red-500 py-20">Fout bij laden van specials.</div>';
   }

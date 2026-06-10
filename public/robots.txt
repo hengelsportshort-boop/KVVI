@@ -1,4 +1,6 @@
 User-agent: *
+Disallow: /admin
+Disallow: /api/
 Allow: /
 
 Sitemap: https://kvvi-production.up.railway.app/sitemap-index.xml
