@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Visstek</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: system-ui, -apple-system, sans-serif; background: #f1f5f9; color: #1e293b; padding: 16px; }
+h1 { font-size: 18px; margin-bottom: 8px; }
+.sub { color: #64748b; font-size: 13px; margin-bottom: 12px; }
+.vs-card { background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:16px; }
+.field { margin-bottom: 12px; }
+.field label { display:block; font-size:13px; font-weight:600; color:#64748b; margin-bottom:4px; }
+.field input { width:100%; padding:14px 12px; border:1px solid #cbd5e1; border-radius:8px; font-size:16px; -webkit-appearance:none; background:#fff; }
+.field input:focus { outline:2px solid #3b82f6; outline-offset:-1px; border-color:transparent; }
+.row2 { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.row2 input { text-align:center; font-weight:600; }
+#vs-aantal { width:100%; padding:14px 12px; border:1px solid #86efac; border-radius:8px; font-size:20px; background:#dcfce7; color:#166534; font-weight:700; text-align:center; }
+#vs-gewicht { width:100%; padding:14px 12px; border:1px solid #93c5fd; border-radius:8px; font-size:20px; background:#eff6ff; color:#1e40af; font-weight:700; text-align:center; }
+.btn { width:100%; padding:16px; border:none; border-radius:8px; font-size:17px; font-weight:700; cursor:pointer; -webkit-appearance:none; }
+.btn-primary { background:#1e40af; color:#fff; }
+.btn-primary:active { background:#1e3a8a; }
+.btn-outline { background:#fff; border:1px solid #cbd5e1; color:#475569; margin-top:8px; font-size:14px; padding:10px; }
+.toast { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); padding:12px 24px; border-radius:8px; color:#fff; font-weight:600; font-size:14px; opacity:0; transition:opacity 0.3s; z-index:999; white-space:nowrap; }
+.toast.show { opacity:1; }
+</style>
+</head>
+<body>
+
+<h1>🎣 Visstek</h1>
+<p class="sub">Snel een sessie toevoegen</p>
+
+<div class="vs-card">
+  <div class="field">
+    <label>Stek</label>
+    <input id="vs-stek" placeholder="vb G 11" autocomplete="off">
+  </div>
+  <div class="field">
+    <label>Datum</label>
+    <input id="vs-datum" list="vs-datum-list" placeholder="vb 19/06">
+    <datalist id="vs-datum-list"></datalist>
+  </div>
+  <div class="row2">
+    <div class="field">
+      <label>Kroes</label>
+      <input id="vs-kroes" type="number" inputmode="numeric" value="0">
+    </div>
+    <div class="field">
+      <label>Schub</label>
+      <input id="vs-schub" type="number" inputmode="numeric" value="0">
+    </div>
+  </div>
+  <div class="row2">
+    <div class="field">
+      <label>Spiegel</label>
+      <input id="vs-spiegel" type="number" inputmode="numeric" value="0">
+    </div>
+    <div class="field">
+      <label>Ander</label>
+      <input id="vs-ander" type="number" inputmode="numeric" value="0">
+    </div>
+  </div>
+  <div class="field">
+    <label>Begin — Einde</label>
+    <div class="row2">
+      <input id="vs-begin" placeholder="8u 30m">
+      <input id="vs-einde" placeholder="14u 0m">
+    </div>
+  </div>
+  <div class="field">
+    <label>Aantal</label>
+    <div id="vs-aantal">0</div>
+  </div>
+  <div class="field">
+    <label>Gewicht</label>
+    <div id="vs-gewicht">0,000 kg</div>
+  </div>
+  <button id="btn-vs-save" class="btn btn-primary">💾 Opslaan</button>
+  <button id="btn-reset" class="btn btn-outline">🔄 Nieuw</button>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+const STORAGE_KEY = 'kvvi_visstanden';
+const GEW_KROES = 300, GEW_SCHUB = 1500, GEW_SPIEGEL = 1600, GEW_ANDER = 100;
+
+const jaar = new Date().getFullYear();
+
+function loadData() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch { return []; }
+}
+function saveData(data) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = type === 'error' ? '#dc2626' : '#16a34a';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function deriveMonth(datum) {
+  if (!datum) return null;
+  const m = datum.match(/\/(\d+)/);
+  if (!m) return null;
+  const mn = parseInt(m[1]);
+  if (mn < 1 || mn > 12) return null;
+  const maanden = ['jan','feb','mar','apr','mei','jun','jul','aug','sep','okt','nov','dec'];
+  return maanden[mn - 1] + ' ' + jaar;
+}
+
+function vsGewichtGram() {
+  const k = parseInt(document.getElementById('vs-kroes').value) || 0;
+  const s = parseInt(document.getElementById('vs-schub').value) || 0;
+  const p = parseInt(document.getElementById('vs-spiegel').value) || 0;
+  const a = parseInt(document.getElementById('vs-ander').value) || 0;
+  return k * GEW_KROES + s * GEW_SCHUB + p * GEW_SPIEGEL + a * GEW_ANDER;
+}
+
+function fmtKg(gram) {
+  return (gram / 1000).toLocaleString('nl-NL', { minimumFractionDigits: 3, maximumFractionDigits: 3 }) + ' kg';
+}
+
+function updateResult() {
+  const ids = ['vs-kroes','vs-schub','vs-spiegel','vs-ander'];
+  const sum = ids.reduce((a, id) => a + (parseInt(document.getElementById(id).value) || 0), 0);
+  document.getElementById('vs-aantal').textContent = sum;
+  document.getElementById('vs-gewicht').textContent = fmtKg(vsGewichtGram());
+}
+
+['vs-kroes','vs-schub','vs-spiegel','vs-ander'].forEach(id => {
+  document.getElementById(id).addEventListener('input', updateResult);
+});
+
+document.getElementById('vs-datum').addEventListener('input', () => {
+  const stek = document.getElementById('vs-stek').value.trim().toLowerCase();
+  const datum = document.getElementById('vs-datum').value.trim();
+  if (!stek || !datum) return;
+  const month = deriveMonth(datum);
+  const data = loadData();
+  const bestaand = data.find(r => r.datum === datum && r.month === month && r.stek && r.stek.toLowerCase() === stek);
+  if (!bestaand) return;
+  document.getElementById('vs-kroes').value = bestaand.kroes || 0;
+  document.getElementById('vs-schub').value = bestaand.schub || 0;
+  document.getElementById('vs-spiegel').value = bestaand.spiegel || 0;
+  document.getElementById('vs-ander').value = bestaand.ander || 0;
+  document.getElementById('vs-begin').value = bestaand.begin || '';
+  document.getElementById('vs-einde').value = bestaand.einde || '';
+  updateResult();
+});
+
+document.getElementById('btn-vs-save').addEventListener('click', () => {
+  function v(id) { return document.getElementById(id).value.trim(); }
+  function n(id) { return parseInt(document.getElementById(id).value) || 0; }
+  const datum = v('vs-datum');
+  const stek = v('vs-stek') || 'Onbekend';
+  if (!datum) { showToast('❌ Datum is verplicht', 'error'); return; }
+  const month = deriveMonth(datum) || 'Onbekend';
+  const kroes = n('vs-kroes'), schub = n('vs-schub'), spiegel = n('vs-spiegel'), ander = n('vs-ander');
+  const row = {
+    kroes, schub, spiegel, ander,
+    aantal: kroes + schub + spiegel + ander,
+    gewicht: vsGewichtGram(),
+    datum, stek, begin: v('vs-begin'), einde: v('vs-einde'),
+    duurMin: 0, pijl: '', beoordeling: '', tijdMin: 0,
+    month, wedstrijd: ''
+  };
+  const data = loadData();
+  const bestaand = data.findIndex(r => r.datum === datum && r.month === month);
+  if (bestaand !== -1) {
+    data[bestaand].kroes = kroes;
+    data[bestaand].schub = schub;
+    data[bestaand].spiegel = spiegel;
+    data[bestaand].ander = ander;
+    data[bestaand].aantal = row.aantal;
+    data[bestaand].gewicht = row.gewicht;
+    if (stek !== 'Onbekend') data[bestaand].stek = stek;
+    if (row.begin) data[bestaand].begin = row.begin;
+    if (row.einde) data[bestaand].einde = row.einde;
+    showToast('🔄 Bijgewerkt');
+  } else {
+    data.push(row);
+    showToast(`✅ ${datum} ${stek}`);
+  }
+  sortData(data);
+  saveData(data);
+  resetForm();
+});
+
+function sortData(arr) {
+  function dateVal(r) {
+    const p = r.datum ? r.datum.split('/') : [];
+    return p.length === 2 ? parseInt(p[1]) * 100 + parseInt(p[0]) : 99999;
+  }
+  return arr.sort((a, b) => {
+    const ma = a.month, mb = b.month;
+    if (ma !== mb) {
+      const maanden = ['jan','feb','mar','apr','mei','jun','jul','aug','sep','okt','nov','dec'];
+      const ra = ma.match(/([a-z]+)\s*(\d+)/i), rb = mb.match(/([a-z]+)\s*(\d+)/i);
+      if (ra && rb) {
+        const ya = parseInt(ra[2]), yb = parseInt(rb[2]);
+        if (ya !== yb) return ya - yb;
+        const da = maanden.indexOf(ra[1].toLowerCase().substring(0,3));
+        const db = maanden.indexOf(rb[1].toLowerCase().substring(0,3));
+        if (da !== db) return da - db;
+      }
+    }
+    return dateVal(a) - dateVal(b);
+  });
+}
+
+function resetForm() {
+  document.getElementById('vs-datum').value = '';
+  document.getElementById('vs-begin').value = '';
+  document.getElementById('vs-einde').value = '';
+  ['vs-kroes','vs-schub','vs-spiegel','vs-ander'].forEach(id => document.getElementById(id).value = '0');
+  updateResult();
+  document.getElementById('vs-datum').focus();
+}
+
+document.getElementById('btn-reset').addEventListener('click', resetForm);
+
+document.querySelectorAll('#vs-stek, #vs-datum, #vs-begin, #vs-einde').forEach(inp => {
+  inp.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      const next = {
+        'vs-stek': 'vs-datum',
+        'vs-datum': 'vs-kroes',
+        'vs-begin': 'vs-einde',
+        'vs-einde': 'btn-vs-save'
+      }[inp.id];
+      if (next) {
+        e.preventDefault();
+        const el = document.getElementById(next);
+        if (el) el.focus();
+        if (next === 'btn-vs-save') el.click();
+      }
+    }
+  });
+});
+
+document.querySelectorAll('#vs-kroes, #vs-schub, #vs-spiegel, #vs-ander').forEach(inp => {
+  inp.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const next = {
+        'vs-kroes': 'vs-schub',
+        'vs-schub': 'vs-spiegel',
+        'vs-spiegel': 'vs-ander',
+        'vs-ander': 'vs-begin'
+      }[inp.id];
+      if (next) document.getElementById(next).focus();
+    }
+  });
+});
+</script>
+</body>
+</html>
