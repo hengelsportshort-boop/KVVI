@@ -339,6 +339,11 @@ function parseTime(t) {
   if (m) return parseInt(m[1]) * 60 + parseInt(m[2]);
   const m2 = t.match(/(\d+):(\d+)/);
   if (m2) return parseInt(m2[1]) * 60 + parseInt(m2[2]);
+  const m3 = t.match(/^(\d{3,4})$/);
+  if (m3) {
+    const s = m3[1].padStart(4, '0');
+    return parseInt(s.substring(0, 2)) * 60 + parseInt(s.substring(2, 4));
+  }
   return null;
 }
 
