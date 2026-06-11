@@ -73,7 +73,7 @@ tr.wedstrijd td { border-bottom-color: #facc15; }
 
     <div class="flex">
       <!-- SIDEBAR -->
-      <aside class="hidden md:flex w-64 bg-[#003366] text-white flex-col border-r-4 border-[#C5A059] min-h-[calc(100vh-60px)]">
+      <aside class="hidden md:flex w-64 bg-[#003366] text-white flex-col border-r-4 border-[#C5A059] sticky top-0 self-start h-screen">
         <div class="p-6 border-b border-white/10 hidden md:block">
           <h1 class="text-xl font-bold tracking-widest">KVVI ADMIN</h1>
           <p class="text-[10px] text-[#C5A059] font-bold">CONTROL PANEL</p>
@@ -966,7 +966,7 @@ function updateStats() {
     html += '<div style="background:#fff;border-radius:12px;border:1px solid #e2e8f0;padding:16px;margin-bottom:20px">' +
       '<div style="font-size:13px;font-weight:700;color:#1e293b;margin-bottom:8px">Trend — gr/min per sessie</div>' +
       '<div style="overflow-x:auto">' +
-        '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;max-width:' + W + 'px;height:auto">' +
+        '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;max-width:100%;height:auto">' +
           '<line x1="' + padL + '" y1="' + padT + '" x2="' + padL + '" y2="' + (padT+ch) + '" stroke="#e2e8f0" stroke-width="1"/>' +
           '<line x1="' + padL + '" y1="' + (padT+ch) + '" x2="' + (padL+cw) + '" y2="' + (padT+ch) + '" stroke="#e2e8f0" stroke-width="1"/>';
     for (const v of yTicks) {
