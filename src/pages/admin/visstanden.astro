@@ -260,6 +260,17 @@ tr.wedstrijd td { border-bottom-color: #facc15; }
   <button id="btn-remove-empty" class="btn btn-outline ml-2">🧹 Verwijder lege sessies</button>
   <button id="btn-remove-nodate" class="btn btn-outline ml-2">📅 Verwijder zonder datum</button>
   <button id="btn-seed" class="btn btn-outline ml-2">📥 Laad voorbeelddata</button>
+  <hr style="margin:16px 0;border:none;border-top:1px solid #e2e8f0">
+  <p class="sub" style="font-weight:700">Backups</p>
+  <div class="flex" style="margin-bottom:8px">
+    <button id="btn-backup-create" class="btn btn-outline">💾 Backup maken</button>
+    <button id="btn-backup-list" class="btn btn-outline">📋 Toon backups</button>
+    <button id="btn-backup-download" class="btn btn-outline">⬇️ Download</button>
+    <input type="file" id="backup-file-input" accept=".json" style="display:none">
+    <button id="btn-backup-upload" class="btn btn-outline">📤 Upload &amp; herstel</button>
+  </div>
+  <div id="backup-status" class="sub mt-2"></div>
+  <div id="backup-list" class="sub mt-2" style="display:none"></div>
   <div id="data-size" class="sub mt-2"></div>
 </div>
 
@@ -1376,6 +1387,158 @@ document.getElementById('btn-seed').addEventListener('click', () => {
   saveData(seed);
   render();
   showToast('✅ Voorbeelddata geladen (15 sessies voor '+j+')');
+});
+
+const BACKUP_API = '/admin/api/visstanden-backup';
+
+function backupStatus(msg, isError) {
+  const el = document.getElementById('backup-status');
+  el.textContent = msg;
+  el.style.color = isError ? '#dc2626' : '#166534';
+}
+
+async function backupCreate() {
+  backupStatus('🔄 Bezig met backup...');
+  try {
+    const res = await fetch(BACKUP_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'create' })
+    });
+    const json = await res.json();
+    if (json.ok) {
+      backupStatus('✅ Backup gemaakt: ' + json.file);
+      showToast('✅ Backup gemaakt');
+    } else {
+      backupStatus('❌ ' + (json.error || 'Fout'), true);
+    }
+  } catch (e) {
+    backupStatus('❌ ' + e.message, true);
+  }
+}
+
+async function backupList() {
+  const el = document.getElementById('backup-list');
+  backupStatus('🔄 Backups ophalen...');
+  try {
+    const res = await fetch(BACKUP_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'list' })
+    });
+    const json = await res.json();
+    if (json.backups && json.backups.length) {
+      el.style.display = '';
+      el.innerHTML = '<div style="font-weight:600;margin-bottom:4px">Beschikbare backups:</div>' +
+        json.backups.map(f =>
+          `<div style="display:flex;gap:8px;align-items:center;padding:3px 0;font-size:12px">
+            <span>${f}</span>
+            <button class="btn btn-outline" style="padding:2px 8px;font-size:11px" onclick="backupRestore('${f}')">Herstel</button>
+            <button class="btn btn-outline" style="padding:2px 8px;font-size:11px" onclick="backupDownloadFile('${f}')">⬇️</button>
+          </div>`
+        ).join('');
+      backupStatus('✅ ' + json.backups.length + ' backup(s) gevonden');
+    } else {
+      el.style.display = 'none';
+      backupStatus('ℹ️ Geen backups gevonden');
+    }
+  } catch (e) {
+    backupStatus('❌ ' + e.message, true);
+  }
+}
+
+async function backupDownloadFile(file) {
+  try {
+    const res = await fetch(BACKUP_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'download', file })
+    });
+    if (!res.ok) { backupStatus('❌ Download mislukt', true); return; }
+    const blob = await res.blob();
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = file;
+    a.click();
+    URL.revokeObjectURL(a.href);
+    backupStatus('✅ Download gestart: ' + file);
+  } catch (e) {
+    backupStatus('❌ ' + e.message, true);
+  }
+}
+
+async function backupRestore(file) {
+  if (!confirm('Herstel data van ' + file + '? Huidige data gaat verloren.')) return;
+  backupStatus('🔄 Bezig met herstel van ' + file + '...');
+  try {
+    const res = await fetch(BACKUP_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'restore', file })
+    });
+    const json = await res.json();
+    if (json.ok) {
+      backupStatus('✅ Hersteld van ' + file + ' (' + json.count + ' sessies)');
+      initFromAPI();
+      showToast('✅ Data hersteld van ' + file);
+    } else {
+      backupStatus('❌ ' + (json.error || 'Fout'), true);
+    }
+  } catch (e) {
+    backupStatus('❌ ' + e.message, true);
+  }
+}
+
+async function backupDownload() {
+  try {
+    const res = await fetch(BACKUP_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'list' })
+    });
+    const json = await res.json();
+    if (!json.backups || !json.backups.length) {
+      backupStatus('ℹ️ Geen backups om te downloaden. Maak eerst een backup.');
+      return;
+    }
+    backupStatus('📋 Kies een backup om te downloaden in de lijst');
+    await backupList();
+  } catch (e) {
+    backupStatus('❌ ' + e.message, true);
+  }
+}
+
+document.getElementById('btn-backup-create').addEventListener('click', backupCreate);
+document.getElementById('btn-backup-list').addEventListener('click', backupList);
+document.getElementById('btn-backup-download').addEventListener('click', backupDownload);
+document.getElementById('btn-backup-upload').addEventListener('click', () => {
+  document.getElementById('backup-file-input').click();
+});
+document.getElementById('backup-file-input').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  backupStatus('🔄 Bezig met uploaden...');
+  try {
+    const text = await file.text();
+    const data = JSON.parse(text);
+    if (!Array.isArray(data)) throw new Error('Bestand bevat geen geldige visstanden-data');
+    const res = await fetch(BACKUP_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'upload', data })
+    });
+    const json = await res.json();
+    if (json.ok) {
+      backupStatus('✅ ' + json.count + ' sessies hersteld uit ' + file.name);
+      initFromAPI();
+      showToast('✅ Data hersteld uit ' + file.name);
+    } else {
+      backupStatus('❌ ' + (json.error || 'Fout'), true);
+    }
+  } catch (e) {
+    backupStatus('❌ ' + e.message, true);
+  }
+  e.target.value = '';
 });
 
 function initJaarSelector() {
