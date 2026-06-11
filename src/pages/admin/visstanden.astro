@@ -143,7 +143,6 @@ tr.wedstrijd td { border-bottom-color: #facc15; }
   </div>
   <div class="tabs" style="margin-bottom:0">
     <button class="tab active" data-tab="data">📊 Data</button>
-    <button class="tab" data-tab="import">📥 Import</button>
     <button class="tab" data-tab="stats">📈 Statistieken</button>
     <button class="tab" data-tab="visstek">🎣 Visstek</button>
   <button class="tab danger" data-tab="beheer">⚙️ Beheer</button>
@@ -180,17 +179,6 @@ tr.wedstrijd td { border-bottom-color: #facc15; }
     </div>
   </div>
   <div id="table-container"></div>
-</div>
-
-<!-- IMPORT TAB -->
-<div id="tab-import" class="panel">
-  <p class="sub">Plak de tabel uit Excel/Google Sheets (tab-gescheiden). Headerrij + datarijën. Maand/week prefix wordt automatisch herkend.</p>
-  <textarea id="import-text" rows="12" placeholder="Plak hier de data..."></textarea>
-  <div class="flex mt-2">
-    <button id="btn-import" class="btn btn-primary">📥 Importeer</button>
-    <label class="sub" style="font-size:12px"><input type="checkbox" id="chk-append"> Toevoegen aan bestaande data</label>
-  </div>
-  <div id="import-result" class="mt-2 sub"></div>
 </div>
 
 <!-- STATS TAB -->
@@ -1093,35 +1081,6 @@ document.querySelectorAll('.tab').forEach(tab => {
     tab.classList.add('active');
     document.getElementById('tab-' + tab.dataset.tab).classList.add('show');
   });
-});
-
-document.getElementById('btn-import').addEventListener('click', () => {
-  const text = document.getElementById('import-text').value;
-  if (!text) return;
-  const parsed = parseTable(text);
-  if (!parsed.length) {
-    document.getElementById('import-result').textContent = '❌ Geen geldige data gevonden. Controleer de plaktekst.';
-    return;
-  }
-  let data = loadData();
-  if (!document.getElementById('chk-append').checked) data = [];
-  let added = 0, updated = 0, skipped = 0;
-  for (const r of parsed) {
-    if (!r.datum || !r.datum.trim()) { skipped++; continue; }
-    const bestaand = data.findIndex(x => x.datum === r.datum && x.month === r.month);
-    if (bestaand !== -1) {
-      data[bestaand] = { ...data[bestaand], ...r };
-      updated++;
-    } else {
-      data.push(r);
-      added++;
-    }
-  }
-  sortData(data);
-  saveData(data);
-  document.getElementById('import-result').textContent = `✅ ${added} nieuw, ${updated} bijgewerkt${skipped ? `, ${skipped} zonder datum overgeslagen` : ''}. Totaal: ${data.length} sessies.`;
-  render();
-  showToast(`✅ ${added} nieuw, ${updated} bijgewerkt`);
 });
 
 document.getElementById('btn-add').addEventListener('click', () => {
