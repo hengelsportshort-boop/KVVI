@@ -236,6 +236,10 @@ tr.wedstrijd td { border-bottom-color: #facc15; }
       <div class="sub" style="margin-bottom:2px;font-weight:600">Einde</div>
       <input id="vs-einde" placeholder="vb 14u 0m" class="form-input" value="" style="padding:10px 12px;border:1px solid #cbd5e1;border-radius:6px;font-size:16px;width:100%;-webkit-appearance:none">
     </div>
+    <div style="margin-bottom:10px;display:none" id="vs-duur-container">
+      <div class="sub" style="margin-bottom:2px;font-weight:600">Duur</div>
+      <div id="vs-duur" style="padding:10px 12px;border:1px solid #86efac;border-radius:6px;font-size:16px;width:100%;-webkit-appearance:none;background:#f0fdf4;color:#166534;font-weight:600">--</div>
+    </div>
     <div style="margin-bottom:10px">
       <div class="sub" style="margin-bottom:2px;font-weight:600">Aantal</div>
       <div id="vs-aantal" style="padding:10px 12px;border:1px solid #86efac;border-radius:6px;font-size:20px;width:100%;-webkit-appearance:none;background:#dcfce7;color:#166534;font-weight:700">0</div>
@@ -376,6 +380,25 @@ function fmtDuurVangst(min, aantal) {
   const m = Math.floor(perVis);
   const s = Math.round((perVis - m) * 60);
   return m + 'm ' + s + 's';
+}
+
+function formatTijdInput(val) {
+  if (/^\d{3,4}$/.test(val)) {
+    const s = val.padStart(4, '0');
+    const h = parseInt(s.substring(0, 2));
+    const m = parseInt(s.substring(2, 4));
+    if (h >= 0 && h <= 23 && m >= 0 && m <= 59) {
+      return h + 'u ' + m + 'm';
+    }
+  }
+  return val;
+}
+
+function calcDuurVanBeginEinde(beginVal, eindeVal) {
+  const b = parseTime(beginVal);
+  const e = parseTime(eindeVal);
+  if (b != null && e != null && e > b) return e - b;
+  return null;
 }
 
 function showToast(msg, type) {
@@ -671,6 +694,10 @@ function render() {
           }
         } else {
           found[field] = val;
+          if (field === 'begin' || field === 'einde') {
+            const d = calcDuurVanBeginEinde(found.begin, found.einde);
+            if (d != null) found.duurMin = d;
+          }
         }
         sortData(data);
         saveData(data);
@@ -1089,6 +1116,23 @@ document.getElementById('btn-add').addEventListener('click', () => {
 document.getElementById('btn-cancel-add').addEventListener('click', () => {
   document.getElementById('add-form').classList.add('hidden');
 });
+['f-begin', 'f-einde'].forEach(id => {
+  const el = document.getElementById(id);
+  el.addEventListener('blur', () => {
+    el.value = formatTijdInput(el.value);
+    updateFDuur();
+  });
+  el.addEventListener('input', updateFDuur);
+});
+function updateFDuur() {
+  const d = calcDuurVanBeginEinde(
+    document.getElementById('f-begin').value,
+    document.getElementById('f-einde').value
+  );
+  if (d != null) {
+    document.getElementById('f-duurMin').value = d;
+  }
+}
 document.getElementById('btn-save-add').addEventListener('click', () => {
   function v(id) { return document.getElementById(id).value.trim(); }
   function n(id) { return parseInt(document.getElementById(id).value) || 0; }
@@ -1096,14 +1140,15 @@ document.getElementById('btn-save-add').addEventListener('click', () => {
   const datum = v('f-datum');
   if (!datum) { showToast('❌ Datum is verplicht', 'error'); return; }
   const month = deriveMonth(datum, jaar) || 'Onbekend';
+  const fDuur = n('f-duurMin') || calcDuurVanBeginEinde(v('f-begin'), v('f-einde')) || 0;
   const row = {
     kroes: n('f-kroes'), schub: n('f-schub'), spiegel: n('f-spiegel'), ander: n('f-ander'),
     aantal: n('f-kroes') + n('f-schub') + n('f-spiegel') + n('f-ander'),
     gewicht: n('f-gewicht'),
     datum, stek: v('f-stek'), begin: v('f-begin'), einde: v('f-einde'),
-    duurMin: n('f-duurMin'),
+    duurMin: fDuur,
     pijl: v('f-pijl'), beoordeling: v('f-beoordeling'),
-    tijdMin: n('f-tijdMin') || n('f-duurMin'),
+    tijdMin: n('f-tijdMin') || fDuur,
     month, wedstrijd: document.getElementById('f-wedstrijd').checked ? '🏆' : ''
   };
   const data = loadData();
@@ -1138,12 +1183,13 @@ document.getElementById('btn-vs-save').addEventListener('click', () => {
   if (!datum) { showToast('❌ Datum is verplicht', 'error'); return; }
   const month = deriveMonth(datum, jaar) || 'Onbekend';
   const kroes = n('vs-kroes'), schub = n('vs-schub'), spiegel = n('vs-spiegel'), ander = n('vs-ander');
+  const vsDuur = calcDuurVanBeginEinde(v('vs-begin'), v('vs-einde')) || 0;
   const row = {
     kroes, schub, spiegel, ander,
     aantal: kroes + schub + spiegel + ander,
     gewicht: vsGewichtGram(),
     datum, stek, begin: v('vs-begin'), einde: v('vs-einde'),
-    duurMin: 0, pijl: '', beoordeling: '', tijdMin: 0,
+    duurMin: vsDuur, pijl: '', beoordeling: '', tijdMin: vsDuur,
     month, wedstrijd: ''
   };
   const data = loadData();
@@ -1244,6 +1290,29 @@ function renderVisstekList() {
 document.getElementById('vs-stek').addEventListener('input', renderVisstekList);
 
 document.querySelector('.tab[data-tab="visstek"]').addEventListener('click', () => setTimeout(renderVisstekList, 50));
+
+function updateVsDuur() {
+  const begin = document.getElementById('vs-begin').value;
+  const einde = document.getElementById('vs-einde').value;
+  const d = calcDuurVanBeginEinde(begin, einde);
+  const container = document.getElementById('vs-duur-container');
+  const el = document.getElementById('vs-duur');
+  if (d != null) {
+    el.textContent = fmtTime(d);
+    container.style.display = '';
+  } else {
+    el.textContent = '--';
+    container.style.display = 'none';
+  }
+}
+['vs-begin', 'vs-einde'].forEach(id => {
+  const el = document.getElementById(id);
+  el.addEventListener('blur', () => {
+    el.value = formatTijdInput(el.value);
+    updateVsDuur();
+  });
+  el.addEventListener('input', updateVsDuur);
+});
 
 document.getElementById('btn-remove-empty').addEventListener('click', () => {
   let data = loadData();
