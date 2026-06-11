@@ -3,7 +3,14 @@ export const prerender = false;
 export async function POST({ request }) {
   try {
     const body = await request.json();
-    const { name, email, message } = body;
+    const { name, email, message, _hp } = body;
+
+    if (_hp) {
+      return new Response(JSON.stringify({ success: true }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
 
     if (!name || !email || !message) {
       return new Response(JSON.stringify({ success: false, error: 'Vul alle velden in.' }), {

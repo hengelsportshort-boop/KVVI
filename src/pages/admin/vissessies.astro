@@ -1,7 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 export const prerender = false;
-const pageTitle = "Visstanden Beheer | KVVI Admin";
+const pageTitle = "Vissessies Beheer | KVVI Admin";
 ---
 
 <style is:inline>
@@ -86,7 +86,7 @@ tr.wedstrijd td { border-bottom-color: #facc15; }
           <a href="/admin/visstekken-abc" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🌐</span> ABC Visstekken</a>
           <a href="/admin/legende" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📖</span> Legende</a>
           <a href="/admin/hengelshop" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📦</span> Hengelshop</a>
-          <a href="/admin/visstanden" class="flex items-center gap-3 p-3 bg-white/10 rounded-lg border-l-4 border-[#C5A059] text-sm font-semibold"><span>📊</span> Visstanden</a>
+          <a href="/admin/vissessies" class="flex items-center gap-3 p-3 bg-white/10 rounded-lg border-l-4 border-[#C5A059] text-sm font-semibold"><span>📊</span> Vissessies</a>
           <a href="/admin/koppelwedstrijden" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏆</span> Koppelwedstrijden</a>
           <a href="/admin/kamp-izegem" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏅</span> Kamp. Izegem</a>
           <a href="/admin/specials/vrouwvissing" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>👩</span> Vrouwvissing</a>
@@ -108,7 +108,7 @@ tr.wedstrijd td { border-bottom-color: #facc15; }
           <a href="/admin/visstekken-abc" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🌐</span> ABC Visstekken</a>
           <a href="/admin/legende" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📖</span> Legende</a>
           <a href="/admin/hengelshop" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📦</span> Hengelshop</a>
-          <a href="/admin/visstanden" class="flex items-center gap-3 p-3 bg-white/10 rounded-lg border-l-4 border-[#C5A059] text-sm font-semibold"><span>📊</span> Visstanden</a>
+          <a href="/admin/vissessies" class="flex items-center gap-3 p-3 bg-white/10 rounded-lg border-l-4 border-[#C5A059] text-sm font-semibold"><span>📊</span> Vissessies</a>
           <a href="/admin/koppelwedstrijden" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏆</span> Koppelwedstrijden</a>
           <a href="/admin/kamp-izegem" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏅</span> Kamp. Izegem</a>
           <a href="/admin/specials/vrouwvissing" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>👩</span> Vrouwvissing</a>
@@ -125,14 +125,14 @@ tr.wedstrijd td { border-bottom-color: #facc15; }
           <div class="flex items-center gap-3">
             <span class="text-slate-400 text-sm">Admin</span>
             <span class="text-slate-300 text-sm">/</span>
-            <span class="font-semibold text-sm">Visstanden</span>
+            <span class="font-semibold text-sm">Vissessies</span>
           </div>
         </header>
 
         <div class="p-4 md:p-8 flex-1 overflow-y-auto">
           <div style="max-width:1400px;margin:0 auto">
 
-<h1>Visstanden</h1>
+<h1>Vissessies</h1>
 <p class="sub">Admin voor wedstrijdgegevens — gesynchroniseerd met server</p>
 
 <div class="sticky-header">
@@ -287,9 +287,9 @@ tr.wedstrijd td { border-bottom-color: #facc15; }
   }
 })();
 
-const STORAGE_KEY = 'kvvi_visstanden';
+const STORAGE_KEY = 'kvvi_vissessies';
 const JAAR_KEY = 'kvvi_jaar';
-const API_URL = '/admin/api/visstanden';
+const API_URL = '/admin/api/vissessies';
 const GEW_KROES = 300, GEW_SCHUB = 1500, GEW_SPIEGEL = 1600, GEW_ANDER = 100;
 
 const jaarOpties = [];
@@ -1312,7 +1312,7 @@ document.getElementById('btn-remove-nodate').addEventListener('click', () => {
 });
 
 document.getElementById('btn-clear').addEventListener('click', () => {
-  if (!confirm('Alle visstanden data wissen?')) return;
+  if (!confirm('Alle vissessies data wissen?')) return;
   if (!confirm('Zeker? Dit kan niet ongedaan gemaakt worden.')) return;
   localStorage.removeItem(STORAGE_KEY);
   render();
@@ -1348,7 +1348,7 @@ document.getElementById('btn-seed').addEventListener('click', () => {
   showToast('✅ Voorbeelddata geladen (15 sessies voor '+j+')');
 });
 
-const BACKUP_API = '/admin/api/visstanden-backup';
+const BACKUP_API = '/admin/api/vissessies-backup';
 
 function backupStatus(msg, isError) {
   const el = document.getElementById('backup-status');
@@ -1480,7 +1480,7 @@ document.getElementById('backup-file-input').addEventListener('change', async (e
   try {
     const text = await file.text();
     const data = JSON.parse(text);
-    if (!Array.isArray(data)) throw new Error('Bestand bevat geen geldige visstanden-data');
+    if (!Array.isArray(data)) throw new Error('Bestand bevat geen geldige vissessies-data');
     const res = await fetch(BACKUP_API, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

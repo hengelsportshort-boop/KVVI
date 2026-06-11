@@ -3,14 +3,14 @@ export const prerender = false;
 import fs from 'node:fs';
 import path from 'node:path';
 
-const DATA_PATH = path.resolve('./public/data/visstanden.json');
+const DATA_PATH = path.resolve('./public/data/vissessies.json');
 const BACKUP_DIR = path.resolve('./public/data/backups');
 
 function getBackups() {
   try {
     if (!fs.existsSync(BACKUP_DIR)) return [];
     return fs.readdirSync(BACKUP_DIR)
-      .filter(f => f.startsWith('visstanden-') && f.endsWith('.json'))
+      .filter(f => f.startsWith('vissessies-') && f.endsWith('.json'))
       .sort()
       .reverse();
   } catch { return []; }
@@ -35,9 +35,9 @@ export async function POST({ request }) {
     if (action === 'create') {
       const now = new Date();
       const dateStr = now.toISOString().split('T')[0];
-      const fileName = `visstanden-${dateStr}.json`;
+      const fileName = `vissessies-${dateStr}.json`;
       const filePath = path.join(BACKUP_DIR, fileName);
-      if (!fs.existsSync(DATA_PATH)) throw new Error('Geen visstanden-data gevonden');
+      if (!fs.existsSync(DATA_PATH)) throw new Error('Geen vissessies-data gevonden');
       fs.copyFileSync(DATA_PATH, filePath);
       return new Response(JSON.stringify({ ok: true, file: fileName }), {
         status: 200,

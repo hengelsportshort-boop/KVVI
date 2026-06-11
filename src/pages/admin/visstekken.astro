@@ -46,6 +46,7 @@ const pageTitle = "Visstekken Beheer | KVVI Admin";
           </a>
           <a href="/admin/legende" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold">
             <span>📖</span> Legende
+          </a>
           <a href="/admin/hengelshop" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📦</span> Hengelshop</a>
 
           <a href="/admin/koppelwedstrijden" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold">
@@ -87,6 +88,7 @@ const pageTitle = "Visstekken Beheer | KVVI Admin";
           </a>
           <a href="/admin/legende" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold">
             <span>📖</span> Legende
+          </a>
           <a href="/admin/hengelshop" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📦</span> Hengelshop</a>
 
           <a href="/admin/koppelwedstrijden" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold">
@@ -200,12 +202,12 @@ const pageTitle = "Visstekken Beheer | KVVI Admin";
 
                 <div>
                   <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Legende Categorie</label>
-          <a href="/admin/hengelshop" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📦</span> Hengelshop</a>                  <select id="edit-group" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#004A99]/20 bg-white">
+                  <select id="edit-group" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#004A99]/20 bg-white">
                     <option value="">-- Geen categorie --</option>
                   </select>
                 </div>
 
-                <div class="grid grid-cols-2 gap-3">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
                     <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Latitude</label>
                     <input id="edit-lat" type="text" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm bg-slate-50 font-mono" placeholder="51.234567">
@@ -244,6 +246,21 @@ const pageTitle = "Visstekken Beheer | KVVI Admin";
   ::-webkit-scrollbar-track { background: #f1f5f9; }
   ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 3px; }
   .color-swatch.selected { border-color: #003366 !important; transform: scale(1.15); }
+
+  @media (max-width: 640px) {
+    #edit-modal { align-items: flex-start !important; padding: 0 !important; }
+    #edit-modal > div { max-width: 100% !important; max-height: 100dvh !important; border-radius: 0 !important; width: 100%; }
+    #edit-modal input, #edit-modal textarea, #edit-modal select, #edit-modal button { font-size: 16px !important; }
+    #edit-modal .space-y-5 > :not([hidden]) ~ :not([hidden]) { margin-top: 12px !important; }
+    #visstekken-grid { gap: 10px !important; }
+    #search-input, #color-filter, #count-badge { font-size: 16px !important; padding-top: 12px !important; padding-bottom: 12px !important; }
+    #save-btn, #add-btn { font-size: 13px !important; padding: 10px 14px !important; white-space: nowrap; }
+    header.h-16 { height: auto !important; min-height: 52px; padding: 8px 14px !important; flex-wrap: wrap; gap: 6px; }
+    .p-4.md\\:p-6 { padding: 12px !important; }
+    .p-6 { padding: 16px !important; }
+  }
+
+  html { -webkit-text-size-adjust: 100%; }
 </style>
 
 <script>

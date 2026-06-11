@@ -3,20 +3,20 @@ export const prerender = false;
 import fs from 'node:fs';
 import path from 'node:path';
 
-const DATA_PATH = path.resolve('./public/data/visstanden.json');
+const DATA_PATH = path.resolve('./public/data/vissessies.json');
 const BACKUP_DIR = path.resolve('./public/data/backups');
 
 function autoBackup() {
   try {
     if (!fs.existsSync(DATA_PATH)) return;
     if (!fs.existsSync(BACKUP_DIR)) fs.mkdirSync(BACKUP_DIR, { recursive: true });
-    const files = fs.readdirSync(BACKUP_DIR).filter(f => f.startsWith('visstanden-') && f.endsWith('.json'));
+    const files = fs.readdirSync(BACKUP_DIR).filter(f => f.startsWith('vissessies-') && f.endsWith('.json'));
     const now = Date.now();
     const oneWeek = 7 * 24 * 60 * 60 * 1000;
     const newest = files.map(f => fs.statSync(path.join(BACKUP_DIR, f)).mtimeMs).sort((a, b) => b - a)[0];
     if (!newest || (now - newest) > oneWeek) {
       const dateStr = new Date().toISOString().split('T')[0];
-      fs.copyFileSync(DATA_PATH, path.join(BACKUP_DIR, `visstanden-${dateStr}.json`));
+      fs.copyFileSync(DATA_PATH, path.join(BACKUP_DIR, `vissessies-${dateStr}.json`));
     }
   } catch {}
 }
