@@ -53,6 +53,12 @@ tr.wedstrijd td { border-bottom-color: #facc15; }
 .sticky-header { position: sticky; top: 0; z-index: 100; background: #f1f5f9; padding: 12px 20px 8px; margin: 0 -16px 12px; border-bottom: 1px solid #e2e8f0; }
 @media (max-width: 768px) { .sticky-header { padding: 10px 10px 6px; margin: 0 -16px 10px; } table { font-size: 11px; } td, th { padding: 3px 2px; } }
 .col-merk { max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.vs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+.vs-stepper { display: flex; gap: 6px; align-items: center; }
+.vs-btn { width: 48px; height: 48px; border: 2px solid #1e293b; border-radius: 10px; background: #fff; font-size: 24px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #1e293b; -webkit-appearance: none; appearance: none; user-select: none; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+.vs-btn:active { background: #cbd5e1; }
+.vs-input { flex: 1; min-width: 0; padding: 10px 4px; border: 2px solid #1e293b; border-radius: 10px; font-size: 22px; font-weight: 700; text-align: center; background: #fff; color: #1e293b; -webkit-appearance: none; appearance: none; width: 100%; box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
+@media (max-width: 768px) { .vs-grid { gap: 8px; } .vs-btn { width: 44px; height: 44px; font-size: 22px; } .vs-input { font-size: 20px; padding: 8px 2px; } }
 </style>
 
 <Layout title={pageTitle} noMainWrapper={true} hideNav={true}>
@@ -198,21 +204,39 @@ tr.wedstrijd td { border-bottom-color: #facc15; }
       <input id="vs-datum" list="vs-datum-list" placeholder="vb 19/06 — of kies bestaande" class="form-input" value="" style="padding:10px 12px;border:1px solid #cbd5e1;border-radius:6px;font-size:16px;width:100%;-webkit-appearance:none">
       <datalist id="vs-datum-list"></datalist>
     </div>
-    <div style="margin-bottom:10px">
-      <div class="sub" style="margin-bottom:2px;font-weight:600">Kroes</div>
-      <input id="vs-kroes" type="number" inputmode="numeric" value="0" class="form-input" style="padding:10px 12px;border:1px solid #cbd5e1;border-radius:6px;font-size:16px;width:100%;-webkit-appearance:none">
-    </div>
-    <div style="margin-bottom:10px">
-      <div class="sub" style="margin-bottom:2px;font-weight:600">Schub</div>
-      <input id="vs-schub" type="number" inputmode="numeric" value="0" class="form-input" style="padding:10px 12px;border:1px solid #cbd5e1;border-radius:6px;font-size:16px;width:100%;-webkit-appearance:none">
-    </div>
-    <div style="margin-bottom:10px">
-      <div class="sub" style="margin-bottom:2px;font-weight:600">Spiegel</div>
-      <input id="vs-spiegel" type="number" inputmode="numeric" value="0" class="form-input" style="padding:10px 12px;border:1px solid #cbd5e1;border-radius:6px;font-size:16px;width:100%;-webkit-appearance:none">
-    </div>
-    <div style="margin-bottom:10px">
-      <div class="sub" style="margin-bottom:2px;font-weight:600">Ander</div>
-      <input id="vs-ander" type="number" inputmode="numeric" value="0" class="form-input" style="padding:10px 12px;border:1px solid #cbd5e1;border-radius:6px;font-size:16px;width:100%;-webkit-appearance:none">
+    <div class="vs-grid">
+      <div>
+        <div class="sub" style="margin-bottom:2px;font-weight:600">Kroes</div>
+        <div class="vs-stepper">
+          <button type="button" onclick="vsAdjust('vs-kroes',-1)" class="vs-btn">−</button>
+          <input id="vs-kroes" type="number" inputmode="numeric" max="999" value="0" class="vs-input">
+          <button type="button" onclick="vsAdjust('vs-kroes',1)" class="vs-btn">+</button>
+        </div>
+      </div>
+      <div>
+        <div class="sub" style="margin-bottom:2px;font-weight:600">Schub</div>
+        <div class="vs-stepper">
+          <button type="button" onclick="vsAdjust('vs-schub',-1)" class="vs-btn">−</button>
+          <input id="vs-schub" type="number" inputmode="numeric" max="999" value="0" class="vs-input">
+          <button type="button" onclick="vsAdjust('vs-schub',1)" class="vs-btn">+</button>
+        </div>
+      </div>
+      <div>
+        <div class="sub" style="margin-bottom:2px;font-weight:600">Spiegel</div>
+        <div class="vs-stepper">
+          <button type="button" onclick="vsAdjust('vs-spiegel',-1)" class="vs-btn">−</button>
+          <input id="vs-spiegel" type="number" inputmode="numeric" max="999" value="0" class="vs-input">
+          <button type="button" onclick="vsAdjust('vs-spiegel',1)" class="vs-btn">+</button>
+        </div>
+      </div>
+      <div>
+        <div class="sub" style="margin-bottom:2px;font-weight:600">Ander</div>
+        <div class="vs-stepper">
+          <button type="button" onclick="vsAdjust('vs-ander',-1)" class="vs-btn">−</button>
+          <input id="vs-ander" type="number" inputmode="numeric" max="999" value="0" class="vs-input">
+          <button type="button" onclick="vsAdjust('vs-ander',1)" class="vs-btn">+</button>
+        </div>
+      </div>
     </div>
     <div style="margin-bottom:10px">
       <div class="sub" style="margin-bottom:2px;font-weight:600">Begin</div>
@@ -1213,6 +1237,13 @@ function fmtKg(gram) {
   return (gram / 1000).toLocaleString('nl-NL', { minimumFractionDigits: 3, maximumFractionDigits: 3 }) + ' kg';
 }
 
+function vsAdjust(id, delta) {
+  const el = document.getElementById(id);
+  let v = parseInt(el.value) || 0;
+  v = Math.max(0, Math.min(999, v + delta));
+  el.value = v;
+  updateVsAantal();
+}
 function updateVsAantal() {
   const ids = ['vs-kroes','vs-schub','vs-spiegel','vs-ander'];
   const sum = ids.reduce((a, id) => a + (parseInt(document.getElementById(id).value) || 0), 0);
@@ -1220,7 +1251,13 @@ function updateVsAantal() {
   document.getElementById('vs-gewicht').textContent = fmtKg(vsGewichtGram());
 }
 ['vs-kroes','vs-schub','vs-spiegel','vs-ander'].forEach(id => {
-  document.getElementById(id).addEventListener('input', updateVsAantal);
+  document.getElementById(id).addEventListener('input', function() {
+    if (this.value.length > 3) this.value = this.value.slice(0, 3);
+    const v = parseInt(this.value);
+    if (v > 999) this.value = '999';
+    else if (v < 0) this.value = '0';
+    updateVsAantal();
+  });
 });
 document.getElementById('vs-datum').addEventListener('input', () => {
   const stek = document.getElementById('vs-stek').value.trim().toLowerCase();
