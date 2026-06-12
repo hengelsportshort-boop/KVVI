@@ -5,8 +5,8 @@ export const prerender = false;
 const pageTitle = "Visstekken Beheer | KVVI Admin";
 ---
 
-<Layout title={pageTitle} noMainWrapper={true}>
-  <main class="min-h-screen bg-slate-50">
+<Layout title={pageTitle} noMainWrapper={true} hideNav={true}>
+  <main class="h-screen flex flex-col bg-slate-50">
 
     <!-- MOBILE HEADER -->
     <div class="md:hidden bg-[#003366] text-white p-4 flex justify-between items-center">
@@ -21,15 +21,15 @@ const pageTitle = "Visstekken Beheer | KVVI Admin";
       </button>
     </div>
 
-    <div class="flex">
+    <div class="flex flex-1 min-h-0">
       <!-- SIDEBAR -->
-      <aside class="hidden md:flex w-64 bg-[#003366] text-white flex-col border-r-4 border-[#C5A059] min-h-[calc(100vh-60px)]">
+      <aside class="hidden md:flex w-64 bg-[#003366] text-white flex-col border-r-4 border-[#C5A059] fixed left-0 top-0 h-screen z-30">
         <div class="p-6 border-b border-white/10 hidden md:block">
           <h1 class="text-xl font-bold tracking-widest">KVVI ADMIN</h1>
           <p class="text-[10px] text-[#C5A059] font-bold">CONTROL PANEL</p>
         </div>
-        <nav class="flex-1 p-4 space-y-1">
-          <a href="/" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold">
+        <nav class="flex-1 p-4 space-y-1 overflow-y-auto">
+          <a href="/admin" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold">
             <span>🏠</span> Home
           </a>
           <a href="/admin/wedstrijden" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold">
@@ -43,6 +43,9 @@ const pageTitle = "Visstekken Beheer | KVVI Admin";
           </a>
           <a href="/admin/visstekken-abc" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold">
             <span>🌐</span> ABC Visstekken
+          </a>
+          <a href="/admin/vissessies" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold">
+            <span>📊</span> Vissessies
           </a>
           <a href="/admin/legende" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold">
             <span>📖</span> Legende
@@ -68,10 +71,10 @@ const pageTitle = "Visstekken Beheer | KVVI Admin";
       </aside>
 
       <!-- MOBILE OVERLAY -->
-      <div id="mobile-overlay" class="fixed inset-0 bg-black/50 z-40 hidden" style="margin-top:60px;"></div>
-      <aside id="mobile-sidebar" class="md:hidden fixed top-[60px] left-0 w-72 bg-[#003366] text-white z-50 flex-col border-r-4 border-[#C5A059] h-[calc(100vh-60px)] hidden shadow-2xl">
+      <div id="mobile-overlay" class="fixed inset-0 bg-black/50 z-40 hidden" ></div>
+      <aside id="mobile-sidebar" class="md:hidden fixed top-0 left-0 w-72 bg-[#003366] text-white z-50 flex-col border-r-4 border-[#C5A059] h-screen hidden shadow-2xl">
         <nav class="flex-1 p-4 space-y-1 pt-6">
-          <a href="/" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold">
+          <a href="/admin" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold">
             <span>🏠</span> Home
           </a>
           <a href="/admin/wedstrijden" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold">
@@ -85,6 +88,9 @@ const pageTitle = "Visstekken Beheer | KVVI Admin";
           </a>
           <a href="/admin/visstekken-abc" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold">
             <span>🌐</span> ABC Visstekken
+          </a>
+          <a href="/admin/vissessies" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold">
+            <span>📊</span> Vissessies
           </a>
           <a href="/admin/legende" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold">
             <span>📖</span> Legende
@@ -110,7 +116,7 @@ const pageTitle = "Visstekken Beheer | KVVI Admin";
       </aside>
 
       <!-- MAIN CONTENT -->
-      <section class="flex-1 flex flex-col min-h-[calc(100vh-60px)]">
+      <section class="flex-1 flex flex-col min-h-0 md:ml-64">
         <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 md:px-8">
           <div class="flex items-center gap-3">
             <span class="text-slate-400 text-sm">Admin</span>
