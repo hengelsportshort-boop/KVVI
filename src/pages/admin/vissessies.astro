@@ -57,8 +57,14 @@ tr.wedstrijd td { border-bottom-color: #facc15; }
 .vs-stepper { display: flex; gap: 6px; align-items: center; }
 .vs-btn { width: 48px; height: 48px; border: 2px solid #1e293b; border-radius: 10px; background: #fff; font-size: 24px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #1e293b; -webkit-appearance: none; appearance: none; user-select: none; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 .vs-btn:active { background: #cbd5e1; }
-.vs-input { flex: 1; min-width: 0; padding: 10px 4px; border: 2px solid #1e293b; border-radius: 10px; font-size: 22px; font-weight: 700; text-align: center; background: #fff; color: #1e293b; -webkit-appearance: none; appearance: none; width: 100%; box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
-@media (max-width: 768px) { .vs-grid { gap: 8px; } .vs-btn { width: 44px; height: 44px; font-size: 22px; } .vs-input { font-size: 20px; padding: 8px 2px; } }
+.vs-input { flex: 1; min-width: 0; padding: 10px 2px; border: 2px solid #1e293b; border-radius: 10px; font-size: 22px; font-weight: 700; text-align: center; background: #fff; color: #1e293b; -webkit-appearance: none; appearance: none; width: 100%; box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
+.vs-input-text { display:block; width:100%; padding:12px; border:2px solid #1e293b; border-radius:10px; font-size:18px; font-weight:600; background:#fff; color:#1e293b; -webkit-appearance:none; appearance:none; box-shadow:0 1px 3px rgba(0,0,0,0.15); }
+.vs-input-text::placeholder { color:#94a3b8; font-weight:400; }
+.vs-label { font-size:13px; font-weight:700; color:#1e293b; margin-bottom:3px; }
+.vs-hint { text-align:center; font-size:13px; font-weight:700; color:#1e40af; margin-top:2px; min-height:18px; }
+.vs-pair { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:10px; }
+.vs-fish { border:2px solid #1e293b; border-radius:10px; padding:10px 8px; background:#fff; }
+@media (max-width: 768px) { .vs-grid { gap: 8px; } .vs-btn { width: 44px; height: 44px; font-size: 22px; } .vs-input { font-size: 20px; padding: 8px 2px; } .vs-input-text { padding:10px; font-size:17px; } .vs-pair { gap:6px; } }
 </style>
 
 <Layout title={pageTitle} noMainWrapper={true} hideNav={true}>
@@ -192,73 +198,89 @@ tr.wedstrijd td { border-bottom-color: #facc15; }
 
 <!-- VISSTEK TAB -->
 <div id="tab-visstek" class="panel">
-  <a href="/admin" class="btn btn-outline" style="margin-bottom:12px;display:inline-flex;align-items:center;gap:6px;text-decoration:none">← Terug naar Admin</a>
-  <p class="sub">Snel een sessie toevoegen voor een specifieke stek.</p>
-  <div class="vs-card" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:12px 16px;margin-bottom:12px">
-    <div style="margin-bottom:10px">
-      <div class="sub" style="margin-bottom:2px;font-weight:600">Stek</div>
-      <input id="vs-stek" placeholder="vb G 11" class="form-input" value="" style="padding:10px 12px;border:1px solid #cbd5e1;border-radius:6px;font-size:16px;width:100%;-webkit-appearance:none">
+  <div class="vs-card" style="background:#fff;border:2px solid #1e293b;border-radius:12px;padding:14px 16px;margin-bottom:12px">
+    <div class="vs-pair">
+      <div>
+        <div class="vs-label">Stek</div>
+        <input id="vs-stek" maxlength="5" placeholder="G 11" class="vs-input-text" value="" autocomplete="off">
+      </div>
+      <div>
+        <div class="vs-label">Datum</div>
+        <input id="vs-datum" maxlength="5" placeholder="19/06" class="vs-input-text" value="" list="vs-datum-list" autocomplete="off">
+        <datalist id="vs-datum-list"></datalist>
+      </div>
     </div>
-    <div style="margin-bottom:10px">
-      <div class="sub" style="margin-bottom:2px;font-weight:600">Datum</div>
-      <input id="vs-datum" list="vs-datum-list" placeholder="vb 19/06 — of kies bestaande" class="form-input" value="" style="padding:10px 12px;border:1px solid #cbd5e1;border-radius:6px;font-size:16px;width:100%;-webkit-appearance:none">
-      <datalist id="vs-datum-list"></datalist>
+    <div class="vs-pair">
+      <div>
+        <div class="vs-label">Begin</div>
+        <input id="vs-begin" maxlength="4" inputmode="numeric" placeholder="1600" class="vs-input-text" value="" autocomplete="off">
+        <div class="vs-hint" id="vs-begin-display"></div>
+      </div>
+      <div>
+        <div class="vs-label">Einde</div>
+        <input id="vs-einde" maxlength="4" inputmode="numeric" placeholder="1800" class="vs-input-text" value="" autocomplete="off">
+        <div class="vs-hint" id="vs-einde-display"></div>
+      </div>
     </div>
+    <div style="font-size:15px;font-weight:700;color:#1e293b;margin-bottom:6px">Vangst</div>
     <div class="vs-grid">
-      <div>
-        <div class="sub" style="margin-bottom:2px;font-weight:600">Kroes</div>
+      <div class="vs-fish" style="border-color:#059669">
+        <div class="vs-label" style="color:#059669">Kroes</div>
         <div class="vs-stepper">
-          <button type="button" onclick="vsAdjust('vs-kroes',-1)" class="vs-btn">−</button>
-          <input id="vs-kroes" type="number" inputmode="numeric" max="999" value="0" class="vs-input">
-          <button type="button" onclick="vsAdjust('vs-kroes',1)" class="vs-btn">+</button>
+          <button type="button" onclick="vsAdjust('vs-kroes',-1,999)" class="vs-btn" style="border-color:#059669;color:#059669">−</button>
+          <input id="vs-kroes" type="number" inputmode="numeric" max="999" value="0" class="vs-input" style="border-color:#059669;color:#059669">
+          <button type="button" onclick="vsAdjust('vs-kroes',1,999)" class="vs-btn" style="border-color:#059669;color:#059669">+</button>
+        </div>
+      </div>
+      <div class="vs-fish" style="border-color:#2563eb">
+        <div class="vs-label" style="color:#2563eb">Schub</div>
+        <div class="vs-stepper">
+          <button type="button" onclick="vsAdjust('vs-schub',-1,999)" class="vs-btn" style="border-color:#2563eb;color:#2563eb">−</button>
+          <input id="vs-schub" type="number" inputmode="numeric" max="999" value="0" class="vs-input" style="border-color:#2563eb;color:#2563eb">
+          <button type="button" onclick="vsAdjust('vs-schub',1,999)" class="vs-btn" style="border-color:#2563eb;color:#2563eb">+</button>
+        </div>
+      </div>
+      <div class="vs-fish" style="border-color:#7c3aed">
+        <div class="vs-label" style="color:#7c3aed">Spiegel</div>
+        <div class="vs-stepper">
+          <button type="button" onclick="vsAdjust('vs-spiegel',-1,999)" class="vs-btn" style="border-color:#7c3aed;color:#7c3aed">−</button>
+          <input id="vs-spiegel" type="number" inputmode="numeric" max="999" value="0" class="vs-input" style="border-color:#7c3aed;color:#7c3aed">
+          <button type="button" onclick="vsAdjust('vs-spiegel',1,999)" class="vs-btn" style="border-color:#7c3aed;color:#7c3aed">+</button>
+        </div>
+      </div>
+      <div class="vs-fish" style="border-color:#d97706">
+        <div class="vs-label" style="color:#d97706">Ander</div>
+        <div class="vs-stepper">
+          <button type="button" onclick="vsAdjust('vs-ander',-1,999)" class="vs-btn" style="border-color:#d97706;color:#d97706">−</button>
+          <input id="vs-ander" type="number" inputmode="numeric" max="999" value="0" class="vs-input" style="border-color:#d97706;color:#d97706">
+          <button type="button" onclick="vsAdjust('vs-ander',1,999)" class="vs-btn" style="border-color:#d97706;color:#d97706">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="vs-pair">
+      <div>
+        <div class="vs-label">Aantal</div>
+        <div class="vs-stepper">
+          <button type="button" onclick="vsAdjust('vs-aantal',-1,9999)" class="vs-btn">−</button>
+          <input id="vs-aantal" type="number" inputmode="numeric" max="9999" value="0" class="vs-input">
+          <button type="button" onclick="vsAdjust('vs-aantal',1,9999)" class="vs-btn">+</button>
         </div>
       </div>
       <div>
-        <div class="sub" style="margin-bottom:2px;font-weight:600">Schub</div>
+        <div class="vs-label">Gewicht</div>
         <div class="vs-stepper">
-          <button type="button" onclick="vsAdjust('vs-schub',-1)" class="vs-btn">−</button>
-          <input id="vs-schub" type="number" inputmode="numeric" max="999" value="0" class="vs-input">
-          <button type="button" onclick="vsAdjust('vs-schub',1)" class="vs-btn">+</button>
+          <button type="button" onclick="vsAdjust('vs-gewicht',-100,999999)" class="vs-btn">−</button>
+          <input id="vs-gewicht" type="number" inputmode="numeric" max="999999" value="0" class="vs-input">
+          <button type="button" onclick="vsAdjust('vs-gewicht',100,999999)" class="vs-btn">+</button>
         </div>
-      </div>
-      <div>
-        <div class="sub" style="margin-bottom:2px;font-weight:600">Spiegel</div>
-        <div class="vs-stepper">
-          <button type="button" onclick="vsAdjust('vs-spiegel',-1)" class="vs-btn">−</button>
-          <input id="vs-spiegel" type="number" inputmode="numeric" max="999" value="0" class="vs-input">
-          <button type="button" onclick="vsAdjust('vs-spiegel',1)" class="vs-btn">+</button>
-        </div>
-      </div>
-      <div>
-        <div class="sub" style="margin-bottom:2px;font-weight:600">Ander</div>
-        <div class="vs-stepper">
-          <button type="button" onclick="vsAdjust('vs-ander',-1)" class="vs-btn">−</button>
-          <input id="vs-ander" type="number" inputmode="numeric" max="999" value="0" class="vs-input">
-          <button type="button" onclick="vsAdjust('vs-ander',1)" class="vs-btn">+</button>
-        </div>
+        <div class="vs-hint" id="vs-gewicht-display">0,000 kg</div>
       </div>
     </div>
-    <div style="margin-bottom:10px">
-      <div class="sub" style="margin-bottom:2px;font-weight:600">Begin</div>
-      <input id="vs-begin" placeholder="vb 8u 30m" class="form-input" value="" style="padding:10px 12px;border:1px solid #cbd5e1;border-radius:6px;font-size:16px;width:100%;-webkit-appearance:none">
+    <div style="display:none" id="vs-duur-container">
+      <div class="vs-label">Duur</div>
+      <div id="vs-duur" style="padding:10px 12px;border:2px solid #86efac;border-radius:10px;font-size:18px;width:100%;background:#f0fdf4;color:#166534;font-weight:700;margin-bottom:8px">--</div>
     </div>
-    <div style="margin-bottom:10px">
-      <div class="sub" style="margin-bottom:2px;font-weight:600">Einde</div>
-      <input id="vs-einde" placeholder="vb 14u 0m" class="form-input" value="" style="padding:10px 12px;border:1px solid #cbd5e1;border-radius:6px;font-size:16px;width:100%;-webkit-appearance:none">
-    </div>
-    <div style="margin-bottom:10px;display:none" id="vs-duur-container">
-      <div class="sub" style="margin-bottom:2px;font-weight:600">Duur</div>
-      <div id="vs-duur" style="padding:10px 12px;border:1px solid #86efac;border-radius:6px;font-size:16px;width:100%;-webkit-appearance:none;background:#f0fdf4;color:#166534;font-weight:600">--</div>
-    </div>
-    <div style="margin-bottom:10px">
-      <div class="sub" style="margin-bottom:2px;font-weight:600">Aantal</div>
-      <div id="vs-aantal" style="padding:10px 12px;border:1px solid #86efac;border-radius:6px;font-size:20px;width:100%;-webkit-appearance:none;background:#dcfce7;color:#166534;font-weight:700">0</div>
-    </div>
-    <div style="margin-bottom:10px">
-      <div class="sub" style="margin-bottom:2px;font-weight:600">Gewicht</div>
-      <div id="vs-gewicht" style="padding:10px 12px;border:1px solid #93c5fd;border-radius:6px;font-size:20px;width:100%;-webkit-appearance:none;background:#eff6ff;color:#1e40af;font-weight:700">0,000 kg</div>
-    </div>
-    <button id="btn-vs-save" class="btn btn-primary" style="padding:12px 24px;font-size:16px;width:100%;-webkit-appearance:none">💾 Opslaan</button>
+    <button id="btn-vs-save" class="btn btn-primary" style="padding:16px 24px;font-size:20px;width:100%;-webkit-appearance:none;margin-top:6px;border-radius:12px;font-weight:700">💾 Opslaan</button>
   </div>
   <div style="overflow-x:auto;-webkit-overflow-scrolling:touch" id="vs-list"><p class="empty-msg">Voer een stek in om eerdere sessies te zien.</p></div>
 </div>
@@ -1183,8 +1205,8 @@ document.getElementById('btn-vs-save').addEventListener('click', () => {
   const vsDuur = calcDuurVanBeginEinde(v('vs-begin'), v('vs-einde')) || 0;
   const row = {
     kroes, schub, spiegel, ander,
-    aantal: kroes + schub + spiegel + ander,
-    gewicht: vsGewichtGram(),
+    aantal: parseInt(document.getElementById('vs-aantal').value) || 0,
+    gewicht: parseInt(document.getElementById('vs-gewicht').value) || 0,
     datum, stek, begin: v('vs-begin'), einde: v('vs-einde'),
     duurMin: vsDuur, pijl: '', beoordeling: '', tijdMin: vsDuur,
     month, wedstrijd: ''
@@ -1211,7 +1233,12 @@ document.getElementById('btn-vs-save').addEventListener('click', () => {
   document.getElementById('vs-datum').value = '';
   document.getElementById('vs-begin').value = '';
   document.getElementById('vs-einde').value = '';
-  ['vs-kroes','vs-schub','vs-spiegel','vs-ander'].forEach(id => document.getElementById(id).value = '0');
+  document.getElementById('vs-begin-display').textContent = '';
+  document.getElementById('vs-einde-display').textContent = '';
+  ['vs-kroes','vs-schub','vs-spiegel','vs-ander','vs-aantal','vs-gewicht'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '0';
+  });
   updateVsAantal();
   render();
   renderVisstekList();
@@ -1220,9 +1247,21 @@ document.getElementById('btn-vs-save').addEventListener('click', () => {
     document.getElementById('tab-visstek').scrollIntoView({ behavior: 'smooth' });
   }
 });
-document.querySelectorAll('#tab-visstek .form-input').forEach(inp => {
+document.querySelectorAll('#tab-visstek input').forEach(inp => {
   inp.addEventListener('keydown', e => {
     if (e.key === 'Enter') document.getElementById('btn-vs-save').click();
+  });
+});
+function fmtBeginEinde(val) {
+  if (!val || val.length < 3) return '';
+  const s = val.padStart(4, '0');
+  return s.substring(0, 2) + 'u ' + s.substring(2, 4) + 'm';
+}
+['vs-begin','vs-einde'].forEach(id => {
+  document.getElementById(id).addEventListener('input', function() {
+    if (this.value.length > 4) this.value = this.value.slice(0, 4);
+    const display = document.getElementById(id + '-display');
+    if (display) display.textContent = fmtBeginEinde(this.value) || '';
   });
 });
 function vsGewichtGram() {
@@ -1237,18 +1276,23 @@ function fmtKg(gram) {
   return (gram / 1000).toLocaleString('nl-NL', { minimumFractionDigits: 3, maximumFractionDigits: 3 }) + ' kg';
 }
 
-function vsAdjust(id, delta) {
+function vsAdjust(id, delta, maxVal) {
   const el = document.getElementById(id);
   let v = parseInt(el.value) || 0;
-  v = Math.max(0, Math.min(999, v + delta));
+  v = Math.max(0, Math.min(maxVal || 999, v + delta));
   el.value = v;
   updateVsAantal();
 }
 function updateVsAantal() {
   const ids = ['vs-kroes','vs-schub','vs-spiegel','vs-ander'];
   const sum = ids.reduce((a, id) => a + (parseInt(document.getElementById(id).value) || 0), 0);
-  document.getElementById('vs-aantal').textContent = sum;
-  document.getElementById('vs-gewicht').textContent = fmtKg(vsGewichtGram());
+  const elAantal = document.getElementById('vs-aantal');
+  if (elAantal) elAantal.value = sum;
+  const elGewicht = document.getElementById('vs-gewicht');
+  const gram = vsGewichtGram();
+  if (elGewicht) elGewicht.value = gram;
+  const display = document.getElementById('vs-gewicht-display');
+  if (display) display.textContent = fmtKg(gram);
 }
 ['vs-kroes','vs-schub','vs-spiegel','vs-ander'].forEach(id => {
   document.getElementById(id).addEventListener('input', function() {
@@ -1257,6 +1301,22 @@ function updateVsAantal() {
     if (v > 999) this.value = '999';
     else if (v < 0) this.value = '0';
     updateVsAantal();
+  });
+});
+['vs-aantal','vs-gewicht'].forEach(id => {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.addEventListener('input', function() {
+    const max = id === 'vs-aantal' ? 4 : 6;
+    if (this.value.length > max) this.value = this.value.slice(0, max);
+    const v = parseInt(this.value);
+    const limit = id === 'vs-aantal' ? 9999 : 999999;
+    if (v > limit) this.value = String(limit);
+    else if (v < 0) this.value = '0';
+    if (id === 'vs-gewicht') {
+      const display = document.getElementById('vs-gewicht-display');
+      if (display) display.textContent = fmtKg(parseInt(this.value) || 0);
+    }
   });
 });
 document.getElementById('vs-datum').addEventListener('input', () => {
