@@ -53,18 +53,20 @@ tr.wedstrijd td { border-bottom-color: #facc15; }
 .sticky-header { position: sticky; top: 0; z-index: 100; background: #f1f5f9; padding: 12px 20px 8px; margin: 0 -16px 12px; border-bottom: 1px solid #e2e8f0; }
 @media (max-width: 768px) { .sticky-header { padding: 10px 10px 6px; margin: 0 -16px 10px; } table { font-size: 11px; } td, th { padding: 3px 2px; } }
 .col-merk { max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.vs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-.vs-stepper { display: flex; gap: 6px; align-items: center; }
-.vs-btn { width: 48px; height: 48px; border: 2px solid #1e293b; border-radius: 10px; background: #fff; font-size: 24px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #1e293b; -webkit-appearance: none; appearance: none; user-select: none; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
-.vs-btn:active { background: #cbd5e1; }
-.vs-input { flex: 1; min-width: 0; padding: 10px 2px; border: 2px solid #1e293b; border-radius: 10px; font-size: 22px; font-weight: 700; text-align: center; background: #fff; color: #1e293b; -webkit-appearance: none; appearance: none; width: 100%; box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
+.vs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-bottom: 8px; }
+.vs-stepper { display: flex; gap: 4px; align-items: center; justify-content: center; margin-top: 4px; }
+.vs-stepper-row { display: flex; gap: 5px; align-items: center; }
+.vs-btn { width: 44px; height: 40px; border: 2px solid #1e293b; border-radius: 8px; background: #fff; font-size: 22px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #1e293b; -webkit-appearance: none; appearance: none; user-select: none; -webkit-tap-highlight-color: transparent; touch-action: manipulation; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+.vs-btn:active { background: #e2e8f0; }
+.vs-fish-input { width: 100%; padding: 14px 4px; border: 2px solid #1e293b; border-radius: 10px; font-size: 28px; font-weight: 700; text-align: center; background: #fff; color: #1e293b; -webkit-appearance: none; appearance: none; box-shadow: 0 1px 3px rgba(0,0,0,0.15); min-width: 0; }
 .vs-input-text { display:block; width:100%; padding:12px; border:2px solid #1e293b; border-radius:10px; font-size:18px; font-weight:600; background:#fff; color:#1e293b; -webkit-appearance:none; appearance:none; box-shadow:0 1px 3px rgba(0,0,0,0.15); }
 .vs-input-text::placeholder { color:#94a3b8; font-weight:400; }
-.vs-label { font-size:13px; font-weight:700; color:#1e293b; margin-bottom:3px; }
+.vs-label { font-size:14px; font-weight:700; color:#1e293b; margin-bottom:2px; }
 .vs-hint { text-align:center; font-size:13px; font-weight:700; color:#1e40af; margin-top:2px; min-height:18px; }
 .vs-pair { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:10px; }
-.vs-fish { border:2px solid #1e293b; border-radius:10px; padding:10px 8px; background:#fff; }
-@media (max-width: 768px) { .vs-grid { gap: 8px; } .vs-btn { width: 44px; height: 44px; font-size: 22px; } .vs-input { font-size: 20px; padding: 8px 2px; } .vs-input-text { padding:10px; font-size:17px; } .vs-pair { gap:6px; } }
+.vs-fish { border:2px solid #1e293b; border-radius:10px; padding:8px 6px 6px; background:#fff; }
+.vs-stat { padding:10px 12px; border-radius:10px; font-size:24px; font-weight:700; text-align:center; border:2px solid; background:#fff; box-shadow:0 1px 3px rgba(0,0,0,0.15); }
+@media (max-width: 768px) { .vs-grid { gap: 4px; } .vs-btn { width: 40px; height: 38px; font-size: 20px; } .vs-fish-input { font-size: 26px; padding: 12px 4px; } .vs-input-text { padding:10px; font-size:17px; } .vs-pair { gap:6px; } .vs-stat { font-size:22px; padding:8px 10px; } }
 </style>
 
 <Layout title={pageTitle} noMainWrapper={true} hideNav={true}>
@@ -225,34 +227,34 @@ tr.wedstrijd td { border-bottom-color: #facc15; }
     <div style="font-size:15px;font-weight:700;color:#1e293b;margin-bottom:6px">Vangst</div>
     <div class="vs-grid">
       <div class="vs-fish" style="border-color:#059669">
-        <div class="vs-label" style="color:#059669">Kroes</div>
+        <div class="vs-label" style="color:#059669;text-align:center">Kroes</div>
+        <input id="vs-kroes" type="text" inputmode="numeric" maxlength="3" value="0" class="vs-fish-input" style="border-color:#059669;color:#059669">
         <div class="vs-stepper">
           <button type="button" onclick="vsAdjust('vs-kroes',-1,999)" class="vs-btn" style="border-color:#059669;color:#059669">−</button>
-          <input id="vs-kroes" type="number" inputmode="numeric" max="999" value="0" class="vs-input" style="border-color:#059669;color:#059669">
           <button type="button" onclick="vsAdjust('vs-kroes',1,999)" class="vs-btn" style="border-color:#059669;color:#059669">+</button>
         </div>
       </div>
       <div class="vs-fish" style="border-color:#2563eb">
-        <div class="vs-label" style="color:#2563eb">Schub</div>
+        <div class="vs-label" style="color:#2563eb;text-align:center">Schub</div>
+        <input id="vs-schub" type="text" inputmode="numeric" maxlength="3" value="0" class="vs-fish-input" style="border-color:#2563eb;color:#2563eb">
         <div class="vs-stepper">
           <button type="button" onclick="vsAdjust('vs-schub',-1,999)" class="vs-btn" style="border-color:#2563eb;color:#2563eb">−</button>
-          <input id="vs-schub" type="number" inputmode="numeric" max="999" value="0" class="vs-input" style="border-color:#2563eb;color:#2563eb">
           <button type="button" onclick="vsAdjust('vs-schub',1,999)" class="vs-btn" style="border-color:#2563eb;color:#2563eb">+</button>
         </div>
       </div>
       <div class="vs-fish" style="border-color:#7c3aed">
-        <div class="vs-label" style="color:#7c3aed">Spiegel</div>
+        <div class="vs-label" style="color:#7c3aed;text-align:center">Spiegel</div>
+        <input id="vs-spiegel" type="text" inputmode="numeric" maxlength="3" value="0" class="vs-fish-input" style="border-color:#7c3aed;color:#7c3aed">
         <div class="vs-stepper">
           <button type="button" onclick="vsAdjust('vs-spiegel',-1,999)" class="vs-btn" style="border-color:#7c3aed;color:#7c3aed">−</button>
-          <input id="vs-spiegel" type="number" inputmode="numeric" max="999" value="0" class="vs-input" style="border-color:#7c3aed;color:#7c3aed">
           <button type="button" onclick="vsAdjust('vs-spiegel',1,999)" class="vs-btn" style="border-color:#7c3aed;color:#7c3aed">+</button>
         </div>
       </div>
       <div class="vs-fish" style="border-color:#d97706">
-        <div class="vs-label" style="color:#d97706">Ander</div>
+        <div class="vs-label" style="color:#d97706;text-align:center">Ander</div>
+        <input id="vs-ander" type="text" inputmode="numeric" maxlength="3" value="0" class="vs-fish-input" style="border-color:#d97706;color:#d97706">
         <div class="vs-stepper">
           <button type="button" onclick="vsAdjust('vs-ander',-1,999)" class="vs-btn" style="border-color:#d97706;color:#d97706">−</button>
-          <input id="vs-ander" type="number" inputmode="numeric" max="999" value="0" class="vs-input" style="border-color:#d97706;color:#d97706">
           <button type="button" onclick="vsAdjust('vs-ander',1,999)" class="vs-btn" style="border-color:#d97706;color:#d97706">+</button>
         </div>
       </div>
@@ -260,19 +262,11 @@ tr.wedstrijd td { border-bottom-color: #facc15; }
     <div class="vs-pair">
       <div>
         <div class="vs-label">Aantal</div>
-        <div class="vs-stepper">
-          <button type="button" onclick="vsAdjust('vs-aantal',-1,9999)" class="vs-btn">−</button>
-          <input id="vs-aantal" type="number" inputmode="numeric" max="9999" value="0" class="vs-input">
-          <button type="button" onclick="vsAdjust('vs-aantal',1,9999)" class="vs-btn">+</button>
-        </div>
+        <div id="vs-aantal" class="vs-stat" style="border-color:#059669;color:#059669">0</div>
       </div>
       <div>
         <div class="vs-label">Gewicht</div>
-        <div class="vs-stepper">
-          <button type="button" onclick="vsAdjust('vs-gewicht',-100,999999)" class="vs-btn">−</button>
-          <input id="vs-gewicht" type="number" inputmode="numeric" max="999999" value="0" class="vs-input">
-          <button type="button" onclick="vsAdjust('vs-gewicht',100,999999)" class="vs-btn">+</button>
-        </div>
+        <div class="vs-stat" style="border-color:#2563eb;color:#2563eb"><span id="vs-gewicht">0</span> g</div>
         <div class="vs-hint" id="vs-gewicht-display">0,000 kg</div>
       </div>
     </div>
@@ -1205,8 +1199,8 @@ document.getElementById('btn-vs-save').addEventListener('click', () => {
   const vsDuur = calcDuurVanBeginEinde(v('vs-begin'), v('vs-einde')) || 0;
   const row = {
     kroes, schub, spiegel, ander,
-    aantal: parseInt(document.getElementById('vs-aantal').value) || 0,
-    gewicht: parseInt(document.getElementById('vs-gewicht').value) || 0,
+    aantal: parseInt(document.getElementById('vs-aantal').textContent) || 0,
+    gewicht: parseInt(document.getElementById('vs-gewicht').textContent) || 0,
     datum, stek, begin: v('vs-begin'), einde: v('vs-einde'),
     duurMin: vsDuur, pijl: '', beoordeling: '', tijdMin: vsDuur,
     month, wedstrijd: ''
@@ -1235,10 +1229,14 @@ document.getElementById('btn-vs-save').addEventListener('click', () => {
   document.getElementById('vs-einde').value = '';
   document.getElementById('vs-begin-display').textContent = '';
   document.getElementById('vs-einde-display').textContent = '';
-  ['vs-kroes','vs-schub','vs-spiegel','vs-ander','vs-aantal','vs-gewicht'].forEach(id => {
+  ['vs-kroes','vs-schub','vs-spiegel','vs-ander'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '0';
   });
+  const ant = document.getElementById('vs-aantal');
+  if (ant) ant.textContent = '0';
+  const gew = document.getElementById('vs-gewicht');
+  if (gew) gew.textContent = '0';
   updateVsAantal();
   render();
   renderVisstekList();
@@ -1280,45 +1278,34 @@ function vsAdjust(id, delta, maxVal) {
   const el = document.getElementById(id);
   let v = parseInt(el.value) || 0;
   v = Math.max(0, Math.min(maxVal || 999, v + delta));
-  el.value = v;
+  el.value = String(v).padStart(3, '0');
   updateVsAantal();
 }
 function updateVsAantal() {
   const ids = ['vs-kroes','vs-schub','vs-spiegel','vs-ander'];
   const sum = ids.reduce((a, id) => a + (parseInt(document.getElementById(id).value) || 0), 0);
   const elAantal = document.getElementById('vs-aantal');
-  if (elAantal) elAantal.value = sum;
+  if (elAantal) elAantal.textContent = sum;
   const elGewicht = document.getElementById('vs-gewicht');
   const gram = vsGewichtGram();
-  if (elGewicht) elGewicht.value = gram;
+  if (elGewicht) elGewicht.textContent = gram;
   const display = document.getElementById('vs-gewicht-display');
   if (display) display.textContent = fmtKg(gram);
 }
 ['vs-kroes','vs-schub','vs-spiegel','vs-ander'].forEach(id => {
   document.getElementById(id).addEventListener('input', function() {
-    if (this.value.length > 3) this.value = this.value.slice(0, 3);
+    this.value = this.value.replace(/[^0-9]/g, '').slice(0, 3);
     const v = parseInt(this.value);
     if (v > 999) this.value = '999';
-    else if (v < 0) this.value = '0';
+    updateVsAantal();
+  });
+  document.getElementById(id).addEventListener('blur', function() {
+    if (this.value === '') this.value = '0';
+    this.value = String(parseInt(this.value) || 0).padStart(3, '0');
     updateVsAantal();
   });
 });
-['vs-aantal','vs-gewicht'].forEach(id => {
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.addEventListener('input', function() {
-    const max = id === 'vs-aantal' ? 4 : 6;
-    if (this.value.length > max) this.value = this.value.slice(0, max);
-    const v = parseInt(this.value);
-    const limit = id === 'vs-aantal' ? 9999 : 999999;
-    if (v > limit) this.value = String(limit);
-    else if (v < 0) this.value = '0';
-    if (id === 'vs-gewicht') {
-      const display = document.getElementById('vs-gewicht-display');
-      if (display) display.textContent = fmtKg(parseInt(this.value) || 0);
-    }
-  });
-});
+
 document.getElementById('vs-datum').addEventListener('input', () => {
   const stek = document.getElementById('vs-stek').value.trim().toLowerCase();
   const datum = document.getElementById('vs-datum').value.trim();
@@ -1328,10 +1315,10 @@ document.getElementById('vs-datum').addEventListener('input', () => {
   const data = loadData();
   const bestaand = data.find(r => r.datum === datum && r.month === month && r.stek && r.stek.toLowerCase() === stek);
   if (!bestaand) return;
-  document.getElementById('vs-kroes').value = bestaand.kroes || 0;
-  document.getElementById('vs-schub').value = bestaand.schub || 0;
-  document.getElementById('vs-spiegel').value = bestaand.spiegel || 0;
-  document.getElementById('vs-ander').value = bestaand.ander || 0;
+  document.getElementById('vs-kroes').value = String(bestaand.kroes || 0).padStart(3, '0');
+  document.getElementById('vs-schub').value = String(bestaand.schub || 0).padStart(3, '0');
+  document.getElementById('vs-spiegel').value = String(bestaand.spiegel || 0).padStart(3, '0');
+  document.getElementById('vs-ander').value = String(bestaand.ander || 0).padStart(3, '0');
   document.getElementById('vs-begin').value = bestaand.begin || '';
   document.getElementById('vs-einde').value = bestaand.einde || '';
   updateVsAantal();
