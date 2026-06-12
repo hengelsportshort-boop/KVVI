@@ -266,8 +266,7 @@ tr.wedstrijd td { border-bottom-color: #facc15; }
       </div>
       <div>
         <div class="vs-label">Gewicht</div>
-        <div class="vs-stat" style="border-color:#2563eb;color:#2563eb"><span id="vs-gewicht">0</span> g</div>
-        <div class="vs-hint" id="vs-gewicht-display">0,000 kg</div>
+        <div class="vs-stat" style="border-color:#2563eb;color:#2563eb"><span id="vs-gewicht" data-gram="0">0,000</span></div>
       </div>
     </div>
     <div style="display:none" id="vs-duur-container">
@@ -1200,7 +1199,7 @@ document.getElementById('btn-vs-save').addEventListener('click', () => {
   const row = {
     kroes, schub, spiegel, ander,
     aantal: parseInt(document.getElementById('vs-aantal').textContent) || 0,
-    gewicht: parseInt(document.getElementById('vs-gewicht').textContent) || 0,
+    gewicht: parseInt(document.getElementById('vs-gewicht').getAttribute('data-gram')) || 0,
     datum, stek, begin: v('vs-begin'), einde: v('vs-einde'),
     duurMin: vsDuur, pijl: '', beoordeling: '', tijdMin: vsDuur,
     month, wedstrijd: ''
@@ -1236,7 +1235,7 @@ document.getElementById('btn-vs-save').addEventListener('click', () => {
   const ant = document.getElementById('vs-aantal');
   if (ant) ant.textContent = '0';
   const gew = document.getElementById('vs-gewicht');
-  if (gew) gew.textContent = '0';
+  if (gew) { gew.textContent = '0,000'; gew.setAttribute('data-gram', '0'); }
   updateVsAantal();
   render();
   renderVisstekList();
@@ -1288,9 +1287,10 @@ function updateVsAantal() {
   if (elAantal) elAantal.textContent = sum;
   const elGewicht = document.getElementById('vs-gewicht');
   const gram = vsGewichtGram();
-  if (elGewicht) elGewicht.textContent = gram;
-  const display = document.getElementById('vs-gewicht-display');
-  if (display) display.textContent = fmtKg(gram);
+  if (elGewicht) {
+    elGewicht.textContent = (gram / 1000).toLocaleString('nl-NL', { minimumFractionDigits: 3, maximumFractionDigits: 3 });
+    elGewicht.setAttribute('data-gram', String(gram));
+  }
 }
 ['vs-kroes','vs-schub','vs-spiegel','vs-ander'].forEach(id => {
   document.getElementById(id).addEventListener('input', function() {
