@@ -365,6 +365,7 @@ function saveData(data) {
   fetch(API_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
     body: JSON.stringify(data)
   }).catch(() => {});
 }
@@ -1591,11 +1592,13 @@ document.querySelector('.tab[data-tab="stats"]').addEventListener('click', () =>
 
 async function initFromAPI() {
   try {
-    const res = await fetch(API_URL);
+    const res = await fetch(API_URL, { credentials: 'include' });
     if (res.ok) {
       const data = await res.json();
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-      render();
+      if (Array.isArray(data) && data.length > 0) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        render();
+      }
     }
   } catch {}
 }
