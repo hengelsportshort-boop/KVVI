@@ -52,20 +52,23 @@ export const prerender = false;
     }
     container.innerHTML = visible.map(function(tip, idx) {
       var mediaHtml = '';
-      if (tip.mediaUrl) {
-        var isVideo = /youtube\.com|youtu\.be|vimeo\.com/i.test(tip.mediaUrl);
-        if (isVideo) {
-          var videoId = '';
-          var m = tip.mediaUrl.match(/(?:youtu\.be\/|youtube\.com(?:\/embed\/|\/v\/|\/watch\?v=))([\w\-]{11})/);
-          if (m) videoId = m[1];
-          if (videoId) {
-            mediaHtml = '<div class="aspect-video rounded-xl overflow-hidden shadow-md"><iframe src="https://www.youtube.com/embed/' + videoId + '" class="w-full h-full" allowfullscreen loading="lazy"></iframe></div>';
-          } else {
-            mediaHtml = '<div class="aspect-video rounded-xl overflow-hidden shadow-md"><iframe src="' + tip.mediaUrl + '" class="w-full h-full" allowfullscreen loading="lazy"></iframe></div>';
+      var media = tip.media && Array.isArray(tip.media) ? tip.media : (tip.mediaUrl ? [tip.mediaUrl] : []);
+      if (media.length) {
+        var items = media.map(function(url) {
+          if (!url) return '';
+          var isVideo = /youtube\.com|youtu\.be|vimeo\.com/i.test(url);
+          if (isVideo) {
+            var videoId = '';
+            var m = url.match(/(?:youtu\.be\/|youtube\.com(?:\/embed\/|\/v\/|\/watch\?v=))([\w\-]{11})/);
+            if (m) videoId = m[1];
+            if (videoId) {
+              return '<div class="aspect-video rounded-xl overflow-hidden shadow-md"><iframe src="https://www.youtube.com/embed/' + videoId + '" class="w-full h-full" allowfullscreen loading="lazy"></iframe></div>';
+            }
+            return '<div class="aspect-video rounded-xl overflow-hidden shadow-md"><iframe src="' + url + '" class="w-full h-full" allowfullscreen loading="lazy"></iframe></div>';
           }
-        } else {
-          mediaHtml = '<img src="' + tip.mediaUrl + '" alt="' + (tip.name ? tip.name.replace(/"/g,'&quot;') : '') + '" class="w-full rounded-xl shadow-md object-cover max-h-80" loading="lazy" onerror="this.parentNode.innerHTML=\'<div class=\\\'bg-slate-100 rounded-xl p-8 text-center text-slate-400\\\'><span class=\\\'text-3xl\\\'>📷</span><p class=\\\'mt-2\\\'>Media niet beschikbaar</p></div>\'" />';
-        }
+          return '<img src="' + url + '" alt="' + (tip.name ? tip.name.replace(/"/g,'&quot;') : '') + '" class="w-full rounded-xl shadow-md object-cover max-h-60" loading="lazy" onerror="this.parentNode.innerHTML=\'<div class=\\\'bg-slate-100 rounded-xl p-8 text-center text-slate-400\\\'><span class=\\\'text-3xl\\\'>📷</span><p class=\\\'mt-2\\\'>Media niet beschikbaar</p></div>\'" />';
+        }).join('');
+        mediaHtml = '<div class="grid gap-3"' + (media.length > 1 ? ' style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr))"' : '') + '>' + items + '</div>';
       }
       var linkHtml = '';
       if (tip.link) {

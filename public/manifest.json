@@ -2,7 +2,7 @@
   "name": "Vissessies",
   "short_name": "Vissessies",
   "description": "Visvangsten bijhouden",
-  "start_url": "/vissessies-app",
+  "start_url": "/vissessies-app?v=2",
   "display": "standalone",
   "background_color": "#f1f5f9",
   "theme_color": "#003366",

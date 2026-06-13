@@ -81,6 +81,18 @@ const pageTitle = "Tips & Tricks Beheer | KVVI Admin";
           <div id="tips-list" class="space-y-3">
           </div>
 
+          <button id="preview-toggle" class="w-full bg-white border border-slate-200 rounded-xl p-3 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition flex items-center justify-center gap-2">
+            <span>👁️</span> <span>Preview tonen</span>
+          </button>
+
+          <div id="preview-section" class="hidden">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Preview</span>
+              <span class="text-[10px] text-slate-400">(zoals op de publieke pagina)</span>
+            </div>
+            <div id="preview-container" class="space-y-6"></div>
+          </div>
+
         </div>
       </section>
     </div>
@@ -95,6 +107,21 @@ const pageTitle = "Tips & Tricks Beheer | KVVI Admin";
   .tip-card input[type="text"],
   .tip-card input[type="url"],
   .tip-card textarea { font-size: 13px; }
+  .preview-card { background: #fff; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; overflow: hidden; display: flex; flex-direction: column; }
+  @media (min-width: 768px) { .preview-card { flex-direction: row; } .preview-card.reverse { flex-direction: row-reverse; } }
+  .preview-media { width: 100%; }
+  @media (min-width: 768px) { .preview-media { width: 50%; flex-shrink: 0; } }
+  .preview-media iframe { width: 100%; height: 100%; min-height: 200px; display: block; }
+  .preview-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .preview-body { padding: 24px; display: flex; flex-direction: column; justify-content: center; }
+  @media (min-width: 768px) { .preview-body { width: 50%; } }
+  .preview-body h2 { font-size: 1.5rem; font-weight: 700; color: #003366; margin-bottom: 12px; }
+  .preview-body p { font-size: 0.95rem; line-height: 1.6; color: #475569; margin-bottom: 16px; white-space: pre-line; }
+  .preview-body .preview-link { display: inline-flex; align-items: center; gap: 8px; font-size: 0.875rem; font-weight: 700; color: #fff; background: #C5A059; padding: 10px 20px; border-radius: 8px; text-decoration: none; }
+  .preview-body .preview-link:hover { background: #b8923f; }
+  .media-preview { margin-top: 6px; border-radius: 8px; overflow: hidden; background: #f8fafc; }
+  .media-preview img { width: 100%; max-height: 120px; object-fit: cover; display: block; }
+  .media-preview iframe { width: 100%; height: 120px; display: block; }
 </style>
 
 <script>
@@ -121,11 +148,82 @@ const pageTitle = "Tips & Tricks Beheer | KVVI Admin";
     }
   }
 
+  function linkify(text) {
+    return text.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" class="text-[#1e40af] underline font-medium">$1</a>');
+  }
+
+  function getYouTubeId(url) {
+    var m = url.match(/(?:youtu\.be\/|youtube\.com(?:\/embed\/|\/v\/|\/watch\?v=))([\w\-]{11})/);
+    return m ? m[1] : null;
+  }
+
+  function isYouTubeUrl(url) {
+    return /youtube\.com|youtu\.be/i.test(url);
+  }
+
+  function mediaPreviewHtml(url) {
+    if (!url) return '';
+    if (isYouTubeUrl(url)) {
+      var vid = getYouTubeId(url);
+      if (vid) return '<iframe src="https://www.youtube.com/embed/' + vid + '" class="w-full" allowfullscreen loading="lazy" style="height:120px"></iframe>';
+    }
+    return '<img src="' + url.replace(/"/g,'&quot;') + '" class="w-full" style="max-height:120px;object-fit:cover" onerror="this.parentNode.innerHTML=\'<div class=\\\'text-xs text-red-400 p-2\\\'>Media niet beschikbaar</div>\'" />';
+  }
+
+  function getTipMedia(tip) {
+    if (tip.media && Array.isArray(tip.media)) return tip.media;
+    if (tip.mediaUrl) return [tip.mediaUrl];
+    return [];
+  }
+
+  function renderMediaSection(tip, i) {
+    var media = getTipMedia(tip);
+    var label = 'Media (foto&#39;s / video&#39;s)';
+    var addBtn = '<button type="button" class="text-xs text-[#1e40af] font-semibold hover:underline" onclick="addMedia(' + i + ')">+ Toevoegen</button>';
+    if (!media.length) {
+      return '<div>' +
+        '<div class="flex items-center justify-between mb-1"><label class="text-xs font-bold text-slate-400 uppercase tracking-wider">' + label + '</label>' + addBtn + '</div>' +
+        '<div class="text-xs text-slate-400 italic p-2">Nog geen media. Klik op &quot;Toevoegen&quot;.</div>' +
+      '</div>';
+    }
+    var items = '';
+    for (var mi = 0; mi < media.length; mi++) {
+      var url = media[mi] || '';
+      items += '<div class="flex items-start gap-2 mb-2">' +
+        '<div class="flex-1 min-w-0">' +
+          '<input type="url" value="' + url.replace(/"/g,'&quot;') + '" class="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm" onchange="window._ttData.tips[' + i + '].media[' + mi + '] = this.value; scheduleSave()" placeholder="https://..." />' +
+          (url ? '<div class="media-preview">' + mediaPreviewHtml(url) + '</div>' : '') +
+        '</div>' +
+        '<button type="button" class="text-red-500 hover:text-red-700 p-1 mt-1 flex-shrink-0" onclick="removeMedia(' + i + ', ' + mi + ')">✕</button>' +
+      '</div>';
+    }
+    return '<div>' +
+      '<div class="flex items-center justify-between mb-1"><label class="text-xs font-bold text-slate-400 uppercase tracking-wider">' + label + '</label>' + addBtn + '</div>' +
+      items +
+    '</div>';
+  }
+
+  window.addMedia = function(i) {
+    if (!data.tips[i].media) data.tips[i].media = [];
+    data.tips[i].media.push('');
+    render();
+    scheduleSave();
+  };
+
+  window.removeMedia = function(i, mi) {
+    var media = getTipMedia(data.tips[i]);
+    media.splice(mi, 1);
+    data.tips[i].media = media;
+    render();
+    scheduleSave();
+  };
+
   function render() {
     pageVisibleCheck.checked = data.pageVisible !== false;
     countNr.textContent = data.tips.length;
     if (!data.tips.length) {
       container.innerHTML = '<div class="text-center text-slate-400 py-10 italic border-2 border-dashed border-slate-200 rounded-xl">Nog geen tips. Klik op "Nieuwe Tip" om te beginnen.</div>';
+      renderPreview();
       return;
     }
     container.innerHTML = data.tips.map(function(tip, i) {
@@ -141,18 +239,62 @@ const pageTitle = "Tips & Tricks Beheer | KVVI Admin";
         '</div>' +
         '<div>' +
           '<label class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1">Info</label>' +
-          '<textarea class="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm" onchange="window._ttData.tips[' + i + '].info = this.value; scheduleSave()" placeholder="Beschrijving (optioneel)">' + (tip.info || '').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</textarea>' +
+          '<textarea class="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm" onchange="window._ttData.tips[' + i + '].info = this.value; scheduleSave()" placeholder="Beschrijving (optioneel) — URLs worden automatisch klikbaar">' + (tip.info || '').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</textarea>' +
         '</div>' +
         '<div>' +
           '<label class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1">Link (URL)</label>' +
           '<input type="url" value="' + (tip.link || '').replace(/"/g,'&quot;') + '" class="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm" onchange="window._ttData.tips[' + i + '].link = this.value; scheduleSave()" placeholder="https://..." />' +
         '</div>' +
-        '<div>' +
-          '<label class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1">Media (foto URL of YouTube-link)</label>' +
-          '<input type="url" value="' + (tip.mediaUrl || '').replace(/"/g,'&quot;') + '" class="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm" onchange="window._ttData.tips[' + i + '].mediaUrl = this.value; scheduleSave()" placeholder="https://..." />' +
-        '</div>' +
-        (tip.mediaUrl ? '<div class="text-xs text-slate-400">📎 ' + tip.mediaUrl + '</div>' : '') +
+        renderMediaSection(tip, i) +
       '</div>';
+    }).join('');
+    renderPreview();
+  }
+
+  function renderPreview() {
+    var container = document.getElementById('preview-container');
+    if (!container) return;
+    var visible = (data.tips || []).filter(function(t) { return t.visible !== false; });
+    if (!visible.length) {
+      container.innerHTML = '<div class="text-center text-slate-400 py-10 italic border-2 border-dashed border-slate-200 rounded-xl">Nog geen zichtbare tips om te previewen.</div>';
+      return;
+    }
+    container.innerHTML = visible.map(function(tip, idx) {
+      var mediaHtml = '';
+      var media = getTipMedia(tip);
+      if (media.length) {
+        var items = '';
+        for (var mi = 0; mi < media.length; mi++) {
+          var url = media[mi];
+          if (!url) continue;
+          if (isYouTubeUrl(url)) {
+            var vid = getYouTubeId(url);
+            if (vid) {
+              items += '<div class="aspect-video rounded-xl overflow-hidden shadow-md"><iframe src="https://www.youtube.com/embed/' + vid + '" class="w-full h-full" allowfullscreen loading="lazy"></iframe></div>';
+            } else {
+              items += '<div class="aspect-video rounded-xl overflow-hidden shadow-md"><iframe src="' + url.replace(/"/g,'&quot;') + '" class="w-full h-full" allowfullscreen loading="lazy"></iframe></div>';
+            }
+          } else {
+            items += '<img src="' + url.replace(/"/g,'&quot;') + '" alt="' + (tip.name || '').replace(/"/g,'&quot;') + '" class="w-full rounded-xl shadow-md object-cover" loading="lazy" onerror="this.parentNode.innerHTML=\'<div class=\\\'bg-slate-100 rounded-xl p-8 text-center text-slate-400\\\'><span class=\\\'text-3xl\\\'>📷</span><p class=\\\'mt-2\\\'>Media niet beschikbaar</p></div>\'" />';
+          }
+        }
+        mediaHtml = '<div class="preview-media"><div class="grid gap-3 p-3"' + (media.length > 1 ? ' style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr))"' : '') + '>' + items + '</div></div>';
+      }
+      var infoHtml = '';
+      if (tip.info) {
+        infoHtml = '<p>' + linkify(tip.info.replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br/>')) + '</p>';
+      }
+      var linkHtml = '';
+      if (tip.link) {
+        linkHtml = '<a href="' + tip.link.replace(/"/g,'&quot;') + '" target="_blank" rel="noopener noreferrer" class="preview-link">Bekijk meer →</a>';
+      }
+      return '<div class="preview-card' + (idx % 2 === 1 ? ' reverse' : '') + '">' +
+        (mediaHtml || '') +
+        '<div class="preview-body' + (mediaHtml ? '' : ' md:w-full') + '">' +
+        '<h2>' + tip.name.replace(/"/g,'&quot;') + '</h2>' +
+        infoHtml +
+        (linkHtml ? '<div>' + linkHtml + '</div>' : '') +
+        '</div></div>';
     }).join('');
   }
 
@@ -198,7 +340,7 @@ const pageTitle = "Tips & Tricks Beheer | KVVI Admin";
       name: '',
       info: '',
       link: '',
-      mediaUrl: '',
+      media: [],
       visible: true
     });
     render();
@@ -206,6 +348,16 @@ const pageTitle = "Tips & Tricks Beheer | KVVI Admin";
   });
 
   pageVisibleCheck.addEventListener('change', scheduleSave);
+
+  var previewToggle = document.getElementById('preview-toggle');
+  var previewSection = document.getElementById('preview-section');
+  if (previewToggle && previewSection) {
+    previewToggle.addEventListener('click', function() {
+      var hidden = previewSection.classList.toggle('hidden');
+      previewToggle.querySelector('span:last-child').textContent = hidden ? 'Preview tonen' : 'Preview verbergen';
+      if (!hidden) renderPreview();
+    });
+  }
 
   window._ttData = data;
 

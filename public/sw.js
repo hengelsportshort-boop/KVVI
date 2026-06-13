@@ -1,5 +1,5 @@
-const CACHE = 'kvvi-v1';
-const STATIC_CACHE = 'kvvi-static-v1';
+const CACHE = 'kvvi-v2';
+const STATIC_CACHE = 'kvvi-static-v2';
 const OFFLINE_URL = '/offline.html';
 
 const PRECACHE = [
