@@ -1,0 +1,173 @@
+---
+export const prerender = false;
+const pageTitle = "Help | Vissessies";
+---
+
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Help — Vissessies</title>
+<style is:inline>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: system-ui, -apple-system, sans-serif; background: #f1f5f9; color: #1e293b; line-height: 1.6; }
+.help-wrap { max-width: 800px; margin: 0 auto; padding: 20px; }
+h1 { font-size: 28px; margin-bottom: 4px; }
+.sub { color: #64748b; font-size: 14px; margin-bottom: 24px; }
+h2 { font-size: 20px; margin: 32px 0 12px; padding-bottom: 6px; border-bottom: 3px solid #1e40af; color: #1e293b; }
+h3 { font-size: 16px; margin: 20px 0 8px; color: #1e40af; }
+p, li { font-size: 14px; color: #334155; margin-bottom: 8px; }
+ul, ol { padding-left: 20px; margin-bottom: 12px; }
+li { margin-bottom: 4px; }
+code { background: #e2e8f0; padding: 1px 6px; border-radius: 4px; font-size: 13px; }
+kbd { background: #1e293b; color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; }
+.card { background: #fff; border-radius: 12px; border: 1px solid #e2e8f0; padding: 16px; margin-bottom: 12px; }
+.badge { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+.badge-green { background: #dcfce7; color: #166534; }
+.badge-blue { background: #dbeafe; color: #1e40af; }
+.badge-purple { background: #f3e8ff; color: #6b21a8; }
+.badge-amber { background: #fef3c7; color: #92400e; }
+.badge-red { background: #fee2e2; color: #991b1b; }
+.grid-badges { display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0; }
+.back-link { display: inline-flex; align-items: center; gap: 6px; color: #1e40af; text-decoration: none; font-weight: 600; font-size: 14px; margin-bottom: 20px; }
+.back-link:hover { text-decoration: underline; }
+@media (max-width: 600px) { .help-wrap { padding: 14px; } h1 { font-size: 24px; } }
+</style>
+</head>
+<body>
+<div class="help-wrap">
+  <a href="/vissessies-app" class="back-link">← Terug naar Vissessies</a>
+  <h1>❓ Help</h1>
+  <p class="sub">Alles wat je moet weten om Vissessies te gebruiken.</p>
+
+  <div class="card">
+    <h2>1. Wat is Vissessies?</h2>
+    <p>Een offline webapp om je visvangsten bij te houden. Geen account, geen server — alle data blijft in je browser (localStorage). Deelbaar via link, installeerbaar op je startscherm.</p>
+  </div>
+
+  <div class="card">
+    <h2>2. Data tab — Sessies beheren</h2>
+    <p>Hier zie je al je vangsten per maand, gesorteerd op datum. Elke regel is één sessie.</p>
+    <h3>Sessie toevoegen</h3>
+    <ol>
+      <li>Klik <strong>➕ Nieuw</strong> — er verschijnt een invulformulier.</li>
+      <li>Vul de velden in: <strong>Datum</strong>, <strong>Stek</strong>, <strong>Begin</strong>/<strong>Einde</strong>, <strong>Aantallen</strong> per vissoort, <strong>Gewicht</strong> (gram), <strong>Duur</strong> (min).</li>
+      <li>Optioneel: ⬆/⬇ (trend t.o.v. vorige), ⭐ Beoordeling, 🏆 Wedstrijd.</li>
+      <li>Klik <strong>💾 Opslaan</strong>.</li>
+    </ol>
+    <h3>Sessie bewerken</h3>
+    <p>Klik op een cel in de tabel — deze wordt bewerkbaar. Druk op <kbd>Tab</kbd> om naar de volgende cel te gaan. Verlaat de cel om op te slaan.</p>
+    <h3>Sessie verwijderen</h3>
+    <p>Klik op <strong>✕</strong> (rood) rechts van de rij.</p>
+    <h3>Maand in-/uitklappen</h3>
+    <p>Klik op de grijze maandbalk om de sessies van die maand te verbergen of tonen.</p>
+  </div>
+
+  <div class="card">
+    <h2>3. Statistieken tab — Inzicht</h2>
+    <p>Automatische grafieken en analyses op basis van je data:</p>
+    <ul>
+      <li><strong>Vis per maand</strong> — staafdiagram met aantal vissen en gewicht per maand</li>
+      <li><strong>Top stekken</strong> — welke stekken de beste vangsten opleveren (G-stekken en andere apart)</li>
+      <li><strong>Gr/min trend</strong> — grafiek van je efficiëntie per sessie (gram per minuut)</li>
+      <li><strong>Rapport</strong> — samenvatting: totaal vangsten, lege sessies, beste dag</li>
+      <li><strong>Overzicht</strong> — alle data in één tabel met kleurcodes:</li>
+    </ul>
+    <div class="grid-badges">
+      <span class="badge badge-green">⬆ Beter dan vorige</span>
+      <span class="badge badge-red">⬇ Slechter dan vorige</span>
+      <span class="badge badge-amber">🏆 Wedstrijd</span>
+      <span class="badge badge-blue">gr/min efficiëntie</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>4. Visstek tab — Snel invoeren</h2>
+    <p>Speciaal ontworpen voor mobiel: snel een sessie toevoegen voor een specifieke stek.</p>
+    <h3>Velden</h3>
+    <ul>
+      <li><strong>Stek</strong> — max 5 karakters (vb <code>G 11</code>)</li>
+      <li><strong>Datum</strong> — max 5 karakters (vb <code>19/06</code>). Autocomplete toont bestaande datums voor deze stek.</li>
+      <li><strong>Begin / Einde</strong> — toets 4 cijfers (vb <code>1600</code> → <code>16u 00m</code>)</li>
+    </ul>
+    <h3>Vissoorten (2×2 grid)</h3>
+    <p>Elke vissoort heeft een eigen kleur en ± knoppen onder het invoerveld:</p>
+    <div class="grid-badges">
+      <span class="badge badge-green">🟢 Kroes</span>
+      <span class="badge badge-blue">🔵 Schub</span>
+      <span class="badge badge-purple">🟣 Spiegel</span>
+      <span class="badge badge-amber">🟠 Ander</span>
+    </div>
+    <p>Druk op <kbd>−</kbd> of <kbd>+</kbd> om aan te passen. Je kan ook direct typen — het veld toont <strong>3 cijfers</strong> (vb <code>001</code>, <code>012</code>, <code>123</code>).</p>
+    <h3>Automatisch berekend</h3>
+    <ul>
+      <li><strong>Aantal</strong> — som van de 4 vissoorten, vanzelf bijgewerkt</li>
+      <li><strong>Gewicht</strong> — automatisch berekend op basis van standaard gewichten per vissoort, weergegeven in kg (vb <code>1,800</code>)</li>
+      <li><strong>Duur</strong> — verschijnt automatisch als Begin en Einde ingevuld zijn</li>
+    </ul>
+    <h3>Bestaande sessies</h3>
+    <p>Onder het formulier zie je een tabel met alle vorige sessies voor de ingevulde stek.</p>
+  </div>
+
+  <div class="card">
+    <h2>5. Beheer tab — Data veiligstellen</h2>
+    <p>Gevaarlijke acties en back-up mogelijkheden.</p>
+    <h3>Back-up maken</h3>
+    <ul>
+      <li><strong>⬇️ Download</strong> — slaat een <code>.json</code> bestand op met al je data</li>
+      <li><strong>📤 Upload</strong> — laad een eerder gedownload bestand terug</li>
+    </ul>
+    <h3>Gevaarlijke acties</h3>
+    <ul>
+      <li><strong>🗑️ Alle data wissen</strong> — verwijdert ALLE sessies, permanent</li>
+      <li><strong>🧹 Verwijder lege sessies</strong> — verwijdert sessies zonder vangst (0 vissen)</li>
+      <li><strong>📅 Verwijder zonder datum</strong> — verwijdert sessies zonder datum</li>
+      <li><strong>📥 Laad voorbeelddata</strong> — laadt 20+ demo sessies (overschrijft bestaande data niet)</li>
+    </ul>
+    <p><strong>⚠️ Waarschuwing:</strong> Deze acties zijn definitief. Maak eerst een back-up!</p>
+  </div>
+
+  <div class="card">
+    <h2>6. Installeren op je telefoon</h2>
+    <h3>iPhone (Safari)</h3>
+    <ol>
+      <li>Open <code>/vissessies-app</code> in Safari</li>
+      <li>Tik op <strong>Delen</strong> (📤 onderaan)</li>
+      <li>Scroll naar beneden en tik op <strong>Zet in beginscherm</strong></li>
+      <li>Geef een naam en tik op <strong>Voeg toe</strong></li>
+      <li>Het icoon verschijnt op je startscherm — werkt als echte app</li>
+    </ol>
+    <h3>Android (Chrome)</h3>
+    <ol>
+      <li>Open <code>/vissessies-app</code> in Chrome</li>
+      <li>Tik op het menu (⋮) rechtsboven</li>
+      <li>Tik op <strong>Installeren</strong> of <strong>Toevoegen aan startscherm</strong></li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h2>7. Tips</h2>
+    <ul>
+      <li><strong>Data kwijt?</strong> Check of je niet per ongeluk de <strong>📥 Laad voorbeelddata</strong> knop hebt gebruikt — die overschrijft bestaande data niet, maar voegt enkel demo data toe.</li>
+      <li><strong>Browserdata wissen?</strong> Als je browser-cache of localStorage wist, is je data weg. Maak regelmatig een back-up via <strong>Beheer → ⬇️ Download</strong>.</li>
+      <li><strong>Ander toestel?</strong> Omdat de data in de browser zit, staat die niet automatisch op een ander toestel. Gebruik back-up (download) en zet het bestand over naar je andere toestel, upload het daar.</li>
+      <li><strong>Pijlen (⬆/⬇)</strong> worden automatisch berekend door <strong>gr/min</strong> te vergelijken met de vorige sessie. Geen manueel werk nodig.</li>
+      <li><strong>Gewicht</strong> wordt automatisch geschat op basis van standaard gewichten per vissoort. Je kan het overschrijven door in de Data tab de <strong>Gewicht</strong> cel aan te passen.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>8. Technische info</h2>
+    <ul>
+      <li><strong>Opslag:</strong> localStorage in je browser — beperkt tot ~5-10 MB, genoeg voor duizenden sessies</li>
+      <li><strong>Geen server:</strong> alle code draait in je browser, niets wordt verstuurd</li>
+      <li><strong>Werkt offline:</strong> eenmaal geladen werkt de app zonder internet</li>
+      <li><strong>Compatibel:</strong> Chrome, Safari, Firefox, Edge — op Windows, Mac, iOS, Android</li>
+    </ul>
+  </div>
+
+  <p style="text-align:center;margin-top:32px;color:#94a3b8;font-size:13px">Vissessies v1 — 2026</p>
+</div>
+</body>
+</html>

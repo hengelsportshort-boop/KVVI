@@ -1,0 +1,1524 @@
+---
+export const prerender = false;
+---
+
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Vissessies">
+<link rel="apple-touch-icon" href="/vissessies-icon-192.png">
+<link rel="manifest" href="/manifest.json">
+<title>Vissessies</title>
+<style is:inline>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: system-ui, -apple-system, sans-serif; background: #f1f5f9; color: #1e293b; }
+h1 { font-size: 20px; margin-bottom: 4px; }
+.sub { color: #64748b; font-size: 13px; margin-bottom: 16px; }
+.tabs { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+.tab { padding: 8px 18px; border-radius: 8px; font-weight: 600; font-size: 13px; border: 1px solid #cbd5e1; background: #fff; cursor: pointer; }
+.tab.active { background: #1e40af; color: #fff; border-color: #1e40af; }
+.tab.danger { color: #dc2626; border-color: #fecaca; }
+.panel { background: #fff; border-radius: 12px; border: 1px solid #e2e8f0; padding: 16px; margin-bottom: 12px; display: none; }
+.panel.show { display: block; }
+textarea { width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px; font-family: monospace; font-size: 12px; resize: vertical; }
+.btn { padding: 8px 18px; border-radius: 8px; font-weight: 600; font-size: 13px; border: none; cursor: pointer; }
+.btn-primary { background: #1e40af; color: #fff; }
+.btn-primary:hover { background: #1e3a8a; }
+.btn-danger { background: #dc2626; color: #fff; }
+.btn-danger:hover { background: #b91c1c; }
+.btn-outline { border: 1px solid #cbd5e1; background: #fff; }
+.btn-outline:hover { background: #f8fafc; }
+.flex { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.mt-2 { margin-top: 8px; }
+.mb-2 { margin-bottom: 8px; }
+.w-full { width: 100%; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+th { background: #f8fafc; padding: 6px 4px; text-align: center !important; font-size: 11px; text-transform: uppercase; color: #64748b; border-bottom: 2px solid #e2e8f0; white-space: nowrap; }
+td { padding: 4px; border-bottom: 1px solid #f1f5f9; vertical-align: top; text-align: center !important; }
+td[contenteditable] { cursor: text; }
+td[contenteditable]:focus { outline: 2px solid #3b82f6; outline-offset: -1px; border-radius: 2px; background: #eff6ff; }
+.num { font-family: monospace; }
+.month-group { margin-bottom: 16px; }
+.month-header { background: #1e293b; color: #fff; padding: 6px 10px; border-radius: 6px 6px 0 0; font-weight: 700; font-size: 13px; display: flex; justify-content: space-between; cursor: pointer; user-select: none; }
+.month-header:hover { background: #1e40af; }
+.month-body.collapsed { display: none; }
+.subtotal { background: #f1f5f9; font-weight: 700; }
+.subtotal td { border-top: 2px solid #94a3b8; padding-top: 6px; }
+.grand-total { background: #1e293b; color: #fff; font-weight: 700; }
+.grand-total td { padding: 8px 4px; }
+.hidden { display: none; }
+.badge { display: inline-block; padding: 1px 6px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+.badge-up { background: none; color: #16a34a; }
+.badge-down { background: none; color: #dc2626; }
+tr.wedstrijd { background: #fef9c3 !important; }
+tr.wedstrijd td { border-bottom-color: #facc15; }
+.empty-msg { text-align: center; color: #94a3b8; padding: 40px; font-style: italic; }
+#toast { position: fixed; bottom: 20px; right: 20px; padding: 10px 20px; border-radius: 8px; color: #fff; font-weight: 600; font-size: 13px; opacity: 0; transition: opacity 0.3s; z-index: 999; }
+#toast.show { opacity: 1; }
+.sticky-header { position: sticky; top: 0; z-index: 100; background: #f1f5f9; padding: 12px 20px 8px; margin: 0 -16px 12px; border-bottom: 1px solid #e2e8f0; }
+@media (max-width: 768px) { .sticky-header { padding: 10px 10px 6px; margin: 0 -16px 10px; } table { font-size: 11px; } td, th { padding: 3px 2px; } }
+.col-merk { max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.vs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-bottom: 8px; }
+.vs-stepper { display: flex; gap: 4px; align-items: center; justify-content: center; margin-top: 4px; }
+.vs-stepper-row { display: flex; gap: 5px; align-items: center; }
+.vs-btn { width: 44px; height: 40px; border: 2px solid #1e293b; border-radius: 8px; background: #fff; font-size: 22px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #1e293b; -webkit-appearance: none; appearance: none; user-select: none; -webkit-tap-highlight-color: transparent; touch-action: manipulation; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+.vs-btn:active { background: #e2e8f0; }
+.vs-fish-input { width: 100%; padding: 14px 4px; border: 2px solid #1e293b; border-radius: 10px; font-size: 28px; font-weight: 700; text-align: center; background: #fff; color: #1e293b; -webkit-appearance: none; appearance: none; box-shadow: 0 1px 3px rgba(0,0,0,0.15); min-width: 0; }
+.vs-input-text { display:block; width:100%; padding:12px; border:2px solid #1e293b; border-radius:10px; font-size:18px; font-weight:600; background:#fff; color:#1e293b; -webkit-appearance:none; appearance:none; box-shadow:0 1px 3px rgba(0,0,0,0.15); }
+.vs-input-text::placeholder { color:#94a3b8; font-weight:400; }
+.vs-label { font-size:14px; font-weight:700; color:#1e293b; margin-bottom:2px; }
+.vs-hint { text-align:center; font-size:13px; font-weight:700; color:#1e40af; margin-top:2px; min-height:18px; }
+.vs-pair { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:10px; }
+.vs-fish { border:2px solid #1e293b; border-radius:10px; padding:8px 6px 6px; background:#fff; }
+.vs-stat { padding:10px 12px; border-radius:10px; font-size:24px; font-weight:700; text-align:center; border:2px solid; background:#fff; box-shadow:0 1px 3px rgba(0,0,0,0.15); }
+@media (max-width: 768px) { .vs-grid { gap: 4px; } .vs-btn { width: 40px; height: 38px; font-size: 20px; } .vs-fish-input { font-size: 26px; padding: 12px 4px; } .vs-input-text { padding:10px; font-size:17px; } .vs-pair { gap:6px; } .vs-stat { font-size:22px; padding:8px 10px; }
+header > div { padding:0 16px !important; }
+header + div { padding-left:16px !important; padding-right:16px !important; }
+header + div + div > div { padding:12px 16px !important; } }
+</style>
+</head>
+<body>
+  <main style="height:100vh;display:flex;flex-direction:column;background:#f8fafc">
+    <div style="display:flex;flex:1;min-height:0">
+      <!-- MAIN CONTENT -->
+      <section style="flex:1;display:flex;flex-direction:column;min-height:0">
+        <header style="height:64px;background:#fff;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;padding:0 32px;flex-shrink:0">
+          <div style="display:flex;align-items:center;gap:12px">
+            <span style="font-weight:600;font-size:14px">Vissessies</span>
+          </div>
+          <a href="/vissessies-app/help" style="font-size:20px;text-decoration:none">❓</a>
+        </header>
+
+        <div style="background:#fff;border-bottom:1px solid #e2e8f0;padding:12px 32px;flex-shrink:0">
+          <h1 style="font-size:18px;font-weight:700">Vissessies</h1>
+          <p class="sub" style="margin-bottom:6px">Al je vangsten — lokaal opgeslagen</p>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+            <label class="sub" style="font-weight:600;white-space:nowrap;margin-bottom:0">Jaar:</label>
+            <select id="year-select" style="padding:4px 8px;border:1px solid #cbd5e1;border-radius:4px;font-size:14px;font-weight:600"></select>
+            <span class="sub" id="year-count" style="margin-left:4px;margin-bottom:0"></span>
+          </div>
+          <div class="tabs" style="margin-bottom:0">
+            <button class="tab active" data-tab="data">📊 Data</button>
+            <button class="tab" data-tab="stats">📈 Statistieken</button>
+            <button class="tab" data-tab="visstek">🎣 Visstek</button>
+            <button class="tab danger" data-tab="beheer">⚙️ Beheer</button>
+          </div>
+        </div>
+        <div style="flex:1;overflow-y:auto;min-height:0">
+          <div style="padding:16px 32px;max-width:1400px;margin:0 auto">
+
+<!-- DATA TAB -->
+<div id="tab-data" class="panel show">
+  <div style="display:flex;margin-bottom:8px">
+    <span id="row-count" class="sub" style="margin:0;flex:1"></span>
+    <button id="btn-add" class="btn btn-outline">➕ Nieuw</button>
+  </div>
+  <div id="add-form" class="hidden" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:12px;margin-bottom:12px">
+    <div class="sub mb-2" style="font-weight:700">Nieuwe sessie</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:6px">
+      <input id="f-datum" placeholder="Datum (vb 19/06)" class="form-input" value="" style="padding:4px 8px;border:1px solid #cbd5e1;border-radius:4px;font-size:12px">
+      <input id="f-stek" placeholder="Stek" class="form-input" value="" style="padding:4px 8px;border:1px solid #cbd5e1;border-radius:4px;font-size:12px">
+      <input id="f-begin" placeholder="Begin" class="form-input" value="" style="padding:4px 8px;border:1px solid #cbd5e1;border-radius:4px;font-size:12px">
+      <input id="f-einde" placeholder="Einde" class="form-input" value="" style="padding:4px 8px;border:1px solid #cbd5e1;border-radius:4px;font-size:12px">
+      <input id="f-kroes" placeholder="Kroes" type="number" class="form-input" value="0" style="padding:4px 8px;border:1px solid #cbd5e1;border-radius:4px;font-size:12px">
+      <input id="f-schub" placeholder="Schub" type="number" class="form-input" value="0" style="padding:4px 8px;border:1px solid #cbd5e1;border-radius:4px;font-size:12px">
+      <input id="f-spiegel" placeholder="Spiegel" type="number" class="form-input" value="0" style="padding:4px 8px;border:1px solid #cbd5e1;border-radius:4px;font-size:12px">
+      <input id="f-ander" placeholder="Ander" type="number" class="form-input" value="0" style="padding:4px 8px;border:1px solid #cbd5e1;border-radius:4px;font-size:12px">
+      <input id="f-gewicht" placeholder="Gewicht (gr)" type="number" class="form-input" value="0" style="padding:4px 8px;border:1px solid #cbd5e1;border-radius:4px;font-size:12px">
+      <input id="f-duurMin" placeholder="Duur (min)" type="number" class="form-input" value="0" style="padding:4px 8px;border:1px solid #cbd5e1;border-radius:4px;font-size:12px">
+      <input id="f-tijdMin" placeholder="Tijd vangst (min)" type="number" class="form-input" value="" style="padding:4px 8px;border:1px solid #cbd5e1;border-radius:4px;font-size:12px">
+      <input id="f-pijl" placeholder="⬆/⬇" class="form-input" value="" style="padding:4px 8px;border:1px solid #cbd5e1;border-radius:4px;font-size:12px">
+      <input id="f-beoordeling" placeholder="Beoordeling" class="form-input" value="" style="padding:4px 8px;border:1px solid #cbd5e1;border-radius:4px;font-size:12px">
+      <label style="display:flex;align-items:center;gap:4px;font-size:12px;padding:4px"><input type="checkbox" id="f-wedstrijd"> 🏆 Wedstrijd</label>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px">
+      <button id="btn-save-add" class="btn btn-primary">💾 Opslaan</button>
+      <button id="btn-cancel-add" class="btn btn-outline">Annuleren</button>
+    </div>
+  </div>
+  <div id="table-container"></div>
+</div>
+
+<!-- STATS TAB -->
+<div id="tab-stats" class="panel">
+  <div id="stats-content"><p class="empty-msg">Importeer eerst data.</p></div>
+</div>
+
+<!-- VISSTEK TAB -->
+<div id="tab-visstek" class="panel">
+  <div class="vs-card" style="background:#fff;border:2px solid #1e293b;border-radius:12px;padding:14px 16px;margin-bottom:12px">
+    <div class="vs-pair">
+      <div>
+        <div class="vs-label">Stek</div>
+        <input id="vs-stek" maxlength="5" placeholder="G 11" class="vs-input-text" value="" autocomplete="off">
+      </div>
+      <div>
+        <div class="vs-label">Datum</div>
+        <input id="vs-datum" maxlength="5" placeholder="19/06" class="vs-input-text" value="" list="vs-datum-list" autocomplete="off">
+        <datalist id="vs-datum-list"></datalist>
+      </div>
+    </div>
+    <div class="vs-pair">
+      <div>
+        <div class="vs-label">Begin</div>
+        <input id="vs-begin" maxlength="4" inputmode="numeric" placeholder="1600" class="vs-input-text" value="" autocomplete="off">
+        <div class="vs-hint" id="vs-begin-display"></div>
+      </div>
+      <div>
+        <div class="vs-label">Einde</div>
+        <input id="vs-einde" maxlength="4" inputmode="numeric" placeholder="1800" class="vs-input-text" value="" autocomplete="off">
+        <div class="vs-hint" id="vs-einde-display"></div>
+      </div>
+    </div>
+    <div style="font-size:15px;font-weight:700;color:#1e293b;margin-bottom:6px">Vangst</div>
+    <div class="vs-grid">
+      <div class="vs-fish" style="border-color:#059669">
+        <div class="vs-label" style="color:#059669;text-align:center">Kroes</div>
+        <input id="vs-kroes" type="text" inputmode="numeric" maxlength="3" value="0" class="vs-fish-input" style="border-color:#059669;color:#059669">
+        <div class="vs-stepper">
+          <button type="button" onclick="vsAdjust('vs-kroes',-1,999)" class="vs-btn" style="border-color:#059669;color:#059669">−</button>
+          <button type="button" onclick="vsAdjust('vs-kroes',1,999)" class="vs-btn" style="border-color:#059669;color:#059669">+</button>
+        </div>
+      </div>
+      <div class="vs-fish" style="border-color:#2563eb">
+        <div class="vs-label" style="color:#2563eb;text-align:center">Schub</div>
+        <input id="vs-schub" type="text" inputmode="numeric" maxlength="3" value="0" class="vs-fish-input" style="border-color:#2563eb;color:#2563eb">
+        <div class="vs-stepper">
+          <button type="button" onclick="vsAdjust('vs-schub',-1,999)" class="vs-btn" style="border-color:#2563eb;color:#2563eb">−</button>
+          <button type="button" onclick="vsAdjust('vs-schub',1,999)" class="vs-btn" style="border-color:#2563eb;color:#2563eb">+</button>
+        </div>
+      </div>
+      <div class="vs-fish" style="border-color:#7c3aed">
+        <div class="vs-label" style="color:#7c3aed;text-align:center">Spiegel</div>
+        <input id="vs-spiegel" type="text" inputmode="numeric" maxlength="3" value="0" class="vs-fish-input" style="border-color:#7c3aed;color:#7c3aed">
+        <div class="vs-stepper">
+          <button type="button" onclick="vsAdjust('vs-spiegel',-1,999)" class="vs-btn" style="border-color:#7c3aed;color:#7c3aed">−</button>
+          <button type="button" onclick="vsAdjust('vs-spiegel',1,999)" class="vs-btn" style="border-color:#7c3aed;color:#7c3aed">+</button>
+        </div>
+      </div>
+      <div class="vs-fish" style="border-color:#d97706">
+        <div class="vs-label" style="color:#d97706;text-align:center">Ander</div>
+        <input id="vs-ander" type="text" inputmode="numeric" maxlength="3" value="0" class="vs-fish-input" style="border-color:#d97706;color:#d97706">
+        <div class="vs-stepper">
+          <button type="button" onclick="vsAdjust('vs-ander',-1,999)" class="vs-btn" style="border-color:#d97706;color:#d97706">−</button>
+          <button type="button" onclick="vsAdjust('vs-ander',1,999)" class="vs-btn" style="border-color:#d97706;color:#d97706">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="vs-pair">
+      <div>
+        <div class="vs-label">Aantal</div>
+        <div id="vs-aantal" class="vs-stat" style="border-color:#059669;color:#059669">0</div>
+      </div>
+      <div>
+        <div class="vs-label">Gewicht</div>
+        <div class="vs-stat" style="border-color:#2563eb;color:#2563eb"><span id="vs-gewicht" data-gram="0">0,000</span></div>
+      </div>
+    </div>
+    <div style="display:none" id="vs-duur-container">
+      <div class="vs-label">Duur</div>
+      <div id="vs-duur" style="padding:10px 12px;border:2px solid #86efac;border-radius:10px;font-size:18px;width:100%;background:#f0fdf4;color:#166534;font-weight:700;margin-bottom:8px">--</div>
+    </div>
+    <button id="btn-vs-save" class="btn btn-primary" style="padding:16px 24px;font-size:20px;width:100%;-webkit-appearance:none;margin-top:6px;border-radius:12px;font-weight:700">💾 Opslaan</button>
+  </div>
+  <div style="overflow-x:auto;-webkit-overflow-scrolling:touch" id="vs-list"><p class="empty-msg">Voer een stek in om eerdere sessies te zien.</p></div>
+</div>
+
+<!-- BEHEER TAB -->
+<div id="tab-beheer" class="panel">
+  <p class="sub">Gevaarlijke acties — niet ongedaan te maken.</p>
+  <button id="btn-clear" class="btn btn-danger">🗑️ Alle data wissen</button>
+  <button id="btn-remove-empty" class="btn btn-outline" style="margin-left:8px">🧹 Verwijder lege sessies</button>
+  <button id="btn-remove-nodate" class="btn btn-outline" style="margin-left:8px">📅 Verwijder zonder datum</button>
+  <button id="btn-seed" class="btn btn-outline" style="margin-left:8px">📥 Laad voorbeelddata</button>
+  <hr style="margin:16px 0;border:none;border-top:1px solid #e2e8f0">
+  <p class="sub" style="font-weight:700">Backups</p>
+  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px">
+    <button id="btn-backup-create" class="btn btn-outline">💾 Backup maken</button>
+    <button id="btn-backup-list" class="btn btn-outline">📋 Toon backups</button>
+    <button id="btn-backup-download" class="btn btn-outline">⬇️ Download</button>
+    <input type="file" id="backup-file-input" accept=".json" style="display:none">
+    <button id="btn-backup-upload" class="btn btn-outline">📤 Upload &amp; herstel</button>
+  </div>
+  <div id="backup-status" class="sub" style="margin-top:8px"></div>
+  <div id="backup-list" class="sub" style="margin-top:8px;display:none"></div>
+  <div id="data-size" class="sub" style="margin-top:8px"></div>
+</div>
+
+<div id="toast"></div>
+
+</div>
+        </div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>
+
+<script is:inline>
+const STORAGE_KEY = 'kvvi_vissessies';
+const JAAR_KEY = 'kvvi_jaar';
+const GEW_KROES = 300, GEW_SCHUB = 1500, GEW_SPIEGEL = 1600, GEW_ANDER = 100;
+
+const jaarOpties = [];
+(function initJaren() {
+  const ditJaar = new Date().getFullYear();
+  for (let y = 2026; y <= ditJaar + 5; y++) jaarOpties.push(y);
+})();
+
+function huidigJaar() {
+  let j = localStorage.getItem(JAAR_KEY);
+  if (j) { j = parseInt(j); if (jaarOpties.includes(j)) return j; }
+  return new Date().getFullYear();
+}
+
+function bewaarJaar(j) {
+  localStorage.setItem(JAAR_KEY, j.toString());
+}
+
+function filterJaar(data, jaar) {
+  return data.filter(r => {
+    if (!r.month) return false;
+    const m = r.month.match(/\b(\d{4})\b/);
+    return m && parseInt(m[1]) === jaar;
+  });
+}
+
+function laadDataJaar(jaar) {
+  return filterJaar(loadData(), jaar);
+}
+
+function loadData() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch { return []; }
+}
+function saveData(data) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+function parseTime(t) {
+  if (!t || t === '--') return null;
+  const m = t.match(/(\d+)u\s*(\d+)m/);
+  if (m) return parseInt(m[1]) * 60 + parseInt(m[2]);
+  const m2 = t.match(/(\d+):(\d+)/);
+  if (m2) return parseInt(m2[1]) * 60 + parseInt(m2[2]);
+  const m3 = t.match(/^(\d{3,4})$/);
+  if (m3) {
+    const s = m3[1].padStart(4, '0');
+    return parseInt(s.substring(0, 2)) * 60 + parseInt(s.substring(2, 4));
+  }
+  return null;
+}
+
+function fmtTime(min) {
+  if (min == null || isNaN(min)) return '--';
+  return Math.floor(min / 60) + 'u ' + (min % 60) + 'm';
+}
+
+function fmtGewicht(g) {
+  if (g == null || isNaN(g)) return '--';
+  return Number(g).toLocaleString('nl-NL', { minimumFractionDigits: 0 }) + ' gr';
+}
+
+function trendDetail(info) {
+  const el = document.getElementById('trend-detail');
+  if (!el) return;
+  if (el.innerHTML === info) {
+    el.style.display = 'none';
+    el.innerHTML = '';
+  } else {
+    el.innerHTML = info;
+    el.style.display = 'block';
+  }
+}
+
+function fmtDecimal(n) {
+  if (n == null || isNaN(n)) return '--';
+  return n.toLocaleString('nl-NL', { maximumFractionDigits: 0 });
+}
+
+function fmtEenheid(n) {
+  if (n == null || isNaN(n) || n === 0) return '--';
+  return n.toLocaleString('nl-NL', { maximumFractionDigits: 0 });
+}
+
+function fmtDuurVangst(min, aantal) {
+  if (!min || !aantal) return '--';
+  const perVis = min / aantal;
+  const m = Math.floor(perVis);
+  const s = Math.round((perVis - m) * 60);
+  return m + 'm ' + s + 's';
+}
+
+function formatTijdInput(val) {
+  if (/^\d{3,4}$/.test(val)) {
+    const s = val.padStart(4, '0');
+    const h = parseInt(s.substring(0, 2));
+    const m = parseInt(s.substring(2, 4));
+    if (h >= 0 && h <= 23 && m >= 0 && m <= 59) {
+      return h + 'u ' + m + 'm';
+    }
+  }
+  return val;
+}
+
+function calcDuurVanBeginEinde(beginVal, eindeVal) {
+  const b = parseTime(beginVal);
+  const e = parseTime(eindeVal);
+  if (b != null && e != null && e > b) return e - b;
+  return null;
+}
+
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = type === 'error' ? '#dc2626' : '#16a34a';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function isHeader(cols) {
+  const keys = ['kroes', 'schub', 'spiegel', 'ander', 'aantal', 'gewicht', 'datum'];
+  return keys.some(k => cols.join(' ').toLowerCase().includes(k));
+}
+
+const COL_COUNT = 17;
+
+function detectOffset(cols) {
+  if (cols.length < COL_COUNT - 3) return -1;
+  const off = cols.length - COL_COUNT;
+  if (off >= 0 && off <= 5) return off;
+  return -1;
+}
+
+function parseTable(text) {
+  const lines = text.split('\n').filter(l => l.trim());
+  if (!lines.length) return [];
+  const rows = [];
+  let currentMonth = '';
+  const monthRE = /^(jan|feb|mar|apr|mei|jun|jul|aug|sep|okt|nov|dec)/i;
+
+  const headCols = lines[0].split('\t').map(c => c.trim());
+  const hasHeader = isHeader(headCols);
+  const startIdx = hasHeader ? 1 : 0;
+
+  for (let i = startIdx; i < lines.length; i++) {
+    const cols = lines[i].split('\t').map(c => c.trim());
+    const c0 = cols[0] || '';
+    const c1 = cols[1] || '';
+
+    if (/som|totaal|kolom/i.test(c0 + ' ' + c1)) continue;
+    if (/^[a-z]{3,4}\s*\d{0,4}$/i.test(c0) && !c1) {
+      let m = c0;
+      if (!/\d{4}/.test(m)) m += ' ' + huidigJaar();
+      currentMonth = m;
+      continue;
+    }
+
+    const off = detectOffset(cols);
+    if (off < 0) continue;
+
+    for (let p = 0; p < off; p++) {
+      if (monthRE.test(cols[p] || '')) {
+        let m = cols[p];
+        if (!/\d{4}/.test(m)) m += ' ' + huidigJaar();
+        currentMonth = m;
+        break;
+      }
+    }
+
+    function pn(idx) {
+      const v = cols[idx + off];
+      if (v == null || v === '' || v === '--') return 0;
+      const n = parseInt(v);
+      return isNaN(n) ? 0 : n;
+    }
+    function gr(idx) {
+      return cols[idx + off] || '';
+    }
+
+    const kroes   = pn(0);
+    const schub   = pn(1);
+    const spiegel = pn(2);
+    const ander   = pn(3);
+    const aantal  = pn(4);
+    const gewichtRaw = gr(5).replace(/[^0-9,]/g, '').replace(',', '.');
+    const gewicht = parseFloat(gewichtRaw) || 0;
+    const datum   = gr(6);
+    const stek    = gr(7);
+    const begin   = gr(8);
+    const einde   = gr(9);
+    const duurMin = parseTime(gr(10)) || (parseTime(begin) && parseTime(einde) ? parseTime(einde) - parseTime(begin) : 0);
+    const pijl    = gr(12);
+    const beoordeling = gr(13);
+    const tijdMin = parseTime(gr(14)) || duurMin;
+
+    rows.push({
+      kroes, schub, spiegel, ander, aantal, gewicht,
+      datum, stek, begin, einde, duurMin,
+      duurVangstRaw: gr(11), pijl, beoordeling, tijdMin,
+      month: currentMonth, wedstrijd: ''
+    });
+  }
+  return rows;
+}
+
+function computeFields(row) {
+  const tijdMin = row.tijdMin || (row.duurMin || 0);
+  const gramMin = tijdMin > 0 ? (row.gewicht / tijdMin) : 0;
+  const wedstrijd4uur = gramMin * 240;
+  const duurVangst = tijdMin > 0 && row.aantal > 0 ? fmtDuurVangst(tijdMin, row.aantal) : '--';
+  return { ...row, tijdMin, gramMin, wedstrijd4uur, duurVangst };
+}
+
+function deriveMonth(datum, jaar) {
+  if (!datum) return null;
+  const m = datum.match(/\/(\d+)/);
+  if (!m) return null;
+  const mn = parseInt(m[1]);
+  if (mn < 1 || mn > 12) return null;
+  const maanden = ['jan','feb','mar','apr','mei','jun','jul','aug','sep','okt','nov','dec'];
+  return maanden[mn - 1] + ' ' + (jaar != null ? jaar : new Date().getFullYear());
+}
+
+function sortData(arr) {
+  function dateVal(r) {
+    const p = r.datum ? r.datum.split('/') : [];
+    if (p.length === 2) return parseInt(p[1]) * 100 + parseInt(p[0]);
+    return 99999;
+  }
+  return arr.sort((a, b) => {
+    const ma = a.month, mb = b.month;
+    if (ma !== mb) {
+      const maanden = ['jan','feb','mar','apr','mei','jun','jul','aug','sep','okt','nov','dec'];
+      const ra = ma.match(/([a-z]+)\s*(\d+)/i), rb = mb.match(/([a-z]+)\s*(\d+)/i);
+      if (ra && rb) {
+        const ya = parseInt(ra[2]), yb = parseInt(rb[2]);
+        if (ya !== yb) return ya - yb;
+        const da = maanden.indexOf(ra[1].toLowerCase().substring(0,3));
+        const db = maanden.indexOf(rb[1].toLowerCase().substring(0,3));
+        if (da !== db) return da - db;
+      }
+    }
+    return dateVal(a) - dateVal(b);
+  });
+}
+
+function render() {
+  const alleData = loadData();
+  const jaar = huidigJaar();
+  bewaarJaar(jaar);
+  const data = filterJaar(alleData, jaar);
+  const container = document.getElementById('table-container');
+  document.getElementById('row-count').textContent = data.length + ' sessies in ' + jaar;
+  document.getElementById('year-count').textContent = '(' + alleData.length + ' totaal)';
+
+  if (!data.length) {
+    container.innerHTML = '<p class="empty-msg">Geen data voor ' + jaar + '. Ga naar Import om data te plakken, of kies een ander jaar.</p>';
+    updateStats();
+    return;
+  }
+
+  const groups = {};
+  for (const r of data) {
+    const m = r.month || 'Onbekend';
+    if (!groups[m]) groups[m] = [];
+    groups[m].push(r);
+  }
+
+  for (const m in groups) {
+    groups[m].sort((a, b) => {
+      function dateVal(r) {
+        const p = r.datum ? r.datum.split('/') : [];
+        return p.length === 2 ? parseInt(p[1]) * 100 + parseInt(p[0]) : 99999;
+      }
+      return dateVal(a) - dateVal(b);
+    });
+  }
+
+  let html = '';
+  const monthOrder = Object.keys(groups).sort((a, b) => {
+    const maanden = ['jan','feb','mar','apr','mei','jun','jul','aug','sep','okt','nov','dec'];
+    const ma = a.match(/([a-z]+)\s*(\d+)/i);
+    const mb = b.match(/([a-z]+)\s*(\d+)/i);
+    if (ma && mb) {
+      const ya = parseInt(ma[2]), yb = parseInt(mb[2]);
+      if (ya !== yb) return ya - yb;
+      return maanden.indexOf(ma[1].toLowerCase().substring(0,3)) - maanden.indexOf(mb[1].toLowerCase().substring(0,3));
+    }
+    return 0;
+  });
+
+  let grandKroes = 0, grandSchub = 0, grandSpiegel = 0, grandAnder = 0;
+  let grandAantal = 0, grandGewicht = 0, grandTijd = 0;
+  let vorigeGramMin = -1;
+
+  for (const month of monthOrder) {
+    const items = groups[month];
+    let mKroes = 0, mSchub = 0, mSpiegel = 0, mAnder = 0;
+    let mAantal = 0, mGewicht = 0, mTijd = 0;
+
+    let rows = '';
+    items.forEach((r, idx) => {
+      const c = computeFields(r);
+      mKroes += c.kroes; mSchub += c.schub; mSpiegel += c.spiegel; mAnder += c.ander;
+      mAantal += c.aantal; mGewicht += c.gewicht; mTijd += c.tijdMin;
+      const pijlAuto = vorigeGramMin < 0 ? '–' : c.gramMin > vorigeGramMin ? '⬆' : c.gramMin < vorigeGramMin ? '⬇' : '–';
+      vorigeGramMin = c.gramMin;
+      const pijlClass = pijlAuto === '⬆' ? 'badge-up' : pijlAuto === '⬇' ? 'badge-down' : '';
+      const wedstrijdClass = c.wedstrijd ? ' wedstrijd' : '';
+      rows += `<tr style="text-align:center" class="${wedstrijdClass}">
+        <td contenteditable="true" data-idx="${idx}" data-month="${month}" data-field="datum">${c.datum}</td>
+        <td contenteditable="true" data-idx="${idx}" data-month="${month}" data-field="kroes" class="num">${c.kroes || ''}</td>
+        <td contenteditable="true" data-idx="${idx}" data-month="${month}" data-field="schub" class="num">${c.schub || ''}</td>
+        <td contenteditable="true" data-idx="${idx}" data-month="${month}" data-field="spiegel" class="num">${c.spiegel || ''}</td>
+        <td contenteditable="true" data-idx="${idx}" data-month="${month}" data-field="ander" class="num">${c.ander || ''}</td>
+        <td class="num">${c.aantal}</td>
+        <td contenteditable="true" data-idx="${idx}" data-month="${month}" data-field="gewicht" class="num">${c.gewicht}</td>
+        <td contenteditable="true" data-idx="${idx}" data-month="${month}" data-field="stek" class="col-merk">${c.stek}</td>
+        <td contenteditable="true" data-idx="${idx}" data-month="${month}" data-field="begin">${c.begin}</td>
+        <td contenteditable="true" data-idx="${idx}" data-month="${month}" data-field="einde">${c.einde}</td>
+        <td class="num">${fmtTime(c.duurMin)}</td>
+        <td class="num">${c.duurVangst}</td>
+        <td class="${pijlClass}" style="font-size:18px;line-height:1">${pijlAuto}</td>
+        <td>${c.beoordeling}</td>
+        <td class="num">${fmtEenheid(c.tijdMin)}</td>
+        <td class="num">${fmtDecimal(c.gramMin)}</td>
+        <td class="num">${fmtDecimal(c.wedstrijd4uur)}</td>
+        <td data-idx="${idx}" data-month="${month}" data-field="wedstrijd" class="wedstrijd-toggle" style="cursor:pointer;font-size:16px">${c.wedstrijd ? '🏆' : '⬜'}</td>
+        <td style="cursor:pointer;color:#ef4444;font-weight:700" class="row-delete" data-idx="${idx}" data-month="${month}">✕</td>
+      </tr>`;
+    });
+
+    grandKroes += mKroes; grandSchub += mSchub; grandSpiegel += mSpiegel; grandAnder += mAnder;
+    grandAantal += mAantal; grandGewicht += mGewicht; grandTijd += mTijd;
+
+    const collKey = 'kvvi_collapse_' + month.replace(/\s+/g, '_');
+    const isCollapsed = localStorage.getItem(collKey) === '1';
+    html += `<div class="month-group">
+      <div class="month-header" data-collapse="${collKey}">
+        <span>${isCollapsed ? '▶' : '▼'} ${month}</span>
+        <span>${mAantal} vis — ${fmtGewicht(mGewicht)} — ${fmtTime(mTijd)} — ${fmtDecimal(mTijd > 0 ? mGewicht / mTijd : 0)} gr/min</span>
+      </div>
+      <div class="month-body${isCollapsed ? ' collapsed' : ''}">
+      <table><thead><tr style="text-align:center">
+        <th>Datum</th><th>Kroes</th><th>Schub</th><th>Spiegel</th><th>Ander</th><th>Aantal</th><th>Gewicht</th><th>Stek</th><th>Begin</th><th>Einde</th><th>Duur</th><th>Duur/vangst</th><th>⬆⬇</th><th>Beoord</th><th>Tijd Min</th><th>Gr/min</th><th>4u wedstrijd</th><th>🏆</th><th style="width:24px">✕</th>
+      </tr></thead><tbody>${rows}
+      <tr class="subtotal" style="text-align:center"><td style="text-align:left;font-weight:600">Subtotaal ${month}</td><td class="num">${mKroes || ''}</td><td class="num">${mSchub || ''}</td><td class="num">${mSpiegel || ''}</td><td class="num">${mAnder || ''}</td><td class="num">${mAantal}</td><td class="num">${fmtGewicht(mGewicht)}</td><td></td><td></td><td></td><td class="num">${fmtTime(mTijd)}</td><td></td><td></td><td></td><td class="num">${fmtEenheid(mTijd)}</td><td class="num">${fmtDecimal(mTijd > 0 ? mGewicht / mTijd : 0)}</td><td class="num">${fmtDecimal((mTijd > 0 ? mGewicht / mTijd : 0) * 240)}</td><td></td><td></td></tr>
+    </tbody></table></div></div>`;
+  }
+
+  html += `<div style="background:#1e40af;color:#fff;padding:12px 16px;border-radius:8px;display:flex;gap:24px;flex-wrap:wrap;font-size:15px;font-weight:700;margin-top:12px">
+    <span>🎣 ${grandAantal} vis</span>
+    <span>⚖️ ${fmtGewicht(grandGewicht)}</span>
+    <span>📅 ${data.length} sessies</span>
+    <span>⏱️ ${fmtTime(grandTijd)}</span>
+    <span>📊 ${fmtDecimal(grandTijd > 0 ? grandGewicht / grandTijd : 0)} gr/min</span>
+  </div>`;
+
+  container.innerHTML = html;
+
+  container.querySelectorAll('td[contenteditable]').forEach(td => {
+    td.addEventListener('blur', () => {
+      const field = td.dataset.field;
+      const month = td.dataset.month;
+      const idx = parseInt(td.dataset.idx);
+      const val = td.textContent.trim();
+      const data = loadData();
+      let found = null;
+      let count = 0;
+      for (const r of data) {
+        if (r.month === month) {
+          if (count === idx) { found = r; break; }
+          count++;
+        }
+      }
+      if (found) {
+        if (field === 'datum') {
+          const yearMatch = found.month && found.month.match(/(\d{4})/);
+          const jaar = yearMatch ? parseInt(yearMatch[1]) : undefined;
+          const newMonth = deriveMonth(val, jaar);
+          if (newMonth) found.month = newMonth;
+        }
+        if (field === 'kroes' || field === 'schub' || field === 'spiegel' || field === 'ander' || field === 'gewicht') {
+          found[field] = parseInt(val) || 0;
+          if (field === 'kroes' || field === 'schub' || field === 'spiegel' || field === 'ander') {
+            found.aantal = (found.kroes || 0) + (found.schub || 0) + (found.spiegel || 0) + (found.ander || 0);
+            found.gewicht = (found.kroes || 0) * GEW_KROES + (found.schub || 0) * GEW_SCHUB + (found.spiegel || 0) * GEW_SPIEGEL + (found.ander || 0) * GEW_ANDER;
+          }
+        } else {
+          found[field] = val;
+          if (field === 'begin' || field === 'einde') {
+            const d = calcDuurVanBeginEinde(found.begin, found.einde);
+            if (d != null) found.duurMin = d;
+          }
+        }
+        sortData(data);
+        saveData(data);
+        render();
+        showToast('✅ Bijgewerkt');
+      }
+    });
+    td.addEventListener('keydown', e => {
+      if (e.key === 'Enter') { e.preventDefault(); td.blur(); }
+    });
+  });
+
+  container.querySelectorAll('td.wedstrijd-toggle').forEach(td => {
+    td.addEventListener('click', () => {
+      const month = td.dataset.month;
+      const idx = parseInt(td.dataset.idx);
+      const data = loadData();
+      let found = null, count = 0;
+      for (const r of data) {
+        if (r.month === month) {
+          if (count === idx) { found = r; break; }
+          count++;
+        }
+      }
+      if (found) {
+        found.wedstrijd = found.wedstrijd ? '' : '🏆';
+        saveData(data);
+        render();
+        showToast(found.wedstrijd ? '🏆 Wedstrijd' : '⬜ Normaal');
+      }
+    });
+  });
+
+  container.querySelectorAll('td.row-delete').forEach(td => {
+    td.addEventListener('click', () => {
+      const month = td.dataset.month;
+      const idx = parseInt(td.dataset.idx);
+      const data = loadData();
+      let found = -1, count = 0;
+      for (let i = 0; i < data.length; i++) {
+        if (data[i].month === month) {
+          if (count === idx) { found = i; break; }
+          count++;
+        }
+      }
+      if (found !== -1) {
+        if (!confirm(`Verwijder sessie van ${data[found].datum} (stek ${data[found].stek})?`)) return;
+        data.splice(found, 1);
+        saveData(data);
+        render();
+        showToast('🗑️ Verwijderd');
+      }
+    });
+  });
+
+  container.querySelectorAll('.month-header').forEach(header => {
+    header.addEventListener('click', () => {
+      const collKey = header.dataset.collapse;
+      if (!collKey) return;
+      const body = header.nextElementSibling;
+      if (!body || !body.classList.contains('month-body')) return;
+      const isNowCollapsed = body.classList.toggle('collapsed');
+      localStorage.setItem(collKey, isNowCollapsed ? '1' : '0');
+      const span = header.querySelector('span:first-child');
+      if (span) span.textContent = (isNowCollapsed ? '▶' : '▼') + span.textContent.slice(1);
+    });
+  });
+
+  updateStats();
+}
+
+function updateStats() {
+  const alleData = loadData();
+  const jaar = huidigJaar();
+  const data = filterJaar(alleData, jaar);
+  const el = document.getElementById('stats-content');
+  if (!alleData.length) {
+    el.innerHTML = '<p class="empty-msg">Importeer eerst data.</p>';
+    return;
+  }
+  if (!data.length) {
+    el.innerHTML = '<p class="empty-msg">Geen data voor ' + jaar + '.</p>';
+    return;
+  }
+
+  const computed = data.map(r => computeFields(r));
+  const total = computed.reduce((a, r) => ({
+    kroes: a.kroes + r.kroes, schub: a.schub + r.schub,
+    spiegel: a.spiegel + r.spiegel, ander: a.ander + r.ander,
+    aantal: a.aantal + r.aantal, gewicht: a.gewicht + r.gewicht,
+    tijdMin: a.tijdMin + r.tijdMin
+  }), { kroes: 0, schub: 0, spiegel: 0, ander: 0, aantal: 0, gewicht: 0, tijdMin: 0 });
+
+  const metVangst = computed.filter(r => r.aantal > 0);
+  const gemGramMin = total.tijdMin > 0 ? total.gewicht / total.tijdMin : 0;
+  const sessieGem = data.length > 0 ? total.gewicht / data.length : 0;
+  const gemPerVis = total.aantal > 0 ? total.gewicht / total.aantal : 0;
+
+  const maanden = ['jan','feb','mar','apr','mei','jun','jul','aug','sep','okt','nov','dec'];
+  const perMaand = {};
+  for (const r of computed) {
+    const m = r.month ? r.month.match(/([a-z]+)/i) : null;
+    const key = m ? m[1].toLowerCase().substring(0,3) : 'onb';
+    if (!perMaand[key]) perMaand[key] = { aantal: 0, gewicht: 0, tijd: 0, sessies: 0 };
+    perMaand[key].aantal += r.aantal;
+    perMaand[key].gewicht += r.gewicht;
+    perMaand[key].tijd += r.tijdMin;
+    perMaand[key].sessies++;
+  }
+  const maxMaandAantal = Math.max(...Object.values(perMaand).map(v => v.aantal), 1);
+  const maxMaandGewicht = Math.max(...Object.values(perMaand).map(v => v.gewicht), 1);
+
+  const beste = [...computed].filter(r => r.aantal > 0).sort((a, b) => b.gramMin - a.gramMin).slice(0, 5);
+
+  const steken = {};
+  for (const r of computed) {
+    if (r.stek && r.stek !== '--') {
+      if (!steken[r.stek]) steken[r.stek] = { aantal: 0, gewicht: 0, sessies: 0 };
+      steken[r.stek].aantal += r.aantal;
+      steken[r.stek].gewicht += r.gewicht;
+      steken[r.stek].sessies++;
+    }
+  }
+
+  const trendData = [...computed].filter(r => r.aantal > 0 && r.datum).sort((a, b) => {
+    function dv(r) { const p = r.datum.split('/'); return p.length === 2 ? parseInt(p[1])*100 + parseInt(p[0]) : 99999; }
+    return dv(a) - dv(b);
+  });
+
+  let html = '';
+
+  const leeg = data.length - metVangst.length;
+  html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:20px">' +
+    '<div style="background:#fff;border-radius:12px;border:1px solid #e2e8f0;padding:14px;text-align:center">' +
+      '<div style="font-size:11px;text-transform:uppercase;color:#64748b;font-weight:600;letter-spacing:0.5px">Totaal vis</div>' +
+      '<div style="font-size:28px;font-weight:800;color:#1e293b;margin-top:4px">' + total.aantal.toLocaleString('nl-NL') + '</div></div>' +
+    '<div style="background:#fff;border-radius:12px;border:1px solid #e2e8f0;padding:14px;text-align:center">' +
+      '<div style="font-size:11px;text-transform:uppercase;color:#64748b;font-weight:600;letter-spacing:0.5px">Totaal gewicht</div>' +
+      '<div style="font-size:28px;font-weight:800;color:#1e293b;margin-top:4px">' + (total.gewicht/1000).toLocaleString('nl-NL',{maximumFractionDigits:1}) + ' <span style="font-size:14px;font-weight:600;color:#64748b">kg</span></div></div>' +
+    '<div style="background:#fff;border-radius:12px;border:1px solid #e2e8f0;padding:14px;text-align:center">' +
+      '<div style="font-size:11px;text-transform:uppercase;color:#64748b;font-weight:600;letter-spacing:0.5px">Gr/min</div>' +
+      '<div style="font-size:28px;font-weight:800;color:#1e293b;margin-top:4px">' + Math.round(gemGramMin).toLocaleString('nl-NL') + '</div></div>' +
+    '<div style="background:#fff;border-radius:12px;border:1px solid #e2e8f0;padding:14px;text-align:center">' +
+      '<div style="font-size:11px;text-transform:uppercase;color:#64748b;font-weight:600;letter-spacing:0.5px">Gem. vis/sessie</div>' +
+      '<div style="font-size:28px;font-weight:800;color:#1e293b;margin-top:4px">' + (total.aantal/data.length).toLocaleString('nl-NL',{maximumFractionDigits:1}) + '</div></div>' +
+    '<div style="background:#fff;border-radius:12px;border:1px solid #e2e8f0;padding:14px;text-align:center">' +
+      '<div style="font-size:11px;text-transform:uppercase;color:#64748b;font-weight:600;letter-spacing:0.5px">Gem. gewicht/vis</div>' +
+      '<div style="font-size:28px;font-weight:800;color:#1e293b;margin-top:4px">' + (gemPerVis/1000).toLocaleString('nl-NL',{maximumFractionDigits:2}) + ' <span style="font-size:14px;font-weight:600;color:#64748b">kg</span></div></div>' +
+    '<div style="background:#fff;border-radius:12px;border:1px solid #e2e8f0;padding:14px;text-align:center">' +
+      '<div style="font-size:11px;text-transform:uppercase;color:#64748b;font-weight:600;letter-spacing:0.5px">Sessies</div>' +
+      '<div style="font-size:28px;font-weight:800;color:#1e293b;margin-top:4px">' + data.length + ' <span style="font-size:13px;font-weight:600;color:' + (leeg > 0 ? '#dc2626' : '#16a34a') + '">(' + (leeg > 0 ? leeg + ' leeg' : 'vol') + ')</span></div></div>' +
+  '</div>';
+
+  const jaarData = {};
+  for (const r of alleData) {
+    const m = r.month || '';
+    const y = m.match(/(\d{4})/);
+    const jr = y ? parseInt(y[1]) : 0;
+    if (!jr) continue;
+    if (!jaarData[jr]) jaarData[jr] = [];
+    jaarData[jr].push(computeFields(r));
+  }
+  const jaren = Object.keys(jaarData).sort();
+  if (jaren.length > 1) {
+    html += '<div style="background:#fff;border-radius:12px;border:1px solid #e2e8f0;padding:16px;margin-bottom:20px">' +
+      '<div style="font-size:13px;font-weight:700;color:#1e293b;margin-bottom:12px">Jaarvergelijking</div>';
+    const metrics = [
+      { key: 'aantal', label: 'Totaal vis', suffix: '' },
+      { key: 'gewicht', label: 'Totaal gewicht', suffix: ' kg', div: 1000, fmt: v => (v/1000).toFixed(1) },
+      { key: 'sessies', label: 'Sessies', suffix: '' },
+      { key: 'gramMin', label: 'Gr/min', suffix: '', fmt: v => Math.round(v) },
+    ];
+    for (const m of metrics) {
+      const vals = jaren.map(j => {
+        const c = jaarData[j];
+        let total;
+        if (m.key === 'sessies') total = c.length;
+        else if (m.key === 'gramMin') {
+          const tot = c.reduce((a, r) => ({gewicht: a.gewicht + r.gewicht, tijd: a.tijd + r.tijdMin}), {gewicht: 0, tijd: 0});
+          total = tot.tijd > 0 ? tot.gewicht / tot.tijd : 0;
+        }
+        else total = c.reduce((a, r) => a + (r[m.key] || 0), 0);
+        if (m.div) total = total / m.div;
+        return { jr: j, val: total };
+      });
+      const maxVal = Math.max(...vals.map(v => v.val), 1);
+      html += '<div style="margin-bottom:10px"><div style="font-size:11px;font-weight:600;color:#64748b;margin-bottom:4px">' + m.label + '</div>';
+      for (const v of vals) {
+        const pct = Math.max(3, (v.val / maxVal) * 100);
+        const isCurrent = parseInt(v.jr) === parseInt(jaar);
+        html += '<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;font-size:11px">' +
+          '<div style="width:32px;font-weight:' + (isCurrent ? '700' : '500') + ';color:' + (isCurrent ? '#1e40af' : '#64748b') + '">' + v.jr + '</div>' +
+          '<div style="flex:1;height:16px;background:#f1f5f9;border-radius:3px;overflow:hidden">' +
+            '<div style="height:100%;width:' + pct + '%;background:' + (isCurrent ? '#1e40af' : '#94a3b8') + ';border-radius:3px;display:flex;align-items:center;padding-left:4px">' +
+              '<span style="font-size:8px;font-weight:600;color:#fff;white-space:nowrap">' + (m.fmt ? m.fmt(v.val) : v.val.toLocaleString('nl-NL')) + m.suffix + '</span></div></div></div>';
+      }
+      html += '</div>';
+    }
+    html += '</div>';
+  }
+
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">' +
+    '<div style="background:#fff;border-radius:12px;border:1px solid #e2e8f0;padding:16px">' +
+      '<div style="font-size:13px;font-weight:700;color:#1e293b;margin-bottom:12px">Vis per maand</div>';
+  for (const m of maanden) {
+    const v = perMaand[m];
+    if (!v) continue;
+    const pct = Math.max(4, (v.aantal / maxMaandAantal) * 100);
+    html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">' +
+      '<div style="width:28px;font-size:11px;font-weight:600;color:#64748b;text-align:right">' + m + '</div>' +
+      '<div style="flex:1;height:22px;background:#f1f5f9;border-radius:4px;overflow:hidden">' +
+        '<div style="height:100%;width:' + pct + '%;background:#1e40af;border-radius:4px;display:flex;align-items:center;padding-left:6px">' +
+          '<span style="font-size:10px;font-weight:700;color:#fff;white-space:nowrap">' + v.aantal + '</span></div></div></div>';
+  }
+  html += '</div>' +
+    '<div style="background:#fff;border-radius:12px;border:1px solid #e2e8f0;padding:16px">' +
+      '<div style="font-size:13px;font-weight:700;color:#1e293b;margin-bottom:12px">Gewicht per maand</div>';
+  for (const m of maanden) {
+    const v = perMaand[m];
+    if (!v) continue;
+    const pct = Math.max(4, (v.gewicht / maxMaandGewicht) * 100);
+    html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">' +
+      '<div style="width:28px;font-size:11px;font-weight:600;color:#64748b;text-align:right">' + m + '</div>' +
+      '<div style="flex:1;height:22px;background:#f1f5f9;border-radius:4px;overflow:hidden">' +
+        '<div style="height:100%;width:' + pct + '%;background:#16a34a;border-radius:4px;display:flex;align-items:center;padding-left:6px">' +
+          '<span style="font-size:10px;font-weight:700;color:#fff;white-space:nowrap">' + (v.gewicht/1000).toFixed(1) + '</span></div></div></div>';
+  }
+  html += '</div></div>';
+
+  const soorten = [
+    { label: 'Kroes', count: total.kroes, color: '#3b82f6' },
+    { label: 'Schub', count: total.schub, color: '#10b981' },
+    { label: 'Spiegel', count: total.spiegel, color: '#f59e0b' },
+    { label: 'Ander', count: total.ander, color: '#8b5cf6' },
+  ];
+  const maxSoort = Math.max(...soorten.map(s => s.count), 1);
+  html += '<div style="background:#fff;border-radius:12px;border:1px solid #e2e8f0;padding:16px;margin-bottom:20px">' +
+    '<div style="font-size:13px;font-weight:700;color:#1e293b;margin-bottom:12px">Vissoort verdeling</div>';
+  for (const s of soorten) {
+    if (s.count <= 0) continue;
+    const pct = total.aantal > 0 ? (s.count / total.aantal * 100) : 0;
+    const barPct = Math.max(4, (s.count / maxSoort) * 100);
+    html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">' +
+      '<div style="width:54px;font-size:11px;font-weight:600;color:#64748b;text-align:right">' + s.label + '</div>' +
+      '<div style="flex:1;height:22px;background:#f1f5f9;border-radius:4px;overflow:hidden">' +
+        '<div style="height:100%;width:' + barPct + '%;background:' + s.color + ';border-radius:4px;display:flex;align-items:center;padding-left:6px">' +
+          '<span style="font-size:10px;font-weight:700;color:#fff;white-space:nowrap">' + s.count + ' (' + pct.toFixed(0) + '%)</span></div></div></div>';
+  }
+  html += '</div>';
+
+  if (trendData.length >= 2) {
+    const W = 600, H = 180, padL = 40, padR = 16, padT = 16, padB = 28;
+    const cw = W - padL - padR, ch = H - padT - padB;
+    const maxVal = Math.max(...trendData.map(r => r.gramMin), 1);
+    const range = maxVal || 1;
+    const points = trendData.map((r, i) => {
+      const x = padL + (i / (trendData.length - 1)) * cw;
+      const y = padT + ch - (r.gramMin / range) * ch;
+      return x + ',' + y;
+    });
+    const yTicks = [0, Math.round(maxVal/2), Math.round(maxVal)];
+    html += '<div style="background:#fff;border-radius:12px;border:1px solid #e2e8f0;padding:16px;margin-bottom:20px">' +
+      '<div style="font-size:13px;font-weight:700;color:#1e293b;margin-bottom:8px">Trend — gr/min per sessie</div>' +
+      '<div style="overflow-x:auto">' +
+        '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;max-width:100%;height:auto">' +
+          '<line x1="' + padL + '" y1="' + padT + '" x2="' + padL + '" y2="' + (padT+ch) + '" stroke="#e2e8f0" stroke-width="1"/>' +
+          '<line x1="' + padL + '" y1="' + (padT+ch) + '" x2="' + (padL+cw) + '" y2="' + (padT+ch) + '" stroke="#e2e8f0" stroke-width="1"/>';
+    for (const v of yTicks) {
+      const y = padT + ch - (v / range) * ch;
+      html += '<text x="' + (padL-6) + '" y="' + (y+4) + '" text-anchor="end" font-size="10" fill="#94a3b8">' + v + '</text>' +
+        '<line x1="' + padL + '" y1="' + y + '" x2="' + (padL+cw) + '" y2="' + y + '" stroke="#f1f5f9" stroke-width="1"/>';
+    }
+    html += '<polyline points="' + points.join(' ') + '" fill="none" stroke="#1e40af" stroke-width="2" stroke-linejoin="round"/>';
+    for (let i = 0; i < trendData.length; i++) {
+      const r = trendData[i];
+      const x = padL + (i / (trendData.length - 1)) * cw;
+      const y = padT + ch - (r.gramMin / range) * ch;
+      const info = r.datum + ' — ' + (r.stek || '--') + ': ' + r.aantal + ' vis · ' + fmtGewicht(r.gewicht) + ' · ' + Math.round(r.gramMin).toLocaleString('nl-NL') + ' gr/min';
+      html += '<circle cx="' + x + '" cy="' + y + '" r="5" fill="#fff" stroke="#1e40af" stroke-width="2" style="cursor:pointer" onclick="trendDetail(\'' + info.replace(/'/g, "\\'") + '\')">' +
+        '<title>' + info + '</title></circle>';
+    }
+    for (let i = 0; i < trendData.length; i++) {
+      const x = padL + (i / (trendData.length - 1)) * cw;
+      const anchor = i === 0 ? 'start' : i === trendData.length-1 ? 'end' : 'middle';
+      html += '<text x="' + x + '" y="' + (padT+ch+14) + '" text-anchor="' + anchor + '" font-size="8" fill="#94a3b8" transform="rotate(-45,' + x + ',' + (padT+ch+14) + ')">' + trendData[i].datum + '</text>';
+    }
+    html += '</svg></div>' +
+      '<div id="trend-detail" style="display:none;margin-top:8px;padding:8px 12px;background:#f8fafc;border-radius:6px;font-size:12px;color:#1e293b;font-weight:500">' +
+      '</div></div>';
+  }
+
+  function renderTopSessies(sessies, label, borderColor) {
+    if (!sessies.length) return '';
+    const maxVal = sessies[0].gramMin || 1;
+    let h = '<div style="background:#fff;border-radius:12px;border:1px solid #e2e8f0;border-left:3px solid ' + borderColor + ';padding:14px;margin-bottom:12px">' +
+      '<div style="font-size:12px;font-weight:600;color:#1e293b;margin-bottom:10px">' + label + '</div>';
+    for (let i = 0; i < sessies.length; i++) {
+      const r = sessies[i];
+      const pct = Math.max(3, (r.gramMin / maxVal) * 100);
+      h += '<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;font-size:12px">' +
+        '<div style="width:16px;font-weight:600;color:#94a3b8">' + (i+1) + '</div>' +
+        '<div style="width:42px;font-weight:500;color:#1e293b">' + r.datum + '</div>' +
+        '<div style="width:36px;font-size:11px;color:#64748b;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + (r.stek || '--') + '</div>' +
+        '<div style="flex:1;height:18px;background:#f8fafc;border-radius:3px;overflow:hidden">' +
+          '<div style="height:100%;width:' + pct + '%;background:' + borderColor + ';border-radius:3px;display:flex;align-items:center;padding-left:5px">' +
+            '<span style="font-size:9px;font-weight:600;color:#fff;white-space:nowrap">' + Math.round(r.gramMin).toLocaleString('nl-NL') + ' gr/min · ' + r.aantal + ' vis</span></div></div></div>';
+    }
+    h += '</div>';
+    return h;
+  }
+
+  const besteG = [...computed].filter(r => r.aantal > 0 && r.stek && r.stek.match(/^G/i)).sort((a, b) => b.gramMin - a.gramMin).slice(0, 5);
+  const besteAndere = [...computed].filter(r => r.aantal > 0 && (!r.stek || !r.stek.match(/^G/i))).sort((a, b) => b.gramMin - a.gramMin).slice(0, 5);
+  if (besteG.length || besteAndere.length) {
+    html += '<div style="margin-bottom:20px">' +
+      '<div style="font-size:13px;font-weight:700;color:#1e293b;margin-bottom:10px">Top 5 sessies (gr/min)</div>';
+    html += renderTopSessies(besteG, 'G-stekken', '#3b82f6');
+    html += renderTopSessies(besteAndere, 'Andere', '#64748b');
+    html += '</div>';
+  }
+
+  function renderTopStekken(entries, label, borderColor) {
+    if (!entries.length) return '';
+    const maxVal = entries[0][1].gewicht / entries[0][1].sessies || 1;
+    let h = '<div style="background:#fff;border-radius:12px;border:1px solid #e2e8f0;border-left:3px solid ' + borderColor + ';padding:14px;margin-bottom:12px">' +
+      '<div style="font-size:12px;font-weight:600;color:#1e293b;margin-bottom:10px">' + label + '</div>';
+    for (let i = 0; i < entries.length; i++) {
+      const [stek, s] = entries[i];
+      const gem = s.gewicht / s.sessies / 1000;
+      const pct = Math.max(3, (gem / (maxVal/1000)) * 100);
+      h += '<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;font-size:12px">' +
+        '<div style="width:16px;font-weight:600;color:#94a3b8">' + (i+1) + '</div>' +
+        '<div style="width:42px;font-weight:500;color:#1e293b">' + stek + '</div>' +
+        '<div style="flex:1;height:18px;background:#f8fafc;border-radius:3px;overflow:hidden">' +
+          '<div style="height:100%;width:' + pct + '%;background:' + borderColor + ';border-radius:3px;display:flex;align-items:center;padding-left:5px">' +
+            '<span style="font-size:9px;font-weight:600;color:#fff;white-space:nowrap">' + gem.toFixed(1) + ' kg/sessie · ' + s.aantal + ' vis · ' + s.sessies + 'x</span></div></div></div>';
+    }
+    h += '</div>';
+    return h;
+  }
+
+  const stekEntriesG = Object.entries(steken).filter(([k]) => k.match(/^G/i)).sort((a, b) => (b[1].gewicht / b[1].sessies) - (a[1].gewicht / a[1].sessies)).slice(0, 5);
+  const stekEntriesAndere = Object.entries(steken).filter(([k]) => !k.match(/^G/i)).sort((a, b) => (b[1].gewicht / b[1].sessies) - (a[1].gewicht / a[1].sessies)).slice(0, 5);
+  if (stekEntriesG.length || stekEntriesAndere.length) {
+    html += '<div style="margin-bottom:20px">' +
+      '<div style="font-size:13px;font-weight:700;color:#1e293b;margin-bottom:10px">Top 5 Stekken (gem. kg/sessie)</div>';
+    html += renderTopStekken(stekEntriesG, 'G-stekken', '#3b82f6');
+    html += renderTopStekken(stekEntriesAndere, 'Andere', '#64748b');
+    html += '</div>';
+  }
+
+  const gemKgSessie = total.gewicht / data.length / 1000;
+  const visPerUur = total.tijdMin > 0 ? (total.aantal / total.tijdMin * 60).toFixed(1) : '--';
+  const kgPerUur = total.tijdMin > 0 ? (total.gewicht / total.tijdMin / 1000 * 60).toFixed(1) : '--';
+  html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:20px">' +
+    '<div style="background:#f8fafc;border-radius:8px;padding:12px;text-align:center">' +
+      '<div style="font-size:11px;color:#64748b">Gem. kg/sessie</div>' +
+      '<div style="font-size:18px;font-weight:700;color:#1e293b;margin-top:2px">' + gemKgSessie.toFixed(1) + ' kg</div></div>' +
+    '<div style="background:#f8fafc;border-radius:8px;padding:12px;text-align:center">' +
+      '<div style="font-size:11px;color:#64748b">Vis/uur</div>' +
+      '<div style="font-size:18px;font-weight:700;color:#1e293b;margin-top:2px">' + visPerUur + '</div></div>' +
+    '<div style="background:#f8fafc;border-radius:8px;padding:12px;text-align:center">' +
+      '<div style="font-size:11px;color:#64748b">Kg/uur</div>' +
+      '<div style="font-size:18px;font-weight:700;color:#1e293b;margin-top:2px">' + kgPerUur + '</div></div>' +
+    '<div style="background:#f8fafc;border-radius:8px;padding:12px;text-align:center">' +
+      '<div style="font-size:11px;color:#64748b">Totaal tijd</div>' +
+      '<div style="font-size:18px;font-weight:700;color:#1e293b;margin-top:2px">' + fmtTime(total.tijdMin) + '</div></div>' +
+  '</div>';
+
+  el.innerHTML = html;
+}
+
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('show'));
+    tab.classList.add('active');
+    document.getElementById('tab-' + tab.dataset.tab).classList.add('show');
+  });
+});
+
+document.getElementById('btn-add').addEventListener('click', () => {
+  const f = document.getElementById('add-form');
+  f.classList.toggle('hidden');
+  if (!f.classList.contains('hidden')) document.getElementById('f-datum').focus();
+});
+document.getElementById('btn-cancel-add').addEventListener('click', () => {
+  document.getElementById('add-form').classList.add('hidden');
+});
+['f-begin', 'f-einde'].forEach(id => {
+  const el = document.getElementById(id);
+  el.addEventListener('blur', () => {
+    el.value = formatTijdInput(el.value);
+    updateFDuur();
+  });
+  el.addEventListener('input', updateFDuur);
+});
+function updateFDuur() {
+  const d = calcDuurVanBeginEinde(
+    document.getElementById('f-begin').value,
+    document.getElementById('f-einde').value
+  );
+  if (d != null) {
+    document.getElementById('f-duurMin').value = d;
+  }
+}
+document.getElementById('btn-save-add').addEventListener('click', () => {
+  function v(id) { return document.getElementById(id).value.trim(); }
+  function n(id) { return parseInt(document.getElementById(id).value) || 0; }
+  const jaar = huidigJaar();
+  const datum = v('f-datum');
+  if (!datum) { showToast('❌ Datum is verplicht', 'error'); return; }
+  const month = deriveMonth(datum, jaar) || 'Onbekend';
+  const fDuur = n('f-duurMin') || calcDuurVanBeginEinde(v('f-begin'), v('f-einde')) || 0;
+  const row = {
+    kroes: n('f-kroes'), schub: n('f-schub'), spiegel: n('f-spiegel'), ander: n('f-ander'),
+    aantal: n('f-kroes') + n('f-schub') + n('f-spiegel') + n('f-ander'),
+    gewicht: n('f-gewicht'),
+    datum, stek: v('f-stek'), begin: v('f-begin'), einde: v('f-einde'),
+    duurMin: fDuur,
+    pijl: v('f-pijl'), beoordeling: v('f-beoordeling'),
+    tijdMin: n('f-tijdMin') || fDuur,
+    month, wedstrijd: document.getElementById('f-wedstrijd').checked ? '🏆' : ''
+  };
+  const data = loadData();
+  const bestaand = data.findIndex(r => r.datum === datum && r.month === month);
+  if (bestaand !== -1) {
+    data[bestaand] = { ...data[bestaand], ...row };
+    showToast('🔄 Bestaande sessie bijgewerkt');
+  } else {
+    data.push(row);
+    showToast('✅ Sessie toegevoegd');
+  }
+  sortData(data);
+  saveData(data);
+  document.getElementById('add-form').classList.add('hidden');
+  document.querySelectorAll('#add-form .form-input').forEach(i => i.value = '');
+  document.getElementById('f-wedstrijd').checked = false;
+  document.getElementById('f-kroes').value = '0';
+  document.getElementById('f-schub').value = '0';
+  document.getElementById('f-spiegel').value = '0';
+  document.getElementById('f-ander').value = '0';
+  document.getElementById('f-gewicht').value = '0';
+  document.getElementById('f-duurMin').value = '0';
+  render();
+});
+
+document.getElementById('btn-vs-save').addEventListener('click', () => {
+  function v(id) { return document.getElementById(id).value.trim(); }
+  function n(id) { return parseInt(document.getElementById(id).value) || 0; }
+  const jaar = huidigJaar();
+  const datum = v('vs-datum');
+  const stek = v('vs-stek') || 'Onbekend';
+  if (!datum) { showToast('❌ Datum is verplicht', 'error'); return; }
+  const month = deriveMonth(datum, jaar) || 'Onbekend';
+  const kroes = n('vs-kroes'), schub = n('vs-schub'), spiegel = n('vs-spiegel'), ander = n('vs-ander');
+  const vsDuur = calcDuurVanBeginEinde(v('vs-begin'), v('vs-einde')) || 0;
+  const row = {
+    kroes, schub, spiegel, ander,
+    aantal: parseInt(document.getElementById('vs-aantal').textContent) || 0,
+    gewicht: parseInt(document.getElementById('vs-gewicht').getAttribute('data-gram')) || 0,
+    datum, stek, begin: v('vs-begin'), einde: v('vs-einde'),
+    duurMin: vsDuur, pijl: '', beoordeling: '', tijdMin: vsDuur,
+    month, wedstrijd: ''
+  };
+  const data = loadData();
+  const bestaand = data.findIndex(r => r.datum === datum && r.month === month);
+  if (bestaand !== -1) {
+    data[bestaand].kroes = kroes;
+    data[bestaand].schub = schub;
+    data[bestaand].spiegel = spiegel;
+    data[bestaand].ander = ander;
+    data[bestaand].aantal = row.aantal;
+    data[bestaand].gewicht = row.gewicht;
+    if (stek !== 'Onbekend') data[bestaand].stek = stek;
+    if (row.begin) data[bestaand].begin = row.begin;
+    if (row.einde) data[bestaand].einde = row.einde;
+    showToast('🔄 Bestaande sessie bijgewerkt');
+  } else {
+    data.push(row);
+    showToast(`✅ ${datum} — ${month} — ${stek}`);
+  }
+  sortData(data);
+  saveData(data);
+  document.getElementById('vs-datum').value = '';
+  document.getElementById('vs-begin').value = '';
+  document.getElementById('vs-einde').value = '';
+  document.getElementById('vs-begin-display').textContent = '';
+  document.getElementById('vs-einde-display').textContent = '';
+  ['vs-kroes','vs-schub','vs-spiegel','vs-ander'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '0';
+  });
+  const ant = document.getElementById('vs-aantal');
+  if (ant) ant.textContent = '0';
+  const gew = document.getElementById('vs-gewicht');
+  if (gew) { gew.textContent = '0,000'; gew.setAttribute('data-gram', '0'); }
+  updateVsAantal();
+  render();
+  renderVisstekList();
+  document.getElementById('vs-datum').focus();
+  if (window.innerWidth < 768) {
+    document.getElementById('tab-visstek').scrollIntoView({ behavior: 'smooth' });
+  }
+});
+document.querySelectorAll('#tab-visstek input').forEach(inp => {
+  inp.addEventListener('keydown', e => {
+    if (e.key === 'Enter') document.getElementById('btn-vs-save').click();
+  });
+});
+function fmtBeginEinde(val) {
+  if (!val || val.length < 3) return '';
+  const s = val.padStart(4, '0');
+  return s.substring(0, 2) + 'u ' + s.substring(2, 4) + 'm';
+}
+['vs-begin','vs-einde'].forEach(id => {
+  document.getElementById(id).addEventListener('input', function() {
+    if (this.value.length > 4) this.value = this.value.slice(0, 4);
+    const display = document.getElementById(id + '-display');
+    if (display) display.textContent = fmtBeginEinde(this.value) || '';
+  });
+});
+function vsGewichtGram() {
+  const k = parseInt(document.getElementById('vs-kroes').value) || 0;
+  const s = parseInt(document.getElementById('vs-schub').value) || 0;
+  const p = parseInt(document.getElementById('vs-spiegel').value) || 0;
+  const a = parseInt(document.getElementById('vs-ander').value) || 0;
+  return k * GEW_KROES + s * GEW_SCHUB + p * GEW_SPIEGEL + a * GEW_ANDER;
+}
+
+function fmtKg(gram) {
+  return (gram / 1000).toLocaleString('nl-NL', { minimumFractionDigits: 3, maximumFractionDigits: 3 }) + ' kg';
+}
+
+function vsAdjust(id, delta, maxVal) {
+  const el = document.getElementById(id);
+  let v = parseInt(el.value) || 0;
+  v = Math.max(0, Math.min(maxVal || 999, v + delta));
+  el.value = String(v).padStart(3, '0');
+  updateVsAantal();
+}
+function updateVsAantal() {
+  const ids = ['vs-kroes','vs-schub','vs-spiegel','vs-ander'];
+  const sum = ids.reduce((a, id) => a + (parseInt(document.getElementById(id).value) || 0), 0);
+  const elAantal = document.getElementById('vs-aantal');
+  if (elAantal) elAantal.textContent = sum;
+  const elGewicht = document.getElementById('vs-gewicht');
+  const gram = vsGewichtGram();
+  if (elGewicht) {
+    elGewicht.textContent = (gram / 1000).toLocaleString('nl-NL', { minimumFractionDigits: 3, maximumFractionDigits: 3 });
+    elGewicht.setAttribute('data-gram', String(gram));
+  }
+}
+['vs-kroes','vs-schub','vs-spiegel','vs-ander'].forEach(id => {
+  document.getElementById(id).addEventListener('input', function() {
+    this.value = this.value.replace(/[^0-9]/g, '').slice(0, 3);
+    const v = parseInt(this.value);
+    if (v > 999) this.value = '999';
+    updateVsAantal();
+  });
+  document.getElementById(id).addEventListener('blur', function() {
+    if (this.value === '') this.value = '0';
+    this.value = String(parseInt(this.value) || 0).padStart(3, '0');
+    updateVsAantal();
+  });
+});
+
+document.getElementById('vs-datum').addEventListener('input', () => {
+  const stek = document.getElementById('vs-stek').value.trim().toLowerCase();
+  const datum = document.getElementById('vs-datum').value.trim();
+  if (!stek || !datum) return;
+  const jaar = huidigJaar();
+  const month = deriveMonth(datum, jaar);
+  const data = loadData();
+  const bestaand = data.find(r => r.datum === datum && r.month === month && r.stek && r.stek.toLowerCase() === stek);
+  if (!bestaand) return;
+  document.getElementById('vs-kroes').value = String(bestaand.kroes || 0).padStart(3, '0');
+  document.getElementById('vs-schub').value = String(bestaand.schub || 0).padStart(3, '0');
+  document.getElementById('vs-spiegel').value = String(bestaand.spiegel || 0).padStart(3, '0');
+  document.getElementById('vs-ander').value = String(bestaand.ander || 0).padStart(3, '0');
+  document.getElementById('vs-begin').value = bestaand.begin || '';
+  document.getElementById('vs-einde').value = bestaand.einde || '';
+  updateVsAantal();
+});
+function renderVisstekList() {
+  const stek = document.getElementById('vs-stek').value.trim().toLowerCase();
+  const el = document.getElementById('vs-list');
+  const data = loadData();
+  const stekDates = [...new Set(data.filter(r => r.stek && r.stek.toLowerCase() === stek).map(r => r.datum).filter(Boolean))];
+  document.getElementById('vs-datum-list').innerHTML = stekDates.map(d => `<option value="${d}">`).join('');
+  if (!stek) { el.innerHTML = '<p class="empty-msg">Voer een stek in om eerdere sessies te zien.</p>'; return; }
+  const filtered = data.filter(r => r.stek && r.stek.toLowerCase() === stek);
+  if (!filtered.length) { el.innerHTML = '<p class="empty-msg">Geen sessies voor deze stek.</p>'; return; }
+  const computed = filtered.map(r => computeFields(r)).sort((a, b) => {
+    function dv(r) { const p = r.datum ? r.datum.split('/') : []; return p.length === 2 ? parseInt(p[1]) * 100 + parseInt(p[0]) : 99999; }
+    return dv(b) - dv(a);
+  });
+  let html = `<table><thead><tr style="text-align:center"><th>Datum</th><th>Kroes</th><th>Schub</th><th>Spiegel</th><th>Ander</th><th>Aantal</th><th>Begin</th><th>Einde</th><th>Duur</th></tr></thead><tbody>`;
+  for (const c of computed) {
+    html += `<tr style="text-align:center"><td>${c.datum}</td><td class="num">${c.kroes || ''}</td><td class="num">${c.schub || ''}</td><td class="num">${c.spiegel || ''}</td><td class="num">${c.ander || ''}</td><td class="num">${c.aantal}</td><td>${c.begin}</td><td>${c.einde}</td><td class="num">${fmtTime(c.duurMin)}</td></tr>`;
+  }
+  const t = computed.reduce((a, r) => ({ kroes: a.kroes + r.kroes, schub: a.schub + r.schub, spiegel: a.spiegel + r.spiegel, ander: a.ander + r.ander, aantal: a.aantal + r.aantal }), { kroes: 0, schub: 0, spiegel: 0, ander: 0, aantal: 0 });
+  html += `<tr class="subtotal" style="text-align:center"><td>TOTAAL</td><td class="num">${t.kroes}</td><td class="num">${t.schub}</td><td class="num">${t.spiegel}</td><td class="num">${t.ander}</td><td class="num">${t.aantal}</td><td colspan="3">${filtered.length} sessies</td></tr></tbody></table>`;
+  el.innerHTML = html;
+}
+document.getElementById('vs-stek').addEventListener('input', renderVisstekList);
+
+document.querySelector('.tab[data-tab="visstek"]').addEventListener('click', () => setTimeout(renderVisstekList, 50));
+
+function updateVsDuur() {
+  const begin = document.getElementById('vs-begin').value;
+  const einde = document.getElementById('vs-einde').value;
+  const d = calcDuurVanBeginEinde(begin, einde);
+  const container = document.getElementById('vs-duur-container');
+  const el = document.getElementById('vs-duur');
+  if (d != null) {
+    el.textContent = fmtTime(d);
+    container.style.display = '';
+  } else {
+    el.textContent = '--';
+    container.style.display = 'none';
+  }
+}
+['vs-begin', 'vs-einde'].forEach(id => {
+  const el = document.getElementById(id);
+  el.addEventListener('blur', () => {
+    el.value = formatTijdInput(el.value);
+    updateVsDuur();
+  });
+  el.addEventListener('input', updateVsDuur);
+});
+
+document.getElementById('btn-remove-empty').addEventListener('click', () => {
+  let data = loadData();
+  const before = data.length;
+  data = data.filter(r => r.aantal > 0 || r.gewicht > 0);
+  const removed = before - data.length;
+  if (!removed) { showToast('ℹ️ Geen lege sessies'); return; }
+  saveData(data);
+  render();
+  showToast(`🧹 ${removed} lege sessies verwijderd`);
+});
+
+document.getElementById('btn-remove-nodate').addEventListener('click', () => {
+  let data = loadData();
+  const before = data.length;
+  data = data.filter(r => r.datum && r.datum.trim());
+  const removed = before - data.length;
+  if (!removed) { showToast('ℹ️ Alle rijen hebben een datum'); return; }
+  saveData(data);
+  render();
+  showToast(`📅 ${removed} rijen zonder datum verwijderd`);
+});
+
+document.getElementById('btn-clear').addEventListener('click', () => {
+  if (!confirm('Alle vissessies data wissen?')) return;
+  if (!confirm('Zeker? Dit kan niet ongedaan gemaakt worden.')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  render();
+  showToast('✅ Data gewist');
+});
+
+document.getElementById('btn-seed').addEventListener('click', () => {
+  if (loadData().length) {
+    if (!confirm('Er bestaat al data. Overschrijven?')) return;
+  }
+  const j = huidigJaar();
+  const maanden = ['jan','feb','mar','apr','mei','jun','jul','aug','sep','okt','nov','dec'];
+  const seed = [
+    {kroes:17,schub:4,spiegel:0,ander:4,aantal:25,gewicht:11700,datum:'24/02',stek:'18',begin:'8u 27m',einde:'14u 0m',duurMin:333,pijl:'⬆',beoordeling:'***',tijdMin:333,month:'feb '+j,wedstrijd:''},
+    {kroes:31,schub:5,spiegel:2,ander:8,aantal:46,gewicht:21200,datum:'02/03',stek:'5',begin:'8u 15m',einde:'14u 15m',duurMin:360,pijl:'⬆',beoordeling:'****',tijdMin:360,month:'mar '+j,wedstrijd:'🏆'},
+    {kroes:14,schub:6,spiegel:0,ander:12,aantal:32,gewicht:15000,datum:'19/03',stek:'5',begin:'8u 25m',einde:'14u 0m',duurMin:335,pijl:'⬇',beoordeling:'***',tijdMin:335,month:'mar '+j,wedstrijd:''},
+    {kroes:27,schub:4,spiegel:18,ander:0,aantal:49,gewicht:42900,datum:'24/03',stek:'G',begin:'8u 8m',einde:'14u 8m',duurMin:360,pijl:'⬆',beoordeling:'****',tijdMin:360,month:'mar '+j,wedstrijd:'🏆'},
+    {kroes:36,schub:0,spiegel:4,ander:5,aantal:45,gewicht:17950,datum:'01/04',stek:'25',begin:'8u 0m',einde:'14u 0m',duurMin:360,pijl:'⬇',beoordeling:'****',tijdMin:360,month:'apr '+j,wedstrijd:'🏆'},
+    {kroes:4,schub:1,spiegel:1,ander:7,aantal:13,gewicht:5350,datum:'08/04',stek:'20',begin:'8u 2m',einde:'13u 55m',duurMin:353,pijl:'⬇',beoordeling:'**',tijdMin:353,month:'apr '+j,wedstrijd:''},
+    {kroes:6,schub:3,spiegel:8,ander:0,aantal:17,gewicht:19100,datum:'15/04',stek:'G 1',begin:'9u 9m',einde:'13u 9m',duurMin:240,pijl:'⬆',beoordeling:'**',tijdMin:240,month:'apr '+j,wedstrijd:''},
+    {kroes:19,schub:8,spiegel:3,ander:3,aantal:33,gewicht:22950,datum:'22/04',stek:'1',begin:'7u 56m',einde:'14u 16m',duurMin:380,pijl:'⬆',beoordeling:'***',tijdMin:380,month:'apr '+j,wedstrijd:'🏆'},
+    {kroes:33,schub:8,spiegel:3,ander:5,aantal:49,gewicht:27450,datum:'28/04',stek:'13',begin:'8u 5m',einde:'14u 45m',duurMin:400,pijl:'⬆',beoordeling:'****',tijdMin:400,month:'apr '+j,wedstrijd:''},
+    {kroes:7,schub:1,spiegel:1,ander:1,aantal:10,gewicht:5350,datum:'01/05',stek:'12',begin:'13u 0m',einde:'17u 0m',duurMin:240,pijl:'⬆',beoordeling:'*',tijdMin:240,month:'mei '+j,wedstrijd:''},
+    {kroes:15,schub:11,spiegel:30,ander:0,aantal:56,gewicht:69000,datum:'04/05',stek:'G 7',begin:'7u 53m',einde:'13u 5m',duurMin:312,pijl:'⬆',beoordeling:'*****',tijdMin:312,month:'mei '+j,wedstrijd:'🏆'},
+    {kroes:24,schub:6,spiegel:1,ander:16,aantal:47,gewicht:20200,datum:'12/05',stek:'--',begin:'8u 5m',einde:'14u 5m',duurMin:360,pijl:'⬇',beoordeling:'****',tijdMin:360,month:'mei '+j,wedstrijd:''},
+    {kroes:15,schub:19,spiegel:16,ander:0,aantal:50,gewicht:58600,datum:'20/05',stek:'G 13',begin:'8u 10m',einde:'14u 10m',duurMin:360,pijl:'⬆',beoordeling:'****',tijdMin:360,month:'mei '+j,wedstrijd:'🏆'},
+    {kroes:29,schub:9,spiegel:13,ander:0,aantal:51,gewicht:43000,datum:'25/05',stek:'G 2',begin:'7u 38m',einde:'12u 54m',duurMin:316,pijl:'⬇',beoordeling:'*****',tijdMin:316,month:'mei '+j,wedstrijd:'🏆'},
+    {kroes:19,schub:14,spiegel:33,ander:0,aantal:66,gewicht:79500,datum:'01/06',stek:'G 11',begin:'7u 34m',einde:'13u 34m',duurMin:360,pijl:'⬆',beoordeling:'*****',tijdMin:360,month:'jun '+j,wedstrijd:'🏆'},
+  ];
+  sortData(seed);
+  saveData(seed);
+  render();
+  showToast('✅ Voorbeelddata geladen (15 sessies voor '+j+')');
+});
+
+const BACKUP_API = '/admin/api/vissessies-backup';
+
+function backupStatus(msg, isError) {
+  const el = document.getElementById('backup-status');
+  el.textContent = msg;
+  el.style.color = isError ? '#dc2626' : '#166534';
+}
+
+async function backupCreate() {
+  backupStatus('🔄 Bezig met backup...');
+  try {
+    const res = await fetch(BACKUP_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'create' })
+    });
+    const json = await res.json();
+    if (json.ok) {
+      backupStatus('✅ Backup gemaakt: ' + json.file);
+      showToast('✅ Backup gemaakt');
+    } else {
+      backupStatus('❌ ' + (json.error || 'Fout'), true);
+    }
+  } catch (e) {
+    backupStatus('❌ ' + e.message, true);
+  }
+}
+
+async function backupList() {
+  const el = document.getElementById('backup-list');
+  backupStatus('🔄 Backups ophalen...');
+  try {
+    const res = await fetch(BACKUP_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'list' })
+    });
+    const json = await res.json();
+    if (json.backups && json.backups.length) {
+      el.style.display = '';
+      el.innerHTML = '<div style="font-weight:600;margin-bottom:4px">Beschikbare backups:</div>' +
+        json.backups.map(f =>
+          `<div style="display:flex;gap:8px;align-items:center;padding:3px 0;font-size:12px">
+            <span>${f}</span>
+            <button class="btn btn-outline" style="padding:2px 8px;font-size:11px" onclick="backupRestore('${f}')">Herstel</button>
+            <button class="btn btn-outline" style="padding:2px 8px;font-size:11px" onclick="backupDownloadFile('${f}')">⬇️</button>
+          </div>`
+        ).join('');
+      backupStatus('✅ ' + json.backups.length + ' backup(s) gevonden');
+    } else {
+      el.style.display = 'none';
+      backupStatus('ℹ️ Geen backups gevonden');
+    }
+  } catch (e) {
+    backupStatus('❌ ' + e.message, true);
+  }
+}
+
+async function backupDownloadFile(file) {
+  try {
+    const res = await fetch(BACKUP_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'download', file })
+    });
+    if (!res.ok) { backupStatus('❌ Download mislukt', true); return; }
+    const blob = await res.blob();
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = file;
+    a.click();
+    URL.revokeObjectURL(a.href);
+    backupStatus('✅ Download gestart: ' + file);
+  } catch (e) {
+    backupStatus('❌ ' + e.message, true);
+  }
+}
+
+async function backupRestore(file) {
+  if (!confirm('Herstel data van ' + file + '? Huidige data gaat verloren.')) return;
+  backupStatus('🔄 Bezig met herstel van ' + file + '...');
+  try {
+    const res = await fetch(BACKUP_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'restore', file })
+    });
+    const json = await res.json();
+    if (json.ok) {
+      backupStatus('✅ Hersteld van ' + file + ' (' + json.count + ' sessies)');
+      render();
+      showToast('✅ Data hersteld van ' + file);
+    } else {
+      backupStatus('❌ ' + (json.error || 'Fout'), true);
+    }
+  } catch (e) {
+    backupStatus('❌ ' + e.message, true);
+  }
+}
+
+async function backupDownload() {
+  try {
+    const res = await fetch(BACKUP_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'list' })
+    });
+    const json = await res.json();
+    if (!json.backups || !json.backups.length) {
+      backupStatus('ℹ️ Geen backups om te downloaden. Maak eerst een backup.');
+      return;
+    }
+    backupStatus('📋 Kies een backup om te downloaden in de lijst');
+    await backupList();
+  } catch (e) {
+    backupStatus('❌ ' + e.message, true);
+  }
+}
+
+document.getElementById('btn-backup-create').addEventListener('click', backupCreate);
+document.getElementById('btn-backup-list').addEventListener('click', backupList);
+document.getElementById('btn-backup-download').addEventListener('click', backupDownload);
+document.getElementById('btn-backup-upload').addEventListener('click', () => {
+  document.getElementById('backup-file-input').click();
+});
+document.getElementById('backup-file-input').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  backupStatus('🔄 Bezig met uploaden...');
+  try {
+    const text = await file.text();
+    const data = JSON.parse(text);
+    if (!Array.isArray(data)) throw new Error('Bestand bevat geen geldige vissessies-data');
+    const res = await fetch(BACKUP_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'upload', data })
+    });
+    const json = await res.json();
+    if (json.ok) {
+      backupStatus('✅ ' + json.count + ' sessies hersteld uit ' + file.name);
+      render();
+      showToast('✅ Data hersteld uit ' + file.name);
+    } else {
+      backupStatus('❌ ' + (json.error || 'Fout'), true);
+    }
+  } catch (e) {
+    backupStatus('❌ ' + e.message, true);
+  }
+  e.target.value = '';
+});
+
+function initJaarSelector() {
+  const sel = document.getElementById('year-select');
+  const actief = huidigJaar();
+  sel.innerHTML = jaarOpties.map(y => `<option value="${y}"${y === actief ? ' selected' : ''}>${y}</option>`).join('');
+  sel.addEventListener('change', () => {
+    bewaarJaar(parseInt(sel.value));
+    render();
+  });
+}
+
+document.querySelector('.tab[data-tab="data"]').addEventListener('click', () => {
+  const sel = document.getElementById('year-select');
+  const actief = huidigJaar();
+  if (parseInt(sel.value) !== actief) sel.value = actief;
+});
+document.querySelector('.tab[data-tab="stats"]').addEventListener('click', () => {
+  const sel = document.getElementById('year-select');
+  const actief = huidigJaar();
+  if (parseInt(sel.value) !== actief) sel.value = actief;
+});
+
+initJaarSelector();
+render();
+</script>
