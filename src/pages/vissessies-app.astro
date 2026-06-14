@@ -1,16 +1,21 @@
 ---
 export const prerender = false;
+import fs from 'node:fs';
+import path from 'node:path';
+const DATA_PATH = path.resolve('./public/data/vissessies.json');
+let serverData = [];
+try { serverData = JSON.parse(fs.readFileSync(DATA_PATH, 'utf-8')); } catch {}
 ---
 
 <!DOCTYPE html>
 <html lang="nl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Vissessies">
-<link rel="apple-touch-icon" href="/vissessies-icon-192.png">
+<link rel="apple-touch-icon" href="/vissessies-icon.svg">
 <link rel="manifest" href="/manifest.json">
 <title>Vissessies</title>
 <style is:inline>
@@ -24,6 +29,7 @@ h1 { font-size: 20px; margin-bottom: 4px; }
 .tab.danger { color: #dc2626; border-color: #fecaca; }
 .panel { background: #fff; border-radius: 12px; border: 1px solid #e2e8f0; padding: 16px; margin-bottom: 12px; display: none; }
 .panel.show { display: block; }
+@media (display-mode: standalone) { .tabs { display: none !important; } }
 textarea { width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px; font-family: monospace; font-size: 12px; resize: vertical; }
 .btn { padding: 8px 18px; border-radius: 8px; font-weight: 600; font-size: 13px; border: none; cursor: pointer; }
 .btn-primary { background: #1e40af; color: #fff; }
@@ -236,16 +242,19 @@ header + div + div > div { padding:12px 16px !important; } }
   <button id="btn-remove-nodate" class="btn btn-outline" style="margin-left:8px">📅 Verwijder zonder datum</button>
   <button id="btn-seed" class="btn btn-outline" style="margin-left:8px">📥 Laad voorbeelddata</button>
   <hr style="margin:16px 0;border:none;border-top:1px solid #e2e8f0">
-  <p class="sub" style="font-weight:700">Backups</p>
+  <p class="sub" style="font-weight:700">Synchronisatie</p>
   <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px">
-    <button id="btn-backup-create" class="btn btn-outline">💾 Backup maken</button>
-    <button id="btn-backup-list" class="btn btn-outline">📋 Toon backups</button>
-    <button id="btn-backup-download" class="btn btn-outline">⬇️ Download</button>
+    <button id="btn-sync-server" class="btn btn-outline">📡 Sync van server</button>
+  </div>
+  <div id="sync-status" class="sub" style="margin-top:8px"></div>
+  <hr style="margin:16px 0;border:none;border-top:1px solid #e2e8f0">
+  <p class="sub" style="font-weight:700">Back-ups</p>
+  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px">
+    <button id="btn-backup-create" class="btn btn-outline">💾 Download back-up</button>
     <input type="file" id="backup-file-input" accept=".json" style="display:none">
-    <button id="btn-backup-upload" class="btn btn-outline">📤 Upload &amp; herstel</button>
+    <button id="btn-backup-upload" class="btn btn-outline">📤 Herstel uit bestand</button>
   </div>
   <div id="backup-status" class="sub" style="margin-top:8px"></div>
-  <div id="backup-list" class="sub" style="margin-top:8px;display:none"></div>
   <div id="data-size" class="sub" style="margin-top:8px"></div>
 </div>
 
@@ -259,8 +268,11 @@ header + div + div > div { padding:12px 16px !important; } }
 </body>
 </html>
 
+<script is:inline>window.__SERVER_VISSESSIES__ = <>{JSON.stringify(serverData)}</>;</script>
+
 <script is:inline>
-const STORAGE_KEY = 'kvvi_vissessies_public';
+const STORAGE_KEY = 'kvvi_vissessies';
+const OLD_STORAGE_KEY = 'kvvi_vissessies_public';
 const JAAR_KEY = 'kvvi_jaar';
 const GEW_KROES = 300, GEW_SCHUB = 1500, GEW_SPIEGEL = 1600, GEW_ANDER = 100;
 
@@ -293,7 +305,21 @@ function laadDataJaar(jaar) {
 }
 
 function loadData() {
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch { return []; }
+  try {
+    var d = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    if (!d.length) {
+      try {
+        var old = JSON.parse(localStorage.getItem(OLD_STORAGE_KEY)) || [];
+        if (old.length) { localStorage.setItem(STORAGE_KEY, JSON.stringify(old)); return old; }
+      } catch {}
+      var sd = window.__SERVER_VISSESSIES__;
+      if (sd && sd.length) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(sd));
+        return sd;
+      }
+    }
+    return d;
+  } catch { return []; }
 }
 function saveData(data) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
@@ -471,7 +497,9 @@ function computeFields(row) {
   const gramMin = tijdMin > 0 ? (row.gewicht / tijdMin) : 0;
   const wedstrijd4uur = gramMin * 240;
   const duurVangst = tijdMin > 0 && row.aantal > 0 ? fmtDuurVangst(tijdMin, row.aantal) : '--';
-  return { ...row, tijdMin, gramMin, wedstrijd4uur, duurVangst };
+  const a = row.aantal || 0;
+  const beoordeling = a >= 51 ? '*****' : a >= 36 ? '****' : a >= 20 ? '***' : a >= 11 ? '**' : '*';
+  return { ...row, tijdMin, gramMin, wedstrijd4uur, duurVangst, beoordeling };
 }
 
 function deriveMonth(datum, jaar) {
@@ -584,7 +612,7 @@ function render() {
         <td class="num">${fmtTime(c.duurMin)}</td>
         <td class="num">${c.duurVangst}</td>
         <td class="${pijlClass}" style="font-size:18px;line-height:1">${pijlAuto}</td>
-        <td>${c.beoordeling}</td>
+        <td style="font-weight:700;letter-spacing:2px">${c.beoordeling}</td>
         <td class="num">${fmtEenheid(c.tijdMin)}</td>
         <td class="num">${fmtDecimal(c.gramMin)}</td>
         <td class="num">${fmtDecimal(c.wedstrijd4uur)}</td>
@@ -1346,156 +1374,101 @@ document.getElementById('btn-seed').addEventListener('click', () => {
   showToast('✅ Voorbeelddata geladen (15 sessies voor '+j+')');
 });
 
-const BACKUP_API = '/admin/api/vissessies-backup';
-
 function backupStatus(msg, isError) {
   const el = document.getElementById('backup-status');
   el.textContent = msg;
   el.style.color = isError ? '#dc2626' : '#166534';
 }
 
-async function backupCreate() {
-  backupStatus('🔄 Bezig met backup...');
-  try {
-    const res = await fetch(BACKUP_API, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'create' })
-    });
-    const json = await res.json();
-    if (json.ok) {
-      backupStatus('✅ Backup gemaakt: ' + json.file);
-      showToast('✅ Backup gemaakt');
-    } else {
-      backupStatus('❌ ' + (json.error || 'Fout'), true);
-    }
-  } catch (e) {
-    backupStatus('❌ ' + e.message, true);
-  }
+function downloadLocalBackup() {
+  const data = loadData();
+  const json = JSON.stringify(data, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const a = document.createElement('a');
+  const ts = new Date().toISOString().slice(0, 10);
+  a.href = URL.createObjectURL(blob);
+  a.download = 'kvvi-vissessies-' + ts + '.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  backupStatus('✅ ' + data.length + ' sessies gedownload als JSON');
 }
 
-async function backupList() {
-  const el = document.getElementById('backup-list');
-  backupStatus('🔄 Backups ophalen...');
-  try {
-    const res = await fetch(BACKUP_API, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'list' })
-    });
-    const json = await res.json();
-    if (json.backups && json.backups.length) {
-      el.style.display = '';
-      el.innerHTML = '<div style="font-weight:600;margin-bottom:4px">Beschikbare backups:</div>' +
-        json.backups.map(f =>
-          `<div style="display:flex;gap:8px;align-items:center;padding:3px 0;font-size:12px">
-            <span>${f}</span>
-            <button class="btn btn-outline" style="padding:2px 8px;font-size:11px" onclick="backupRestore('${f}')">Herstel</button>
-            <button class="btn btn-outline" style="padding:2px 8px;font-size:11px" onclick="backupDownloadFile('${f}')">⬇️</button>
-          </div>`
-        ).join('');
-      backupStatus('✅ ' + json.backups.length + ' backup(s) gevonden');
-    } else {
-      el.style.display = 'none';
-      backupStatus('ℹ️ Geen backups gevonden');
-    }
-  } catch (e) {
-    backupStatus('❌ ' + e.message, true);
-  }
-}
-
-async function backupDownloadFile(file) {
-  try {
-    const res = await fetch(BACKUP_API, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'download', file })
-    });
-    if (!res.ok) { backupStatus('❌ Download mislukt', true); return; }
-    const blob = await res.blob();
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = file;
-    a.click();
-    URL.revokeObjectURL(a.href);
-    backupStatus('✅ Download gestart: ' + file);
-  } catch (e) {
-    backupStatus('❌ ' + e.message, true);
-  }
-}
-
-async function backupRestore(file) {
-  if (!confirm('Herstel data van ' + file + '? Huidige data gaat verloren.')) return;
-  backupStatus('🔄 Bezig met herstel van ' + file + '...');
-  try {
-    const res = await fetch(BACKUP_API, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'restore', file })
-    });
-    const json = await res.json();
-    if (json.ok) {
-      backupStatus('✅ Hersteld van ' + file + ' (' + json.count + ' sessies)');
-      render();
-      showToast('✅ Data hersteld van ' + file);
-    } else {
-      backupStatus('❌ ' + (json.error || 'Fout'), true);
-    }
-  } catch (e) {
-    backupStatus('❌ ' + e.message, true);
-  }
-}
-
-async function backupDownload() {
-  try {
-    const res = await fetch(BACKUP_API, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'list' })
-    });
-    const json = await res.json();
-    if (!json.backups || !json.backups.length) {
-      backupStatus('ℹ️ Geen backups om te downloaden. Maak eerst een backup.');
-      return;
-    }
-    backupStatus('📋 Kies een backup om te downloaden in de lijst');
-    await backupList();
-  } catch (e) {
-    backupStatus('❌ ' + e.message, true);
-  }
-}
-
-document.getElementById('btn-backup-create').addEventListener('click', backupCreate);
-document.getElementById('btn-backup-list').addEventListener('click', backupList);
-document.getElementById('btn-backup-download').addEventListener('click', backupDownload);
+document.getElementById('btn-backup-create').addEventListener('click', downloadLocalBackup);
 document.getElementById('btn-backup-upload').addEventListener('click', () => {
   document.getElementById('backup-file-input').click();
 });
 document.getElementById('backup-file-input').addEventListener('change', async (e) => {
   const file = e.target.files[0];
   if (!file) return;
-  backupStatus('🔄 Bezig met uploaden...');
+  backupStatus('🔄 Bezig met herstel...');
   try {
     const text = await file.text();
     const data = JSON.parse(text);
     if (!Array.isArray(data)) throw new Error('Bestand bevat geen geldige vissessies-data');
-    const res = await fetch(BACKUP_API, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'upload', data })
-    });
-    const json = await res.json();
-    if (json.ok) {
-      backupStatus('✅ ' + json.count + ' sessies hersteld uit ' + file.name);
-      render();
-      showToast('✅ Data hersteld uit ' + file.name);
-    } else {
-      backupStatus('❌ ' + (json.error || 'Fout'), true);
-    }
+    saveData(data);
+    render();
+    backupStatus('✅ ' + data.length + ' sessies hersteld uit ' + file.name);
+    showToast('✅ Data hersteld uit ' + file.name);
   } catch (e) {
     backupStatus('❌ ' + e.message, true);
   }
   e.target.value = '';
+});
+
+const SYNC_API = '/api/sync-vissessie';
+function syncStatus(msg, isError) {
+  const el = document.getElementById('sync-status');
+  el.textContent = msg;
+  el.style.color = isError ? '#dc2626' : '#166534';
+}
+document.getElementById('btn-sync-server').addEventListener('click', async () => {
+  syncStatus('🔄 Data ophalen van server...');
+  try {
+    const res = await fetch(SYNC_API);
+    if (res.status === 401) {
+      syncStatus('❌ Niet ingelogd op admin-account', true);
+      return;
+    }
+    if (!res.ok) throw new Error('Serverfout ' + res.status);
+    const serverData = await res.json();
+    if (!Array.isArray(serverData) || !serverData.length) {
+      syncStatus('ℹ️ Geen data op server');
+      return;
+    }
+    let local = loadData();
+    let added = 0, merged = 0;
+    for (const entry of serverData) {
+      if (!entry.stek || !entry.datum) continue;
+      const stekNorm = entry.stek.replace(/\s+/g, ' ').trim();
+      const datumNorm = entry.datum.trim();
+      const existing = local.findIndex(e =>
+        (e.stek || '').replace(/\s+/g, ' ').trim() === stekNorm &&
+        (e.datum || '').trim() === datumNorm
+      );
+      if (existing >= 0) {
+        const loc = local[existing];
+        const hasFullLocal = loc.begin && loc.begin.trim() && loc.einde && loc.einde.trim();
+        if (!hasFullLocal || (!loc.begin && !loc.einde)) {
+          local[existing] = { ...loc, ...entry, stek: stekNorm, datum: datumNorm };
+          merged++;
+        }
+      } else {
+        local.push({ ...entry, stek: stekNorm, datum: datumNorm });
+        added++;
+      }
+    }
+    if (added || merged) {
+      sortData(local);
+      saveData(local);
+      render();
+      syncStatus('✅ ' + added + ' toegevoegd, ' + merged + ' bijgewerkt van server');
+      showToast('📡 ' + added + ' sessies gesynced van server');
+    } else {
+      syncStatus('ℹ️ Alle data is al actueel');
+    }
+  } catch (e) {
+    syncStatus('❌ ' + e.message, true);
+  }
 });
 
 function initJaarSelector() {

@@ -90,7 +90,7 @@ kbd { background: #1e293b; color: #fff; padding: 2px 7px; border-radius: 4px; fo
     <ol class="step-list">
       <li>Klik op <strong>➕ Nieuw</strong> — het invulformulier verschijnt</li>
       <li>Vul de velden in: datum, stek, begin/einde, aantallen per vissoort, gewicht</li>
-      <li>Optioneel: een beoordeling, trendpijl, of vink 🏆 Wedstrijd aan</li>
+      <li>Optioneel: vink 🏆 Wedstrijd aan</li>
       <li>Klik <strong>💾 Opslaan</strong></li>
     </ol>
 
@@ -128,7 +128,7 @@ kbd { background: #1e293b; color: #fff; padding: 2px 7px; border-radius: 4px; fo
 
     <h3>Velden</h3>
     <ul>
-      <li><strong>Stek</strong> — max 5 karakters, vb <code>G 11</code></li>
+      <li><strong>Stek</strong> — max 5 karakters, vb <code>G 11</code>, <code>D 1</code>. Alle stekken met data verschijnen automatisch in de <strong>Top stekken</strong> grafiek.</li>
       <li><strong>Datum</strong> — max 5 karakters, vb <code>19/06</code>. Eerder gebruikte datums verschijnen als suggestie.</li>
       <li><strong>Begin / Einde</strong> — tik 4 cijfers, vb <code>1600</code> → <code>16u 00m</code></li>
     </ul>
@@ -145,7 +145,7 @@ kbd { background: #1e293b; color: #fff; padding: 2px 7px; border-radius: 4px; fo
     <h3>Automatisch berekend</h3>
     <ul>
       <li><strong>Aantal</strong> — som van alle 4 vissoorten</li>
-      <li><strong>Gewicht</strong> — standaard gewichten per soort, weergegeven in kg</li>
+      <li><strong>Gewicht</strong> — standaard gewichten per soort: Kroes (F1) 300g, Schubkarper 1500g, Spiegelkarper 1600g, Andere 100g. Weergegeven in kg. Dit zijn goede gemiddelden, geen exacte waarden. Bij zware karper: voeg 3 extra schub of spiegel toe als gewicht voor jou primeert, of overschrijf het gewicht nadien in het <strong>Data</strong> tabblad.</li>
       <li><strong>Duur</strong> — verschijnt zodra begin en einde ingevuld zijn</li>
     </ul>
 
@@ -158,11 +158,10 @@ kbd { background: #1e293b; color: #fff; padding: 2px 7px; border-radius: 4px; fo
 
     <h3>💾 Back-up maken</h3>
     <ul>
-      <li><strong>⬇️ Download</strong> — slaat een <code>.json</code> bestand op met al je data</li>
-      <li><strong>📤 Upload &amp; herstel</strong> — laad een eerder gedownload bestand terug</li>
-      <li><strong>💾 Backup maken</strong> — slaat een kopie op in je browser (lokaal)</li>
-      <li><strong>📋 Toon backups</strong> — laat alle lokale backups zien</li>
+      <li><strong>💾 Download back-up</strong> — slaat een <code>.json</code> bestand op met al je data. Bewaar dit op een veilige plek.</li>
+      <li><strong>📤 Herstel uit bestand</strong> — laad een eerder gedownload bestand terug in de app.</li>
     </ul>
+    <div class="tip">💡 Back-ups werken volledig offline en hebben geen internet of server nodig. Je data verlaat je toestel niet — tenzij je het bestand zelf naar iemand stuurt.</div>
 
     <h3>⚠️ Gevaarlijke acties</h3>
     <ul>
@@ -204,16 +203,16 @@ kbd { background: #1e293b; color: #fff; padding: 2px 7px; border-radius: 4px; fo
     <p>Check of je niet per ongeluk de <strong>📥 Laad voorbeelddata</strong> knop hebt gebruikt — die voegt enkel demo data toe, niks wordt overschreven.</p>
 
     <h3>❓ Browserdata gewist?</h3>
-    <p>Als je browser-cache of localStorage wist, ben je data kwijt. Maak daarom regelmatig een back-up via <strong>Beheer → ⬇️ Download</strong>.</p>
+    <p>Als je browser-cache of localStorage wist, ben je data kwijt. Maak daarom regelmatig een back-up via <strong>Beheer → 💾 Download back-up</strong>.</p>
 
     <h3>❓ Ander toestel?</h3>
-    <p>Data staat alleen in de browser waar je ze invoerde. Gebruik <strong>Beheer → ⬇️ Download</strong>, zet het <code>.json</code> bestand over naar je andere toestel, en upload het daar via <strong>📤 Upload &amp; herstel</strong>.</p>
+    <p>Data staat alleen in de browser waar je ze invoerde. Gebruik <strong>Beheer → 💾 Download back-up</strong>, zet het <code>.json</code> bestand over naar je andere toestel, en upload het daar via <strong>📤 Herstel uit bestand</strong>.</p>
 
     <h3>❓ Wat betekenen de pijlen ⬆/⬇?</h3>
     <p>Die worden automatisch berekend: je <strong>gr/min</strong> wordt vergeleken met de vorige sessie. ⬆ = beter, ⬇ = slechter. Je hoeft niks manueel in te vullen.</p>
 
     <h3>❓ Klopt het gewicht wel?</h3>
-    <p>Het gewicht wordt automatisch geschat op basis van standaard gewichten per vissoort. Je kan het overschrijven door in het <strong>Data</strong> tabblad de cel <strong>Gewicht</strong> aan te passen.</p>
+    <p>Het gewicht wordt automatisch geschat op basis van standaard gewichten per vissoort (Kroes/F1 300g, Schub 1500g, Spiegel 1600g, Andere 100g). Dit zijn gemiddelden — een echte karper kan lichter of zwaarder zijn. Je kan het gewicht altijd overschrijven door in het <strong>Data</strong> tabblad de cel <strong>Gewicht</strong> aan te passen.</p>
   </div>
 
   <div class="card" id="tech">

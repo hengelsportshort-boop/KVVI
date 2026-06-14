@@ -1,0 +1,170 @@
+[
+  {
+    "id": "1",
+    "datum": "11/04",
+    "dag": "Zaterdag",
+    "reeks": "Reeks 1 Zaterdagvissers"
+  },
+  {
+    "id": "2",
+    "datum": "17/04",
+    "dag": "Vrijdag",
+    "reeks": "Reeks 1 Veteranen"
+  },
+  {
+    "id": "3",
+    "datum": "25/04",
+    "dag": "Zaterdag",
+    "reeks": "Reeks 2 Zaterdagvissers"
+  },
+  {
+    "id": "4",
+    "datum": "01/05",
+    "dag": "Vrijdag",
+    "reeks": "Reeks 2 Veteranen"
+  },
+  {
+    "id": "5",
+    "datum": "09/05",
+    "dag": "Zaterdag",
+    "reeks": "Reeks 3 Zaterdagvissers"
+  },
+  {
+    "id": "6",
+    "datum": "14/05",
+    "dag": "Donderdag",
+    "reeks": "Izegem / Gullegem"
+  },
+  {
+    "id": "7",
+    "datum": "15/05",
+    "dag": "Vrijdag",
+    "reeks": "Reeks 3 Veteranen"
+  },
+  {
+    "id": "8",
+    "datum": "23/05",
+    "dag": "Zaterdag",
+    "reeks": "Reeks 4 Zaterdagvissers"
+  },
+  {
+    "id": "9",
+    "datum": "25/05",
+    "dag": "Maandag",
+    "reeks": "Koppelwedstrijd"
+  },
+  {
+    "id": "10",
+    "datum": "29/05",
+    "dag": "Vrijdag",
+    "reeks": "Reeks 4 Veteranen"
+  },
+  {
+    "id": "11",
+    "datum": "30/05",
+    "dag": "Zaterdag",
+    "reeks": "Sasvissers"
+  },
+  {
+    "id": "12",
+    "datum": "06/06",
+    "dag": "Zaterdag",
+    "reeks": "Reeks 5 Zaterdagvissers"
+  },
+  {
+    "id": "13",
+    "datum": "12/06",
+    "dag": "Vrijdag",
+    "reeks": "reeks 5 Veteranen"
+  },
+  {
+    "id": "14",
+    "datum": "13/06",
+    "dag": "Zaterdag",
+    "reeks": "Lendelede (in de voormiddag)"
+  },
+  {
+    "id": "15",
+    "datum": "20/06",
+    "dag": "Zaterdag",
+    "reeks": "Reeks 6 Zaterdagvissers"
+  },
+  {
+    "id": "16",
+    "datum": "26/06",
+    "dag": "Vrijdag",
+    "reeks": "Reeks 6 Veteranen"
+  },
+  {
+    "id": "17",
+    "datum": "10/07",
+    "dag": "Vrijdag",
+    "reeks": "Reeks 7 Veteranen"
+  },
+  {
+    "id": "18",
+    "datum": "13/07",
+    "dag": "Maandag",
+    "reeks": "Maandagvissers"
+  },
+  {
+    "id": "19",
+    "datum": "18/07",
+    "dag": "Zaterdag",
+    "reeks": "Reeks 7 Zaterdagvissers"
+  },
+  {
+    "id": "20",
+    "datum": "08/08",
+    "dag": "Zaterdag",
+    "reeks": "Koppelwedstrijd"
+  },
+  {
+    "id": "21",
+    "datum": "14/08",
+    "dag": "Vrijdag",
+    "reeks": "Reeks 8 Veteranen"
+  },
+  {
+    "id": "22",
+    "datum": "22/08",
+    "dag": "Zaterdag",
+    "reeks": "Reeks 8 Zaterdagvissers"
+  },
+  {
+    "id": "23",
+    "datum": "28/08",
+    "dag": "Vrijdag",
+    "reeks": "Reeks 9 Veteranen"
+  },
+  {
+    "id": "24",
+    "datum": "05/09",
+    "dag": "Zaterdag",
+    "reeks": "Kampioenschap van Izegem"
+  },
+  {
+    "id": "25",
+    "datum": "11/09",
+    "dag": "Vrijdag",
+    "reeks": "Reeks 10 Veteranen"
+  },
+  {
+    "id": "26",
+    "datum": "13/09",
+    "dag": "Zondag",
+    "reeks": "Sasvissers"
+  },
+  {
+    "id": "27",
+    "datum": "19/09",
+    "dag": "Zaterdag",
+    "reeks": "Reeks 9 Zaterdagvissers"
+  },
+  {
+    "id": "28",
+    "datum": "26/09",
+    "dag": "Zaterdag",
+    "reeks": "Koppelwedstrijd"
+  }
+]

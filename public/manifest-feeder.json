@@ -1,0 +1,13 @@
+{
+  "name": "Feeder Assistent",
+  "short_name": "Feeder",
+  "description": "Feed timer en worp-log voor method feeder vissen",
+  "start_url": "/feeder-assistent",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#003366",
+  "icons": [
+    { "src": "/feeder-icon.svg", "sizes": "192x192", "type": "image/svg+xml" },
+    { "src": "/feeder-icon.svg", "sizes": "512x512", "type": "image/svg+xml" }
+  ]
+}

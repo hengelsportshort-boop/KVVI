@@ -26,6 +26,30 @@ export const prerender = false;
       </div>
     </div>
 
+    <div class="bg-gradient-to-br from-[#003366] to-[#004A99] rounded-2xl shadow-lg overflow-hidden mb-12">
+      <div class="flex flex-col md:flex-row items-center gap-6 p-8">
+        <div class="w-24 h-24 md:w-28 md:h-28 rounded-2xl shadow-md bg-white p-2 flex items-center justify-center flex-shrink-0">
+          <svg width="60" height="60" viewBox="0 0 512 512" fill="none">
+            <circle cx="256" cy="220" r="100" stroke="#C5A059" stroke-width="16"/>
+            <circle cx="256" cy="220" r="18" fill="#C5A059"/>
+            <line x1="256" y1="220" x2="256" y2="150" stroke="#C5A059" stroke-width="12" stroke-linecap="round"/>
+            <line x1="256" y1="220" x2="306" y2="220" stroke="#C5A059" stroke-width="10" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="flex-1 text-center md:text-left">
+          <h2 class="text-2xl md:text-3xl font-black text-white mb-2">⏱️ Feeder Assistent</h2>
+          <p class="text-white/80 leading-relaxed mb-4">
+            Feed timer, worp-log en actieknoppen voor method feeder vissen.
+            Installeerbaar op je startscherm, werkt offline.
+          </p>
+          <div class="flex flex-wrap gap-3 justify-center md:justify-start">
+            <a href="/feeder-assistent" class="inline-flex items-center gap-2 bg-[#C5A059] hover:bg-[#b8923f] text-white font-bold px-6 py-3 rounded-xl text-lg transition-colors shadow-md">⏱️ Open Feeder</a>
+            <a href="/feeder-assistent-help" class="inline-flex items-center gap-2 bg-white/20 hover:bg-white/30 text-white font-semibold px-5 py-3 rounded-xl text-sm transition-colors">❓ Help</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div id="tips-container" class="space-y-8">
       <div class="text-center text-slate-400 py-20">
         <div class="inline-block w-8 h-8 border-2 border-slate-300 border-t-[#004A99] rounded-full animate-spin"></div>

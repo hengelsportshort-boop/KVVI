@@ -1,0 +1,302 @@
+[
+  {
+    "id": 1,
+    "title": "Koppelwedstrijden",
+    "type": "wedstrijd",
+    "order": 1,
+    "visible": true,
+    "content": "",
+    "image": "",
+    "date": "",
+    "tables": [
+      {
+        "name": "Koppelwedstrijd 25 Mei 2026",
+        "visible": true,
+        "rows": [
+          {
+            "deeln1": "Feys R",
+            "deeln2": "Bardoel G",
+            "gewicht1": 0,
+            "gewicht2": 20.16
+          },
+          {
+            "deeln1": "Doom C",
+            "deeln2": "Desmet A",
+            "gewicht1": 0,
+            "gewicht2": 7.22
+          },
+          {
+            "deeln1": "Vanhecke A",
+            "deeln2": "Neyrinck S",
+            "gewicht1": 0,
+            "gewicht2": 22.32
+          },
+          {
+            "deeln1": "Feys K",
+            "deeln2": "Cloet S",
+            "gewicht1": 0,
+            "gewicht2": 22.34
+          },
+          {
+            "deeln1": "Decraene A",
+            "deeln2": "Dumon D",
+            "gewicht1": 0,
+            "gewicht2": 28.2
+          },
+          {
+            "deeln1": "Ramout S",
+            "deeln2": "Verhoest K",
+            "gewicht1": 0,
+            "gewicht2": 23.36
+          },
+          {
+            "deeln1": "Devos K",
+            "deeln2": "Giani M",
+            "gewicht1": 0,
+            "gewicht2": 12.38
+          },
+          {
+            "deeln1": "Ferteyn F",
+            "deeln2": "Gobel G",
+            "gewicht1": 0,
+            "gewicht2": 19.96
+          },
+          {
+            "deeln1": "Bardoel F",
+            "deeln2": "Devisscher R",
+            "gewicht1": 0,
+            "gewicht2": 12.08
+          },
+          {
+            "deeln1": "Debacker G",
+            "deeln2": "Deltomme P",
+            "gewicht1": 0,
+            "gewicht2": 21.24
+          },
+          {
+            "deeln1": "Snaet S",
+            "deeln2": "Snaet B",
+            "gewicht1": 0,
+            "gewicht2": 22.16
+          },
+          {
+            "deeln1": "",
+            "deeln2": "",
+            "gewicht1": 0,
+            "gewicht2": 0
+          },
+          {
+            "deeln1": "",
+            "deeln2": "",
+            "gewicht1": 0,
+            "gewicht2": 0
+          },
+          {
+            "deeln1": "",
+            "deeln2": "",
+            "gewicht1": 0,
+            "gewicht2": 0
+          },
+          {
+            "deeln1": "",
+            "deeln2": "",
+            "gewicht1": 0,
+            "gewicht2": 0
+          }
+        ]
+      },
+      {
+        "name": "Koppelwedstrijd 08 Aug 2026",
+        "visible": false,
+        "rows": [
+          {
+            "deeln1": "",
+            "deeln2": "",
+            "gewicht1": 0,
+            "gewicht2": 0
+          },
+          {
+            "deeln1": "",
+            "deeln2": "",
+            "gewicht1": 0,
+            "gewicht2": 0
+          },
+          {
+            "deeln1": "",
+            "deeln2": "",
+            "gewicht1": 0,
+            "gewicht2": 0
+          },
+          {
+            "deeln1": "",
+            "deeln2": "",
+            "gewicht1": 0,
+            "gewicht2": 0
+          },
+          {
+            "deeln1": "",
+            "deeln2": "",
+            "gewicht1": 0,
+            "gewicht2": 0
+          },
+          {
+            "deeln1": "",
+            "deeln2": "",
+            "gewicht1": 0,
+            "gewicht2": 0
+          },
+          {
+            "deeln1": "",
+            "deeln2": "",
+            "gewicht1": 0,
+            "gewicht2": 0
+          },
+          {
+            "deeln1": "",
+            "deeln2": "",
+            "gewicht1": 0,
+            "gewicht2": 0
+          },
+          {
+            "deeln1": "",
+            "deeln2": "",
+            "gewicht1": 0,
+            "gewicht2": 0
+          },
+          {
+            "deeln1": "",
+            "deeln2": "",
+            "gewicht1": 0,
+            "gewicht2": 0
+          },
+          {
+            "deeln1": "",
+            "deeln2": "",
+            "gewicht1": 0,
+            "gewicht2": 0
+          },
+          {
+            "deeln1": "",
+            "deeln2": "",
+            "gewicht1": 0,
+            "gewicht2": 0
+          },
+          {
+            "deeln1": "",
+            "deeln2": "",
+            "gewicht1": 0,
+            "gewicht2": 0
+          },
+          {
+            "deeln1": "",
+            "deeln2": "",
+            "gewicht1": 0,
+            "gewicht2": 0
+          },
+          {
+            "deeln1": "",
+            "deeln2": "",
+            "gewicht1": 0,
+            "gewicht2": 0
+          }
+        ]
+      },
+      {
+        "name": "Koppelwedstrijd 26 Sep 2026",
+        "visible": false,
+        "rows": [
+          {
+            "deeln1": "",
+            "deeln2": "",
+            "gewicht1": 0,
+            "gewicht2": 0
+          },
+          {
+            "deeln1": "",
+            "deeln2": "",
+            "gewicht1": 0,
+            "gewicht2": 0
+          },
+          {
+            "deeln1": "",
+            "deeln2": "",
+            "gewicht1": 0,
+            "gewicht2": 0
+          },
+          {
+            "deeln1": "",
+            "deeln2": "",
+            "gewicht1": 0,
+            "gewicht2": 0
+          },
+          {
+            "deeln1": "",
+            "deeln2": "",
+            "gewicht1": 0,
+            "gewicht2": 0
+          },
+          {
+            "deeln1": "",
+            "deeln2": "",
+            "gewicht1": 0,
+            "gewicht2": 0
+          },
+          {
+            "deeln1": "",
+            "deeln2": "",
+            "gewicht1": 0,
+            "gewicht2": 0
+          },
+          {
+            "deeln1": "",
+            "deeln2": "",
+            "gewicht1": 0,
+            "gewicht2": 0
+          },
+          {
+            "deeln1": "",
+            "deeln2": "",
+            "gewicht1": 0,
+            "gewicht2": 0
+          },
+          {
+            "deeln1": "",
+            "deeln2": "",
+            "gewicht1": 0,
+            "gewicht2": 0
+          },
+          {
+            "deeln1": "",
+            "deeln2": "",
+            "gewicht1": 0,
+            "gewicht2": 0
+          },
+          {
+            "deeln1": "",
+            "deeln2": "",
+            "gewicht1": 0,
+            "gewicht2": 0
+          },
+          {
+            "deeln1": "",
+            "deeln2": "",
+            "gewicht1": 0,
+            "gewicht2": 0
+          },
+          {
+            "deeln1": "",
+            "deeln2": "",
+            "gewicht1": 0,
+            "gewicht2": 0
+          },
+          {
+            "deeln1": "",
+            "deeln2": "",
+            "gewicht1": 0,
+            "gewicht2": 0
+          }
+        ]
+      }
+    ]
+  }
+]

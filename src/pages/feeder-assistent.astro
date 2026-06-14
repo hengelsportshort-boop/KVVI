@@ -1,0 +1,984 @@
+---
+export const prerender = false;
+---
+
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Feeder Assist">
+<link rel="apple-touch-icon" href="/feeder-icon.svg">
+<link rel="manifest" href="/manifest-feeder.json">
+<title>Feeder Assistent</title>
+<style is:inline>
+:root { --blue: #002244; --gold: #b8860b; --bg: #0f172a; --card: #1e293b; --text: #f1f5f9; --green: #22c55e; --blue-btn: #3b82f6; --red: #ef4444; --muted: #94a3b8; --border: #475569; }
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; overflow: hidden; }
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+#app {
+  height: 100vh; height: 100dvh;
+  display: flex; flex-direction: column;
+  padding: 4px 10px calc(4px + env(safe-area-inset-bottom));
+  max-width: 500px; margin: 0 auto;
+  gap: 4px;
+}
+
+/* Header */
+.header-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0; padding: 4px 0 2px;
+}
+.header-title { font-size: 15px; font-weight: 800; color: #fff; }
+.header-help { font-size: 20px; text-decoration: none; cursor: pointer; }
+.header { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+.location-input {
+  border: 2px solid var(--border); border-radius: 8px;
+  padding: 4px 6px; font-size: 12px; font-weight: 700;
+  background: #0f172a; color: #fff;
+  outline: none; -webkit-appearance: none; width: 0; min-width: 0;
+}
+.location-input:focus { border-color: #60a5fa; }
+.icon-btn {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: #1e293b; border: 2px solid var(--border);
+  font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; -webkit-appearance: none;
+}
+.icon-btn:active { background: #334155; }
+
+/* Timer sections */
+.timer-section { background: #0f172a; border-radius: 12px; border: 2px solid var(--border); padding: 6px 12px; flex-shrink: 0; }
+.timer-section.compact { padding: 5px 12px; }
+
+.timer-value {
+  font-weight: 900; font-variant-numeric: tabular-nums; letter-spacing: -1px;
+  color: #60a5fa; line-height: 1; text-align: center;
+  text-shadow: 0 0 12px rgba(96,165,250,0.3);
+}
+.timer-value.stopwatch { font-size: clamp(2.8rem, 13vw, 4.5rem); }
+.timer-value.voertimer { font-size: clamp(1.8rem, 8vw, 2.8rem); }
+
+.status-line {
+  text-align: center; font-size: 12px; font-weight: 700; color: var(--muted);
+  margin-top: 2px; min-height: 16px;
+}
+.status-line.result-vis { color: #60a5fa; }
+.status-line.result-misser { color: #f87171; }
+.status-line.feed { color: #fbbf24; }
+.status-line.worp { color: #4ade80; }
+
+.sub-label { text-align: center; font-size: 11px; color: var(--muted); font-weight: 600; margin-top: 1px; }
+.sub-label span { font-weight: 800; color: #fff; }
+
+.ctrl-row { display: flex; gap: 6px; margin-top: 4px; }
+.ctrl-btn {
+  flex: 1; padding: 4px; border: 2px solid var(--border); border-radius: 8px;
+  background: #1e293b; font-size: 12px; font-weight: 800; color: #fff;
+  cursor: pointer; -webkit-appearance: none; transition: all 0.12s;
+}
+.ctrl-btn:active { transform: scale(0.96); background: #334155; }
+.ctrl-btn.ctrl-primary { background: #1e40af; color: #fff; border-color: #3b82f6; }
+.ctrl-btn.ctrl-primary:active { background: #1e3a8a; }
+.ctrl-btn.ctrl-primary.running { background: #991b1b; border-color: #ef4444; }
+.ctrl-btn.ctrl-primary.running:active { background: #7f1d1d; }
+
+/* Inline settings */
+.inline-settings { background: #0f172a; border-radius: 10px; border: 2px solid var(--border); padding: 5px 8px; flex-shrink: 0; }
+.inline-row { display: flex; align-items: center; gap: 6px; }
+.inline-row + .inline-row { margin-top: 4px; }
+.inline-label { font-size: 11px; font-weight: 700; color: var(--muted); min-width: 42px; flex-shrink: 0; }
+
+.interval-group { display: flex; gap: 4px; flex: 1; }
+.interval-btn {
+  flex: 1; padding: 6px 0; border-radius: 7px; border: 2px solid var(--border);
+  background: #1e293b; font-size: 13px; font-weight: 800;
+  cursor: pointer; -webkit-appearance: none; color: #fff; text-align: center;
+  transition: all 0.12s;
+}
+.interval-btn.active { border-color: #60a5fa; background: #1e3a8a; color: #93c5fd; }
+.interval-btn:active { transform: scale(0.95); }
+
+.ping-group { display: flex; gap: 4px; }
+.ping-btn {
+  padding: 5px 10px; border-radius: 7px; border: 2px solid var(--border);
+  background: #1e293b; font-size: 11px; font-weight: 700;
+  cursor: pointer; -webkit-appearance: none; color: #fff;
+  transition: all 0.12s;
+}
+.ping-btn.active { border-color: #fbbf24; background: #78350f; color: #fde68a; }
+.ping-btn:active { transform: scale(0.95); }
+
+/* Action buttons */
+.actions { display: flex; flex-direction: column; gap: 4px; flex-shrink: 0; }
+.action-row { display: flex; gap: 4px; }
+.action-btn {
+  flex: 1; padding: 14px 10px; border: none; border-radius: 10px;
+  font-size: clamp(1.05rem, 4.5vw, 1.25rem); font-weight: 900; color: #fff;
+  cursor: pointer; -webkit-appearance: none; transition: transform 0.1s, box-shadow 0.12s;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.3); letter-spacing: 1px;
+  min-height: 60px; display: flex; align-items: center; justify-content: center;
+}
+.action-btn:active { transform: scale(0.96); }
+.action-btn.green { background: #15803d; }
+.action-btn.blue { background: #1d4ed8; }
+.action-btn.red { background: #b91c1c; }
+.action-btn.gray { background: #475569; }
+.action-btn.fish-btn { background: #0e7490; }
+
+/* Results */
+.results-section { flex: 1; overflow-y: auto; min-height: 0; }
+.results-header { font-size: 11px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
+#reset-results-btn:active { background: #334155; }
+.results-list { display: flex; flex-direction: column; gap: 2px; min-height: 0; }
+.result-item {
+  display: flex; align-items: center; gap: 6px;
+  padding: 4px 8px; background: #0f172a; border-radius: 6px;
+  font-size: 13px; font-weight: 800; border: 1px solid var(--border);
+}
+.result-item .r-type { min-width: 22px; font-size: 12px; }
+.result-item .r-type.vis { color: #60a5fa; }
+.result-item .r-type.misser { color: #f87171; }
+.result-item .r-type.kroes { color: #22d3ee; }
+.result-item .r-type.schub { color: #22d3ee; }
+.result-item .r-type.spiegel { color: #22d3ee; }
+.result-item .r-type.ander { color: #22d3ee; }
+.result-item .r-time { margin-left: auto; font-variant-numeric: tabular-nums; color: #fff; font-weight: 900; letter-spacing: 0; }
+.results-empty { text-align: center; color: var(--muted); font-size: 12px; padding: 8px; font-style: italic; }
+
+/* Screen / Battery */
+.screen-row { display: flex; gap: 6px; flex-shrink: 0; }
+.screen-opt {
+  flex: 1; padding: 10px; border-radius: 10px; border: 3px solid var(--border);
+  background: #1e293b; font-size: 13px; font-weight: 800; color: var(--muted);
+  cursor: pointer; -webkit-appearance: none; transition: all 0.12s;
+}
+.screen-opt.active { border-color: #60a5fa; background: #1e3a8a; color: #93c5fd; }
+.screen-opt:active { transform: scale(0.95); }
+
+/* Flash overlay */
+.flash { position: fixed; inset: 0; z-index: 999; pointer-events: none; opacity: 0; transition: opacity 0.12s; }
+.flash.show { opacity: 1; }
+.flash.green { background: rgba(34,197,94,0.25); }
+.flash.blue { background: rgba(59,130,246,0.25); }
+.flash.red { background: rgba(239,68,68,0.25); }
+.flash.gold { background: rgba(251,191,36,0.25); }
+
+/* Settings overlay */
+.overlay {
+  position: fixed; inset: 0; z-index: 100;
+  background: rgba(0,0,0,0.6);
+  display: none; align-items: flex-end; justify-content: center;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left);
+}
+.overlay.show { display: flex; }
+.overlay-panel {
+  background: #1e293b; width: 100%; max-width: 420px;
+  border-radius: 20px 20px 0 0; padding: 24px 20px calc(24px + env(safe-area-inset-bottom));
+  max-height: 80vh; overflow-y: auto; animation: slide-up 0.25s ease;
+}
+@keyframes slide-up { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.overlay-h { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.overlay-h h2 { font-size: 18px; font-weight: 800; color: #fff; }
+.close-btn {
+  width: 36px; height: 36px; border: none; border-radius: 10px;
+  background: #334155; font-size: 18px; cursor: pointer; -webkit-appearance: none; color: #fff;
+}
+.setting-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 14px 0; border-bottom: 1px solid #334155;
+}
+.setting-row:last-child { border-bottom: none; }
+.setting-label { font-size: 15px; font-weight: 700; color: #fff; }
+.setting-desc { font-size: 12px; color: var(--muted); margin-top: 1px; }
+.danger-btn {
+  padding: 12px 20px; border-radius: 12px; border: 3px solid var(--red);
+  background: #1e293b; color: #f87171; font-size: 15px; font-weight: 800;
+  cursor: pointer; -webkit-appearance: none; width: 100%; margin-top: 12px;
+}
+.danger-btn:active { background: #334155; }
+
+/* Toast */
+#toast {
+  position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+  padding: 10px 22px; border-radius: 12px; background: #1e293b; color: #fff; font-weight: 700; font-size: 14px;
+  opacity: 0; transition: opacity 0.25s; z-index: 999; pointer-events: none; white-space: nowrap;
+  border: 2px solid var(--border); box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+}
+#toast.show { opacity: 1; }
+
+@media (max-width: 380px) {
+  #app { padding: 3px 6px; gap: 3px; }
+  .location-input { padding: 3px 4px; font-size: 11px; }
+  .ctrl-btn { padding: 3px; font-size: 11px; }
+  .action-btn { padding: 8px; font-size: 14px; }
+  .inline-settings { padding: 4px 6px; }
+  .interval-btn { padding: 5px 0; font-size: 12px; }
+  .ping-btn { padding: 4px 8px; font-size: 10px; }
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="header-bar">
+    <span class="header-title">Feeder Assistent</span>
+    <a href="/feeder-assistent-help" class="header-help" aria-label="Help">❓</a>
+  </div>
+  <div class="header">
+    <input type="text" id="location-name" class="location-input" placeholder="Visstek" maxlength="4" autocomplete="off" style="flex:1">
+    <input type="text" id="date-input" class="location-input" placeholder="Datum" maxlength="5" inputmode="numeric" autocomplete="off" style="flex:0.45;text-align:center">
+    <button class="icon-btn" id="settings-btn" aria-label="Instellingen">⚙️</button>
+  </div>
+
+  <div class="timer-section">
+    <div class="timer-value stopwatch" id="stopwatch-val">00:00</div>
+    <div class="status-line" id="status-line">Worp → Resultaat</div>
+    <div class="ctrl-row">
+      <button class="ctrl-btn" id="sw-reset">Reset</button>
+      <button class="ctrl-btn ctrl-primary" id="sw-toggle">Start</button>
+    </div>
+  </div>
+
+  <div class="timer-section compact">
+    <div class="timer-value voertimer" id="voertimer-val">05:00</div>
+    <div class="sub-label">Ingesteld: <span id="interval-label">5</span> min</div>
+    <div class="ctrl-row">
+      <button class="ctrl-btn" id="ft-reset">Reset</button>
+      <button class="ctrl-btn ctrl-primary" id="ft-toggle">Start</button>
+    </div>
+  </div>
+
+  <div class="inline-settings">
+    <div class="inline-row">
+      <span class="inline-label">Interval:</span>
+      <div class="interval-group">
+        <button class="interval-btn" data-min="3">3</button>
+        <button class="interval-btn active" data-min="5">5</button>
+        <button class="interval-btn" data-min="8">8</button>
+      </div>
+      <div class="ping-group">
+        <button class="ping-btn active" data-count="1">1x 🔔</button>
+        <button class="ping-btn" data-count="2">2x 🔔</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="actions">
+    <div class="action-row">
+      <button class="action-btn green" id="action-worp">🟢 WORP</button>
+      <button class="action-btn gray" id="action-hervoer">🔄 Opnieuw voeren</button>
+    </div>
+    <div class="action-row" id="vis-row">
+      <button class="action-btn blue" id="action-vis">🔵 VIS BINNEN</button>
+      <div id="action-fish-choices" style="display:none;flex:1;gap:4px">
+        <button class="action-btn fish-btn" data-fish="kroes">KR</button>
+        <button class="action-btn fish-btn" data-fish="schub">SC</button>
+        <button class="action-btn fish-btn" data-fish="spiegel">SP</button>
+        <button class="action-btn fish-btn" data-fish="ander">AN</button>
+      </div>
+    </div>
+    <div class="action-row"><button class="action-btn red" id="action-misser">🔴 MISSER</button></div>
+  </div>
+
+  <div class="results-section">
+    <div class="results-header" style="display:flex;align-items:center;gap:6px">
+      <span>Laatste resultaten</span>
+      <button id="reset-results-btn" style="margin-left:auto;background:none;border:none;font-size:13px;color:var(--muted);cursor:pointer;padding:2px 6px;border-radius:4px;-webkit-appearance:none">✕</button>
+    </div>
+    <div id="results-list" class="results-list"></div>
+  </div>
+</div>
+
+<div class="flash" id="flash"></div>
+<div id="toast"></div>
+
+<div class="overlay" id="settings-overlay">
+  <div class="overlay-panel">
+    <div class="overlay-h">
+      <h2>Instellingen</h2>
+      <button class="close-btn" id="close-settings">✕</button>
+    </div>
+    <div class="setting-row">
+      <div><div class="setting-label">Geluid</div></div>
+      <label class="toggle"><input type="checkbox" id="sound-toggle" checked><span class="toggle-slider"></span></label>
+    </div>
+    <div class="setting-row">
+      <div><div class="setting-label">Scherm</div></div>
+      <div class="screen-row">
+        <button class="screen-opt active" id="screen-active">📱 Actief</button>
+        <button class="screen-opt" id="screen-save">🔋 Sparen</button>
+      </div>
+    </div>
+    <button class="danger-btn" id="end-session" style="border-color:#fbbf24;color:#fbbf24;margin-top:8px">✅ Vissessie beëindigen</button>
+    <button class="danger-btn" id="clear-results">Wis alle resultaten</button>
+  </div>
+</div>
+
+<style is:inline>
+.toggle { position: relative; width: 48px; height: 28px; flex-shrink: 0; }
+.toggle input { display: none; }
+.toggle-slider {
+  position: absolute; inset: 0;
+  background: #475569; border-radius: 14px; cursor: pointer;
+  transition: background 0.2s;
+}
+.toggle-slider::after {
+  content: ''; position: absolute; top: 3px; left: 3px;
+  width: 22px; height: 22px; border-radius: 50%;
+  background: #fff; transition: transform 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+.toggle input:checked + .toggle-slider { background: #2563eb; }
+.toggle input:checked + .toggle-slider::after { transform: translateX(20px); }
+</style>
+
+<script is:inline>
+(function() {
+  var STORAGE_KEY = 'feeder_assistent';
+
+  function loadData() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) return JSON.parse(raw);
+    } catch {}
+    return null;
+  }
+
+  function saveData() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        interval: state.interval,
+        pingCount: state.pingCount,
+        soundEnabled: state.soundEnabled,
+        locationName: state.locationName,
+        date: state.date,
+        results: state.results,
+        fishCounts: state.fishCounts
+      }));
+    } catch {}
+  }
+
+  var saved = loadData();
+
+  var state = {
+    swSeconds: 0,
+    ftSeconds: 300,
+    swRunning: false,
+    ftRunning: false,
+    interval: (saved && saved.interval) || 5,
+    pingCount: (saved && saved.pingCount) || 1,
+    soundEnabled: (saved && saved.soundEnabled !== undefined) ? saved.soundEnabled : true,
+    locationName: (saved && saved.locationName) || '',
+    date: (saved && saved.date) || '',
+    results: (saved && saved.results) || [],
+    fishCounts: (saved && saved.fishCounts) || { kroes:0, schub:0, spiegel:0, ander:0 },
+    showFishChoices: false,
+    sessionStart: null,
+    wakeLock: null,
+    screenActive: true,
+    _interval: null,
+    _hiddenAt: null
+  };
+
+  if (!state.interval) state.interval = 5;
+  state.ftSeconds = state.interval * 60;
+
+  // DOM refs
+  var swVal = document.getElementById('stopwatch-val');
+  var ftVal = document.getElementById('voertimer-val');
+  var statusLine = document.getElementById('status-line');
+  var intervalLabel = document.getElementById('interval-label');
+  var resultsList = document.getElementById('results-list');
+  var flashEl = document.getElementById('flash');
+  var toastEl = document.getElementById('toast');
+  var locationInput = document.getElementById('location-name');
+  var dateInput = document.getElementById('date-input');
+
+  // Format seconds to MM:SS
+  function fmt(s) {
+    var m = Math.floor(s / 60);
+    var sec = s % 60;
+    return (m < 10 ? '0' : '') + m + ':' + (sec < 10 ? '0' : '') + sec;
+  }
+
+  function updateDisplay() {
+    swVal.textContent = fmt(state.swSeconds);
+    ftVal.textContent = fmt(state.ftSeconds);
+    intervalLabel.textContent = state.interval;
+  }
+
+  function updateToggleButtons() {
+    var swBtn = document.getElementById('sw-toggle');
+    swBtn.textContent = state.swRunning ? 'Stop' : 'Start';
+    swBtn.classList.toggle('running', state.swRunning);
+
+    var ftBtn = document.getElementById('ft-toggle');
+    ftBtn.textContent = state.ftRunning ? 'Stop' : 'Start';
+    ftBtn.classList.toggle('running', state.ftRunning);
+  }
+
+  var TYPE_LABELS = { vis:'V', misser:'M', kroes:'KR', schub:'SC', spiegel:'SP', ander:'AN' };
+
+  function fmtAvg(seconds) {
+    if (typeof seconds !== 'number' || isNaN(seconds) || seconds < 0) return '00:00';
+    var m = Math.floor(seconds / 60);
+    var sec = Math.round(seconds % 60);
+    if (sec === 60) { m += 1; sec = 0; }
+    return (m < 10 ? '0' : '') + m + ':' + (sec < 10 ? '0' : '') + sec;
+  }
+
+  function parseTime(s) {
+    if (!s || typeof s !== 'string') return 0;
+    var parts = s.split(':');
+    return (parseInt(parts[0]) || 0) * 60 + (parseInt(parts[1]) || 0);
+  }
+
+  function updateResults() {
+    if (!state.results.length) {
+      resultsList.innerHTML = '<div class="results-empty">Nog geen resultaten.</div>';
+      return;
+    }
+    var fishResults = state.results.filter(function(r) { return r.type !== 'misser'; });
+    var show = state.results.slice(0, 3);
+    var avgSec = 0;
+    if (fishResults.length) {
+      var total = 0;
+      for (var i = 0; i < fishResults.length; i++) total += parseTime(fishResults[i].time);
+      avgSec = total / fishResults.length;
+    }
+    var html = show.map(function(r) {
+      var label = TYPE_LABELS[r.type] || r.type;
+      return '<div class="result-item"><span class="r-type ' + r.type + '">' + label + '</span><span class="r-time">' + r.time + '</span></div>';
+    }).join('');
+    html += '<div class="result-item" style="border-color:#fbbf24;font-size:13px"><span style="color:#fff">⬡</span><span style="flex:1;font-weight:600;color:#fff">Gem.</span><span class="r-time" style="font-weight:900;color:#fff">' + fmtAvg(avgSec) + '</span></div>';
+    resultsList.innerHTML = html;
+  }
+
+  function escapeHtml(s) {
+    if (!s) return '';
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function updateStatus(text, cls) {
+    statusLine.textContent = text;
+    statusLine.className = 'status-line' + (cls ? ' ' + cls : '');
+  }
+
+  function updateIntervalUI() {
+    document.querySelectorAll('.interval-btn').forEach(function(b) {
+      b.classList.toggle('active', parseInt(b.dataset.min) === state.interval);
+    });
+  }
+
+  function updatePingUI() {
+    document.querySelectorAll('.ping-btn').forEach(function(b) {
+      b.classList.toggle('active', parseInt(b.dataset.count) === state.pingCount);
+    });
+  }
+
+  function updateScreenUI() {
+    document.getElementById('screen-active').classList.toggle('active', state.screenActive);
+    document.getElementById('screen-save').classList.toggle('active', !state.screenActive);
+  }
+
+  function tick() {
+    if (state.swRunning) {
+      state.swSeconds++;
+    }
+    if (state.ftRunning) {
+      state.ftSeconds--;
+      if (state.ftSeconds <= 0) {
+        state.ftSeconds = 0;
+        state.ftRunning = false;
+        if (state.soundEnabled) playPing(state.pingCount);
+        flashEl.className = 'flash gold show';
+        setTimeout(function() { flashEl.classList.remove('show'); }, 200);
+        updateStatus('⏰ Voermoment!', 'feed');
+        showToast('Voermoment!');
+        updateToggleButtons();
+        if (!state.swRunning && !state.ftRunning) stopTimer();
+      }
+    }
+    updateDisplay();
+  }
+
+  function startTimer() {
+    if (state._interval) return;
+    state._interval = setInterval(tick, 1000);
+  }
+
+  function stopTimer() {
+    if (state._interval) {
+      clearInterval(state._interval);
+      state._interval = null;
+    }
+  }
+
+  function startStopwatch() {
+    state.swRunning = true;
+    startTimer();
+    updateToggleButtons();
+  }
+
+  function stopStopwatch() {
+    state.swRunning = false;
+    if (!state.ftRunning) stopTimer();
+    updateToggleButtons();
+  }
+
+  function startFeedTimer() {
+    state.ftRunning = true;
+    startTimer();
+    updateToggleButtons();
+  }
+
+  function stopFeedTimer() {
+    state.ftRunning = false;
+    if (!state.swRunning) stopTimer();
+    updateToggleButtons();
+  }
+
+  function resetStopwatch() {
+    state.swRunning = false;
+    state.swSeconds = 0;
+    if (!state.ftRunning) stopTimer();
+    updateDisplay();
+    updateToggleButtons();
+  }
+
+  function resetFeedTimer() {
+    state.ftRunning = false;
+    state.ftSeconds = state.interval * 60;
+    if (!state.swRunning) stopTimer();
+    updateDisplay();
+    updateToggleButtons();
+  }
+
+  function worp() {
+    state.swRunning = false;
+    state.ftRunning = false;
+    stopTimer();
+    state.swSeconds = 0;
+    state.ftSeconds = state.interval * 60;
+    state.swRunning = true;
+    state.ftRunning = true;
+    if (!state.sessionStart) state.sessionStart = Date.now();
+    startTimer();
+    updateDisplay();
+    updateToggleButtons();
+    updateStatus('Worp → ...', 'worp');
+    flashEl.className = 'flash green show';
+    setTimeout(function() { flashEl.classList.remove('show'); }, 150);
+  }
+
+  var FISH_NAMES = { kroes:'Kroes', schub:'Schub', spiegel:'Spiegel', ander:'Ander' };
+
+  function recordResult(type) {
+    var swTime = fmt(state.swSeconds);
+
+    state.swRunning = false;
+    state.ftRunning = false;
+    stopTimer();
+    state.swSeconds = 0;
+    state.ftSeconds = state.interval * 60;
+    updateDisplay();
+
+    var label = type === 'misser' ? 'MISSER' : (FISH_NAMES[type] || 'VIS');
+    var cls = type === 'misser' ? 'result-misser' : 'result-vis';
+
+    state.results.unshift({
+      type: type,
+      time: swTime,
+      location: state.locationName || '',
+      ts: new Date().toISOString()
+    });
+    if (state.results.length > 3) state.results.length = 3;
+
+    if (type !== 'misser') {
+      state.fishCounts[type] = (state.fishCounts[type] || 0) + 1;
+      syncVissessie();
+    }
+
+    updateStatus('Worp → ' + label + ' ' + swTime, cls);
+    updateResults();
+    saveData();
+
+    flashEl.className = 'flash ' + (type === 'misser' ? 'red' : 'blue') + ' show';
+    setTimeout(function() { flashEl.classList.remove('show'); }, 150);
+
+    if (state.soundEnabled && type !== 'misser') playPing(1);
+    showToast(label + ' ' + swTime);
+    updateToggleButtons();
+  }
+
+  function formatClockTime(ts) {
+    if (!ts) return '';
+    var d = new Date(ts);
+    return d.getHours() + 'u ' + d.getMinutes() + 'm';
+  }
+
+  function syncToServer(entry) {
+    if (!entry || !entry.stek || !entry.datum || entry.stek === '--' || entry.datum === '--/--') return;
+    try {
+      fetch('/api/sync-vissessie', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
+        body: JSON.stringify(entry)
+      }).catch(function(){});
+    } catch(e) {}
+  }
+
+  function syncVissessie(begin, einde, duurMin) {
+    try {
+      var key = 'kvvi_vissessies';
+      if (!localStorage.getItem(key) && localStorage.getItem('kvvi_vissessies_public')) {
+        key = 'kvvi_vissessies_public';
+      }
+      var data = JSON.parse(localStorage.getItem(key)) || [];
+      var stek = (state.locationName || '--').replace(/\s+/g, ' ').trim();
+      var datum = state.date || '--/--';
+      var idx = -1;
+      for (var i = 0; i < data.length; i++) {
+        if (data[i].stek === stek && data[i].datum === datum) { idx = i; break; }
+      }
+      var entry = {
+        stek: stek,
+        datum: datum,
+        kroes: state.fishCounts.kroes || 0,
+        schub: state.fishCounts.schub || 0,
+        spiegel: state.fishCounts.spiegel || 0,
+        ander: state.fishCounts.ander || 0,
+      };
+      entry.aantal = entry.kroes + entry.schub + entry.spiegel + entry.ander;
+      entry.gewicht = entry.kroes * 300 + entry.schub * 1500 + entry.spiegel * 1600 + entry.ander * 100;
+      entry.begin = begin || '';
+      entry.einde = einde || '';
+      entry.duurMin = duurMin || 0;
+      entry.tijdMin = entry.duurMin;
+      entry.wedstrijd = '';
+      var maanden = ['jan','feb','mar','apr','mei','jun','jul','aug','sep','okt','nov','dec'];
+      var m = datum.match(/\/(\d+)/);
+      if (m) {
+        var mn = parseInt(m[1]);
+        entry.month = (maanden[mn-1] || '???') + ' ' + new Date().getFullYear();
+      } else {
+        entry.month = maanden[new Date().getMonth()] + ' ' + new Date().getFullYear();
+      }
+      if (idx >= 0) {
+        data[idx] = entry;
+      } else {
+        data.push(entry);
+      }
+      localStorage.setItem(key, JSON.stringify(data));
+    } catch(e) {}
+    syncToServer(entry);
+  }
+
+  // Event listeners
+  document.getElementById('sw-toggle').addEventListener('click', function() {
+    if (state.swRunning) stopStopwatch();
+    else startStopwatch();
+  });
+
+  document.getElementById('sw-reset').addEventListener('click', function() {
+    resetStopwatch();
+    showToast('Stopwatch gereset');
+  });
+
+  document.getElementById('ft-toggle').addEventListener('click', function() {
+    if (state.ftRunning) stopFeedTimer();
+    else {
+      if (state.ftSeconds <= 0) state.ftSeconds = state.interval * 60;
+      startFeedTimer();
+    }
+  });
+
+  document.getElementById('ft-reset').addEventListener('click', function() {
+    resetFeedTimer();
+    showToast('Voertimer gereset');
+  });
+
+  document.getElementById('action-worp').addEventListener('click', worp);
+
+  document.getElementById('action-hervoer').addEventListener('click', function() {
+    state.swSeconds = 0;
+    state.ftSeconds = state.interval * 60;
+    state.swRunning = false;
+    state.ftRunning = false;
+    stopTimer();
+    state.swRunning = true;
+    state.ftRunning = true;
+    startTimer();
+    updateDisplay();
+    updateToggleButtons();
+    updateStatus('Opnieuw voeren → ...', 'worp');
+    flashEl.className = 'flash green show';
+    setTimeout(function() { flashEl.classList.remove('show'); }, 150);
+  });
+
+  function showVisChoices() {
+    state.showFishChoices = true;
+    document.getElementById('action-vis').style.display = 'none';
+    document.getElementById('action-fish-choices').style.display = 'flex';
+  }
+
+  function hideVisChoices() {
+    state.showFishChoices = false;
+    document.getElementById('action-vis').style.display = '';
+    document.getElementById('action-fish-choices').style.display = 'none';
+  }
+
+  document.getElementById('action-vis').addEventListener('click', showVisChoices);
+
+  document.querySelectorAll('#action-fish-choices .action-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var fishType = this.dataset.fish;
+      recordResult(fishType);
+      hideVisChoices();
+    });
+  });
+
+  document.getElementById('action-misser').addEventListener('click', function() {
+    if (state.showFishChoices) hideVisChoices();
+    recordResult('misser');
+  });
+
+  // Location
+  locationInput.value = state.locationName;
+  locationInput.addEventListener('change', function() {
+    state.locationName = this.value.trim();
+    saveData();
+  });
+
+  // Date
+  dateInput.value = state.date;
+  dateInput.addEventListener('input', function() {
+    var v = this.value.replace(/[^0-9]/g, '');
+    if (v.length >= 3) {
+      v = v.slice(0,2) + '/' + v.slice(2,4);
+    }
+    this.value = v;
+    state.date = v;
+    saveData();
+  });
+
+  // Interval buttons
+  document.querySelectorAll('.interval-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var val = parseInt(this.dataset.min);
+      state.interval = val;
+      state.ftSeconds = val * 60;
+      if (!state.ftRunning) {
+        updateDisplay();
+      }
+      updateIntervalUI();
+      saveData();
+    });
+  });
+
+  // Ping buttons
+  document.querySelectorAll('.ping-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      state.pingCount = parseInt(this.dataset.count);
+      updatePingUI();
+      saveData();
+      if (state.soundEnabled) playPing(state.pingCount);
+    });
+  });
+
+  // Settings overlay
+  var overlay = document.getElementById('settings-overlay');
+  var soundToggle = document.getElementById('sound-toggle');
+  soundToggle.checked = state.soundEnabled;
+  soundToggle.addEventListener('change', function() {
+    state.soundEnabled = this.checked;
+    saveData();
+    if (state.soundEnabled) playPing(1);
+  });
+
+  document.getElementById('settings-btn').addEventListener('click', function() {
+    overlay.classList.add('show');
+  });
+  document.getElementById('close-settings').addEventListener('click', function() {
+    overlay.classList.remove('show');
+  });
+  overlay.addEventListener('click', function(e) {
+    if (e.target === overlay) overlay.classList.remove('show');
+  });
+
+  document.getElementById('clear-results').addEventListener('click', function() {
+    if (confirm('Alle resultaten wissen?')) {
+      state.results = [];
+      state.fishCounts = { kroes:0, schub:0, spiegel:0, ander:0 };
+      updateResults();
+      saveData();
+      syncVissessie();
+      overlay.classList.remove('show');
+      showToast('Resultaten gewist');
+    }
+  });
+
+  document.getElementById('reset-results-btn').addEventListener('click', function() {
+    state.results = [];
+    updateResults();
+    saveData();
+    showToast('Resultaten gewist');
+  });
+
+  document.getElementById('end-session').addEventListener('click', function() {
+    var k = state.fishCounts.kroes || 0;
+    var s = state.fishCounts.schub || 0;
+    var p = state.fishCounts.spiegel || 0;
+    var a = state.fishCounts.ander || 0;
+    var parts = [];
+    if (k) parts.push(k + ' Kroes');
+    if (s) parts.push(s + ' Schub');
+    if (p) parts.push(p + ' Spiegel');
+    if (a) parts.push(a + ' Ander');
+    var begin = state.sessionStart ? formatClockTime(state.sessionStart) : '';
+    var einde = formatClockTime(Date.now());
+    var duurMin = state.sessionStart ? Math.round((Date.now() - state.sessionStart) / 60000) : 0;
+    syncVissessie(begin, einde, duurMin);
+    state.results = [];
+    state.fishCounts = { kroes:0, schub:0, spiegel:0, ander:0 };
+    state.sessionStart = null;
+    state.locationName = '';
+    state.date = '';
+    locationInput.value = '';
+    dateInput.value = '';
+    updateResults();
+    saveData();
+    overlay.classList.remove('show');
+    var msg = parts.length ? parts.join(', ') + ' → bewaard' : 'Geen vangsten';
+    showToast('✅ ' + msg);
+  });
+
+  // Screen / Battery
+  document.getElementById('screen-active').addEventListener('click', function() {
+    state.screenActive = true;
+    updateScreenUI();
+    requestWakeLock();
+  });
+
+  document.getElementById('screen-save').addEventListener('click', function() {
+    state.screenActive = false;
+    updateScreenUI();
+    releaseWakeLock();
+  });
+
+  // Wake lock
+  function requestWakeLock() {
+    if ('wakeLock' in navigator) {
+      navigator.wakeLock.request('screen').then(function(lock) {
+        state.wakeLock = lock;
+        document.getElementById('screen-active').classList.add('active');
+        document.getElementById('screen-save').classList.remove('active');
+        state.screenActive = true;
+        lock.addEventListener('release', function() {
+          state.wakeLock = null;
+        });
+      }).catch(function() {});
+    }
+  }
+
+  function releaseWakeLock() {
+    if (state.wakeLock) {
+      state.wakeLock.release();
+      state.wakeLock = null;
+    }
+  }
+
+  document.addEventListener('visibilitychange', function() {
+    if (!document.hidden && state.screenActive && !state.wakeLock) {
+      requestWakeLock();
+    }
+  });
+
+  // Handle page visibility for timer accuracy
+  document.addEventListener('visibilitychange', function() {
+    if (document.hidden) {
+      state._hiddenAt = Date.now();
+    } else if ((state.swRunning || state.ftRunning) && state._hiddenAt) {
+      var elapsed = Math.floor((Date.now() - state._hiddenAt) / 1000);
+      if (elapsed > 0) {
+        if (state.swRunning) state.swSeconds += elapsed;
+        if (state.ftRunning) {
+          state.ftSeconds -= elapsed;
+          if (state.ftSeconds <= 0) {
+            state.ftSeconds = 0;
+            state.ftRunning = false;
+            updateToggleButtons();
+            if (state.soundEnabled) playPing(state.pingCount);
+            updateStatus('⏰ Voermoment!', 'feed');
+            showToast('Voermoment!');
+            if (!state.swRunning) stopTimer();
+          }
+        }
+        updateDisplay();
+      }
+      state._hiddenAt = null;
+    }
+  });
+
+  // Sound
+  var audioCtx = null;
+  function getAudioCtx() {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    return audioCtx;
+  }
+
+  function playPing(count) {
+    try {
+      var ctx = getAudioCtx();
+      if (ctx.state === 'suspended') ctx.resume();
+      for (var i = 0; i < count; i++) {
+        setTimeout(function() {
+          var osc = ctx.createOscillator();
+          var gain = ctx.createGain();
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.type = 'sine';
+          osc.frequency.value = 880;
+          gain.gain.setValueAtTime(0.3, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+          osc.start(ctx.currentTime);
+          osc.stop(ctx.currentTime + 0.3);
+        }, i * 200);
+      }
+    } catch {}
+  }
+
+  // Toast
+  function showToast(msg) {
+    toastEl.textContent = msg;
+    toastEl.style.background = '#334155';
+    toastEl.classList.add('show');
+    clearTimeout(toastEl._hide);
+    toastEl._hide = setTimeout(function() { toastEl.classList.remove('show'); }, 2000);
+  }
+
+  // Init
+  updateDisplay();
+  updateToggleButtons();
+  updateIntervalUI();
+  updatePingUI();
+  updateResults();
+  updateScreenUI();
+  if (state.screenActive) requestWakeLock();
+})();
+</script>
+</body>
+</html>

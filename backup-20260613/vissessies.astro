@@ -542,9 +542,7 @@ function computeFields(row) {
   const gramMin = tijdMin > 0 ? (row.gewicht / tijdMin) : 0;
   const wedstrijd4uur = gramMin * 240;
   const duurVangst = tijdMin > 0 && row.aantal > 0 ? fmtDuurVangst(tijdMin, row.aantal) : '--';
-  const a = row.aantal || 0;
-  const beoordeling = a >= 51 ? '*****' : a >= 36 ? '****' : a >= 20 ? '***' : a >= 11 ? '**' : '*';
-  return { ...row, tijdMin, gramMin, wedstrijd4uur, duurVangst, beoordeling };
+  return { ...row, tijdMin, gramMin, wedstrijd4uur, duurVangst };
 }
 
 function deriveMonth(datum, jaar) {
@@ -657,7 +655,7 @@ function render() {
         <td class="num">${fmtTime(c.duurMin)}</td>
         <td class="num">${c.duurVangst}</td>
         <td class="${pijlClass}" style="font-size:18px;line-height:1">${pijlAuto}</td>
-        <td style="font-weight:700;letter-spacing:2px">${c.beoordeling}</td>
+        <td>${c.beoordeling}</td>
         <td class="num">${fmtEenheid(c.tijdMin)}</td>
         <td class="num">${fmtDecimal(c.gramMin)}</td>
         <td class="num">${fmtDecimal(c.wedstrijd4uur)}</td>
@@ -1596,17 +1594,9 @@ async function initFromAPI() {
   try {
     const res = await fetch(API_URL, { credentials: 'include' });
     if (res.ok) {
-      const serverData = await res.json();
-      if (Array.isArray(serverData) && serverData.length > 0) {
-        var merged = loadData().slice();
-        var seen = new Set(merged.map(function(r) { return r.stek + '|' + r.datum; }));
-        for (var i = 0; i < serverData.length; i++) {
-          var key = serverData[i].stek + '|' + serverData[i].datum;
-          if (!seen.has(key)) {
-            merged.push(serverData[i]);
-          }
-        }
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
         render();
       }
     }

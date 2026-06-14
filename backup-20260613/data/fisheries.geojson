@@ -1,0 +1,285 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "UK - Barston Lakes",
+        "marker-color": "#dc2626"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.686148,
+          52.412652
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "UK - Blythe Waters",
+        "marker-color": "#dc2626"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.7218642,
+          52.4016104
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "UK - Boddington Reservoir",
+        "marker-color": "#dc2626"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.2714292,
+          52.1719445
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "UK - Drayton Reservoir",
+        "marker-color": "#dc2626"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.1693442,
+          52.2784146
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "UK - Earlswood Lakes",
+        "marker-color": "#dc2626"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.186693,
+          51.2206923
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "UK - Partridge Lakes",
+        "marker-color": "#dc2626"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.8905653,
+          51.3163794
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "UK - Tunnel Barn Farm",
+        "marker-color": "#dc2626"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.69006,
+          52.30512
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "UK - Viaduct Fishery Somerset",
+        "marker-color": "#dc2626"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -2.7312047,
+          51.0594214
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "UK - Westwood Lakes Lincolnshire",
+        "marker-color": "#dc2626"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.0545097,
+          52.9567539
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "UK - Makins Fishery Warwickshire",
+        "marker-color": "#dc2626"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.3856088,
+          52.4873609
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "UK - Monk Lakes Kent",
+        "marker-color": "#dc2626"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.52862,
+          51.200451
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "UK - Stafford Moor Fishery Devon",
+        "marker-color": "#dc2626"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -3.996318,
+          50.8845522
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "UK - Larford Lakes Worcestershire",
+        "marker-color": "#dc2626"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -2.2691539,
+          52.3197594
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "UK - Lindholme Lakes Doncaster",
+        "marker-color": "#dc2626"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.890776,
+          53.553955
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "UK - Hallcroft Fishery Retford",
+        "marker-color": "#dc2626"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.9515568,
+          53.338018
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "UK - Rookery Waters Cambridgeshire",
+        "marker-color": "#dc2626"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.0310831,
+          52.4052865
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "UK - Decoy Lakes Whittlesey",
+        "marker-color": "#dc2626"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.119,
+          52.553
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "UK - Gold Valley Lakes Surrey",
+        "marker-color": "#dc2626"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.7336135,
+          51.2571253
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "UK - Cudmore Fisheries Staffordshire",
+        "marker-color": "#dc2626"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -2.283192,
+          52.9777788
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "UK - Woodland View Fishery Worcestershire",
+        "marker-color": "#dc2626"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -2.208767,
+          52.279434
+        ]
+      }
+    }
+  ]
+}

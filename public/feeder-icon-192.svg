@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192">
+  <rect width="192" height="192" rx="32" fill="#003366"/>
+  <circle cx="96" cy="82" r="42" fill="none" stroke="#C5A059" stroke-width="6"/>
+  <circle cx="96" cy="82" r="8" fill="#C5A059"/>
+  <line x1="96" y1="82" x2="96" y2="52" stroke="#C5A059" stroke-width="5" stroke-linecap="round"/>
+  <line x1="96" y1="82" x2="116" y2="82" stroke="#C5A059" stroke-width="4" stroke-linecap="round"/>
+  <text x="96" y="158" text-anchor="middle" font-size="24" font-weight="700" fill="#fff" font-family="system-ui">FEEDER</text>
+</svg>

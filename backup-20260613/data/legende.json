@@ -1,0 +1,79 @@
+[
+  {
+    "id": 439529756,
+    "naam": "Polderrivier",
+    "icoon": "📍",
+    "kleur": "#3cc954",
+    "zichtbaar": true
+  },
+  {
+    "id": 1622341650,
+    "naam": "Rivier",
+    "icoon": "🌊",
+    "kleur": "#2a4ea1",
+    "zichtbaar": true
+  },
+  {
+    "id": 3,
+    "naam": "Kanaal",
+    "icoon": "🚤",
+    "kleur": "#ffcc00",
+    "zichtbaar": true
+  },
+  {
+    "id": 4,
+    "naam": "Commercial",
+    "icoon": "🏪",
+    "kleur": "#e32c31",
+    "zichtbaar": true
+  },
+  {
+    "id": 5,
+    "naam": "Karpervijver (nachtvissen)",
+    "icoon": "🌙",
+    "kleur": "#1b8893",
+    "zichtbaar": true
+  },
+  {
+    "id": 6,
+    "naam": "Vliegvissen",
+    "icoon": "🪶",
+    "kleur": "#b63681",
+    "zichtbaar": true
+  },
+  {
+    "id": 7,
+    "naam": "Forellenvijver",
+    "icoon": "🐟",
+    "kleur": "#94a3b8",
+    "zichtbaar": true
+  },
+  {
+    "id": 1779093358120,
+    "naam": "Opmerkingen",
+    "icoon": "📍",
+    "kleur": "#0bf4e4",
+    "zichtbaar": true
+  },
+  {
+    "id": 1779096235992,
+    "naam": "Vijvers, wachtkommen, meanders, ...",
+    "icoon": "📍",
+    "kleur": "#f5d5a8",
+    "zichtbaar": true
+  },
+  {
+    "id": 1779694467153,
+    "naam": "Vakantiewoning",
+    "icoon": "📍",
+    "kleur": "#b1b6fb",
+    "zichtbaar": true
+  },
+  {
+    "id": 1779965924964,
+    "naam": "Vispas",
+    "icoon": "📍",
+    "kleur": "#eea62b",
+    "zichtbaar": true
+  }
+]

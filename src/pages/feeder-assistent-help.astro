@@ -1,0 +1,194 @@
+---
+export const prerender = false;
+const referer = Astro.request.headers.get('referer') || '';
+const backUrl = referer.includes('feeder-assistent') ? '/feeder-assistent' : '/feeder-assistent';
+---
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Feeder Help">
+<title>Feeder Assistent — Help</title>
+<style is:inline>
+:root { --blue: #003366; --gold: #C5A059; --bg: #f1f5f9; --card: #fff; --text: #1e293b; --muted: #94a3b8; --border: #e2e8f0; --green: #16a34a; }
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  background: var(--bg); color: var(--text);
+  -webkit-tap-highlight-color: transparent;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+#app {
+  max-width: 600px; margin: 0 auto;
+  padding: 12px 16px calc(24px + env(safe-area-inset-bottom));
+}
+.header {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid var(--gold);
+}
+.back-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 16px; border-radius: 10px; border: 2px solid var(--blue);
+  background: var(--card); color: var(--blue); font-size: 14px; font-weight: 700;
+  cursor: pointer; -webkit-appearance: none; text-decoration: none; transition: all 0.12s;
+}
+.back-btn:active { transform: scale(0.96); background: #eff6ff; }
+h1 { font-size: 22px; font-weight: 900; color: var(--blue); flex: 1; }
+h2 { font-size: 17px; font-weight: 800; color: var(--blue); margin: 24px 0 8px; }
+h3 { font-size: 14px; font-weight: 700; color: var(--text); margin: 16px 0 4px; }
+p, li { font-size: 14px; line-height: 1.6; color: var(--text); margin-bottom: 8px; }
+ul, ol { padding-left: 20px; margin-bottom: 12px; }
+li { margin-bottom: 4px; }
+.card {
+  background: var(--card); border-radius: 14px; border: 1px solid var(--border);
+  padding: 14px 16px; margin-bottom: 12px;
+}
+.tag {
+  display: inline-block; padding: 2px 8px; border-radius: 6px;
+  font-size: 11px; font-weight: 700; margin: 0 2px;
+}
+.tag-blue { background: #eff6ff; color: var(--blue); }
+.tag-gold { background: #fef8ee; color: #a16207; }
+.tag-green { background: #f0fdf4; color: var(--green); }
+.tag-red { background: #fef2f2; color: #dc2626; }
+.tag-cyan { background: #ecfeff; color: #0891b2; }
+code {
+  background: #f1f5f9; padding: 1px 5px; border-radius: 4px;
+  font-size: 12px; font-family: 'SF Mono', 'Cascadia Code', monospace;
+}
+.step { display: flex; gap: 10px; margin-bottom: 10px; }
+.step-num {
+  width: 24px; height: 24px; border-radius: 50%; background: var(--blue);
+  color: #fff; font-size: 12px; font-weight: 800; display: flex;
+  align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;
+}
+.step-body { flex: 1; }
+.flow-arrow { text-align: center; font-size: 20px; color: var(--gold); margin: 4px 0; }
+.sync-box {
+  background: #fef8ee; border: 2px solid var(--gold); border-radius: 12px;
+  padding: 12px 14px; margin-bottom: 12px;
+}
+.sync-box h3 { color: #a16207; margin-top: 0; }
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="header">
+    <h1>Feeder Assistent</h1>
+    <a href="/feeder-assistent" class="back-btn">✕ Sluiten</a>
+  </div>
+
+  <div class="card">
+    <p>De <strong>Feeder Assistent</strong> is een hulpmiddel tijdens het vissen met de <strong>Feeder</strong>.
+    Hij combineert een <strong>stopwatch</strong> (tijd tussen worp en vangst) met een <strong>voertimer</strong>
+    (periodiek bijvoeren) en registreert elke vangst per type vis.</p>
+  </div>
+
+  <h2>Werking</h2>
+
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-body">
+      <strong>Instellingen</strong><br>
+      Vul locatie en datum in bovenaan. Via <span class="tag">⚙️</span> stel je in:
+      <span class="tag tag-blue">Interval</span> (3, 5 of 8 min) voor de voertimer,
+      <span class="tag tag-gold">🔔</span> aantal geluidssignalen,
+      en <span class="tag">Geluid</span> aan/uit.
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-body">
+      <strong>Worp</strong><br>
+      Druk op <span class="tag tag-green">🟢 WORP</span>. Beide timers starten automatisch:
+      de stopwatch meet hoe lang het duurt voor een vis komt, de voertimer telt af naar het volgende voermoment.
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-body">
+      <strong>Vangst of misser</strong><br>
+      Bij een vis: druk op <span class="tag tag-blue">🔵 VIS BINNEN</span> en kies het type
+      (<span class="tag tag-cyan">KR</span> Kroes,
+      <span class="tag tag-cyan">SC</span> Schub,
+      <span class="tag tag-cyan">SP</span> Spiegel,
+      <span class="tag tag-cyan">AN</span> Ander).
+      Bij een misser: druk op <span class="tag tag-red">🔴 MISSER</span>.
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-body">
+      <strong>Opnieuw voeren</strong><br>
+      Druk op <span class="tag tag-gray">🔄 Opnieuw voeren</span> om beide timers te resetten
+      zonder een vangst te registreren (bv. na een lange wachtperiode).
+    </div>
+  </div>
+
+  <h2>Resultaten</h2>
+  <p>Onder de actieknoppen zie je de <strong>laatste 3 resultaten</strong> met hun tijden.
+  De 4de regel toont de <strong>gemiddelde vangsttijd</strong> van alle vangsten (exclusief missers).
+  Dit is de tijd tussen worp en vangst — hoe korter, hoe actiever de vis.</p>
+
+  <h2>Koppeling met Vissessies</h2>
+
+  <div class="sync-box">
+    <h3>⚡ Automatische synchronisatie</h3>
+    <p>Elke vangst die je registreert wordt automatisch <strong>opgeslagen in de vissessies-data</strong>.
+    Dit gebeurt op twee manieren:</p>
+    <ol>
+      <li><strong>Lokaal</strong> — op je toestel in localStorage (werkt offline)</li>
+      <li><strong>Server</strong> — via <code>/api/sync-vissessie</code> (zodra er internet is)</li>
+    </ol>
+  </div>
+
+  <div class="sync-box">
+    <h3>📊 Hoe de data wordt gebruikt</h3>
+    <p>De feeder assistent berekent zelf een schatting van het <strong>gewicht</strong> op basis van
+    standaard gewichten per vissoort: Kroes (F1) 300g, Schub 1500g, Spiegel 1600g, Andere 100g.</p>
+    <p>Deze data verschijnt daarna in de <strong>vissessies-app</strong> op <code>/vissessies-app</code>,
+    waar je ze kunt aanvullen met begin- en einduur voor de juiste tijdsduur.</p>
+  </div>
+
+  <div class="card" style="border-color:var(--green);background:#f0fdf4">
+    <p><strong>Tip:</strong> Geef je locatie een korte naam (bv. "G 7", max 5 tekens).
+    Alle locaties met data verschijnen in de <strong>Top stekken</strong> grafiek in de vissessies-app.
+    Vul ook de <strong>datum</strong> in. Zo herkent de app of het om een nieuwe of bestaande sessie gaat
+    en worden de vangsten samengevoegd bij de juiste sessie.</p>
+  </div>
+
+  <h2>Sessie beëindigen</h2>
+  <p>Via het instellingenmenu (<span class="tag">⚙️</span>) kies je voor <strong>Vissessie beëindigen</strong>.
+  De app slaat dan op:</p>
+  <ul>
+    <li>Begin- en einduur (op basis van eerste worp)</li>
+    <li>Totaal aantal vissen per type + totaal gewicht</li>
+    <li>Locatie en datum</li>
+  </ul>
+  <p>Na beëindigen worden de tellers gereset voor een nieuwe sessie.</p>
+
+  <h2>Instellingen ⚙️</h2>
+  <p>Via de <span class="tag">⚙️</span> knop rechtsboven kun je:</p>
+  <ul>
+    <li><strong>Interval</strong> — voertimer: 3, 5 of 8 minuten</li>
+    <li><strong>🔔 Signalen</strong> — 1× of 2× geluidssignalen bij voermoment</li>
+    <li><strong>Geluid aan/uit</strong> — schakel geluid uit via de toggle</li>
+    <li><strong>📱 Actief / 🔋 Sparen</strong> — scherm blijft aan (Wake Lock) of mag uitschakelen</li>
+    <li><strong>Vissessie beëindigen</strong> — stop de sessie en sla alles op</li>
+  </ul>
+
+  <div class="card" style="border-color:var(--gold);margin-top:24px;text-align:center">
+    <p style="font-size:13px;color:var(--muted);margin-bottom:0">
+      Vragen of problemen? Contacteer de beheerder via de KVVI-website.
+    </p>
+  </div>
+</div>
+</body>
+</html>

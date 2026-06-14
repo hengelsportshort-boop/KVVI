@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="100" fill="#003366"/>
+  <!-- Fish body -->
+  <ellipse cx="260" cy="260" rx="140" ry="90" fill="#C5A059" stroke="#fff" stroke-width="8"/>
+  <!-- Tail -->
+  <polygon points="120,260 70,200 70,320" fill="#C5A059" stroke="#fff" stroke-width="8" stroke-linejoin="round"/>
+  <!-- Eye -->
+  <circle cx="330" cy="235" r="16" fill="#003366"/>
+  <!-- Mouth -->
+  <path d="M380 260 Q400 250 410 260" stroke="#003366" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <!-- Dorsal fin -->
+  <path d="M250 170 Q270 120 310 170" fill="#C5A059" stroke="#fff" stroke-width="5"/>
+  <!-- Pectoral fin -->
+  <path d="M290 300 Q310 340 270 330" fill="#C5A059" stroke="#fff" stroke-width="5"/>
+  <!-- Bar chart inside fish -->
+  <rect x="220" y="230" width="24" height="50" rx="4" fill="#fff" opacity="0.9"/>
+  <rect x="255" y="215" width="24" height="65" rx="4" fill="#fff" opacity="0.9"/>
+  <rect x="290" y="240" width="24" height="40" rx="4" fill="#fff" opacity="0.9"/>
+</svg>

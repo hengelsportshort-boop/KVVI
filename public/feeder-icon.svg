@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="100" fill="#003366"/>
+  <!-- Fishing rod -->
+  <path d="M220 80 Q280 40 340 80 Q380 110 400 160" stroke="#fff" stroke-width="14" fill="none" stroke-linecap="round"/>
+  <!-- Line from rod tip -->
+  <line x1="400" y1="160" x2="340" y2="300" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
+  <!-- Method feeder at line end -->
+  <rect x="310" y="290" width="60" height="50" rx="10" fill="#C5A059" stroke="#fff" stroke-width="5"/>
+  <!-- Feeder springs (horizontal lines) -->
+  <line x1="315" y1="305" x2="365" y2="305" stroke="#fff" stroke-width="4"/>
+  <line x1="315" y1="325" x2="365" y2="325" stroke="#fff" stroke-width="4"/>
+  <!-- Fish below feeder -->
+  <path d="M340 370 Q310 340 280 370 Q310 400 340 370Z" fill="#C5A059" stroke="#fff" stroke-width="5"/>
+  <polygon points="280,370 260,350 260,390" fill="#C5A059" stroke="#fff" stroke-width="5"/>
+</svg>

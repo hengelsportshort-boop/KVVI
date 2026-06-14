@@ -6,8 +6,11 @@ const PRECACHE = [
   '/',
   OFFLINE_URL,
   '/manifest.json',
+  '/manifest-feeder.json',
   '/icons/icon-192x192.png',
   '/icons/icon-512x512.png',
+  '/feeder-icon-192.svg',
+  '/feeder-icon-512.svg',
 ];
 
 self.addEventListener('install', (event) => {
