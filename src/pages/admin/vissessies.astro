@@ -462,7 +462,17 @@ function deriveMonth(datum, jaar) {
   return maanden[mn - 1] + ' ' + (jaar != null ? jaar : new Date().getFullYear());
 }
 
+function genId() {
+  return '_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+}
+
+function ensureId(entry) {
+  if (!entry._id) entry._id = genId();
+  return entry;
+}
+
 function sortData(arr) {
+  arr.forEach(ensureId);
   function dateVal(r) {
     const p = r.datum ? r.datum.split('/') : [];
     if (p.length === 2) return parseInt(p[1]) * 100 + parseInt(p[0]);
@@ -551,16 +561,16 @@ function render() {
       const pijlClass = pijlAuto === '⬆' ? 'badge-up' : pijlAuto === '⬇' ? 'badge-down' : '';
       const wedstrijdClass = c.wedstrijd ? ' wedstrijd' : '';
       rows += `<tr style="text-align:center" class="${wedstrijdClass}">
-        <td contenteditable="true" data-idx="${gIdx}" data-month="${month}" data-field="datum">${c.datum}</td>
-        <td contenteditable="true" data-idx="${gIdx}" data-month="${month}" data-field="kroes" class="num">${c.kroes || ''}</td>
-        <td contenteditable="true" data-idx="${gIdx}" data-month="${month}" data-field="schub" class="num">${c.schub || ''}</td>
-        <td contenteditable="true" data-idx="${gIdx}" data-month="${month}" data-field="spiegel" class="num">${c.spiegel || ''}</td>
-        <td contenteditable="true" data-idx="${gIdx}" data-month="${month}" data-field="ander" class="num">${c.ander || ''}</td>
+        <td contenteditable="true" data-id="${c._id}" data-field="datum">${c.datum}</td>
+        <td contenteditable="true" data-id="${c._id}" data-field="kroes" class="num">${c.kroes || ''}</td>
+        <td contenteditable="true" data-id="${c._id}" data-field="schub" class="num">${c.schub || ''}</td>
+        <td contenteditable="true" data-id="${c._id}" data-field="spiegel" class="num">${c.spiegel || ''}</td>
+        <td contenteditable="true" data-id="${c._id}" data-field="ander" class="num">${c.ander || ''}</td>
         <td class="num">${c.aantal}</td>
-        <td contenteditable="true" data-idx="${gIdx}" data-month="${month}" data-field="gewicht" class="num">${c.gewicht}</td>
-        <td contenteditable="true" data-idx="${gIdx}" data-month="${month}" data-field="stek" class="col-merk">${c.stek}</td>
-        <td contenteditable="true" data-idx="${gIdx}" data-month="${month}" data-field="begin">${c.begin}</td>
-        <td contenteditable="true" data-idx="${gIdx}" data-month="${month}" data-field="einde">${c.einde}</td>
+        <td contenteditable="true" data-id="${c._id}" data-field="gewicht" class="num">${c.gewicht}</td>
+        <td contenteditable="true" data-id="${c._id}" data-field="stek" class="col-merk">${c.stek}</td>
+        <td contenteditable="true" data-id="${c._id}" data-field="begin">${c.begin}</td>
+        <td contenteditable="true" data-id="${c._id}" data-field="einde">${c.einde}</td>
         <td class="num">${fmtTime(c.duurMin)}</td>
         <td class="num">${c.duurVangst}</td>
         <td class="${pijlClass}" style="font-size:18px;line-height:1">${pijlAuto}</td>
@@ -568,8 +578,8 @@ function render() {
         <td class="num">${fmtEenheid(c.tijdMin)}</td>
         <td class="num">${fmtDecimal(c.gramMin)}</td>
         <td class="num">${fmtDecimal(c.wedstrijd4uur)}</td>
-        <td data-idx="${gIdx}" data-month="${month}" data-field="wedstrijd" class="wedstrijd-toggle" style="cursor:pointer;font-size:16px">${c.wedstrijd ? '🏆' : '⬜'}</td>
-        <td style="cursor:pointer;color:#ef4444;font-weight:700" class="row-delete" data-idx="${gIdx}" data-month="${month}">✕</td>
+        <td data-id="${c._id}" data-field="wedstrijd" class="wedstrijd-toggle" style="cursor:pointer;font-size:16px">${c.wedstrijd ? '🏆' : '⬜'}</td>
+        <td style="cursor:pointer;color:#ef4444;font-weight:700" class="row-delete" data-id="${c._id}">✕</td>
       </tr>`;
     });
 
@@ -604,10 +614,10 @@ function render() {
   container.querySelectorAll('td[contenteditable]').forEach(td => {
     td.addEventListener('blur', () => {
       const field = td.dataset.field;
-      const idx = parseInt(td.dataset.idx);
+      const id = td.dataset.id;
       const val = td.textContent.trim();
       const data = loadData();
-      const found = data[idx];
+      const found = id ? data.find(r => r._id === id) : null;
       if (found) {
         if (field === 'datum') {
           const yearMatch = found.month && found.month.match(/(\d{4})/);
@@ -641,9 +651,9 @@ function render() {
 
   container.querySelectorAll('td.wedstrijd-toggle').forEach(td => {
     td.addEventListener('click', () => {
-      const idx = parseInt(td.dataset.idx);
+      const id = td.dataset.id;
       const data = loadData();
-      const found = data[idx];
+      const found = id ? data.find(r => r._id === id) : null;
       if (found) {
         found.wedstrijd = found.wedstrijd ? '' : '🏆';
         saveData(data);
@@ -655,9 +665,10 @@ function render() {
 
   container.querySelectorAll('td.row-delete').forEach(td => {
     td.addEventListener('click', () => {
-      const idx = parseInt(td.dataset.idx);
+      const id = td.dataset.id;
       const data = loadData();
-      if (idx >= 0 && idx < data.length) {
+      const idx = id ? data.findIndex(r => r._id === id) : -1;
+      if (idx >= 0) {
         if (!confirm(`Verwijder sessie van ${data[idx].datum} (stek ${data[idx].stek})?`)) return;
         data.splice(idx, 1);
         saveData(data);
