@@ -1281,6 +1281,8 @@ window.addEventListener('storage', function(e) {
 
 initJaarSelector();
 render();
+var localData = loadData();
+if (localData.length) { trySyncToServer(localData); }
 fetch(SYNC_API).then(function(r) {
   if (!r.ok) return;
   r.json().then(function(serverData) {
