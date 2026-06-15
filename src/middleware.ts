@@ -84,7 +84,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
 
   // === STEP 2: Admin auth check ===
   if (url.pathname.startsWith('/admin')) {
-    const openPaths = ['/admin/login', '/admin/logout', '/admin/api/vissessies', '/admin/api/vissessies-backup'];
+    const openPaths = ['/admin/login', '/admin/logout'];
     if (!openPaths.includes(url.pathname)) {
       const token = cookies.get('admin_token');
       if (!token || token.value !== ADMIN_KEY) {
