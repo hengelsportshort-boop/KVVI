@@ -53,6 +53,7 @@ td[contenteditable]:focus { outline:2px solid var(--accent-light); outline-offse
 .month-group { margin-bottom:16px; }
 .month-header { background:var(--accent); color:#fff; padding:6px 10px; border-radius:6px 6px 0 0; font-weight:700; font-size:13px; display:flex; justify-content:space-between; cursor:pointer; user-select:none; }
 .month-header:hover { background:#1e3a8a; }
+.month-body { overflow-x:auto; -webkit-overflow-scrolling:touch; }
 .month-body.collapsed { display:none; }
 .subtotal { background:#0f172a; font-weight:700; }
 .subtotal td { border-top:2px solid var(--muted); padding-top:6px; }
@@ -562,11 +563,11 @@ function render() {
         <span>${mAantal} vis — ${fmtGewicht(mGewicht)} — ${fmtTime(mTijd)} — ${fmtDecimal(mTijd > 0 ? mGewicht / mTijd : 0)} gr/min</span>
       </div>
       <div class="month-body${isCollapsed ? ' collapsed' : ''}">
-      <div style="overflow-x:auto;-webkit-overflow-scrolling:touch"><table><thead><tr style="text-align:center">
+      <table><thead><tr style="text-align:center">
         <th>Datum</th><th>Kroes</th><th>Schub</th><th>Spiegel</th><th>Ander</th><th>Aantal</th><th>Gewicht</th><th>Stek</th><th>Begin</th><th>Einde</th><th>Duur</th><th>Duur/vangst</th><th>⬆⬇</th><th>Beoord</th><th>Tijd Min</th><th>Gr/min</th><th>4u wedstrijd</th><th>🏆</th><th style="width:24px">✕</th>
       </tr></thead><tbody>${rows}
       <tr class="subtotal" style="text-align:center"><td style="text-align:left;font-weight:600">Subtotaal ${month}</td><td class="num">${mKroes || ''}</td><td class="num">${mSchub || ''}</td><td class="num">${mSpiegel || ''}</td><td class="num">${mAnder || ''}</td><td class="num">${mAantal}</td><td class="num">${fmtGewicht(mGewicht)}</td><td></td><td></td><td></td><td class="num">${fmtTime(mTijd)}</td><td></td><td></td><td></td><td class="num">${fmtEenheid(mTijd)}</td><td class="num">${fmtDecimal(mTijd > 0 ? mGewicht / mTijd : 0)}</td><td class="num">${fmtDecimal((mTijd > 0 ? mGewicht / mTijd : 0) * 240)}</td><td></td><td></td></tr>
-    </tbody></table></div></div></div>`;
+    </tbody></table></div></div>`;
   }
 
   html += `<div style="background:var(--accent);color:#fff;padding:12px 16px;border-radius:8px;display:flex;gap:24px;flex-wrap:wrap;font-size:15px;font-weight:700;margin-top:12px">

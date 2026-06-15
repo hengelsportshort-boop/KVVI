@@ -1,0 +1,196 @@
+---
+export const prerender = false;
+const referer = Astro.request.headers.get('referer') || '';
+const backUrl = referer.includes('visstek') ? '/vissessies-app/visstek' : '/vissessies-app/visstek';
+---
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Vaste hengel Help">
+<title>Vaste hengel assistent — Help</title>
+<style is:inline>
+:root { --blue: #003366; --gold: #C5A059; --bg: #f1f5f9; --card: #fff; --text: #1e293b; --muted: #94a3b8; --border: #e2e8f0; --green: #16a34a; }
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  background: var(--bg); color: var(--text);
+  -webkit-tap-highlight-color: transparent;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+#app {
+  max-width: 600px; margin: 0 auto;
+  padding: 12px 16px calc(24px + env(safe-area-inset-bottom));
+}
+.header {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid var(--gold);
+}
+.back-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 16px; border-radius: 10px; border: 2px solid var(--blue);
+  background: var(--card); color: var(--blue); font-size: 14px; font-weight: 700;
+  cursor: pointer; -webkit-appearance: none; text-decoration: none; transition: all 0.12s;
+}
+.back-btn:active { transform: scale(0.96); background: #eff6ff; }
+h1 { font-size: 22px; font-weight: 900; color: var(--blue); flex: 1; }
+h2 { font-size: 17px; font-weight: 800; color: var(--blue); margin: 24px 0 8px; }
+h3 { font-size: 14px; font-weight: 700; color: var(--text); margin: 16px 0 4px; }
+p, li { font-size: 14px; line-height: 1.6; color: var(--text); margin-bottom: 8px; }
+ul, ol { padding-left: 20px; margin-bottom: 12px; }
+li { margin-bottom: 4px; }
+.card {
+  background: var(--card); border-radius: 14px; border: 1px solid var(--border);
+  padding: 14px 16px; margin-bottom: 12px;
+}
+.tag {
+  display: inline-block; padding: 2px 8px; border-radius: 6px;
+  font-size: 11px; font-weight: 700; margin: 0 2px;
+}
+.tag-blue { background: #eff6ff; color: var(--blue); }
+.tag-green { background: #f0fdf4; color: var(--green); }
+.tag-amber { background: #fef3c7; color: #92400e; }
+.tag-purple { background: #f3e8ff; color: #6b21a8; }
+.tag-red { background: #fef2f2; color: #dc2626; }
+.tag-slate { background: #f1f5f9; color: #475569; }
+.tag-cyan { background: #ecfeff; color: #0891b2; }
+code {
+  background: #f1f5f9; padding: 1px 5px; border-radius: 4px;
+  font-size: 12px; font-family: 'SF Mono', 'Cascadia Code', monospace;
+}
+kbd {
+  background: #1e293b; color: #fff; padding: 2px 7px; border-radius: 4px;
+  font-size: 11px; font-weight: 600;
+}
+.step { display: flex; gap: 10px; margin-bottom: 10px; }
+.step-num {
+  width: 24px; height: 24px; border-radius: 50%; background: var(--blue);
+  color: #fff; font-size: 12px; font-weight: 800; display: flex;
+  align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;
+}
+.step-body { flex: 1; }
+.sync-box {
+  background: #fef8ee; border: 2px solid var(--gold); border-radius: 12px;
+  padding: 12px 14px; margin-bottom: 12px;
+}
+.sync-box h3 { color: #a16207; margin-top: 0; }
+.tip {
+  background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px;
+  padding: 12px 16px; margin: 10px 0; font-size: 13px; color: #166534;
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="header">
+    <h1>Vaste hengel assistent</h1>
+    <a href="/vissessies-app/visstek" class="back-btn">✕ Sluiten</a>
+  </div>
+
+  <div class="card">
+    <p>De <strong>Vaste hengel assistent</strong> is een snelle invultool voor onderweg.
+    Alles past op één scherm — ideaal op mobiel tijdens het vissen.</p>
+  </div>
+
+  <h2>Velden</h2>
+
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-body">
+      <strong>Stek</strong><br>
+      Max 5 karakters, vb <code>G 11</code>, <code>D 1</code>.
+      Alle stekken met data verschijnen in de <strong>Top stekken</strong> grafiek in Vissessies.
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-body">
+      <strong>Datum</strong><br>
+      Max 5 karakters, vb <code>19/06</code>.
+      Eerder gebruikte datums verschijnen als suggestie bij de stek.
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-body">
+      <strong>Begin / Einde</strong><br>
+      Tik 4 cijfers, vb <code>1600</code> → <code>16u 00m</code>.
+      De duur wordt automatisch berekend.
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-body">
+      <strong>Vissoorten</strong><br>
+      <span class="tag tag-green">Kroes</span>
+      <span class="tag tag-blue">Schub</span>
+      <span class="tag tag-purple">Spiegel</span>
+      <span class="tag tag-amber">Ander</span>
+      — via <kbd>−</kbd> en <kbd>+</kbd> of direct typen.
+    </div>
+  </div>
+
+  <h2>Automatisch berekend</h2>
+  <ul>
+    <li><strong>Aantal</strong> — som van alle 4 vissoorten</li>
+    <li><strong>Gewicht</strong> — standaard gewichten: Kroes (F1) 300g, Schub 1500g, Spiegel 1600g, Andere 100g. Weergegeven in kg.</li>
+    <li><strong>Duur</strong> — verschijnt zodra begin en einde ingevuld zijn</li>
+  </ul>
+
+  <div class="tip">
+    💡 Het gewicht is een schatting. Wil je het exacte gewicht noteren? Overschrijf het nadien in de Vissessies Data-tab.
+  </div>
+
+  <h2>Eerdere sessies</h2>
+  <p>Onder het formulier zie je een tabel met alle vorige sessies voor de gekozen stek. Zo zie je meteen wat je er al gevangen hebt.</p>
+
+  <h2>Koppeling met Vissessies</h2>
+
+  <div class="sync-box">
+    <h3>⚡ Automatische synchronisatie</h3>
+    <p>Alle sessies die je via de Vaste hengel assistent opslaat, worden <strong>automatisch toegevoegd</strong> aan dezelfde data als de Vissessies-app. Ze verschijnen in:</p>
+    <ul>
+      <li>Het <strong>Data</strong> tabblad in Vissessies</li>
+      <li>De <strong>Statistieken</strong> grafieken</li>
+      <li>De <strong>Top stekken</strong> overzichten</li>
+    </ul>
+  </div>
+
+  <div class="sync-box">
+    <h3>🔄 Cross-tab sync</h3>
+    <p>Heb je zowel de Vaste hengel assistent als Vissessies openstaan in een ander tabblad? De data wordt <strong>automatisch gesynchroniseerd</strong> — je hoeft geen pagina te verversen.</p>
+  </div>
+
+  <h2>Installeren op je telefoon</h2>
+  <p>Voeg de Vaste hengel assistent toe aan je startscherm voor snel gebruik tijdens het vissen.</p>
+
+  <h3>📱 iPhone (Safari)</h3>
+  <ol>
+    <li>Open <code>/vissessies-app/visstek</code> in Safari</li>
+    <li>Tik op <strong>Delen</strong> (📤) onderaan</li>
+    <li>Scroll naar beneden, tik <strong>Zet in beginscherm</strong></li>
+    <li>Geef een naam, tik <strong>Voeg toe</strong></li>
+  </ol>
+
+  <h3>🤖 Android (Chrome)</h3>
+  <ol>
+    <li>Open <code>/vissessies-app/visstek</code> in Chrome</li>
+    <li>Tik op menu (⋮) rechtsboven</li>
+    <li>Tik op <strong>Installeren</strong> of <strong>Toevoegen aan startscherm</strong></li>
+  </ol>
+
+  <div class="card" style="border-color:var(--gold);margin-top:24px;text-align:center">
+    <p style="font-size:13px;color:var(--muted);margin-bottom:0">
+      Vragen of problemen? Contacteer de beheerder via de KVVI-website.
+    </p>
+  </div>
+</div>
+</body>
+</html>
