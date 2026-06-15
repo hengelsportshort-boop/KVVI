@@ -533,6 +533,7 @@ function render() {
 
     let rows = '';
     items.forEach((r, idx) => {
+      ensureId(r);
       const gIdx = globalIdx++;
       const c = computeFields(r);
       mKroes += c.kroes; mSchub += c.schub; mSpiegel += c.spiegel; mAnder += c.ander;

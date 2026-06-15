@@ -552,7 +552,7 @@ function render() {
 
     let rows = '';
     items.forEach((r, idx) => {
-      const gIdx = globalIdx++;
+      ensureId(r);
       const c = computeFields(r);
       mKroes += c.kroes; mSchub += c.schub; mSpiegel += c.spiegel; mAnder += c.ander;
       mAantal += c.aantal; mGewicht += c.gewicht; mTijd += c.tijdMin;
