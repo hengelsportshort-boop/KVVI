@@ -629,13 +629,8 @@ body {
     return d.getHours() + 'u ' + d.getMinutes() + 'm';
   }
 
-  function isAdmin() {
-    return document.cookie.split(';').some(function(c) { return c.trim().startsWith('admin_token='); });
-  }
-
   function syncToServer(entry) {
     if (!entry || !entry.stek || !entry.datum || entry.stek === '--' || entry.datum === '--/--') return;
-    if (!isAdmin()) return;
     fetch('/admin/api/vissessies', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

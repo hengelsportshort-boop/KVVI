@@ -171,12 +171,7 @@ function saveData(data) {
   trySyncToServer(data);
 }
 
-function isAdmin() {
-  return document.cookie.split(';').some(function(c) { return c.trim().startsWith('admin_token='); });
-}
-
 function trySyncToServer(data) {
-  if (!isAdmin()) return;
   fetch('/admin/api/vissessies', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

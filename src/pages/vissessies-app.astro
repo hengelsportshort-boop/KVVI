@@ -242,10 +242,6 @@ function saveData(data) {
   trySyncToServer(data);
 }
 
-function isAdmin() {
-  return document.cookie.split(';').some(c => c.trim().startsWith('admin_token='));
-}
-
 function trySyncToServer(data) {
   fetch('/admin/api/vissessies', {
     method: 'POST',
