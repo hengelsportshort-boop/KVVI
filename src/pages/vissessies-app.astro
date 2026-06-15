@@ -247,7 +247,6 @@ function isAdmin() {
 }
 
 function trySyncToServer(data) {
-  if (!isAdmin()) return;
   fetch('/admin/api/vissessies', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -1286,5 +1285,31 @@ window.addEventListener('storage', function(e) {
 
 initJaarSelector();
 render();
-if (isAdmin()) document.getElementById('btn-sync-server').click();
+fetch(SYNC_API).then(function(r) {
+  if (!r.ok) return;
+  r.json().then(function(serverData) {
+    if (!Array.isArray(serverData) || !serverData.length) return;
+    var local = loadData();
+    var changed = false;
+    serverData.forEach(function(entry) {
+      if (!entry.stek || !entry.datum) return;
+      var stekNorm = entry.stek.replace(/\s+/g, ' ').trim();
+      var datumNorm = entry.datum.trim();
+      var existing = local.findIndex(function(e) {
+        return (e.stek || '').replace(/\s+/g, ' ').trim() === stekNorm && (e.datum || '').trim() === datumNorm;
+      });
+      if (existing >= 0) {
+        var loc = local[existing];
+        if (!loc.begin || !loc.begin.trim()) {
+          local[existing] = Object.assign({}, loc, entry);
+          changed = true;
+        }
+      } else {
+        local.push(Object.assign({}, entry, { stek: stekNorm, datum: datumNorm }));
+        changed = true;
+      }
+    });
+    if (changed) { sortData(local); saveData(local); render(); }
+  });
+}).catch(function(){});
 </script>
