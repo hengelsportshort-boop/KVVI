@@ -471,8 +471,6 @@ function render() {
   bewaarJaar(jaar);
   const data = filterJaar(alleData, jaar);
   const container = document.getElementById('table-container');
-  container.style.overflowX = 'auto';
-  container.style.webkitOverflowScrolling = 'touch';
   document.getElementById('row-count').textContent = data.length + ' sessies in ' + jaar;
   document.getElementById('year-count').textContent = '(' + alleData.length + ' totaal)';
 
@@ -579,7 +577,7 @@ function render() {
     <span>📊 ${fmtDecimal(grandTijd > 0 ? grandGewicht / grandTijd : 0)} gr/min</span>
   </div>`;
 
-  container.innerHTML = html;
+  container.innerHTML = '<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;min-width:0">' + html + '</div>';
 
   container.querySelectorAll('td[contenteditable]').forEach(td => {
     td.addEventListener('blur', () => {
