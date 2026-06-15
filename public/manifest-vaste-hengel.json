@@ -1,0 +1,13 @@
+{
+  "name": "Vaste hengel assistent",
+  "short_name": "Vaste Hengel",
+  "description": "Snel een vangst noteren",
+  "start_url": "/vissessies-app/visstek",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#003366",
+  "icons": [
+    { "src": "/vaste-hengel-icon.svg", "sizes": "192x192", "type": "image/svg+xml" },
+    { "src": "/vaste-hengel-icon.svg", "sizes": "512x512", "type": "image/svg+xml" }
+  ]
+}
