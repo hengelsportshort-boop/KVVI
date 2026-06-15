@@ -45,7 +45,44 @@ export async function GET() {
 export async function POST({ request }) {
   try {
     const data = await request.json();
-    fs.writeFileSync(DATA_PATH_NEW, JSON.stringify(data, null, 2), 'utf-8');
+    // Merge met bestaande data in plaats van overschrijven
+    let bestaand = [];
+    try { bestaand = JSON.parse(fs.readFileSync(DATA_PATH_NEW, 'utf-8')); } catch {}
+    if (!Array.isArray(bestaand)) bestaand = [];
+    if (Array.isArray(data)) {
+      // Als een volledige dataset wordt gestuurd (admin dashboard)
+      // Check of het een volledige dataset is (> 1 entry of entries hebben alle velden)
+      const isFullDataset = data.length > 1 || (data.length === 1 && (data[0].month || data[0].begin));
+      if (isFullDataset) {
+        // Volledige dataset = vervang alles
+        fs.writeFileSync(DATA_PATH_NEW, JSON.stringify(data, null, 2), 'utf-8');
+      } else {
+        // Enkele entries: merge met bestaande data
+        for (const entry of data) {
+          if (!entry.stek && !entry.datum) continue;
+          const stekNorm = (entry.stek || '').trim();
+          const datumNorm = (entry.datum || '').trim();
+          const idx = bestaand.findIndex(e => (e.stek || '').trim() === stekNorm && (e.datum || '').trim() === datumNorm);
+          if (idx >= 0) {
+            bestaand[idx] = { ...bestaand[idx], ...entry };
+          } else {
+            bestaand.push(entry);
+          }
+        }
+        fs.writeFileSync(DATA_PATH_NEW, JSON.stringify(bestaand, null, 2), 'utf-8');
+      }
+    } else if (typeof data === 'object' && data.stek) {
+      // Enkel object (van Feeder Assistent via sync-vissessie)
+      const stekNorm = (data.stek || '').trim();
+      const datumNorm = (data.datum || '').trim();
+      const idx = bestaand.findIndex(e => (e.stek || '').trim() === stekNorm && (e.datum || '').trim() === datumNorm);
+      if (idx >= 0) {
+        bestaand[idx] = { ...bestaand[idx], ...data };
+      } else {
+        bestaand.push(data);
+      }
+      fs.writeFileSync(DATA_PATH_NEW, JSON.stringify(bestaand, null, 2), 'utf-8');
+    }
     autoBackup();
     return new Response(JSON.stringify({ ok: true, count: Array.isArray(data) ? data.length : 0 }), {
       status: 200,

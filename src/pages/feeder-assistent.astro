@@ -631,14 +631,15 @@ body {
 
   function syncToServer(entry) {
     if (!entry || !entry.stek || !entry.datum || entry.stek === '--' || entry.datum === '--/--') return;
-    try {
-      fetch('/api/sync-vissessie', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'same-origin',
-        body: JSON.stringify(entry)
-      }).catch(function(){});
-    } catch(e) {}
+    // Check eerst of admin is ingelogd (call naar admin API endpoint)
+    fetch('/admin/api/vissessies', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify([entry])
+    }).then(function(r) {
+      if (r.ok) showToast('📡 Gesynced naar admin');
+    }).catch(function(){});
   }
 
   function syncVissessie(begin, einde, duurMin) {
