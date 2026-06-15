@@ -159,6 +159,16 @@ tr.wedstrijd td { border-bottom-color:#a16207; }
   </div>
   <div id="backup-status" class="sub" style="margin-top:8px"></div>
   <div id="data-size" class="sub" style="margin-top:8px"></div>
+  <div style="margin-top:12px">
+    <button id="btn-toggle-raw" class="btn btn-outline">📄 Toon data</button>
+  </div>
+  <div id="raw-data-section" style="display:none;margin-top:8px">
+    <textarea id="raw-data-text" style="width:100%;height:200px;border:1px solid var(--border);border-radius:8px;padding:10px;font-family:monospace;font-size:11px;background:var(--card);color:var(--text);resize:vertical" readonly></textarea>
+    <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap">
+      <button id="btn-copy-raw" class="btn btn-outline">📋 Kopieer</button>
+      <button id="btn-paste-restore" class="btn btn-outline">📥 Plak &amp; herstel</button>
+    </div>
+  </div>
 </div>
 
 <div id="toast"></div>
@@ -1148,6 +1158,55 @@ document.getElementById('backup-file-input').addEventListener('change', async (e
     backupStatus('❌ ' + e.message, true);
   }
   e.target.value = '';
+});
+
+document.getElementById('btn-toggle-raw').addEventListener('click', () => {
+  const section = document.getElementById('raw-data-section');
+  const btn = document.getElementById('btn-toggle-raw');
+  if (section.style.display === 'none') {
+    const data = loadData();
+    document.getElementById('raw-data-text').value = JSON.stringify(data, null, 2);
+    section.style.display = '';
+    btn.textContent = '📄 Verberg data';
+  } else {
+    section.style.display = 'none';
+    btn.textContent = '📄 Toon data';
+  }
+});
+
+document.getElementById('btn-copy-raw').addEventListener('click', () => {
+  const textarea = document.getElementById('raw-data-text');
+  textarea.select();
+  navigator.clipboard.writeText(textarea.value).then(() => {
+    showToast('📋 Data gekopieerd');
+  }).catch(() => {
+    document.execCommand('copy');
+    showToast('📋 Data gekopieerd');
+  });
+});
+
+document.getElementById('btn-paste-restore').addEventListener('click', () => {
+  const textarea = document.getElementById('raw-data-text');
+  textarea.readOnly = false;
+  textarea.focus();
+  navigator.clipboard.readText().then(text => {
+    try {
+      const data = JSON.parse(text);
+      if (!Array.isArray(data)) throw new Error('Geen geldige data');
+      if (!confirm('Data overschrijven met ' + data.length + ' sessies uit klembord?')) return;
+      saveData(data);
+      render();
+      showToast('✅ Data hersteld uit klembord');
+      backupStatus('✅ ' + data.length + ' sessies hersteld uit klembord');
+      document.getElementById('raw-data-text').value = JSON.stringify(data, null, 2);
+    } catch (e) {
+      showToast('❌ Ongeldige JSON: ' + e.message, 'error');
+    }
+  }).catch(() => {
+    showToast('❌ Kon niet lezen van klembord', 'error');
+  }).finally(() => {
+    textarea.readOnly = true;
+  });
 });
 
 const SYNC_API = '/api/sync-vissessie';
