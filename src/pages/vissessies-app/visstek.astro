@@ -1,0 +1,490 @@
+---
+export const prerender = false;
+---
+
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Vaste Hengel">
+<link rel="apple-touch-icon" href="/vissessies-icon.svg">
+<title>Vaste hengel assistent</title>
+<style is:inline>
+:root { --bg:#0f172a; --card:#1e293b; --text:#f1f5f9; --muted:#94a3b8; --border:#475569; --accent:#1e40af; --accent-light:#3b82f6; --danger:#ef4444; --green:#22c55e; }
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { height:100%; overflow:hidden; }
+body { font-family:system-ui,-apple-system,sans-serif; background:var(--bg); color:var(--text); -webkit-tap-highlight-color:transparent; -webkit-user-select:none; user-select:none; touch-action:manipulation; padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); }
+.btn { padding:8px 18px; border-radius:8px; font-weight:600; font-size:13px; border:2px solid var(--border); cursor:pointer; -webkit-appearance:none; background:var(--card); color:var(--text); }
+.btn-primary { background:var(--accent); color:#fff; border-color:var(--accent-light); }
+.btn-primary:hover { background:#1e3a8a; }
+.vs-card { background:var(--card); border:2px solid var(--border); border-radius:12px; padding:14px 16px; margin-bottom:12px; }
+.vs-pair { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:10px; }
+.vs-grid { display:grid; grid-template-columns:1fr 1fr; gap:5px; margin-bottom:8px; }
+.vs-stepper { display:flex; gap:4px; align-items:center; justify-content:center; margin-top:4px; }
+.vs-btn { width:44px; height:40px; border:2px solid var(--border); border-radius:8px; background:var(--card); font-size:22px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--text); -webkit-appearance:none; appearance:none; user-select:none; -webkit-tap-highlight-color:transparent; touch-action:manipulation; box-shadow:0 1px 3px rgba(0,0,0,0.3); }
+.vs-btn:active { background:#334155; }
+.vs-fish-input { width:100%; padding:14px 4px; border:2px solid var(--border); border-radius:10px; font-size:28px; font-weight:700; text-align:center; background:#0f172a; color:#fff; -webkit-appearance:none; appearance:none; box-shadow:0 1px 3px rgba(0,0,0,0.3); min-width:0; }
+.vs-input-text { display:block; width:100%; padding:12px; border:2px solid var(--border); border-radius:10px; font-size:18px; font-weight:600; background:#0f172a; color:#fff; -webkit-appearance:none; appearance:none; box-shadow:0 1px 3px rgba(0,0,0,0.3); }
+.vs-input-text::placeholder { color:var(--muted); font-weight:400; }
+.vs-label { font-size:14px; font-weight:700; color:var(--text); margin-bottom:2px; }
+.vs-hint { text-align:center; font-size:13px; font-weight:700; color:var(--accent-light); margin-top:2px; min-height:18px; }
+.vs-fish { border:2px solid var(--border); border-radius:10px; padding:8px 6px 6px; background:var(--card); }
+.vs-stat { padding:10px 12px; border-radius:10px; font-size:24px; font-weight:700; text-align:center; border:2px solid var(--border); background:#0f172a; box-shadow:0 1px 3px rgba(0,0,0,0.3); }
+@media (max-width:768px) { .vs-grid { gap:4px; } .vs-btn { width:40px; height:38px; font-size:20px; } .vs-fish-input { font-size:26px; padding:12px 4px; } .vs-input-text { padding:10px; font-size:17px; } .vs-pair { gap:6px; } .vs-stat { font-size:22px; padding:8px 10px; } }
+.empty-msg { text-align:center; color:var(--muted); padding:40px; font-style:italic; }
+table { width:100%; border-collapse:collapse; font-size:12px; }
+th { background:#0f172a; padding:6px 4px; text-align:center !important; font-size:11px; text-transform:uppercase; color:var(--muted); border-bottom:2px solid var(--border); white-space:nowrap; }
+td { padding:4px; border-bottom:1px solid #0f172a; vertical-align:top; text-align:center !important; color:var(--text); }
+.num { font-family:monospace; }
+.subtotal { background:#0f172a; font-weight:700; }
+.subtotal td { border-top:2px solid var(--muted); padding-top:6px; }
+#toast { position:fixed; bottom:80px; left:50%; transform:translateX(-50%); padding:10px 22px; border-radius:12px; background:var(--card); color:#fff; font-weight:700; font-size:14px; opacity:0; transition:opacity 0.25s; z-index:999; pointer-events:none; white-space:nowrap; border:2px solid var(--border); box-shadow:0 4px 16px rgba(0,0,0,0.4); }
+#toast.show { opacity:1; }
+a { color:var(--accent-light); text-decoration:none; }
+a:hover { text-decoration:underline; }
+</style>
+</head>
+<body>
+  <main style="height:100vh;height:100dvh;display:flex;flex-direction:column;background:var(--bg)">
+    <header style="height:52px;background:var(--card);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 20px;flex-shrink:0">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-weight:800;font-size:15px;color:var(--text)">Vaste hengel assistent</span>
+      </div>
+      <a href="/vissessies-app" style="font-size:14px;font-weight:600">← Vissessies</a>
+    </header>
+    <div style="flex:1;overflow-y:auto;min-height:0;-webkit-overflow-scrolling:touch;padding:12px 16px;max-width:600px;margin:0 auto">
+
+      <div class="vs-card">
+        <div class="vs-pair">
+          <div>
+            <div class="vs-label">Stek</div>
+            <input id="vs-stek" maxlength="5" placeholder="G 11" class="vs-input-text" value="" autocomplete="off">
+          </div>
+          <div>
+            <div class="vs-label">Datum</div>
+            <input id="vs-datum" maxlength="5" placeholder="19/06" class="vs-input-text" value="" list="vs-datum-list" autocomplete="off">
+            <datalist id="vs-datum-list"></datalist>
+          </div>
+        </div>
+        <div class="vs-pair">
+          <div>
+            <div class="vs-label">Begin</div>
+            <input id="vs-begin" maxlength="4" inputmode="numeric" placeholder="1600" class="vs-input-text" value="" autocomplete="off">
+            <div class="vs-hint" id="vs-begin-display"></div>
+          </div>
+          <div>
+            <div class="vs-label">Einde</div>
+            <input id="vs-einde" maxlength="4" inputmode="numeric" placeholder="1800" class="vs-input-text" value="" autocomplete="off">
+            <div class="vs-hint" id="vs-einde-display"></div>
+          </div>
+        </div>
+        <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px">Vangst</div>
+        <div class="vs-grid">
+          <div class="vs-fish" style="border-color:#059669">
+            <div class="vs-label" style="color:#059669;text-align:center">Kroes</div>
+            <input id="vs-kroes" type="text" inputmode="numeric" maxlength="3" value="0" class="vs-fish-input" style="border-color:#059669;color:#fff">
+            <div class="vs-stepper">
+              <button type="button" onclick="vsAdjust('vs-kroes',-1,999)" class="vs-btn" style="border-color:#059669;color:#059669">−</button>
+              <button type="button" onclick="vsAdjust('vs-kroes',1,999)" class="vs-btn" style="border-color:#059669;color:#059669">+</button>
+            </div>
+          </div>
+          <div class="vs-fish" style="border-color:#2563eb">
+            <div class="vs-label" style="color:#2563eb;text-align:center">Schub</div>
+            <input id="vs-schub" type="text" inputmode="numeric" maxlength="3" value="0" class="vs-fish-input" style="border-color:#2563eb;color:#fff">
+            <div class="vs-stepper">
+              <button type="button" onclick="vsAdjust('vs-schub',-1,999)" class="vs-btn" style="border-color:#2563eb;color:#2563eb">−</button>
+              <button type="button" onclick="vsAdjust('vs-schub',1,999)" class="vs-btn" style="border-color:#2563eb;color:#2563eb">+</button>
+            </div>
+          </div>
+          <div class="vs-fish" style="border-color:#7c3aed">
+            <div class="vs-label" style="color:#7c3aed;text-align:center">Spiegel</div>
+            <input id="vs-spiegel" type="text" inputmode="numeric" maxlength="3" value="0" class="vs-fish-input" style="border-color:#7c3aed;color:#fff">
+            <div class="vs-stepper">
+              <button type="button" onclick="vsAdjust('vs-spiegel',-1,999)" class="vs-btn" style="border-color:#7c3aed;color:#7c3aed">−</button>
+              <button type="button" onclick="vsAdjust('vs-spiegel',1,999)" class="vs-btn" style="border-color:#7c3aed;color:#7c3aed">+</button>
+            </div>
+          </div>
+          <div class="vs-fish" style="border-color:#d97706">
+            <div class="vs-label" style="color:#d97706;text-align:center">Ander</div>
+            <input id="vs-ander" type="text" inputmode="numeric" maxlength="3" value="0" class="vs-fish-input" style="border-color:#d97706;color:#fff">
+            <div class="vs-stepper">
+              <button type="button" onclick="vsAdjust('vs-ander',-1,999)" class="vs-btn" style="border-color:#d97706;color:#d97706">−</button>
+              <button type="button" onclick="vsAdjust('vs-ander',1,999)" class="vs-btn" style="border-color:#d97706;color:#d97706">+</button>
+            </div>
+          </div>
+        </div>
+        <div class="vs-pair">
+          <div>
+            <div class="vs-label">Aantal</div>
+            <div id="vs-aantal" class="vs-stat" style="border-color:#059669;color:#059669">0</div>
+          </div>
+          <div>
+            <div class="vs-label">Gewicht</div>
+            <div class="vs-stat" style="border-color:#2563eb;color:#2563eb"><span id="vs-gewicht" data-gram="0">0,000</span></div>
+          </div>
+        </div>
+        <div style="display:none" id="vs-duur-container">
+          <div class="vs-label">Duur</div>
+          <div id="vs-duur" style="padding:10px 12px;border:2px solid #86efac;border-radius:10px;font-size:18px;width:100%;background:#052e16;color:#86efac;font-weight:700;margin-bottom:8px">--</div>
+        </div>
+        <button id="btn-vs-save" class="btn btn-primary" style="padding:16px 24px;font-size:20px;width:100%;-webkit-appearance:none;margin-top:6px;border-radius:12px;font-weight:700">💾 Opslaan</button>
+      </div>
+      <div style="overflow-x:auto;-webkit-overflow-scrolling:touch" id="vs-list"><p class="empty-msg">Voer een stek in om eerdere sessies te zien.</p></div>
+    </div>
+    <div id="toast"></div>
+  </main>
+</body>
+</html>
+
+<script is:inline>
+const STORAGE_KEY = 'kvvi_vissessies';
+const OLD_STORAGE_KEY = 'kvvi_vissessies_public';
+const GEW_KROES = 300, GEW_SCHUB = 1500, GEW_SPIEGEL = 1600, GEW_ANDER = 100;
+
+function huidigJaar() {
+  let j = localStorage.getItem('kvvi_jaar');
+  if (j) { j = parseInt(j); return j; }
+  return new Date().getFullYear();
+}
+
+function loadData() {
+  try {
+    var d = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    if (!d.length) {
+      try {
+        var old = JSON.parse(localStorage.getItem(OLD_STORAGE_KEY)) || [];
+        if (old.length) { localStorage.setItem(STORAGE_KEY, JSON.stringify(old)); return old; }
+      } catch (e) {}
+    }
+    return d;
+  } catch (e) { return []; }
+}
+function saveData(data) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  trySyncToServer(data);
+}
+
+function isAdmin() {
+  return document.cookie.split(';').some(function(c) { return c.trim().startsWith('admin_token='); });
+}
+
+function trySyncToServer(data) {
+  if (!isAdmin()) return;
+  fetch('/admin/api/vissessies', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify(data)
+  }).then(function(r) {
+    if (r.ok) showToast('Gesynced naar admin');
+  }).catch(function(){});
+}
+
+function showToast(msg, type) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = type === 'error' ? '#dc2626' : '#16a34a';
+  t.classList.add('show');
+  setTimeout(function() { t.classList.remove('show'); }, 2500);
+}
+
+function fmtTime(min) {
+  if (min == null || isNaN(min)) return '--';
+  return Math.floor(min / 60) + 'u ' + (min % 60) + 'm';
+}
+
+function parseTime(t) {
+  if (!t || t === '--') return null;
+  var m = t.match(/(\d+)u\s*(\d+)m/);
+  if (m) return parseInt(m[1]) * 60 + parseInt(m[2]);
+  var m2 = t.match(/(\d+):(\d+)/);
+  if (m2) return parseInt(m2[1]) * 60 + parseInt(m2[2]);
+  var m3 = t.match(/^(\d{3,4})$/);
+  if (m3) {
+    var s = m3[1].padStart(4, '0');
+    return parseInt(s.substring(0, 2)) * 60 + parseInt(s.substring(2, 4));
+  }
+  return null;
+}
+
+function calcDuurVanBeginEinde(beginVal, eindeVal) {
+  var b = parseTime(beginVal);
+  var e = parseTime(eindeVal);
+  if (b != null && e != null && e > b) return e - b;
+  return null;
+}
+
+function formatTijdInput(val) {
+  if (/^\d{3,4}$/.test(val)) {
+    var s = val.padStart(4, '0');
+    var h = parseInt(s.substring(0, 2));
+    var m = parseInt(s.substring(2, 4));
+    if (h >= 0 && h <= 23 && m >= 0 && m <= 59) {
+      return h + 'u ' + m + 'm';
+    }
+  }
+  return val;
+}
+
+function deriveMonth(datum, jaar) {
+  if (!datum) return '';
+  var d = datum.match(/(\d{1,2})\/(\d{1,2})/);
+  if (!d) return String(jaar);
+  var dag = parseInt(d[1]), maand = parseInt(d[2]);
+  var maanden = ['jan','feb','mar','apr','mei','jun','jul','aug','sep','okt','nov','dec'];
+  var m = maanden[maand - 1] || 'Onbekend';
+  return m + ' ' + jaar;
+}
+
+function sortData(data) {
+  var maanden = ['jan','feb','mar','apr','mei','jun','jul','aug','sep','okt','nov','dec'];
+  data.sort(function(a, b) {
+    var ma = a.month ? a.month.match(/([a-z]+)\s*(\d+)/i) : null;
+    var mb = b.month ? b.month.match(/([a-z]+)\s*(\d+)/i) : null;
+    if (ma && mb) {
+      var ya = parseInt(ma[2]), yb = parseInt(mb[2]);
+      if (ya !== yb) return ya - yb;
+      var ia = maanden.indexOf(ma[1].toLowerCase().substring(0, 3));
+      var ib = maanden.indexOf(mb[1].toLowerCase().substring(0, 3));
+      if (ia !== ib) return ia - ib;
+      var da = a.datum ? parseInt(a.datum.split('/')[1]) : 0;
+      var db = b.datum ? parseInt(b.datum.split('/')[1]) : 0;
+      return da - db;
+    }
+    return 0;
+  });
+}
+
+function computeFields(r) {
+  var duurMin = r.duurMin || calcDuurVanBeginEinde(r.begin, r.einde) || 0;
+  var einde = r.einde ? r.einde.trim() : '';
+  var autoDuur = r.begin && einde && duurMin === 0 ? calcDuurVanBeginEinde(r.begin, einde) || 0 : duurMin;
+  var tijdMin = parseInt(r.tijdMin) || autoDuur || 0;
+  var kroes = parseInt(r.kroes) || 0;
+  var schub = parseInt(r.schub) || 0;
+  var spiegel = parseInt(r.spiegel) || 0;
+  var ander = parseInt(r.ander) || 0;
+  var aantal = kroes + schub + spiegel + ander;
+  var gewicht = parseInt(r.gewicht) || (kroes * GEW_KROES + schub * GEW_SCHUB + spiegel * GEW_SPIEGEL + ander * GEW_ANDER);
+  var gramMin = tijdMin > 0 ? gewicht / tijdMin : 0;
+  var wedstrijd4uur = gramMin * 240;
+  var duurVangst = tijdMin > 0 && aantal > 0 ? (function() { var p = tijdMin / aantal; return Math.floor(p) + 'm ' + Math.round((p - Math.floor(p)) * 60) + 's'; })() : '--';
+  function beoord(gr) {
+    if (gr >= 150) return '*****';
+    if (gr >= 100) return '****';
+    if (gr >= 60) return '***';
+    if (gr >= 30) return '**';
+    return '*';
+  }
+  return {
+    kroes: kroes, schub: schub, spiegel: spiegel, ander: ander, aantal: aantal, gewicht: gewicht,
+    datum: r.datum, stek: r.stek, begin: r.begin, einde: r.einde, month: r.month,
+    duurMin: autoDuur, tijdMin: tijdMin, gramMin: gramMin, wedstrijd4uur: wedstrijd4uur, duurVangst: duurVangst,
+    beoordeling: r.beoordeling || beoord(gramMin),
+    wedstrijd: r.wedstrijd || ''
+  };
+}
+
+/* ---- Visstek specific ---- */
+
+function fmtBeginEinde(val) {
+  if (!val || val.length < 3) return '';
+  var s = val.padStart(4, '0');
+  return s.substring(0, 2) + 'u ' + s.substring(2, 4) + 'm';
+}
+
+function vsGewichtGram() {
+  var k = parseInt(document.getElementById('vs-kroes').value) || 0;
+  var s = parseInt(document.getElementById('vs-schub').value) || 0;
+  var p = parseInt(document.getElementById('vs-spiegel').value) || 0;
+  var a = parseInt(document.getElementById('vs-ander').value) || 0;
+  return k * GEW_KROES + s * GEW_SCHUB + p * GEW_SPIEGEL + a * GEW_ANDER;
+}
+
+function vsAdjust(id, delta, maxVal) {
+  var el = document.getElementById(id);
+  var v = parseInt(el.value) || 0;
+  v = Math.max(0, Math.min(maxVal || 999, v + delta));
+  el.value = String(v).padStart(3, '0');
+  updateVsAantal();
+}
+
+function updateVsAantal() {
+  var ids = ['vs-kroes','vs-schub','vs-spiegel','vs-ander'];
+  var sum = ids.reduce(function(a, id) { return a + (parseInt(document.getElementById(id).value) || 0); }, 0);
+  var elAantal = document.getElementById('vs-aantal');
+  if (elAantal) elAantal.textContent = sum;
+  var elGewicht = document.getElementById('vs-gewicht');
+  var gram = vsGewichtGram();
+  if (elGewicht) {
+    elGewicht.textContent = (gram / 1000).toLocaleString('nl-NL', { minimumFractionDigits: 3, maximumFractionDigits: 3 });
+    elGewicht.setAttribute('data-gram', String(gram));
+  }
+}
+
+function updateVsDuur() {
+  var begin = document.getElementById('vs-begin').value;
+  var einde = document.getElementById('vs-einde').value;
+  var d = calcDuurVanBeginEinde(begin, einde);
+  var container = document.getElementById('vs-duur-container');
+  var el = document.getElementById('vs-duur');
+  if (d != null) {
+    el.textContent = fmtTime(d);
+    container.style.display = '';
+  } else {
+    el.textContent = '--';
+    container.style.display = 'none';
+  }
+}
+
+function renderVisstekList() {
+  var stek = document.getElementById('vs-stek').value.trim().toLowerCase();
+  var el = document.getElementById('vs-list');
+  var data = loadData();
+  var stekDates = [...new Set(data.filter(function(r) { return r.stek && r.stek.toLowerCase() === stek; }).map(function(r) { return r.datum; }).filter(Boolean))];
+  document.getElementById('vs-datum-list').innerHTML = stekDates.map(function(d) { return '<option value="' + d + '">'; }).join('');
+  if (!stek) { el.innerHTML = '<p class="empty-msg">Voer een stek in om eerdere sessies te zien.</p>'; return; }
+  var filtered = data.filter(function(r) { return r.stek && r.stek.toLowerCase() === stek; });
+  if (!filtered.length) { el.innerHTML = '<p class="empty-msg">Geen sessies voor deze stek.</p>'; return; }
+  var computed = filtered.map(function(r) { return computeFields(r); }).sort(function(a, b) {
+    function dv(r) { var p = r.datum ? r.datum.split('/') : []; return p.length === 2 ? parseInt(p[1]) * 100 + parseInt(p[0]) : 99999; }
+    return dv(b) - dv(a);
+  });
+  var html = '<table><thead><tr style="text-align:center"><th>Datum</th><th>Kroes</th><th>Schub</th><th>Spiegel</th><th>Ander</th><th>Aantal</th><th>Begin</th><th>Einde</th><th>Duur</th></tr></thead><tbody>';
+  for (var i = 0; i < computed.length; i++) {
+    var c = computed[i];
+    html += '<tr style="text-align:center"><td>' + c.datum + '</td><td class="num">' + (c.kroes || '') + '</td><td class="num">' + (c.schub || '') + '</td><td class="num">' + (c.spiegel || '') + '</td><td class="num">' + (c.ander || '') + '</td><td class="num">' + c.aantal + '</td><td>' + c.begin + '</td><td>' + c.einde + '</td><td class="num">' + fmtTime(c.duurMin) + '</td></tr>';
+  }
+  var t = computed.reduce(function(a, r) { return { kroes: a.kroes + r.kroes, schub: a.schub + r.schub, spiegel: a.spiegel + r.spiegel, ander: a.ander + r.ander, aantal: a.aantal + r.aantal }; }, { kroes: 0, schub: 0, spiegel: 0, ander: 0, aantal: 0 });
+  html += '<tr class="subtotal" style="text-align:center"><td>TOTAAL</td><td class="num">' + t.kroes + '</td><td class="num">' + t.schub + '</td><td class="num">' + t.spiegel + '</td><td class="num">' + t.ander + '</td><td class="num">' + t.aantal + '</td><td colspan="3">' + filtered.length + ' sessies</td></tr></tbody></table>';
+  el.innerHTML = html;
+}
+
+/* ---- Event listeners ---- */
+
+document.getElementById('btn-vs-save').addEventListener('click', function() {
+  function v(id) { return document.getElementById(id).value.trim(); }
+  function n(id) { return parseInt(document.getElementById(id).value) || 0; }
+  var jaar = huidigJaar();
+  var datum = v('vs-datum');
+  var stek = v('vs-stek') || 'Onbekend';
+  if (!datum) { showToast('Datum is verplicht', 'error'); return; }
+  var month = deriveMonth(datum, jaar) || 'Onbekend';
+  var kroes = n('vs-kroes'), schub = n('vs-schub'), spiegel = n('vs-spiegel'), ander = n('vs-ander');
+  var vsDuur = calcDuurVanBeginEinde(v('vs-begin'), v('vs-einde')) || 0;
+  var row = {
+    kroes: kroes, schub: schub, spiegel: spiegel, ander: ander,
+    aantal: parseInt(document.getElementById('vs-aantal').textContent) || 0,
+    gewicht: parseInt(document.getElementById('vs-gewicht').getAttribute('data-gram')) || 0,
+    datum: datum, stek: stek, begin: v('vs-begin'), einde: v('vs-einde'),
+    duurMin: vsDuur, pijl: '', beoordeling: '', tijdMin: vsDuur,
+    month: month, wedstrijd: ''
+  };
+  var data = loadData();
+  var bestaand = -1;
+  for (var i = 0; i < data.length; i++) {
+    if (data[i].datum === datum && data[i].month === month) { bestaand = i; break; }
+  }
+  if (bestaand !== -1) {
+    data[bestaand].kroes = kroes;
+    data[bestaand].schub = schub;
+    data[bestaand].spiegel = spiegel;
+    data[bestaand].ander = ander;
+    data[bestaand].aantal = row.aantal;
+    data[bestaand].gewicht = row.gewicht;
+    if (stek !== 'Onbekend') data[bestaand].stek = stek;
+    if (row.begin) data[bestaand].begin = row.begin;
+    if (row.einde) data[bestaand].einde = row.einde;
+    showToast('Bestaande sessie bijgewerkt');
+  } else {
+    data.push(row);
+    showToast(datum + ' - ' + month + ' - ' + stek);
+  }
+  sortData(data);
+  saveData(data);
+  document.getElementById('vs-datum').value = '';
+  document.getElementById('vs-begin').value = '';
+  document.getElementById('vs-einde').value = '';
+  document.getElementById('vs-begin-display').textContent = '';
+  document.getElementById('vs-einde-display').textContent = '';
+  ['vs-kroes','vs-schub','vs-spiegel','vs-ander'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.value = '0';
+  });
+  var ant = document.getElementById('vs-aantal');
+  if (ant) ant.textContent = '0';
+  var gew = document.getElementById('vs-gewicht');
+  if (gew) { gew.textContent = '0,000'; gew.setAttribute('data-gram', '0'); }
+  updateVsAantal();
+  renderVisstekList();
+  document.getElementById('vs-datum').focus();
+});
+
+document.querySelectorAll('input').forEach(function(inp) {
+  inp.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') document.getElementById('btn-vs-save').click();
+  });
+});
+
+['vs-begin','vs-einde'].forEach(function(id) {
+  document.getElementById(id).addEventListener('input', function() {
+    if (this.value.length > 4) this.value = this.value.slice(0, 4);
+    var display = document.getElementById(id + '-display');
+    if (display) display.textContent = fmtBeginEinde(this.value) || '';
+  });
+});
+
+['vs-kroes','vs-schub','vs-spiegel','vs-ander'].forEach(function(id) {
+  document.getElementById(id).addEventListener('input', function() {
+    this.value = this.value.replace(/[^0-9]/g, '').slice(0, 3);
+    var v = parseInt(this.value);
+    if (v > 999) this.value = '999';
+    updateVsAantal();
+  });
+  document.getElementById(id).addEventListener('blur', function() {
+    if (this.value === '') this.value = '0';
+    this.value = String(parseInt(this.value) || 0).padStart(3, '0');
+    updateVsAantal();
+  });
+});
+
+document.getElementById('vs-datum').addEventListener('input', function() {
+  var stek = document.getElementById('vs-stek').value.trim().toLowerCase();
+  var datum = document.getElementById('vs-datum').value.trim();
+  if (!stek || !datum) return;
+  var jaar = huidigJaar();
+  var month = deriveMonth(datum, jaar);
+  var data = loadData();
+  var bestaand = null;
+  for (var i = 0; i < data.length; i++) {
+    if (data[i].datum === datum && data[i].month === month && data[i].stek && data[i].stek.toLowerCase() === stek) {
+      bestaand = data[i];
+      break;
+    }
+  }
+  if (!bestaand) return;
+  document.getElementById('vs-kroes').value = String(bestaand.kroes || 0).padStart(3, '0');
+  document.getElementById('vs-schub').value = String(bestaand.schub || 0).padStart(3, '0');
+  document.getElementById('vs-spiegel').value = String(bestaand.spiegel || 0).padStart(3, '0');
+  document.getElementById('vs-ander').value = String(bestaand.ander || 0).padStart(3, '0');
+  document.getElementById('vs-begin').value = bestaand.begin || '';
+  document.getElementById('vs-einde').value = bestaand.einde || '';
+  updateVsAantal();
+});
+
+document.getElementById('vs-stek').addEventListener('input', renderVisstekList);
+
+['vs-begin', 'vs-einde'].forEach(function(id) {
+  var el = document.getElementById(id);
+  el.addEventListener('blur', function() {
+    el.value = formatTijdInput(el.value);
+    updateVsDuur();
+  });
+  el.addEventListener('input', updateVsDuur);
+});
+
+renderVisstekList();
+</script>
