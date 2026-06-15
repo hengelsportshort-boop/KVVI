@@ -14,98 +14,95 @@ try { serverData = JSON.parse(fs.readFileSync(DATA_PATH, 'utf-8')); } catch {}
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Vissessies">
+<meta name="apple-mobile-web-app-title" content="Vaste Hengel">
 <link rel="apple-touch-icon" href="/vissessies-icon.svg">
 <link rel="manifest" href="/manifest.json">
-<title>Vissessies</title>
+<title>Vaste Hengel assistent</title>
 <style is:inline>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: system-ui, -apple-system, sans-serif; background: #f1f5f9; color: #1e293b; }
-h1 { font-size: 20px; margin-bottom: 4px; }
-.sub { color: #64748b; font-size: 13px; margin-bottom: 16px; }
-.tabs { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
-.tab { padding: 8px 18px; border-radius: 8px; font-weight: 600; font-size: 13px; border: 1px solid #cbd5e1; background: #fff; cursor: pointer; }
-.tab.active { background: #1e40af; color: #fff; border-color: #1e40af; }
-.tab.danger { color: #dc2626; border-color: #fecaca; }
-.panel { background: #fff; border-radius: 12px; border: 1px solid #e2e8f0; padding: 16px; margin-bottom: 12px; display: none; }
-.panel.show { display: block; }
-@media (display-mode: standalone) { .tabs { display: none !important; } }
-textarea { width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px; font-family: monospace; font-size: 12px; resize: vertical; }
-.btn { padding: 8px 18px; border-radius: 8px; font-weight: 600; font-size: 13px; border: none; cursor: pointer; }
-.btn-primary { background: #1e40af; color: #fff; }
-.btn-primary:hover { background: #1e3a8a; }
-.btn-danger { background: #dc2626; color: #fff; }
-.btn-danger:hover { background: #b91c1c; }
-.btn-outline { border: 1px solid #cbd5e1; background: #fff; }
-.btn-outline:hover { background: #f8fafc; }
-.flex { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-.mt-2 { margin-top: 8px; }
-.mb-2 { margin-bottom: 8px; }
-.w-full { width: 100%; }
-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-th { background: #f8fafc; padding: 6px 4px; text-align: center !important; font-size: 11px; text-transform: uppercase; color: #64748b; border-bottom: 2px solid #e2e8f0; white-space: nowrap; }
-td { padding: 4px; border-bottom: 1px solid #f1f5f9; vertical-align: top; text-align: center !important; }
-td[contenteditable] { cursor: text; }
-td[contenteditable]:focus { outline: 2px solid #3b82f6; outline-offset: -1px; border-radius: 2px; background: #eff6ff; }
-.num { font-family: monospace; }
-.month-group { margin-bottom: 16px; }
-.month-header { background: #1e293b; color: #fff; padding: 6px 10px; border-radius: 6px 6px 0 0; font-weight: 700; font-size: 13px; display: flex; justify-content: space-between; cursor: pointer; user-select: none; }
-.month-header:hover { background: #1e40af; }
-.month-body.collapsed { display: none; }
-.subtotal { background: #f1f5f9; font-weight: 700; }
-.subtotal td { border-top: 2px solid #94a3b8; padding-top: 6px; }
-.grand-total { background: #1e293b; color: #fff; font-weight: 700; }
-.grand-total td { padding: 8px 4px; }
-.hidden { display: none; }
-.badge { display: inline-block; padding: 1px 6px; border-radius: 4px; font-size: 11px; font-weight: 600; }
-.badge-up { background: none; color: #16a34a; }
-.badge-down { background: none; color: #dc2626; }
-tr.wedstrijd { background: #fef9c3 !important; }
-tr.wedstrijd td { border-bottom-color: #facc15; }
-.empty-msg { text-align: center; color: #94a3b8; padding: 40px; font-style: italic; }
-#toast { position: fixed; bottom: 20px; right: 20px; padding: 10px 20px; border-radius: 8px; color: #fff; font-weight: 600; font-size: 13px; opacity: 0; transition: opacity 0.3s; z-index: 999; }
-#toast.show { opacity: 1; }
-.sticky-header { position: sticky; top: 0; z-index: 100; background: #f1f5f9; padding: 12px 20px 8px; margin: 0 -16px 12px; border-bottom: 1px solid #e2e8f0; }
-@media (max-width: 768px) { .sticky-header { padding: 10px 10px 6px; margin: 0 -16px 10px; } table { font-size: 11px; } td, th { padding: 3px 2px; } }
-.col-merk { max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.vs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-bottom: 8px; }
-.vs-stepper { display: flex; gap: 4px; align-items: center; justify-content: center; margin-top: 4px; }
-.vs-stepper-row { display: flex; gap: 5px; align-items: center; }
-.vs-btn { width: 44px; height: 40px; border: 2px solid #1e293b; border-radius: 8px; background: #fff; font-size: 22px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #1e293b; -webkit-appearance: none; appearance: none; user-select: none; -webkit-tap-highlight-color: transparent; touch-action: manipulation; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-.vs-btn:active { background: #e2e8f0; }
-.vs-fish-input { width: 100%; padding: 14px 4px; border: 2px solid #1e293b; border-radius: 10px; font-size: 28px; font-weight: 700; text-align: center; background: #fff; color: #1e293b; -webkit-appearance: none; appearance: none; box-shadow: 0 1px 3px rgba(0,0,0,0.15); min-width: 0; }
-.vs-input-text { display:block; width:100%; padding:12px; border:2px solid #1e293b; border-radius:10px; font-size:18px; font-weight:600; background:#fff; color:#1e293b; -webkit-appearance:none; appearance:none; box-shadow:0 1px 3px rgba(0,0,0,0.15); }
-.vs-input-text::placeholder { color:#94a3b8; font-weight:400; }
-.vs-label { font-size:14px; font-weight:700; color:#1e293b; margin-bottom:2px; }
-.vs-hint { text-align:center; font-size:13px; font-weight:700; color:#1e40af; margin-top:2px; min-height:18px; }
+:root { --bg:#0f172a; --card:#1e293b; --text:#f1f5f9; --muted:#94a3b8; --border:#475569; --accent:#1e40af; --accent-light:#3b82f6; --danger:#ef4444; --green:#22c55e; }
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { height:100%; overflow:hidden; }
+body { font-family:system-ui,-apple-system,sans-serif; background:var(--bg); color:var(--text); -webkit-tap-highlight-color:transparent; -webkit-user-select:none; user-select:none; touch-action:manipulation; padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); }
+h1 { font-size:20px; margin-bottom:4px; }
+.sub { color:var(--muted); font-size:13px; margin-bottom:16px; }
+.tabs { display:flex; gap:6px; margin-bottom:12px; flex-wrap:wrap; }
+.tab { padding:8px 18px; border-radius:8px; font-weight:600; font-size:13px; border:2px solid var(--border); background:var(--card); cursor:pointer; color:var(--text); }
+.tab.active { background:var(--accent); color:#fff; border-color:var(--accent-light); }
+.tab.danger { color:var(--danger); border-color:#7f1d1d; }
+.panel { background:var(--card); border-radius:12px; border:1px solid var(--border); padding:16px; margin-bottom:12px; display:none; }
+.panel.show { display:block; }
+@media (display-mode: standalone) { .tabs { display:none !important; } }
+textarea { width:100%; border:1px solid var(--border); border-radius:8px; padding:10px; font-family:monospace; font-size:12px; resize:vertical; background:var(--card); color:var(--text); }
+.btn { padding:8px 18px; border-radius:8px; font-weight:600; font-size:13px; border:2px solid var(--border); cursor:pointer; -webkit-appearance:none; background:var(--card); color:var(--text); }
+.btn-primary { background:var(--accent); color:#fff; border-color:var(--accent-light); }
+.btn-primary:hover { background:#1e3a8a; }
+.btn-danger { background:#991b1b; color:#fff; border-color:var(--danger); }
+.btn-danger:hover { background:#7f1d1d; }
+.btn-outline { border:2px solid var(--border); background:var(--card); }
+.btn-outline:hover { background:#334155; }
+.flex { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+.mt-2 { margin-top:8px; }
+.mb-2 { margin-bottom:8px; }
+.w-full { width:100%; }
+table { width:100%; border-collapse:collapse; font-size:12px; }
+th { background:#0f172a; padding:6px 4px; text-align:center !important; font-size:11px; text-transform:uppercase; color:var(--muted); border-bottom:2px solid var(--border); white-space:nowrap; }
+td { padding:4px; border-bottom:1px solid #0f172a; vertical-align:top; text-align:center !important; color:var(--text); }
+td[contenteditable] { cursor:text; }
+td[contenteditable]:focus { outline:2px solid var(--accent-light); outline-offset:-1px; border-radius:2px; background:#334155; }
+.num { font-family:monospace; }
+.month-group { margin-bottom:16px; }
+.month-header { background:var(--accent); color:#fff; padding:6px 10px; border-radius:6px 6px 0 0; font-weight:700; font-size:13px; display:flex; justify-content:space-between; cursor:pointer; user-select:none; }
+.month-header:hover { background:#1e3a8a; }
+.month-body.collapsed { display:none; }
+.subtotal { background:#0f172a; font-weight:700; }
+.subtotal td { border-top:2px solid var(--muted); padding-top:6px; }
+.grand-total { background:var(--accent); color:#fff; font-weight:700; }
+.grand-total td { padding:8px 4px; }
+.hidden { display:none; }
+.badge { display:inline-block; padding:1px 6px; border-radius:4px; font-size:11px; font-weight:600; }
+.badge-up { background:none; color:var(--green); }
+.badge-down { background:none; color:var(--danger); }
+tr.wedstrijd { background:#422006 !important; }
+tr.wedstrijd td { border-bottom-color:#a16207; }
+.empty-msg { text-align:center; color:var(--muted); padding:40px; font-style:italic; }
+#toast { position:fixed; bottom:80px; left:50%; transform:translateX(-50%); padding:10px 22px; border-radius:12px; background:var(--card); color:#fff; font-weight:700; font-size:14px; opacity:0; transition:opacity 0.25s; z-index:999; pointer-events:none; white-space:nowrap; border:2px solid var(--border); box-shadow:0 4px 16px rgba(0,0,0,0.4); }
+#toast.show { opacity:1; }
+.sticky-header { position:sticky; top:0; z-index:100; background:var(--bg); padding:12px 20px 8px; margin:0 -16px 12px; border-bottom:1px solid var(--border); }
+@media (max-width:768px) { .sticky-header { padding:10px 10px 6px; margin:0 -16px 10px; } table { font-size:11px; } td,th { padding:3px 2px; } }
+.col-merk { max-width:80px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.vs-grid { display:grid; grid-template-columns:1fr 1fr; gap:5px; margin-bottom:8px; }
+.vs-stepper { display:flex; gap:4px; align-items:center; justify-content:center; margin-top:4px; }
+.vs-btn { width:44px; height:40px; border:2px solid var(--border); border-radius:8px; background:var(--card); font-size:22px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--text); -webkit-appearance:none; appearance:none; user-select:none; -webkit-tap-highlight-color:transparent; touch-action:manipulation; box-shadow:0 1px 3px rgba(0,0,0,0.3); }
+.vs-btn:active { background:#334155; }
+.vs-fish-input { width:100%; padding:14px 4px; border:2px solid var(--border); border-radius:10px; font-size:28px; font-weight:700; text-align:center; background:#0f172a; color:#fff; -webkit-appearance:none; appearance:none; box-shadow:0 1px 3px rgba(0,0,0,0.3); min-width:0; }
+.vs-input-text { display:block; width:100%; padding:12px; border:2px solid var(--border); border-radius:10px; font-size:18px; font-weight:600; background:#0f172a; color:#fff; -webkit-appearance:none; appearance:none; box-shadow:0 1px 3px rgba(0,0,0,0.3); }
+.vs-input-text::placeholder { color:var(--muted); font-weight:400; }
+.vs-label { font-size:14px; font-weight:700; color:var(--text); margin-bottom:2px; }
+.vs-hint { text-align:center; font-size:13px; font-weight:700; color:var(--accent-light); margin-top:2px; min-height:18px; }
 .vs-pair { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:10px; }
-.vs-fish { border:2px solid #1e293b; border-radius:10px; padding:8px 6px 6px; background:#fff; }
-.vs-stat { padding:10px 12px; border-radius:10px; font-size:24px; font-weight:700; text-align:center; border:2px solid; background:#fff; box-shadow:0 1px 3px rgba(0,0,0,0.15); }
-@media (max-width: 768px) { .vs-grid { gap: 4px; } .vs-btn { width: 40px; height: 38px; font-size: 20px; } .vs-fish-input { font-size: 26px; padding: 12px 4px; } .vs-input-text { padding:10px; font-size:17px; } .vs-pair { gap:6px; } .vs-stat { font-size:22px; padding:8px 10px; }
-header > div { padding:0 16px !important; }
-header + div { padding-left:16px !important; padding-right:16px !important; }
-header + div + div > div { padding:12px 16px !important; } }
+.vs-fish { border:2px solid var(--border); border-radius:10px; padding:8px 6px 6px; background:var(--card); }
+.vs-stat { padding:10px 12px; border-radius:10px; font-size:24px; font-weight:700; text-align:center; border:2px solid var(--border); background:#0f172a; box-shadow:0 1px 3px rgba(0,0,0,0.3); }
+@media (max-width:768px) { .vs-grid { gap:4px; } .vs-btn { width:40px; height:38px; font-size:20px; } .vs-fish-input { font-size:26px; padding:12px 4px; } .vs-input-text { padding:10px; font-size:17px; } .vs-pair { gap:6px; } .vs-stat { font-size:22px; padding:8px 10px; } }
 </style>
 </head>
 <body>
-  <main style="height:100vh;display:flex;flex-direction:column;background:#f8fafc">
+  <main style="height:100vh;height:100dvh;display:flex;flex-direction:column;background:var(--bg)">
     <div style="display:flex;flex:1;min-height:0">
-      <!-- MAIN CONTENT -->
       <section style="flex:1;display:flex;flex-direction:column;min-height:0">
-        <header style="height:64px;background:#fff;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;padding:0 32px;flex-shrink:0">
-          <div style="display:flex;align-items:center;gap:12px">
-            <span style="font-weight:600;font-size:14px">Vissessies</span>
+        <header style="height:52px;background:var(--card);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 20px;flex-shrink:0">
+          <div style="display:flex;align-items:center;gap:10px">
+            <span style="font-weight:800;font-size:15px;color:var(--text)">Vaste Hengel assistent</span>
           </div>
-          <a href="/vissessies-app/help" style="font-size:20px;text-decoration:none">❓</a>
+          <a href="/vissessies-app/help" style="font-size:20px;text-decoration:none;color:var(--text)">❓</a>
         </header>
 
-        <div style="background:#fff;border-bottom:1px solid #e2e8f0;padding:12px 32px;flex-shrink:0">
-          <h1 style="font-size:18px;font-weight:700">Vissessies</h1>
-          <p class="sub" style="margin-bottom:6px">Al je vangsten — lokaal opgeslagen</p>
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-            <label class="sub" style="font-weight:600;white-space:nowrap;margin-bottom:0">Jaar:</label>
-            <select id="year-select" style="padding:4px 8px;border:1px solid #cbd5e1;border-radius:4px;font-size:14px;font-weight:600"></select>
-            <span class="sub" id="year-count" style="margin-left:4px;margin-bottom:0"></span>
+        <div style="background:var(--card);border-bottom:1px solid var(--border);padding:10px 20px;flex-shrink:0">
+          <h1 style="font-size:18px;font-weight:800;color:var(--text)">Vaste Hengel assistent</h1>
+          <p class="sub" style="margin-bottom:4px;color:var(--muted)">Vaste hengel vangsten — lokaal opgeslagen</p>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+            <label class="sub" style="font-weight:600;white-space:nowrap;margin-bottom:0;color:var(--muted)">Jaar:</label>
+            <select id="year-select" style="padding:4px 8px;border:2px solid var(--border);border-radius:8px;font-size:14px;font-weight:600;background:#0f172a;color:#fff"></select>
+            <span class="sub" id="year-count" style="margin-left:4px;margin-bottom:0;color:var(--muted)"></span>
           </div>
           <div class="tabs" style="margin-bottom:0">
             <button class="tab active" data-tab="data">📊 Data</button>
@@ -114,32 +111,32 @@ header + div + div > div { padding:12px 16px !important; } }
             <button class="tab danger" data-tab="beheer">⚙️ Beheer</button>
           </div>
         </div>
-        <div style="flex:1;overflow-y:auto;min-height:0">
-          <div style="padding:16px 32px;max-width:1400px;margin:0 auto">
+        <div style="flex:1;overflow-y:auto;min-height:0;-webkit-overflow-scrolling:touch">
+          <div style="padding:12px 16px;max-width:1400px;margin:0 auto">
 
 <!-- DATA TAB -->
 <div id="tab-data" class="panel show">
   <div style="display:flex;margin-bottom:8px">
-    <span id="row-count" class="sub" style="margin:0;flex:1"></span>
+    <span id="row-count" class="sub" style="margin:0;flex:1;color:var(--muted)"></span>
     <button id="btn-add" class="btn btn-outline">➕ Nieuw</button>
   </div>
-  <div id="add-form" class="hidden" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:12px;margin-bottom:12px">
-    <div class="sub mb-2" style="font-weight:700">Nieuwe sessie</div>
+  <div id="add-form" class="hidden" style="background:#0f172a;border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:12px">
+    <div class="sub mb-2" style="font-weight:700;color:var(--text)">Nieuwe sessie</div>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:6px">
-      <input id="f-datum" placeholder="Datum (vb 19/06)" class="form-input" value="" style="padding:4px 8px;border:1px solid #cbd5e1;border-radius:4px;font-size:12px">
-      <input id="f-stek" placeholder="Stek" class="form-input" value="" style="padding:4px 8px;border:1px solid #cbd5e1;border-radius:4px;font-size:12px">
-      <input id="f-begin" placeholder="Begin" class="form-input" value="" style="padding:4px 8px;border:1px solid #cbd5e1;border-radius:4px;font-size:12px">
-      <input id="f-einde" placeholder="Einde" class="form-input" value="" style="padding:4px 8px;border:1px solid #cbd5e1;border-radius:4px;font-size:12px">
-      <input id="f-kroes" placeholder="Kroes" type="number" class="form-input" value="0" style="padding:4px 8px;border:1px solid #cbd5e1;border-radius:4px;font-size:12px">
-      <input id="f-schub" placeholder="Schub" type="number" class="form-input" value="0" style="padding:4px 8px;border:1px solid #cbd5e1;border-radius:4px;font-size:12px">
-      <input id="f-spiegel" placeholder="Spiegel" type="number" class="form-input" value="0" style="padding:4px 8px;border:1px solid #cbd5e1;border-radius:4px;font-size:12px">
-      <input id="f-ander" placeholder="Ander" type="number" class="form-input" value="0" style="padding:4px 8px;border:1px solid #cbd5e1;border-radius:4px;font-size:12px">
-      <input id="f-gewicht" placeholder="Gewicht (gr)" type="number" class="form-input" value="0" style="padding:4px 8px;border:1px solid #cbd5e1;border-radius:4px;font-size:12px">
-      <input id="f-duurMin" placeholder="Duur (min)" type="number" class="form-input" value="0" style="padding:4px 8px;border:1px solid #cbd5e1;border-radius:4px;font-size:12px">
-      <input id="f-tijdMin" placeholder="Tijd vangst (min)" type="number" class="form-input" value="" style="padding:4px 8px;border:1px solid #cbd5e1;border-radius:4px;font-size:12px">
-      <input id="f-pijl" placeholder="⬆/⬇" class="form-input" value="" style="padding:4px 8px;border:1px solid #cbd5e1;border-radius:4px;font-size:12px">
-      <input id="f-beoordeling" placeholder="Beoordeling" class="form-input" value="" style="padding:4px 8px;border:1px solid #cbd5e1;border-radius:4px;font-size:12px">
-      <label style="display:flex;align-items:center;gap:4px;font-size:12px;padding:4px"><input type="checkbox" id="f-wedstrijd"> 🏆 Wedstrijd</label>
+      <input id="f-datum" placeholder="Datum (vb 19/06)" class="form-input" value="" style="padding:4px 8px;border:2px solid var(--border);border-radius:6px;font-size:12px;background:#0f172a;color:#fff">
+      <input id="f-stek" placeholder="Stek" class="form-input" value="" style="padding:4px 8px;border:2px solid var(--border);border-radius:6px;font-size:12px;background:#0f172a;color:#fff">
+      <input id="f-begin" placeholder="Begin" class="form-input" value="" style="padding:4px 8px;border:2px solid var(--border);border-radius:6px;font-size:12px;background:#0f172a;color:#fff">
+      <input id="f-einde" placeholder="Einde" class="form-input" value="" style="padding:4px 8px;border:2px solid var(--border);border-radius:6px;font-size:12px;background:#0f172a;color:#fff">
+      <input id="f-kroes" placeholder="Kroes" type="number" class="form-input" value="0" style="padding:4px 8px;border:2px solid var(--border);border-radius:6px;font-size:12px;background:#0f172a;color:#fff">
+      <input id="f-schub" placeholder="Schub" type="number" class="form-input" value="0" style="padding:4px 8px;border:2px solid var(--border);border-radius:6px;font-size:12px;background:#0f172a;color:#fff">
+      <input id="f-spiegel" placeholder="Spiegel" type="number" class="form-input" value="0" style="padding:4px 8px;border:2px solid var(--border);border-radius:6px;font-size:12px;background:#0f172a;color:#fff">
+      <input id="f-ander" placeholder="Ander" type="number" class="form-input" value="0" style="padding:4px 8px;border:2px solid var(--border);border-radius:6px;font-size:12px;background:#0f172a;color:#fff">
+      <input id="f-gewicht" placeholder="Gewicht (gr)" type="number" class="form-input" value="0" style="padding:4px 8px;border:2px solid var(--border);border-radius:6px;font-size:12px;background:#0f172a;color:#fff">
+      <input id="f-duurMin" placeholder="Duur (min)" type="number" class="form-input" value="0" style="padding:4px 8px;border:2px solid var(--border);border-radius:6px;font-size:12px;background:#0f172a;color:#fff">
+      <input id="f-tijdMin" placeholder="Tijd vangst (min)" type="number" class="form-input" value="" style="padding:4px 8px;border:2px solid var(--border);border-radius:6px;font-size:12px;background:#0f172a;color:#fff">
+      <input id="f-pijl" placeholder="⬆/⬇" class="form-input" value="" style="padding:4px 8px;border:2px solid var(--border);border-radius:6px;font-size:12px;background:#0f172a;color:#fff">
+      <input id="f-beoordeling" placeholder="Beoordeling" class="form-input" value="" style="padding:4px 8px;border:2px solid var(--border);border-radius:6px;font-size:12px;background:#0f172a;color:#fff">
+      <label style="display:flex;align-items:center;gap:4px;font-size:12px;padding:4px;color:var(--text)"><input type="checkbox" id="f-wedstrijd"> 🏆 Wedstrijd</label>
     </div>
     <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px">
       <button id="btn-save-add" class="btn btn-primary">💾 Opslaan</button>
@@ -156,7 +153,7 @@ header + div + div > div { padding:12px 16px !important; } }
 
 <!-- VISSTEK TAB -->
 <div id="tab-visstek" class="panel">
-  <div class="vs-card" style="background:#fff;border:2px solid #1e293b;border-radius:12px;padding:14px 16px;margin-bottom:12px">
+  <div class="vs-card" style="background:var(--card);border:2px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:12px">
     <div class="vs-pair">
       <div>
         <div class="vs-label">Stek</div>
@@ -180,11 +177,11 @@ header + div + div > div { padding:12px 16px !important; } }
         <div class="vs-hint" id="vs-einde-display"></div>
       </div>
     </div>
-    <div style="font-size:15px;font-weight:700;color:#1e293b;margin-bottom:6px">Vangst</div>
+    <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px">Vangst</div>
     <div class="vs-grid">
       <div class="vs-fish" style="border-color:#059669">
         <div class="vs-label" style="color:#059669;text-align:center">Kroes</div>
-        <input id="vs-kroes" type="text" inputmode="numeric" maxlength="3" value="0" class="vs-fish-input" style="border-color:#059669;color:#059669">
+        <input id="vs-kroes" type="text" inputmode="numeric" maxlength="3" value="0" class="vs-fish-input" style="border-color:#059669;color:#fff">
         <div class="vs-stepper">
           <button type="button" onclick="vsAdjust('vs-kroes',-1,999)" class="vs-btn" style="border-color:#059669;color:#059669">−</button>
           <button type="button" onclick="vsAdjust('vs-kroes',1,999)" class="vs-btn" style="border-color:#059669;color:#059669">+</button>
@@ -192,7 +189,7 @@ header + div + div > div { padding:12px 16px !important; } }
       </div>
       <div class="vs-fish" style="border-color:#2563eb">
         <div class="vs-label" style="color:#2563eb;text-align:center">Schub</div>
-        <input id="vs-schub" type="text" inputmode="numeric" maxlength="3" value="0" class="vs-fish-input" style="border-color:#2563eb;color:#2563eb">
+        <input id="vs-schub" type="text" inputmode="numeric" maxlength="3" value="0" class="vs-fish-input" style="border-color:#2563eb;color:#fff">
         <div class="vs-stepper">
           <button type="button" onclick="vsAdjust('vs-schub',-1,999)" class="vs-btn" style="border-color:#2563eb;color:#2563eb">−</button>
           <button type="button" onclick="vsAdjust('vs-schub',1,999)" class="vs-btn" style="border-color:#2563eb;color:#2563eb">+</button>
@@ -200,7 +197,7 @@ header + div + div > div { padding:12px 16px !important; } }
       </div>
       <div class="vs-fish" style="border-color:#7c3aed">
         <div class="vs-label" style="color:#7c3aed;text-align:center">Spiegel</div>
-        <input id="vs-spiegel" type="text" inputmode="numeric" maxlength="3" value="0" class="vs-fish-input" style="border-color:#7c3aed;color:#7c3aed">
+        <input id="vs-spiegel" type="text" inputmode="numeric" maxlength="3" value="0" class="vs-fish-input" style="border-color:#7c3aed;color:#fff">
         <div class="vs-stepper">
           <button type="button" onclick="vsAdjust('vs-spiegel',-1,999)" class="vs-btn" style="border-color:#7c3aed;color:#7c3aed">−</button>
           <button type="button" onclick="vsAdjust('vs-spiegel',1,999)" class="vs-btn" style="border-color:#7c3aed;color:#7c3aed">+</button>
@@ -208,7 +205,7 @@ header + div + div > div { padding:12px 16px !important; } }
       </div>
       <div class="vs-fish" style="border-color:#d97706">
         <div class="vs-label" style="color:#d97706;text-align:center">Ander</div>
-        <input id="vs-ander" type="text" inputmode="numeric" maxlength="3" value="0" class="vs-fish-input" style="border-color:#d97706;color:#d97706">
+        <input id="vs-ander" type="text" inputmode="numeric" maxlength="3" value="0" class="vs-fish-input" style="border-color:#d97706;color:#fff">
         <div class="vs-stepper">
           <button type="button" onclick="vsAdjust('vs-ander',-1,999)" class="vs-btn" style="border-color:#d97706;color:#d97706">−</button>
           <button type="button" onclick="vsAdjust('vs-ander',1,999)" class="vs-btn" style="border-color:#d97706;color:#d97706">+</button>
@@ -227,7 +224,7 @@ header + div + div > div { padding:12px 16px !important; } }
     </div>
     <div style="display:none" id="vs-duur-container">
       <div class="vs-label">Duur</div>
-      <div id="vs-duur" style="padding:10px 12px;border:2px solid #86efac;border-radius:10px;font-size:18px;width:100%;background:#f0fdf4;color:#166534;font-weight:700;margin-bottom:8px">--</div>
+      <div id="vs-duur" style="padding:10px 12px;border:2px solid #86efac;border-radius:10px;font-size:18px;width:100%;background:#052e16;color:#86efac;font-weight:700;margin-bottom:8px">--</div>
     </div>
     <button id="btn-vs-save" class="btn btn-primary" style="padding:16px 24px;font-size:20px;width:100%;-webkit-appearance:none;margin-top:6px;border-radius:12px;font-weight:700">💾 Opslaan</button>
   </div>
@@ -241,13 +238,13 @@ header + div + div > div { padding:12px 16px !important; } }
   <button id="btn-remove-empty" class="btn btn-outline" style="margin-left:8px">🧹 Verwijder lege sessies</button>
   <button id="btn-remove-nodate" class="btn btn-outline" style="margin-left:8px">📅 Verwijder zonder datum</button>
   <button id="btn-seed" class="btn btn-outline" style="margin-left:8px">📥 Laad voorbeelddata</button>
-  <hr style="margin:16px 0;border:none;border-top:1px solid #e2e8f0">
+  <hr style="margin:16px 0;border:none;border-top:1px solid var(--border)">
   <p class="sub" style="font-weight:700">Synchronisatie</p>
   <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px">
     <button id="btn-sync-server" class="btn btn-outline">📡 Sync van server</button>
   </div>
   <div id="sync-status" class="sub" style="margin-top:8px"></div>
-  <hr style="margin:16px 0;border:none;border-top:1px solid #e2e8f0">
+  <hr style="margin:16px 0;border:none;border-top:1px solid var(--border)">
   <p class="sub" style="font-weight:700">Back-ups</p>
   <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px">
     <button id="btn-backup-create" class="btn btn-outline">💾 Download back-up</button>
@@ -323,6 +320,23 @@ function loadData() {
 }
 function saveData(data) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  trySyncToServer(data);
+}
+
+function isAdmin() {
+  return document.cookie.split(';').some(c => c.trim().startsWith('admin_token='));
+}
+
+function trySyncToServer(data) {
+  if (!isAdmin()) return;
+  fetch('/admin/api/vissessies', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify(data)
+  }).then(function(r) {
+    if (r.ok) showToast('📡 Gesynced naar admin');
+  }).catch(function(){});
 }
 
 function parseTime(t) {
@@ -545,7 +559,7 @@ function render() {
   document.getElementById('year-count').textContent = '(' + alleData.length + ' totaal)';
 
   if (!data.length) {
-    container.innerHTML = '<p class="empty-msg">Geen data voor ' + jaar + '. Ga naar Import om data te plakken, of kies een ander jaar.</p>';
+    container.innerHTML = '<p class="empty-msg">Geen data voor ' + jaar + '.</p>';
     updateStats();
     return;
   }
@@ -639,7 +653,7 @@ function render() {
     </tbody></table></div></div>`;
   }
 
-  html += `<div style="background:#1e40af;color:#fff;padding:12px 16px;border-radius:8px;display:flex;gap:24px;flex-wrap:wrap;font-size:15px;font-weight:700;margin-top:12px">
+  html += `<div style="background:var(--accent);color:#fff;padding:12px 16px;border-radius:8px;display:flex;gap:24px;flex-wrap:wrap;font-size:15px;font-weight:700;margin-top:12px">
     <span>🎣 ${grandAantal} vis</span>
     <span>⚖️ ${fmtGewicht(grandGewicht)}</span>
     <span>📅 ${data.length} sessies</span>
@@ -816,24 +830,24 @@ function updateStats() {
 
   const leeg = data.length - metVangst.length;
   html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:20px">' +
-    '<div style="background:#fff;border-radius:12px;border:1px solid #e2e8f0;padding:14px;text-align:center">' +
-      '<div style="font-size:11px;text-transform:uppercase;color:#64748b;font-weight:600;letter-spacing:0.5px">Totaal vis</div>' +
-      '<div style="font-size:28px;font-weight:800;color:#1e293b;margin-top:4px">' + total.aantal.toLocaleString('nl-NL') + '</div></div>' +
-    '<div style="background:#fff;border-radius:12px;border:1px solid #e2e8f0;padding:14px;text-align:center">' +
-      '<div style="font-size:11px;text-transform:uppercase;color:#64748b;font-weight:600;letter-spacing:0.5px">Totaal gewicht</div>' +
-      '<div style="font-size:28px;font-weight:800;color:#1e293b;margin-top:4px">' + (total.gewicht/1000).toLocaleString('nl-NL',{maximumFractionDigits:1}) + ' <span style="font-size:14px;font-weight:600;color:#64748b">kg</span></div></div>' +
-    '<div style="background:#fff;border-radius:12px;border:1px solid #e2e8f0;padding:14px;text-align:center">' +
-      '<div style="font-size:11px;text-transform:uppercase;color:#64748b;font-weight:600;letter-spacing:0.5px">Gr/min</div>' +
-      '<div style="font-size:28px;font-weight:800;color:#1e293b;margin-top:4px">' + Math.round(gemGramMin).toLocaleString('nl-NL') + '</div></div>' +
-    '<div style="background:#fff;border-radius:12px;border:1px solid #e2e8f0;padding:14px;text-align:center">' +
-      '<div style="font-size:11px;text-transform:uppercase;color:#64748b;font-weight:600;letter-spacing:0.5px">Gem. vis/sessie</div>' +
-      '<div style="font-size:28px;font-weight:800;color:#1e293b;margin-top:4px">' + (total.aantal/data.length).toLocaleString('nl-NL',{maximumFractionDigits:1}) + '</div></div>' +
-    '<div style="background:#fff;border-radius:12px;border:1px solid #e2e8f0;padding:14px;text-align:center">' +
-      '<div style="font-size:11px;text-transform:uppercase;color:#64748b;font-weight:600;letter-spacing:0.5px">Gem. gewicht/vis</div>' +
-      '<div style="font-size:28px;font-weight:800;color:#1e293b;margin-top:4px">' + (gemPerVis/1000).toLocaleString('nl-NL',{maximumFractionDigits:2}) + ' <span style="font-size:14px;font-weight:600;color:#64748b">kg</span></div></div>' +
-    '<div style="background:#fff;border-radius:12px;border:1px solid #e2e8f0;padding:14px;text-align:center">' +
-      '<div style="font-size:11px;text-transform:uppercase;color:#64748b;font-weight:600;letter-spacing:0.5px">Sessies</div>' +
-      '<div style="font-size:28px;font-weight:800;color:#1e293b;margin-top:4px">' + data.length + ' <span style="font-size:13px;font-weight:600;color:' + (leeg > 0 ? '#dc2626' : '#16a34a') + '">(' + (leeg > 0 ? leeg + ' leeg' : 'vol') + ')</span></div></div>' +
+    '<div style="background:var(--card);border-radius:12px;border:1px solid var(--border);padding:14px;text-align:center">' +
+      '<div style="font-size:11px;text-transform:uppercase;color:var(--muted);font-weight:600;letter-spacing:0.5px">Totaal vis</div>' +
+      '<div style="font-size:28px;font-weight:800;color:#fff;margin-top:4px">' + total.aantal.toLocaleString('nl-NL') + '</div></div>' +
+    '<div style="background:var(--card);border-radius:12px;border:1px solid var(--border);padding:14px;text-align:center">' +
+      '<div style="font-size:11px;text-transform:uppercase;color:var(--muted);font-weight:600;letter-spacing:0.5px">Totaal gewicht</div>' +
+      '<div style="font-size:28px;font-weight:800;color:#fff;margin-top:4px">' + (total.gewicht/1000).toLocaleString('nl-NL',{maximumFractionDigits:1}) + ' <span style="font-size:14px;font-weight:600;color:var(--muted)">kg</span></div></div>' +
+    '<div style="background:var(--card);border-radius:12px;border:1px solid var(--border);padding:14px;text-align:center">' +
+      '<div style="font-size:11px;text-transform:uppercase;color:var(--muted);font-weight:600;letter-spacing:0.5px">Gr/min</div>' +
+      '<div style="font-size:28px;font-weight:800;color:#fff;margin-top:4px">' + Math.round(gemGramMin).toLocaleString('nl-NL') + '</div></div>' +
+    '<div style="background:var(--card);border-radius:12px;border:1px solid var(--border);padding:14px;text-align:center">' +
+      '<div style="font-size:11px;text-transform:uppercase;color:var(--muted);font-weight:600;letter-spacing:0.5px">Gem. vis/sessie</div>' +
+      '<div style="font-size:28px;font-weight:800;color:#fff;margin-top:4px">' + (total.aantal/data.length).toLocaleString('nl-NL',{maximumFractionDigits:1}) + '</div></div>' +
+    '<div style="background:var(--card);border-radius:12px;border:1px solid var(--border);padding:14px;text-align:center">' +
+      '<div style="font-size:11px;text-transform:uppercase;color:var(--muted);font-weight:600;letter-spacing:0.5px">Gem. gewicht/vis</div>' +
+      '<div style="font-size:28px;font-weight:800;color:#fff;margin-top:4px">' + (gemPerVis/1000).toLocaleString('nl-NL',{maximumFractionDigits:2}) + ' <span style="font-size:14px;font-weight:600;color:var(--muted)">kg</span></div></div>' +
+    '<div style="background:var(--card);border-radius:12px;border:1px solid var(--border);padding:14px;text-align:center">' +
+      '<div style="font-size:11px;text-transform:uppercase;color:var(--muted);font-weight:600;letter-spacing:0.5px">Sessies</div>' +
+      '<div style="font-size:28px;font-weight:800;color:#fff;margin-top:4px">' + data.length + ' <span style="font-size:13px;font-weight:600;color:' + (leeg > 0 ? 'var(--danger)' : 'var(--green)') + '">(' + (leeg > 0 ? leeg + ' leeg' : 'vol') + ')</span></div></div>' +
   '</div>';
 
   const jaarData = {};
@@ -847,8 +861,8 @@ function updateStats() {
   }
   const jaren = Object.keys(jaarData).sort();
   if (jaren.length > 1) {
-    html += '<div style="background:#fff;border-radius:12px;border:1px solid #e2e8f0;padding:16px;margin-bottom:20px">' +
-      '<div style="font-size:13px;font-weight:700;color:#1e293b;margin-bottom:12px">Jaarvergelijking</div>';
+    html += '<div style="background:var(--card);border-radius:12px;border:1px solid var(--border);padding:16px;margin-bottom:20px">' +
+      '<div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:12px">Jaarvergelijking</div>';
     const metrics = [
       { key: 'aantal', label: 'Totaal vis', suffix: '' },
       { key: 'gewicht', label: 'Totaal gewicht', suffix: ' kg', div: 1000, fmt: v => (v/1000).toFixed(1) },
@@ -869,14 +883,14 @@ function updateStats() {
         return { jr: j, val: total };
       });
       const maxVal = Math.max(...vals.map(v => v.val), 1);
-      html += '<div style="margin-bottom:10px"><div style="font-size:11px;font-weight:600;color:#64748b;margin-bottom:4px">' + m.label + '</div>';
+      html += '<div style="margin-bottom:10px"><div style="font-size:11px;font-weight:600;color:var(--muted);margin-bottom:4px">' + m.label + '</div>';
       for (const v of vals) {
         const pct = Math.max(3, (v.val / maxVal) * 100);
         const isCurrent = parseInt(v.jr) === parseInt(jaar);
         html += '<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;font-size:11px">' +
-          '<div style="width:32px;font-weight:' + (isCurrent ? '700' : '500') + ';color:' + (isCurrent ? '#1e40af' : '#64748b') + '">' + v.jr + '</div>' +
-          '<div style="flex:1;height:16px;background:#f1f5f9;border-radius:3px;overflow:hidden">' +
-            '<div style="height:100%;width:' + pct + '%;background:' + (isCurrent ? '#1e40af' : '#94a3b8') + ';border-radius:3px;display:flex;align-items:center;padding-left:4px">' +
+          '<div style="width:32px;font-weight:' + (isCurrent ? '700' : '500') + ';color:' + (isCurrent ? '#60a5fa' : 'var(--muted)') + '">' + v.jr + '</div>' +
+          '<div style="flex:1;height:16px;background:#0f172a;border-radius:3px;overflow:hidden">' +
+            '<div style="height:100%;width:' + pct + '%;background:' + (isCurrent ? 'var(--accent-light)' : 'var(--border)') + ';border-radius:3px;display:flex;align-items:center;padding-left:4px">' +
               '<span style="font-size:8px;font-weight:600;color:#fff;white-space:nowrap">' + (m.fmt ? m.fmt(v.val) : v.val.toLocaleString('nl-NL')) + m.suffix + '</span></div></div></div>';
       }
       html += '</div>';
@@ -885,29 +899,29 @@ function updateStats() {
   }
 
   html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">' +
-    '<div style="background:#fff;border-radius:12px;border:1px solid #e2e8f0;padding:16px">' +
-      '<div style="font-size:13px;font-weight:700;color:#1e293b;margin-bottom:12px">Vis per maand</div>';
+    '<div style="background:var(--card);border-radius:12px;border:1px solid var(--border);padding:16px">' +
+      '<div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:12px">Vis per maand</div>';
   for (const m of maanden) {
     const v = perMaand[m];
     if (!v) continue;
     const pct = Math.max(4, (v.aantal / maxMaandAantal) * 100);
     html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">' +
-      '<div style="width:28px;font-size:11px;font-weight:600;color:#64748b;text-align:right">' + m + '</div>' +
-      '<div style="flex:1;height:22px;background:#f1f5f9;border-radius:4px;overflow:hidden">' +
-        '<div style="height:100%;width:' + pct + '%;background:#1e40af;border-radius:4px;display:flex;align-items:center;padding-left:6px">' +
+      '<div style="width:28px;font-size:11px;font-weight:600;color:var(--muted);text-align:right">' + m + '</div>' +
+      '<div style="flex:1;height:22px;background:#0f172a;border-radius:4px;overflow:hidden">' +
+        '<div style="height:100%;width:' + pct + '%;background:var(--accent-light);border-radius:4px;display:flex;align-items:center;padding-left:6px">' +
           '<span style="font-size:10px;font-weight:700;color:#fff;white-space:nowrap">' + v.aantal + '</span></div></div></div>';
   }
   html += '</div>' +
-    '<div style="background:#fff;border-radius:12px;border:1px solid #e2e8f0;padding:16px">' +
-      '<div style="font-size:13px;font-weight:700;color:#1e293b;margin-bottom:12px">Gewicht per maand</div>';
+    '<div style="background:var(--card);border-radius:12px;border:1px solid var(--border);padding:16px">' +
+      '<div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:12px">Gewicht per maand</div>';
   for (const m of maanden) {
     const v = perMaand[m];
     if (!v) continue;
     const pct = Math.max(4, (v.gewicht / maxMaandGewicht) * 100);
     html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">' +
-      '<div style="width:28px;font-size:11px;font-weight:600;color:#64748b;text-align:right">' + m + '</div>' +
-      '<div style="flex:1;height:22px;background:#f1f5f9;border-radius:4px;overflow:hidden">' +
-        '<div style="height:100%;width:' + pct + '%;background:#16a34a;border-radius:4px;display:flex;align-items:center;padding-left:6px">' +
+      '<div style="width:28px;font-size:11px;font-weight:600;color:var(--muted);text-align:right">' + m + '</div>' +
+      '<div style="flex:1;height:22px;background:#0f172a;border-radius:4px;overflow:hidden">' +
+        '<div style="height:100%;width:' + pct + '%;background:var(--green);border-radius:4px;display:flex;align-items:center;padding-left:6px">' +
           '<span style="font-size:10px;font-weight:700;color:#fff;white-space:nowrap">' + (v.gewicht/1000).toFixed(1) + '</span></div></div></div>';
   }
   html += '</div></div>';
@@ -919,15 +933,15 @@ function updateStats() {
     { label: 'Ander', count: total.ander, color: '#8b5cf6' },
   ];
   const maxSoort = Math.max(...soorten.map(s => s.count), 1);
-  html += '<div style="background:#fff;border-radius:12px;border:1px solid #e2e8f0;padding:16px;margin-bottom:20px">' +
-    '<div style="font-size:13px;font-weight:700;color:#1e293b;margin-bottom:12px">Vissoort verdeling</div>';
+  html += '<div style="background:var(--card);border-radius:12px;border:1px solid var(--border);padding:16px;margin-bottom:20px">' +
+    '<div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:12px">Vissoort verdeling</div>';
   for (const s of soorten) {
     if (s.count <= 0) continue;
     const pct = total.aantal > 0 ? (s.count / total.aantal * 100) : 0;
     const barPct = Math.max(4, (s.count / maxSoort) * 100);
     html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">' +
-      '<div style="width:54px;font-size:11px;font-weight:600;color:#64748b;text-align:right">' + s.label + '</div>' +
-      '<div style="flex:1;height:22px;background:#f1f5f9;border-radius:4px;overflow:hidden">' +
+      '<div style="width:54px;font-size:11px;font-weight:600;color:var(--muted);text-align:right">' + s.label + '</div>' +
+      '<div style="flex:1;height:22px;background:#0f172a;border-radius:4px;overflow:hidden">' +
         '<div style="height:100%;width:' + barPct + '%;background:' + s.color + ';border-radius:4px;display:flex;align-items:center;padding-left:6px">' +
           '<span style="font-size:10px;font-weight:700;color:#fff;white-space:nowrap">' + s.count + ' (' + pct.toFixed(0) + '%)</span></div></div></div>';
   }
@@ -944,16 +958,16 @@ function updateStats() {
       return x + ',' + y;
     });
     const yTicks = [0, Math.round(maxVal/2), Math.round(maxVal)];
-    html += '<div style="background:#fff;border-radius:12px;border:1px solid #e2e8f0;padding:16px;margin-bottom:20px">' +
-      '<div style="font-size:13px;font-weight:700;color:#1e293b;margin-bottom:8px">Trend — gr/min per sessie</div>' +
+    html += '<div style="background:var(--card);border-radius:12px;border:1px solid var(--border);padding:16px;margin-bottom:20px">' +
+      '<div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:8px">Trend — gr/min per sessie</div>' +
       '<div style="overflow-x:auto">' +
         '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;max-width:100%;height:auto">' +
-          '<line x1="' + padL + '" y1="' + padT + '" x2="' + padL + '" y2="' + (padT+ch) + '" stroke="#e2e8f0" stroke-width="1"/>' +
-          '<line x1="' + padL + '" y1="' + (padT+ch) + '" x2="' + (padL+cw) + '" y2="' + (padT+ch) + '" stroke="#e2e8f0" stroke-width="1"/>';
+          '<line x1="' + padL + '" y1="' + padT + '" x2="' + padL + '" y2="' + (padT+ch) + '" stroke="var(--border)" stroke-width="1"/>' +
+          '<line x1="' + padL + '" y1="' + (padT+ch) + '" x2="' + (padL+cw) + '" y2="' + (padT+ch) + '" stroke="var(--border)" stroke-width="1"/>';
     for (const v of yTicks) {
       const y = padT + ch - (v / range) * ch;
       html += '<text x="' + (padL-6) + '" y="' + (y+4) + '" text-anchor="end" font-size="10" fill="#94a3b8">' + v + '</text>' +
-        '<line x1="' + padL + '" y1="' + y + '" x2="' + (padL+cw) + '" y2="' + y + '" stroke="#f1f5f9" stroke-width="1"/>';
+        '<line x1="' + padL + '" y1="' + y + '" x2="' + (padL+cw) + '" y2="' + y + '" stroke="var(--border)" stroke-width="1"/>';
     }
     html += '<polyline points="' + points.join(' ') + '" fill="none" stroke="#1e40af" stroke-width="2" stroke-linejoin="round"/>';
     for (let i = 0; i < trendData.length; i++) {
@@ -970,23 +984,23 @@ function updateStats() {
       html += '<text x="' + x + '" y="' + (padT+ch+14) + '" text-anchor="' + anchor + '" font-size="8" fill="#94a3b8" transform="rotate(-45,' + x + ',' + (padT+ch+14) + ')">' + trendData[i].datum + '</text>';
     }
     html += '</svg></div>' +
-      '<div id="trend-detail" style="display:none;margin-top:8px;padding:8px 12px;background:#f8fafc;border-radius:6px;font-size:12px;color:#1e293b;font-weight:500">' +
+      '<div id="trend-detail" style="display:none;margin-top:8px;padding:8px 12px;background:var(--card);border-radius:6px;font-size:12px;color:#fff;font-weight:500">' +
       '</div></div>';
   }
 
   function renderTopSessies(sessies, label, borderColor) {
     if (!sessies.length) return '';
     const maxVal = sessies[0].gramMin || 1;
-    let h = '<div style="background:#fff;border-radius:12px;border:1px solid #e2e8f0;border-left:3px solid ' + borderColor + ';padding:14px;margin-bottom:12px">' +
-      '<div style="font-size:12px;font-weight:600;color:#1e293b;margin-bottom:10px">' + label + '</div>';
+    let h = '<div style="background:var(--card);border-radius:12px;border:1px solid var(--border);border-left:3px solid ' + borderColor + ';padding:14px;margin-bottom:12px">' +
+      '<div style="font-size:12px;font-weight:600;color:#fff;margin-bottom:10px">' + label + '</div>';
     for (let i = 0; i < sessies.length; i++) {
       const r = sessies[i];
       const pct = Math.max(3, (r.gramMin / maxVal) * 100);
       h += '<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;font-size:12px">' +
         '<div style="width:16px;font-weight:600;color:#94a3b8">' + (i+1) + '</div>' +
-        '<div style="width:42px;font-weight:500;color:#1e293b">' + r.datum + '</div>' +
-        '<div style="width:36px;font-size:11px;color:#64748b;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + (r.stek || '--') + '</div>' +
-        '<div style="flex:1;height:18px;background:#f8fafc;border-radius:3px;overflow:hidden">' +
+        '<div style="width:42px;font-weight:500;color:#fff">' + r.datum + '</div>' +
+        '<div style="width:36px;font-size:11px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + (r.stek || '--') + '</div>' +
+        '<div style="flex:1;height:18px;background:#0f172a;border-radius:3px;overflow:hidden">' +
           '<div style="height:100%;width:' + pct + '%;background:' + borderColor + ';border-radius:3px;display:flex;align-items:center;padding-left:5px">' +
             '<span style="font-size:9px;font-weight:600;color:#fff;white-space:nowrap">' + Math.round(r.gramMin).toLocaleString('nl-NL') + ' gr/min · ' + r.aantal + ' vis</span></div></div></div>';
     }
@@ -998,7 +1012,7 @@ function updateStats() {
   const besteAndere = [...computed].filter(r => r.aantal > 0 && (!r.stek || !r.stek.match(/^G/i))).sort((a, b) => b.gramMin - a.gramMin).slice(0, 5);
   if (besteG.length || besteAndere.length) {
     html += '<div style="margin-bottom:20px">' +
-      '<div style="font-size:13px;font-weight:700;color:#1e293b;margin-bottom:10px">Top 5 sessies (gr/min)</div>';
+      '<div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:10px">Top 5 sessies (gr/min)</div>';
     html += renderTopSessies(besteG, 'G-stekken', '#3b82f6');
     html += renderTopSessies(besteAndere, 'Andere', '#64748b');
     html += '</div>';
@@ -1007,16 +1021,16 @@ function updateStats() {
   function renderTopStekken(entries, label, borderColor) {
     if (!entries.length) return '';
     const maxVal = entries[0][1].gewicht / entries[0][1].sessies || 1;
-    let h = '<div style="background:#fff;border-radius:12px;border:1px solid #e2e8f0;border-left:3px solid ' + borderColor + ';padding:14px;margin-bottom:12px">' +
-      '<div style="font-size:12px;font-weight:600;color:#1e293b;margin-bottom:10px">' + label + '</div>';
+    let h = '<div style="background:var(--card);border-radius:12px;border:1px solid var(--border);border-left:3px solid ' + borderColor + ';padding:14px;margin-bottom:12px">' +
+      '<div style="font-size:12px;font-weight:600;color:#fff;margin-bottom:10px">' + label + '</div>';
     for (let i = 0; i < entries.length; i++) {
       const [stek, s] = entries[i];
       const gem = s.gewicht / s.sessies / 1000;
       const pct = Math.max(3, (gem / (maxVal/1000)) * 100);
       h += '<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;font-size:12px">' +
         '<div style="width:16px;font-weight:600;color:#94a3b8">' + (i+1) + '</div>' +
-        '<div style="width:42px;font-weight:500;color:#1e293b">' + stek + '</div>' +
-        '<div style="flex:1;height:18px;background:#f8fafc;border-radius:3px;overflow:hidden">' +
+        '<div style="width:42px;font-weight:500;color:#fff">' + stek + '</div>' +
+        '<div style="flex:1;height:18px;background:#0f172a;border-radius:3px;overflow:hidden">' +
           '<div style="height:100%;width:' + pct + '%;background:' + borderColor + ';border-radius:3px;display:flex;align-items:center;padding-left:5px">' +
             '<span style="font-size:9px;font-weight:600;color:#fff;white-space:nowrap">' + gem.toFixed(1) + ' kg/sessie · ' + s.aantal + ' vis · ' + s.sessies + 'x</span></div></div></div>';
     }
@@ -1028,7 +1042,7 @@ function updateStats() {
   const stekEntriesAndere = Object.entries(steken).filter(([k]) => !k.match(/^G/i)).sort((a, b) => (b[1].gewicht / b[1].sessies) - (a[1].gewicht / a[1].sessies)).slice(0, 5);
   if (stekEntriesG.length || stekEntriesAndere.length) {
     html += '<div style="margin-bottom:20px">' +
-      '<div style="font-size:13px;font-weight:700;color:#1e293b;margin-bottom:10px">Top 5 Stekken (gem. kg/sessie)</div>';
+      '<div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:10px">Top 5 Stekken (gem. kg/sessie)</div>';
     html += renderTopStekken(stekEntriesG, 'G-stekken', '#3b82f6');
     html += renderTopStekken(stekEntriesAndere, 'Andere', '#64748b');
     html += '</div>';
@@ -1038,18 +1052,18 @@ function updateStats() {
   const visPerUur = total.tijdMin > 0 ? (total.aantal / total.tijdMin * 60).toFixed(1) : '--';
   const kgPerUur = total.tijdMin > 0 ? (total.gewicht / total.tijdMin / 1000 * 60).toFixed(1) : '--';
   html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:20px">' +
-    '<div style="background:#f8fafc;border-radius:8px;padding:12px;text-align:center">' +
-      '<div style="font-size:11px;color:#64748b">Gem. kg/sessie</div>' +
-      '<div style="font-size:18px;font-weight:700;color:#1e293b;margin-top:2px">' + gemKgSessie.toFixed(1) + ' kg</div></div>' +
-    '<div style="background:#f8fafc;border-radius:8px;padding:12px;text-align:center">' +
-      '<div style="font-size:11px;color:#64748b">Vis/uur</div>' +
-      '<div style="font-size:18px;font-weight:700;color:#1e293b;margin-top:2px">' + visPerUur + '</div></div>' +
-    '<div style="background:#f8fafc;border-radius:8px;padding:12px;text-align:center">' +
-      '<div style="font-size:11px;color:#64748b">Kg/uur</div>' +
-      '<div style="font-size:18px;font-weight:700;color:#1e293b;margin-top:2px">' + kgPerUur + '</div></div>' +
-    '<div style="background:#f8fafc;border-radius:8px;padding:12px;text-align:center">' +
-      '<div style="font-size:11px;color:#64748b">Totaal tijd</div>' +
-      '<div style="font-size:18px;font-weight:700;color:#1e293b;margin-top:2px">' + fmtTime(total.tijdMin) + '</div></div>' +
+    '<div style="background:var(--card);border-radius:8px;padding:12px;text-align:center">' +
+      '<div style="font-size:11px;color:var(--muted)">Gem. kg/sessie</div>' +
+      '<div style="font-size:18px;font-weight:700;color:#fff;margin-top:2px">' + gemKgSessie.toFixed(1) + ' kg</div></div>' +
+    '<div style="background:var(--card);border-radius:8px;padding:12px;text-align:center">' +
+      '<div style="font-size:11px;color:var(--muted)">Vis/uur</div>' +
+      '<div style="font-size:18px;font-weight:700;color:#fff;margin-top:2px">' + visPerUur + '</div></div>' +
+    '<div style="background:var(--card);border-radius:8px;padding:12px;text-align:center">' +
+      '<div style="font-size:11px;color:var(--muted)">Kg/uur</div>' +
+      '<div style="font-size:18px;font-weight:700;color:#fff;margin-top:2px">' + kgPerUur + '</div></div>' +
+    '<div style="background:var(--card);border-radius:8px;padding:12px;text-align:center">' +
+      '<div style="font-size:11px;color:var(--muted)">Totaal tijd</div>' +
+      '<div style="font-size:18px;font-weight:700;color:#fff;margin-top:2px">' + fmtTime(total.tijdMin) + '</div></div>' +
   '</div>';
 
   el.innerHTML = html;

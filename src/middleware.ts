@@ -88,6 +88,13 @@ export const onRequest = defineMiddleware(async (context, next) => {
     if (!openPaths.includes(url.pathname)) {
       const token = cookies.get('admin_token');
       if (!token || token.value !== ADMIN_KEY) {
+        // API endpoints → JSON 401, HTML pages → redirect naar login
+        if (url.pathname.startsWith('/admin/api/')) {
+          return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+            status: 401,
+            headers: { 'Content-Type': 'application/json' }
+          });
+        }
         return redirect('/admin/login');
       }
     }
