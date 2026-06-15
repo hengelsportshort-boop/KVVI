@@ -263,7 +263,13 @@ function laadDataJaar(jaar) {
 }
 
 function loadData() {
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch { return []; }
+  try {
+    var d = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    var changed = false;
+    d.forEach(function(item) { if (!item._id) { item._id = genId(); changed = true; } });
+    if (changed) localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
+    return d;
+  } catch { return []; }
 }
 function saveData(data) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));

@@ -224,14 +224,16 @@ function loadData() {
     if (!d.length) {
       try {
         var old = JSON.parse(localStorage.getItem(OLD_STORAGE_KEY)) || [];
-        if (old.length) { localStorage.setItem(STORAGE_KEY, JSON.stringify(old)); return old; }
+        if (old.length) { d = old; }
       } catch {}
-      var sd = window.__SERVER_VISSESSIES__;
-      if (sd && sd.length) {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(sd));
-        return sd;
+      if (!d.length) {
+        var sd = window.__SERVER_VISSESSIES__;
+        if (sd && sd.length) { d = sd; }
       }
     }
+    var changed = false;
+    d.forEach(function(item) { if (!item._id) { item._id = genId(); changed = true; } });
+    if (changed) localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
     return d;
   } catch { return []; }
 }
