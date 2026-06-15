@@ -150,8 +150,10 @@ tr.wedstrijd td { border-bottom-color: #facc15; }
 <div id="tab-data" class="panel show">
   <div class="flex mb-2">
     <span id="row-count" class="sub" style="margin:0;flex:1"></span>
+    <button id="btn-sync-server" class="btn btn-outline">📡 Sync van server</button>
     <button id="btn-add" class="btn btn-outline">➕ Nieuw</button>
   </div>
+  <div id="sync-status" style="font-size:12px;margin-bottom:8px;font-weight:600;min-height:20px"></div>
   <div id="add-form" class="hidden" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:12px;margin-bottom:12px">
     <div class="sub mb-2" style="font-weight:700">Nieuwe sessie</div>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:6px">
@@ -1308,28 +1310,60 @@ document.querySelector('.tab[data-tab="stats"]').addEventListener('click', () =>
   if (parseInt(sel.value) !== actief) sel.value = actief;
 });
 
-async function initFromAPI() {
+function syncStatus(msg, isError) {
+  var el = document.getElementById('sync-status');
+  if (!el) return;
+  el.textContent = msg;
+  el.style.color = isError ? '#dc2626' : '#166534';
+}
+async function syncFromServer() {
+  syncStatus('🔄 Data ophalen van server...');
   try {
     const res = await fetch(API_URL, { credentials: 'include' });
-    if (res.ok) {
-      const serverData = await res.json();
-      if (Array.isArray(serverData) && serverData.length > 0) {
-        var merged = loadData().slice();
-        var seen = new Set(merged.map(function(r) { return r.stek + '|' + r.datum; }));
-        for (var i = 0; i < serverData.length; i++) {
-          var key = serverData[i].stek + '|' + serverData[i].datum;
-          if (!seen.has(key)) {
-            merged.push(serverData[i]);
-          }
+    if (!res.ok) throw new Error('Serverfout ' + res.status);
+    const serverData = await res.json();
+    if (!Array.isArray(serverData) || !serverData.length) { syncStatus('ℹ️ Geen data op server'); return; }
+    var local = loadData();
+    var added = 0, merged = 0;
+    serverData.forEach(function(entry) {
+      if (!entry.stek || !entry.datum) return;
+      var stekNorm = entry.stek.replace(/\s+/g, ' ').trim();
+      var datumNorm = entry.datum.trim();
+      var existing = -1;
+      for (var i = 0; i < local.length; i++) {
+        if ((local[i].stek || '').replace(/\s+/g, ' ').trim() === stekNorm && (local[i].datum || '').trim() === datumNorm) {
+          existing = i; break;
         }
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
-        render();
       }
+      if (existing >= 0) {
+        var loc = local[existing];
+        var hasFullLocal = loc.begin && loc.begin.trim() && loc.einde && loc.einde.trim();
+        if (!hasFullLocal || (!loc.begin && !loc.einde)) {
+          local[existing] = Object.assign({}, loc, entry, { stek: stekNorm, datum: datumNorm });
+          merged++;
+        }
+      } else {
+        local.push(Object.assign({}, entry, { stek: stekNorm, datum: datumNorm }));
+        added++;
+      }
+    });
+    if (added || merged) {
+      sortData(local);
+      saveData(local);
+      render();
+      syncStatus('✅ ' + added + ' toegevoegd, ' + merged + ' bijgewerkt van server');
+      showToast('📡 ' + added + ' sessies gesynced van server');
+    } else {
+      syncStatus('ℹ️ Alle data is al actueel');
     }
-  } catch {}
+  } catch (e) {
+    syncStatus('❌ ' + e.message, true);
+  }
 }
+
+document.getElementById('btn-sync-server').addEventListener('click', syncFromServer);
 
 initJaarSelector();
 render();
-initFromAPI();
+syncFromServer();
 </script>
