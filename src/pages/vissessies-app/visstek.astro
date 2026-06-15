@@ -487,5 +487,9 @@ document.getElementById('vs-stek').addEventListener('input', renderVisstekList);
   el.addEventListener('input', updateVsDuur);
 });
 
+window.addEventListener('storage', function(e) {
+  if (e.key === STORAGE_KEY) renderVisstekList();
+});
+
 renderVisstekList();
 </script>

@@ -983,6 +983,25 @@ body {
   updateResults();
   updateScreenUI();
   if (state.screenActive) requestWakeLock();
+
+  window.addEventListener('storage', function(e) {
+    if (e.key === STORAGE_KEY) {
+      saved = loadData();
+      if (saved) {
+        state.interval = saved.interval || state.interval;
+        state.pingCount = saved.pingCount || state.pingCount;
+        state.soundEnabled = saved.soundEnabled !== undefined ? saved.soundEnabled : state.soundEnabled;
+        state.locationName = saved.locationName || state.locationName;
+        state.date = saved.date || state.date;
+        state.results = saved.results || state.results;
+        state.fishCounts = saved.fishCounts || state.fishCounts;
+        updateDisplay();
+        updateIntervalUI();
+        updatePingUI();
+        updateResults();
+      }
+    }
+  });
 })();
 </script>
 </body>
