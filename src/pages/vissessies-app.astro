@@ -1218,37 +1218,13 @@ document.getElementById('btn-sync-server').addEventListener('click', async () =>
       syncStatus('ℹ️ Geen data op server');
       return;
     }
-    let local = loadData();
-    let added = 0, merged = 0;
-    for (const entry of serverData) {
-      if (!entry.stek || !entry.datum) continue;
-      const stekNorm = entry.stek.replace(/\s+/g, ' ').trim();
-      const datumNorm = entry.datum.trim();
-      const existing = local.findIndex(e =>
-        (e.stek || '').replace(/\s+/g, ' ').trim() === stekNorm &&
-        (e.datum || '').trim() === datumNorm
-      );
-      if (existing >= 0) {
-        const loc = local[existing];
-        const hasFullLocal = loc.begin && loc.begin.trim() && loc.einde && loc.einde.trim();
-        if (!hasFullLocal || (!loc.begin && !loc.einde)) {
-          local[existing] = { ...loc, ...entry, stek: stekNorm, datum: datumNorm };
-          merged++;
-        }
-      } else {
-        local.push({ ...entry, stek: stekNorm, datum: datumNorm });
-        added++;
-      }
-    }
-    if (added || merged) {
-      sortData(local);
-      saveData(local);
-      render();
-      syncStatus('✅ ' + added + ' toegevoegd, ' + merged + ' bijgewerkt van server');
-      showToast('📡 ' + added + ' sessies gesynced van server');
-    } else {
-      syncStatus('ℹ️ Alle data is al actueel');
-    }
+    var local = loadData();
+    var before = local.length;
+    sortData(serverData);
+    saveData(serverData);
+    render();
+    syncStatus('✅ Vervangen door server data (' + serverData.length + ' sessies)');
+    showToast('📡 Data vervangen van server');
   } catch (e) {
     syncStatus('❌ ' + e.message, true);
   }

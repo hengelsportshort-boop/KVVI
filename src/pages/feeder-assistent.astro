@@ -43,6 +43,7 @@ body {
 }
 .header-title { font-size: 15px; font-weight: 800; color: #fff; }
 .header-help { font-size: 20px; text-decoration: none; cursor: pointer; }
+.fish-summary { font-size: 12px; font-weight: 700; color: var(--muted); }
 .header { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
 .location-input {
   border: 2px solid var(--border); border-radius: 8px;
@@ -158,15 +159,6 @@ body {
 .result-item .r-time { margin-left: auto; font-variant-numeric: tabular-nums; color: #fff; font-weight: 900; letter-spacing: 0; }
 .results-empty { text-align: center; color: var(--muted); font-size: 12px; padding: 8px; font-style: italic; }
 
-/* Screen / Battery */
-.screen-row { display: flex; gap: 6px; flex-shrink: 0; }
-.screen-opt {
-  flex: 1; padding: 10px; border-radius: 10px; border: 3px solid var(--border);
-  background: #1e293b; font-size: 13px; font-weight: 800; color: var(--muted);
-  cursor: pointer; -webkit-appearance: none; transition: all 0.12s;
-}
-.screen-opt.active { border-color: #60a5fa; background: #1e3a8a; color: #93c5fd; }
-.screen-opt:active { transform: scale(0.95); }
 
 /* Flash overlay */
 .flash { position: fixed; inset: 0; z-index: 999; pointer-events: none; opacity: 0; transition: opacity 0.12s; }
@@ -234,7 +226,10 @@ body {
 <div id="app">
   <div class="header-bar">
     <span class="header-title">Feeder Assistent</span>
-    <a href="/feeder-assistent-help" class="header-help" aria-label="Help">❓</a>
+    <span style="display:flex;align-items:center;gap:6px">
+      <span id="fish-summary" class="fish-summary"></span>
+      <a href="/feeder-assistent-help" class="header-help" aria-label="Help">❓</a>
+    </span>
   </div>
   <div class="header">
     <input type="text" id="location-name" class="location-input" placeholder="Visstek" maxlength="4" autocomplete="off" style="flex:1">
@@ -314,13 +309,6 @@ body {
       <div><div class="setting-label">Geluid</div></div>
       <label class="toggle"><input type="checkbox" id="sound-toggle" checked><span class="toggle-slider"></span></label>
     </div>
-    <div class="setting-row">
-      <div><div class="setting-label">Scherm</div></div>
-      <div class="screen-row">
-        <button class="screen-opt active" id="screen-active">📱 Actief</button>
-        <button class="screen-opt" id="screen-save">🔋 Sparen</button>
-      </div>
-    </div>
     <button class="danger-btn" id="end-session" style="border-color:#fbbf24;color:#fbbf24;margin-top:8px">✅ Vissessie beëindigen</button>
     <button class="danger-btn" id="clear-results">Wis alle resultaten</button>
   </div>
@@ -386,8 +374,6 @@ body {
     fishCounts: (saved && saved.fishCounts) || { kroes:0, schub:0, spiegel:0, ander:0 },
     showFishChoices: false,
     sessionStart: null,
-    wakeLock: null,
-    screenActive: true,
     _interval: null,
     _hiddenAt: null
   };
@@ -464,6 +450,21 @@ body {
     }).join('');
     html += '<div class="result-item" style="border-color:#fbbf24;font-size:13px"><span style="color:#fff">⬡</span><span style="flex:1;font-weight:600;color:#fff">Gem.</span><span class="r-time" style="font-weight:900;color:#fff">' + fmtAvg(avgSec) + '</span></div>';
     resultsList.innerHTML = html;
+    updateFishSummary();
+  }
+
+  function updateFishSummary() {
+    var el = document.getElementById('fish-summary');
+    if (!el) return;
+    var k = state.fishCounts.kroes || 0;
+    var s = state.fishCounts.schub || 0;
+    var p = state.fishCounts.spiegel || 0;
+    var a = state.fishCounts.ander || 0;
+    var total = k + s + p + a;
+    if (total === 0) { el.textContent = ''; return; }
+    var weight = k * 300 + s * 1500 + p * 1600 + a * 100;
+    var w = weight >= 1000 ? (weight / 1000).toFixed(1) + ' kg' : weight + ' g';
+    el.textContent = total + ' v \u00b7 ' + w;
   }
 
   function escapeHtml(s) {
@@ -486,11 +487,6 @@ body {
     document.querySelectorAll('.ping-btn').forEach(function(b) {
       b.classList.toggle('active', parseInt(b.dataset.count) === state.pingCount);
     });
-  }
-
-  function updateScreenUI() {
-    document.getElementById('screen-active').classList.toggle('active', state.screenActive);
-    document.getElementById('screen-save').classList.toggle('active', !state.screenActive);
   }
 
   function tick() {
@@ -866,47 +862,6 @@ body {
     showToast('✅ ' + msg);
   });
 
-  // Screen / Battery
-  document.getElementById('screen-active').addEventListener('click', function() {
-    state.screenActive = true;
-    updateScreenUI();
-    requestWakeLock();
-  });
-
-  document.getElementById('screen-save').addEventListener('click', function() {
-    state.screenActive = false;
-    updateScreenUI();
-    releaseWakeLock();
-  });
-
-  // Wake lock
-  function requestWakeLock() {
-    if ('wakeLock' in navigator) {
-      navigator.wakeLock.request('screen').then(function(lock) {
-        state.wakeLock = lock;
-        document.getElementById('screen-active').classList.add('active');
-        document.getElementById('screen-save').classList.remove('active');
-        state.screenActive = true;
-        lock.addEventListener('release', function() {
-          state.wakeLock = null;
-        });
-      }).catch(function() {});
-    }
-  }
-
-  function releaseWakeLock() {
-    if (state.wakeLock) {
-      state.wakeLock.release();
-      state.wakeLock = null;
-    }
-  }
-
-  document.addEventListener('visibilitychange', function() {
-    if (!document.hidden && state.screenActive && !state.wakeLock) {
-      requestWakeLock();
-    }
-  });
-
   // Handle page visibility for timer accuracy
   document.addEventListener('visibilitychange', function() {
     if (document.hidden) {
@@ -976,9 +931,6 @@ body {
   updateIntervalUI();
   updatePingUI();
   updateResults();
-  updateScreenUI();
-  if (state.screenActive) requestWakeLock();
-
   window.addEventListener('storage', function(e) {
     if (e.key === STORAGE_KEY) {
       saved = loadData();
