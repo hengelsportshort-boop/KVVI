@@ -226,10 +226,6 @@ function loadData() {
         var old = JSON.parse(localStorage.getItem(OLD_STORAGE_KEY)) || [];
         if (old.length) { d = old; }
       } catch {}
-      if (!d.length) {
-        var sd = window.__SERVER_VISSESSIES__;
-        if (sd && sd.length) { d = sd; }
-      }
     }
     var changed = false;
     d.forEach(function(item) { if (!item._id) { item._id = genId(); changed = true; } });
@@ -239,18 +235,6 @@ function loadData() {
 }
 function saveData(data) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  trySyncToServer(data);
-}
-
-function trySyncToServer(data) {
-  fetch('/admin/api/vissessies', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    credentials: 'include',
-    body: JSON.stringify(data)
-  }).then(function(r) {
-    if (r.ok) showToast('📡 Gesynced naar admin');
-  }).catch(function(){});
 }
 
 function parseTime(t) {
@@ -1261,33 +1245,5 @@ document.addEventListener('visibilitychange', function() {
 
 initJaarSelector();
 render();
-var localData = loadData();
-if (localData.length) { trySyncToServer(localData); }
-fetch(SYNC_API).then(function(r) {
-  if (!r.ok) return;
-  r.json().then(function(serverData) {
-    if (!Array.isArray(serverData) || !serverData.length) return;
-    var local = loadData();
-    var changed = false;
-    serverData.forEach(function(entry) {
-      if (!entry.stek || !entry.datum) return;
-      var stekNorm = entry.stek.replace(/\s+/g, ' ').trim();
-      var datumNorm = entry.datum.trim();
-      var existing = local.findIndex(function(e) {
-        return (e.stek || '').replace(/\s+/g, ' ').trim() === stekNorm && (e.datum || '').trim() === datumNorm;
-      });
-      if (existing >= 0) {
-        var loc = local[existing];
-        if (!loc.begin || !loc.begin.trim()) {
-          local[existing] = Object.assign({}, loc, entry);
-          changed = true;
-        }
-      } else {
-        local.push(Object.assign({}, entry, { stek: stekNorm, datum: datumNorm }));
-        changed = true;
-      }
-    });
-    if (changed) { sortData(local); saveData(local); render(); }
-  });
-}).catch(function(){});
+// Publieke app: alleen lokale data, geen sync met server
 </script>
