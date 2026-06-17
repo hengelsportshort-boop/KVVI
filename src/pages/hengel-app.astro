@@ -774,8 +774,8 @@ td { padding: 4px; border-bottom: 1px solid #0f172a; vertical-align: top; text-a
       var stek = document.getElementById('i-stek').value.trim().toLowerCase();
       var el = document.getElementById('i-list');
       var data = loadData();
-      if (!stek) { el.innerHTML = '<p class="d-empty">Voer een stek in om eerdere sessies te zien.</p>'; return; }
-      var filtered = data.filter(function(r) { return r.stek && r.stek.toLowerCase() === stek; });
+      if (!data.length) { el.innerHTML = '<p class="d-empty">Nog geen sessies.</p>'; return; }
+      var filtered = stek ? data.filter(function(r) { return r.stek && r.stek.toLowerCase() === stek; }) : data;
       if (!filtered.length) { el.innerHTML = '<p class="d-empty">Geen sessies voor deze stek.</p>'; return; }
       var computed = filtered.map(function(r) {
         var duurMin = r.duurMin || calcDuur(r.begin, r.einde) || 0;
