@@ -645,7 +645,7 @@ body {
       }
       var data = JSON.parse(localStorage.getItem(key)) || [];
       var stek = (state.locationName || '--').replace(/\s+/g, ' ').trim();
-      var datum = state.date || '--/--';
+      var datum = state.date || (function(){var d=new Date();return ('0'+d.getDate()).slice(-2)+'/'+('0'+(d.getMonth()+1)).slice(-2);})();
       var idx = -1;
       for (var i = 0; i < data.length; i++) {
         if (data[i].stek === stek && data[i].datum === datum) { idx = i; break; }
