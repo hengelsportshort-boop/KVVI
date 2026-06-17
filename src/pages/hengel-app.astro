@@ -206,7 +206,7 @@ td { padding: 4px; border-bottom: 1px solid #0f172a; vertical-align: top; text-a
 <div id="app">
   <nav class="tab-bar">
     <button class="tab-btn active" data-tab="feeder">⏱️ Feeder</button>
-    <button class="tab-btn" data-tab="invoer">📝 (Vaste) hengel</button>
+    <button class="tab-btn" data-tab="invoer">📝 Hengel</button>
     <button class="tab-btn" data-tab="data">📊 Data</button>
     <span class="tab-bar-right">
       <span id="fish-summary" class="fish-summary"></span>
@@ -961,8 +961,11 @@ td { padding: 4px; border-bottom: 1px solid #0f172a; vertical-align: top; text-a
         html += '<tr class="subtotal"><td>Subtotaal</td><td class="num">'+(mKroes||'')+'</td><td class="num">'+(mSchub||'')+'</td><td class="num">'+(mSpiegel||'')+'</td><td class="num">'+(mAnder||'')+'</td><td class="num">'+mAantal+'</td><td class="num">'+fmtGewicht(mGewicht)+'</td><td></td><td></td><td></td><td class="num">'+fmtTime(mTijd)+'</td><td></td><td></td><td></td><td class="num">'+fmtEenheid(mTijd)+'</td><td class="num">'+fmtDecimal(mGrMin)+'</td><td class="num">'+fmtDecimal(mGrMin*240)+'</td><td></td><td></td></tr>';
         html += '</tbody></table></div></div>';
       }
-      var grandGrMin = grandTijd > 0 ? grandGewicht / grandTijd : 0;
-      html += '<div class="d-grand"><table><tr><td>TOTAAL</td><td class="num">'+(grandKroes||'')+'</td><td class="num">'+(grandSchub||'')+'</td><td class="num">'+(grandSpiegel||'')+'</td><td class="num">'+(grandAnder||'')+'</td><td class="num">'+grandAantal+'</td><td class="num">'+fmtGewicht(grandGewicht)+'</td><td>'+data.length+' sessies</td><td></td><td></td><td class="num">'+fmtTime(grandTijd)+'</td><td></td><td></td><td></td><td class="num">'+fmtEenheid(grandTijd)+'</td><td class="num">'+fmtDecimal(grandGrMin)+'</td><td class="num">'+fmtDecimal(grandGrMin*240)+'</td><td></td><td></td></tr></table></div>';
+      if (monthOrder.length > 0) {
+        var grandGrMin = grandTijd > 0 ? grandGewicht / grandTijd : 0;
+        var grandRow = '<tr class="d-grand"><td>TOTAAL</td><td class="num">'+(grandKroes||'')+'</td><td class="num">'+(grandSchub||'')+'</td><td class="num">'+(grandSpiegel||'')+'</td><td class="num">'+(grandAnder||'')+'</td><td class="num">'+grandAantal+'</td><td class="num">'+fmtGewicht(grandGewicht)+'</td><td>'+data.length+' sessies</td><td></td><td></td><td class="num">'+fmtTime(grandTijd)+'</td><td></td><td></td><td></td><td class="num">'+fmtEenheid(grandTijd)+'</td><td class="num">'+fmtDecimal(grandGrMin)+'</td><td class="num">'+fmtDecimal(grandGrMin*240)+'</td><td></td><td></td></tr>';
+        html = html.slice(0, html.lastIndexOf('</tbody></table></div></div>')) + grandRow + html.slice(html.lastIndexOf('</tbody></table></div></div>'));
+      }
       container.innerHTML = html;
 
       // wedstrijd toggle
