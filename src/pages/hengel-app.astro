@@ -1,0 +1,1063 @@
+---
+export const prerender = false;
+import fs from 'node:fs';
+import path from 'node:path';
+const DATA_PATH = path.resolve('./public/data/vissessies.json');
+let serverData = [];
+try { serverData = JSON.parse(fs.readFileSync(DATA_PATH, 'utf-8')); } catch {}
+---
+
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Hengel App">
+<link rel="apple-touch-icon" href="/icons/AppIcoon.png">
+<link rel="manifest" href="/manifest-hengel.json">
+<title>Hengel App</title>
+<style is:inline>
+:root { --blue: #002244; --gold: #b8860b; --bg: #0f172a; --card: #1e293b; --text: #f1f5f9; --green: #22c55e; --blue-btn: #3b82f6; --red: #ef4444; --muted: #94a3b8; --border: #475569; --accent: #1e40af; --accent-light: #3b82f6; --danger: #ef4444; }
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; overflow: hidden; }
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+#app { height: 100vh; height: 100dvh; display: flex; flex-direction: column; max-width: 500px; margin: 0 auto; }
+.tab-content { display: none; flex: 1; flex-direction: column; min-height: 0; overflow-y: auto; padding: 6px 10px calc(4px + env(safe-area-inset-bottom)); gap: 4px; }
+.tab-content.active { display: flex; }
+
+/* Header */
+.app-header { display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; padding: 4px 10px 2px; }
+.app-title { font-size: 15px; font-weight: 800; color: #fff; }
+.app-header-right { display: flex; align-items: center; gap: 6px; }
+.fish-summary { font-size: 12px; font-weight: 700; color: var(--muted); }
+.help-link { font-size: 20px; text-decoration: none; cursor: pointer; }
+
+/* Tab bar */
+.tab-bar { display: flex; flex-shrink: 0; padding: 0 10px; gap: 4px; }
+.tab-btn { flex: 1; padding: 8px 4px; border-radius: 8px 8px 0 0; border: none; background: var(--card); color: var(--muted); font-size: 12px; font-weight: 800; cursor: pointer; -webkit-appearance: none; transition: all 0.12s; }
+.tab-btn.active { background: var(--bg); color: #fff; border-bottom: 2px solid var(--accent-light); }
+.tab-btn:active { background: #334155; }
+.location-input {
+  border: 2px solid var(--border); border-radius: 8px;
+  padding: 4px 6px; font-size: 12px; font-weight: 700;
+  background: #0f172a; color: #fff;
+  outline: none; -webkit-appearance: none; width: 0; min-width: 0;
+}
+.location-input:focus { border-color: #60a5fa; }
+.icon-btn { width: 32px; height: 32px; border-radius: 8px; background: #1e293b; border: 2px solid var(--border); font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; -webkit-appearance: none; }
+.icon-btn:active { background: #334155; }
+
+/* Feeder tab */
+.timer-section { background: #0f172a; border-radius: 12px; border: 2px solid var(--border); padding: 6px 12px; flex-shrink: 0; }
+.timer-section.compact { padding: 5px 12px; }
+.timer-value { font-weight: 900; font-variant-numeric: tabular-nums; letter-spacing: -1px; color: #60a5fa; line-height: 1; text-align: center; text-shadow: 0 0 12px rgba(96,165,250,0.3); }
+.timer-value.f-stopwatch { font-size: clamp(2.8rem, 13vw, 4.5rem); }
+.timer-value.f-voertimer { font-size: clamp(1.8rem, 8vw, 2.8rem); }
+.f-status-line { text-align: center; font-size: 12px; font-weight: 700; color: var(--muted); margin-top: 2px; min-height: 16px; }
+.f-status-line.result-vis { color: #60a5fa; }
+.f-status-line.result-misser { color: #f87171; }
+.f-status-line.feed { color: #fbbf24; }
+.f-status-line.worp { color: #4ade80; }
+.f-sub-label { text-align: center; font-size: 11px; color: var(--muted); font-weight: 600; margin-top: 1px; }
+.f-sub-label span { font-weight: 800; color: #fff; }
+.f-ctrl-row { display: flex; gap: 6px; margin-top: 4px; }
+.f-ctrl-btn { flex: 1; padding: 4px; border: 2px solid var(--border); border-radius: 8px; background: #1e293b; font-size: 12px; font-weight: 800; color: #fff; cursor: pointer; -webkit-appearance: none; transition: all 0.12s; }
+.f-ctrl-btn:active { transform: scale(0.96); background: #334155; }
+.f-ctrl-btn.ctrl-primary { background: #1e40af; color: #fff; border-color: #3b82f6; }
+.f-ctrl-btn.ctrl-primary:active { background: #1e3a8a; }
+.f-ctrl-btn.ctrl-primary.running { background: #991b1b; border-color: #ef4444; }
+.f-ctrl-btn.ctrl-primary.running:active { background: #7f1d1d; }
+.f-inline-settings { background: #0f172a; border-radius: 10px; border: 2px solid var(--border); padding: 5px 8px; flex-shrink: 0; }
+.f-inline-row { display: flex; align-items: center; gap: 6px; }
+.f-inline-row + .f-inline-row { margin-top: 4px; }
+.f-inline-label { font-size: 11px; font-weight: 700; color: var(--muted); min-width: 42px; flex-shrink: 0; }
+.f-interval-group { display: flex; gap: 4px; flex: 1; }
+.f-interval-btn { flex: 1; padding: 6px 0; border-radius: 7px; border: 2px solid var(--border); background: #1e293b; font-size: 13px; font-weight: 800; cursor: pointer; -webkit-appearance: none; color: #fff; text-align: center; transition: all 0.12s; }
+.f-interval-btn.active { border-color: #60a5fa; background: #1e3a8a; color: #93c5fd; }
+.f-interval-btn:active { transform: scale(0.95); }
+.f-ping-group { display: flex; gap: 4px; }
+.f-ping-btn { padding: 5px 10px; border-radius: 7px; border: 2px solid var(--border); background: #1e293b; font-size: 11px; font-weight: 700; cursor: pointer; -webkit-appearance: none; color: #fff; transition: all 0.12s; }
+.f-ping-btn.active { border-color: #fbbf24; background: #78350f; color: #fde68a; }
+.f-ping-btn:active { transform: scale(0.95); }
+.f-actions { display: flex; flex-direction: column; gap: 4px; flex-shrink: 0; }
+.f-action-row { display: flex; gap: 4px; }
+.f-action-btn { flex: 1; padding: 14px 10px; border: none; border-radius: 10px; font-size: clamp(1.05rem, 4.5vw, 1.25rem); font-weight: 900; color: #fff; cursor: pointer; -webkit-appearance: none; transition: transform 0.1s; box-shadow: 0 3px 8px rgba(0,0,0,0.3); letter-spacing: 1px; min-height: 60px; display: flex; align-items: center; justify-content: center; }
+.f-action-btn:active { transform: scale(0.96); }
+.f-action-btn.green { background: #15803d; }
+.f-action-btn.blue { background: #1d4ed8; }
+.f-action-btn.red { background: #b91c1c; }
+.f-action-btn.gray { background: #475569; }
+.f-action-btn.fish-btn { background: #0e7490; }
+.f-results-section { flex: 1; overflow-y: auto; min-height: 0; }
+.f-results-header { font-size: 11px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
+.f-results-list { display: flex; flex-direction: column; gap: 2px; min-height: 0; }
+.f-result-item { display: flex; align-items: center; gap: 6px; padding: 4px 8px; background: #0f172a; border-radius: 6px; font-size: 13px; font-weight: 800; border: 1px solid var(--border); }
+.f-result-item .r-type { min-width: 22px; font-size: 12px; }
+.f-result-item .r-type.vis { color: #60a5fa; }
+.f-result-item .r-type.misser { color: #f87171; }
+.f-result-item .r-type.kroes { color: #22d3ee; }
+.f-result-item .r-type.schub { color: #22d3ee; }
+.f-result-item .r-type.spiegel { color: #22d3ee; }
+.f-result-item .r-type.ander { color: #22d3ee; }
+.f-result-item .r-time { margin-left: auto; font-variant-numeric: tabular-nums; color: #fff; font-weight: 900; letter-spacing: 0; }
+.f-results-empty { text-align: center; color: var(--muted); font-size: 12px; padding: 8px; font-style: italic; }
+.f-sync-debug { font-size: 10px; color: var(--muted); text-align: center; flex-shrink: 0; min-height: 14px; }
+
+/* Flash overlay */
+.flash { position: fixed; inset: 0; z-index: 999; pointer-events: none; opacity: 0; transition: opacity 0.12s; }
+.flash.show { opacity: 1; }
+.flash.green { background: rgba(34,197,94,0.25); }
+.flash.blue { background: rgba(59,130,246,0.25); }
+.flash.red { background: rgba(239,68,68,0.25); }
+.flash.gold { background: rgba(251,191,36,0.25); }
+
+/* Settings overlay */
+.overlay { position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,0.6); display: none; align-items: flex-end; justify-content: center; padding: env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left); }
+.overlay.show { display: flex; }
+.overlay-panel { background: #1e293b; width: 100%; max-width: 420px; border-radius: 20px 20px 0 0; padding: 24px 20px calc(24px + env(safe-area-inset-bottom)); max-height: 80vh; overflow-y: auto; animation: slide-up 0.25s ease; }
+@keyframes slide-up { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.overlay-h { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.overlay-h h2 { font-size: 18px; font-weight: 800; color: #fff; }
+.close-btn { width: 36px; height: 36px; border: none; border-radius: 10px; background: #334155; font-size: 18px; cursor: pointer; -webkit-appearance: none; color: #fff; }
+.setting-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid #334155; }
+.setting-row:last-child { border-bottom: none; }
+.setting-label { font-size: 15px; font-weight: 700; color: #fff; }
+.setting-desc { font-size: 12px; color: var(--muted); margin-top: 1px; }
+.danger-btn { padding: 12px 20px; border-radius: 12px; border: 3px solid var(--red); background: #1e293b; color: #f87171; font-size: 15px; font-weight: 800; cursor: pointer; -webkit-appearance: none; width: 100%; margin-top: 12px; }
+.danger-btn:active { background: #334155; }
+.toggle { position: relative; width: 48px; height: 28px; flex-shrink: 0; }
+.toggle input { display: none; }
+.toggle-slider { position: absolute; inset: 0; background: #475569; border-radius: 14px; cursor: pointer; transition: background 0.2s; }
+.toggle-slider::after { content: ''; position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; border-radius: 50%; background: #fff; transition: transform 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+.toggle input:checked + .toggle-slider { background: #2563eb; }
+.toggle input:checked + .toggle-slider::after { transform: translateX(20px); }
+
+/* Toast */
+#toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); padding: 10px 22px; border-radius: 12px; background: #1e293b; color: #fff; font-weight: 700; font-size: 14px; opacity: 0; transition: opacity 0.25s; z-index: 999; pointer-events: none; white-space: nowrap; border: 2px solid var(--border); box-shadow: 0 4px 16px rgba(0,0,0,0.4); }
+#toast.show { opacity: 1; }
+
+/* Invoer tab */
+.i-header { height: 40px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+.i-card { background: var(--card); border: 2px solid var(--border); border-radius: 12px; padding: 14px 16px; margin-bottom: 12px; }
+.i-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+.i-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-bottom: 8px; }
+.i-stepper { display: flex; gap: 4px; align-items: center; justify-content: center; margin-top: 4px; }
+.i-btn { width: 44px; height: 40px; border: 2px solid var(--border); border-radius: 8px; background: var(--card); font-size: 22px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text); -webkit-appearance: none; user-select: none; touch-action: manipulation; }
+.i-btn:active { background: #334155; }
+.i-fish-input { width: 100%; padding: 14px 4px; border: 2px solid var(--border); border-radius: 10px; font-size: 28px; font-weight: 700; text-align: center; background: #0f172a; color: #fff; -webkit-appearance: none; }
+.i-input-text { display: block; width: 100%; padding: 12px; border: 2px solid var(--border); border-radius: 10px; font-size: 18px; font-weight: 600; background: #0f172a; color: #fff; -webkit-appearance: none; }
+.i-input-text::placeholder { color: var(--muted); font-weight: 400; }
+.i-label { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+.i-hint { text-align: center; font-size: 13px; font-weight: 700; color: var(--accent-light); margin-top: 2px; min-height: 18px; }
+.i-fish-box { border: 2px solid var(--border); border-radius: 10px; padding: 8px 6px 6px; background: var(--card); }
+.i-stat { padding: 10px 12px; border-radius: 10px; font-size: 24px; font-weight: 700; text-align: center; border: 2px solid var(--border); background: #0f172a; }
+.i-save-btn { padding: 16px 24px; font-size: 20px; width: 100%; -webkit-appearance: none; margin-top: 6px; border-radius: 12px; font-weight: 700; border: none; background: var(--accent); color: #fff; cursor: pointer; }
+.i-save-btn:active { transform: scale(0.96); }
+.i-list { overflow-x: auto; -webkit-overflow-scrolling: touch; min-height: 0; flex: 1; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+th { background: #0f172a; padding: 6px 4px; text-align: center !important; font-size: 11px; text-transform: uppercase; color: var(--muted); border-bottom: 2px solid var(--border); white-space: nowrap; }
+td { padding: 4px; border-bottom: 1px solid #0f172a; vertical-align: top; text-align: center !important; color: var(--text); }
+.num { font-family: monospace; }
+.subtotal { background: #0f172a; font-weight: 700; }
+.subtotal td { border-top: 2px solid var(--muted); padding-top: 6px; }
+@media (max-width: 768px) { .i-grid { gap: 4px; } .i-btn { width: 40px; height: 38px; font-size: 20px; } .i-fish-input { font-size: 26px; padding: 12px 4px; } .i-input-text { padding: 10px; font-size: 17px; } .i-pair { gap: 6px; } .i-stat { font-size: 22px; padding: 8px 10px; } }
+
+/* Data tab */
+.d-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-shrink: 0; }
+.d-year-select { padding: 4px 8px; border: 2px solid var(--border); border-radius: 8px; font-size: 14px; font-weight: 600; background: #0f172a; color: #fff; }
+.d-tabs { display: flex; gap: 6px; margin-bottom: 8px; flex-shrink: 0; }
+.d-tab { padding: 6px 14px; border-radius: 8px; font-weight: 600; font-size: 12px; border: 2px solid var(--border); background: var(--card); cursor: pointer; color: var(--text); -webkit-appearance: none; }
+.d-tab.active { background: var(--accent); color: #fff; border-color: var(--accent-light); }
+.d-tab.danger { color: var(--danger); border-color: #7f1d1d; }
+.d-panel { display: none; flex-direction: column; flex: 1; min-height: 0; }
+.d-panel.show { display: flex; }
+.d-table-wrap { overflow-x: auto; flex: 1; min-height: 0; }
+.d-table-wrap table { min-width: 800px; }
+.d-empty { text-align: center; color: var(--muted); padding: 40px; font-style: italic; }
+.d-month-group { margin-bottom: 12px; }
+.d-month-header { background: var(--accent); color: #fff; padding: 6px 10px; border-radius: 6px 6px 0 0; font-weight: 700; font-size: 13px; display: flex; justify-content: space-between; cursor: pointer; user-select: none; }
+.d-month-header:hover { background: #1e3a8a; }
+.d-month-body { overflow-x: auto; }
+.d-month-body.collapsed { display: none; }
+.d-grand { background: var(--accent); color: #fff; font-weight: 700; }
+.d-grand td { padding: 8px 4px; }
+.d-sub { color: var(--muted); font-size: 13px; }
+.d-stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; margin-bottom: 12px; }
+.d-stat-card { background: var(--card); border: 2px solid var(--border); border-radius: 12px; padding: 12px; text-align: center; }
+.d-stat-val { font-size: 24px; font-weight: 900; color: #fff; }
+.d-stat-label { font-size: 11px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+.d-beheer-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.d-beheer-btn { padding: 8px 18px; border-radius: 8px; font-weight: 600; font-size: 13px; border: 2px solid var(--border); cursor: pointer; -webkit-appearance: none; background: var(--card); color: var(--text); }
+.d-beheer-btn.danger { background: #991b1b; color: #fff; border-color: var(--danger); }
+.d-beheer-btn.primary { background: var(--accent); color: #fff; border-color: var(--accent-light); }
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="app-header">
+    <span class="app-title">🎣 Hengel App</span>
+    <span class="app-header-right">
+      <span id="fish-summary" class="fish-summary"></span>
+      <a href="/feeder-assistent-help" class="help-link">❓</a>
+    </span>
+  </div>
+  <nav class="tab-bar">
+    <button class="tab-btn active" data-tab="feeder">⏱️ Feeder</button>
+    <button class="tab-btn" data-tab="invoer">📝 Invoer</button>
+    <button class="tab-btn" data-tab="data">📊 Data</button>
+  </nav>
+
+  <!-- FEEDER TAB -->
+  <div id="tab-feeder" class="tab-content active">
+    <div class="header" style="display:flex;align-items:center;gap:4px;flex-shrink:0">
+      <input type="text" id="f-location" class="location-input" placeholder="Visstek" maxlength="4" autocomplete="off" style="flex:1">
+      <input type="text" id="f-date" class="location-input" placeholder="Datum" maxlength="5" inputmode="numeric" autocomplete="off" style="flex:0.45;text-align:center">
+      <button class="icon-btn" id="f-settings-btn" aria-label="Instellingen">⚙️</button>
+    </div>
+    <div class="timer-section">
+      <div class="timer-value f-stopwatch" id="f-stopwatch">00:00</div>
+      <div class="f-status-line" id="f-status">Worp → Resultaat</div>
+      <div class="f-ctrl-row">
+        <button class="f-ctrl-btn" id="f-sw-reset">Reset</button>
+        <button class="f-ctrl-btn ctrl-primary" id="f-sw-toggle">Start</button>
+      </div>
+    </div>
+    <div class="timer-section compact">
+      <div class="timer-value f-voertimer" id="f-voertimer">05:00</div>
+      <div class="f-sub-label">Ingesteld: <span id="f-interval-label">5</span> min</div>
+      <div class="f-ctrl-row">
+        <button class="f-ctrl-btn" id="f-ft-reset">Reset</button>
+        <button class="f-ctrl-btn ctrl-primary" id="f-ft-toggle">Start</button>
+      </div>
+    </div>
+    <div class="f-inline-settings">
+      <div class="f-inline-row">
+        <span class="f-inline-label">Interval:</span>
+        <div class="f-interval-group">
+          <button class="f-interval-btn" data-min="3">3</button>
+          <button class="f-interval-btn active" data-min="5">5</button>
+          <button class="f-interval-btn" data-min="8">8</button>
+        </div>
+        <div class="f-ping-group">
+          <button class="f-ping-btn active" data-count="1">1x 🔔</button>
+          <button class="f-ping-btn" data-count="2">2x 🔔</button>
+        </div>
+      </div>
+    </div>
+    <div class="f-actions">
+      <div class="f-action-row">
+        <button class="f-action-btn green" id="f-worp">🟢 WORP</button>
+        <button class="f-action-btn gray" id="f-hervoer">🔄 Opnieuw voeren</button>
+      </div>
+      <div class="f-action-row" id="f-vis-row">
+        <button class="f-action-btn blue" id="f-vis">🔵 VIS BINNEN</button>
+        <div id="f-fish-choices" style="display:none;flex:1;gap:4px">
+          <button class="f-action-btn fish-btn" data-fish="kroes">KR</button>
+          <button class="f-action-btn fish-btn" data-fish="schub">SC</button>
+          <button class="f-action-btn fish-btn" data-fish="spiegel">SP</button>
+          <button class="f-action-btn fish-btn" data-fish="ander">AN</button>
+        </div>
+      </div>
+      <div class="f-action-row"><button class="f-action-btn red" id="f-misser">🔴 MISSER</button></div>
+    </div>
+    <div class="f-results-section">
+      <div class="f-results-header">Laatste resultaten <button id="f-reset-results" style="margin-left:auto;background:none;border:none;font-size:13px;color:var(--muted);cursor:pointer;padding:2px 6px;border-radius:4px;-webkit-appearance:none;float:right">✕</button></div>
+      <div id="f-results-list" class="f-results-list"></div>
+    </div>
+    <div class="f-sync-debug" id="f-sync-debug"></div>
+  </div>
+
+  <!-- INVOER TAB -->
+  <div id="tab-invoer" class="tab-content">
+    <div class="i-card">
+      <div class="i-pair">
+        <div><div class="i-label">Stek</div><input id="i-stek" maxlength="5" placeholder="G 11" class="i-input-text" value="" autocomplete="off"></div>
+        <div><div class="i-label">Datum</div><input id="i-datum" maxlength="5" placeholder="19/06" class="i-input-text" value="" autocomplete="off"></div>
+      </div>
+      <div class="i-pair">
+        <div><div class="i-label">Begin</div><input id="i-begin" maxlength="4" inputmode="numeric" placeholder="1600" class="i-input-text" value="" autocomplete="off"><div class="i-hint" id="i-begin-display"></div></div>
+        <div><div class="i-label">Einde</div><input id="i-einde" maxlength="4" inputmode="numeric" placeholder="1800" class="i-input-text" value="" autocomplete="off"><div class="i-hint" id="i-einde-display"></div></div>
+      </div>
+      <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px">Vangst</div>
+      <div class="i-grid">
+        <div class="i-fish-box" style="border-color:#059669"><div class="i-label" style="color:#059669;text-align:center">Kroes</div><input id="i-kroes" type="text" inputmode="numeric" maxlength="3" value="0" class="i-fish-input" style="border-color:#059669;color:#fff"><div class="i-stepper"><button class="i-btn" data-id="i-kroes" data-d="-1" style="border-color:#059669;color:#059669">−</button><button class="i-btn" data-id="i-kroes" data-d="1" style="border-color:#059669;color:#059669">+</button></div></div>
+        <div class="i-fish-box" style="border-color:#2563eb"><div class="i-label" style="color:#2563eb;text-align:center">Schub</div><input id="i-schub" type="text" inputmode="numeric" maxlength="3" value="0" class="i-fish-input" style="border-color:#2563eb;color:#fff"><div class="i-stepper"><button class="i-btn" data-id="i-schub" data-d="-1" style="border-color:#2563eb;color:#2563eb">−</button><button class="i-btn" data-id="i-schub" data-d="1" style="border-color:#2563eb;color:#2563eb">+</button></div></div>
+        <div class="i-fish-box" style="border-color:#7c3aed"><div class="i-label" style="color:#7c3aed;text-align:center">Spiegel</div><input id="i-spiegel" type="text" inputmode="numeric" maxlength="3" value="0" class="i-fish-input" style="border-color:#7c3aed;color:#fff"><div class="i-stepper"><button class="i-btn" data-id="i-spiegel" data-d="-1" style="border-color:#7c3aed;color:#7c3aed">−</button><button class="i-btn" data-id="i-spiegel" data-d="1" style="border-color:#7c3aed;color:#7c3aed">+</button></div></div>
+        <div class="i-fish-box" style="border-color:#d97706"><div class="i-label" style="color:#d97706;text-align:center">Ander</div><input id="i-ander" type="text" inputmode="numeric" maxlength="3" value="0" class="i-fish-input" style="border-color:#d97706;color:#fff"><div class="i-stepper"><button class="i-btn" data-id="i-ander" data-d="-1" style="border-color:#d97706;color:#d97706">−</button><button class="i-btn" data-id="i-ander" data-d="1" style="border-color:#d97706;color:#d97706">+</button></div></div>
+      </div>
+      <div class="i-pair">
+        <div><div class="i-label">Aantal</div><div id="i-aantal" class="i-stat" style="border-color:#059669;color:#059669">0</div></div>
+        <div><div class="i-label">Gewicht</div><div class="i-stat" style="border-color:#2563eb;color:#2563eb"><span id="i-gewicht" data-gram="0">0,000</span></div></div>
+      </div>
+      <div style="display:none" id="i-duur-container"><div class="i-label">Duur</div><div id="i-duur" style="padding:10px 12px;border:2px solid #86efac;border-radius:10px;font-size:18px;width:100%;background:#052e16;color:#86efac;font-weight:700;margin-bottom:8px">--</div></div>
+      <button id="i-save" class="i-save-btn">💾 Opslaan</button>
+    </div>
+    <div class="i-list" id="i-list"><p class="d-empty">Voer een stek in om eerdere sessies te zien.</p></div>
+  </div>
+
+  <!-- DATA TAB -->
+  <div id="tab-data" class="tab-content">
+    <div class="d-header">
+      <span class="d-sub">Jaar:</span>
+      <select id="d-year" class="d-year-select"></select>
+      <span class="d-sub" id="d-year-count"></span>
+    </div>
+    <div class="d-tabs">
+      <button class="d-tab active" data-dtab="data">📊 Data</button>
+      <button class="d-tab" data-dtab="stats">📈 Statistieken</button>
+      <button class="d-tab danger" data-dtab="beheer">⚙️ Beheer</button>
+    </div>
+    <div id="d-tab-data" class="d-panel show">
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px;flex-shrink:0">
+        <span class="d-sub" id="d-row-count"></span>
+      </div>
+      <div class="d-table-wrap" id="d-table-wrap"><p class="d-empty">Geen data.</p></div>
+    </div>
+    <div id="d-tab-stats" class="d-panel">
+      <div id="d-stats-content"><p class="d-empty">Geen data.</p></div>
+    </div>
+    <div id="d-tab-beheer" class="d-panel">
+      <p class="d-sub">Gevaarlijke acties — niet ongedaan te maken.</p>
+      <div class="d-beheer-actions">
+        <button class="d-beheer-btn danger" id="d-clear">🗑️ Alle data wissen</button>
+        <button class="d-beheer-btn" id="d-remove-empty">🧹 Lege sessies</button>
+      </div>
+      <hr style="margin:16px 0;border:none;border-top:1px solid var(--border)">
+      <p class="d-sub" style="font-weight:700">Import data</p>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:8px 0">
+        <input type="file" id="d-import-file" accept=".json" style="display:none">
+        <button class="d-beheer-btn" id="d-import">📥 Importeer JSON</button>
+        <button class="d-beheer-btn" id="d-export">📤 Exporteer JSON</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="flash" id="flash"></div>
+<div id="toast"></div>
+
+<div class="overlay" id="f-overlay">
+  <div class="overlay-panel">
+    <div class="overlay-h"><h2>Instellingen</h2><button class="close-btn" id="f-close-settings">✕</button></div>
+    <div class="setting-row"><div><div class="setting-label">Geluid</div></div><label class="toggle"><input type="checkbox" id="f-sound" checked><span class="toggle-slider"></span></label></div>
+    <button class="danger-btn" id="f-end-session" style="border-color:#fbbf24;color:#fbbf24;margin-top:8px">✅ Vissessie beëindigen</button>
+    <button class="danger-btn" id="f-clear-results">Wis alle resultaten</button>
+  </div>
+</div>
+
+<script is:inline>window.__SERVER_VISSESSIES__ = <>{JSON.stringify(serverData)}</>;</script>
+
+<script is:inline>
+(function() {
+  var STORAGE_KEY = 'kvvi_vissessies';
+  var FEEDER_KEY = 'hengel_app_feeder';
+  var JAAR_KEY = 'kvvi_jaar';
+  var GEW_KROES = 300, GEW_SCHUB = 1500, GEW_SPIEGEL = 1600, GEW_ANDER = 100;
+  var MAANDEN = ['jan','feb','mar','apr','mei','jun','jul','aug','sep','okt','nov','dec'];
+  var jaarOpties = [];
+  (function() { var y = new Date().getFullYear(); for (var y2 = 2026; y2 <= y + 5; y2++) jaarOpties.push(y2); })();
+
+  // Toast
+  var toastEl = document.getElementById('toast');
+  function showToast(msg) {
+    toastEl.textContent = msg; toastEl.style.background = '#334155';
+    toastEl.classList.add('show'); clearTimeout(toastEl._hide);
+    toastEl._hide = setTimeout(function() { toastEl.classList.remove('show'); }, 2000);
+  }
+
+  // Shared data
+  function loadData() {
+    try {
+      var d = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+      if (!d.length) {
+        var sd = window.__SERVER_VISSESSIES__;
+        if (sd && sd.length) { d = sd; }
+      }
+      var changed = false;
+      d.forEach(function(item) { if (!item._id) { item._id = '_' + Date.now().toString(36) + Math.random().toString(36).slice(2,6); changed = true; } });
+      if (changed) localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
+      return d;
+    } catch(e) { return []; }
+  }
+  function saveData(data) { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+  function sortData(arr) {
+    arr.sort(function(a, b) {
+      var ma = a.month.match(/([a-z]+)\s*(\d+)/i), mb = b.month.match(/([a-z]+)\s*(\d+)/i);
+      if (ma && mb) {
+        if (parseInt(ma[2]) !== parseInt(mb[2])) return parseInt(ma[2]) - parseInt(mb[2]);
+        var ia = MAANDEN.indexOf(ma[1].toLowerCase().substring(0,3));
+        var ib = MAANDEN.indexOf(mb[1].toLowerCase().substring(0,3));
+        if (ia !== ib) return ia - ib;
+      }
+      return 0;
+    });
+  }
+  function huidigJaar() {
+    var j = localStorage.getItem(JAAR_KEY);
+    if (j) { j = parseInt(j); if (jaarOpties.indexOf(j) >= 0) return j; }
+    return new Date().getFullYear();
+  }
+  function filterJaar(data, jaar) {
+    return data.filter(function(r) { if (!r.month) return false; var m = r.month.match(/\b(\d{4})\b/); return m && parseInt(m[1]) === jaar; });
+  }
+  function deriveMonth(datum, jaar) {
+    if (!datum) return '';
+    var d = datum.match(/(\d{1,2})\/(\d{1,2})/);
+    if (!d) return String(jaar);
+    var maand = parseInt(d[2]);
+    return (MAANDEN[maand-1] || '???') + ' ' + jaar;
+  }
+  function fmtTime(min) {
+    if (min == null || isNaN(min)) return '--';
+    return Math.floor(min / 60) + 'u ' + (min % 60) + 'm';
+  }
+
+  // Tab switching
+  var currentTab = 'feeder';
+  function switchTab(name) {
+    currentTab = name;
+    document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.toggle('active', b.dataset.tab === name); });
+    document.querySelectorAll('.tab-content').forEach(function(c) { c.classList.toggle('active', c.id === 'tab-' + name); });
+    if (name === 'invoer') renderInvoer();
+    if (name === 'data') renderData();
+    if (name === 'feeder') updateFeederFishSummary();
+  }
+  document.querySelectorAll('.tab-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() { switchTab(this.dataset.tab); });
+  });
+
+  /* ============ FEEDER TAB ============ */
+  (function() {
+    function loadFeeder() {
+      try { var raw = localStorage.getItem(FEEDER_KEY); if (raw) return JSON.parse(raw); } catch(e) {}
+      return null;
+    }
+    function saveFeeder() {
+      try { localStorage.setItem(FEEDER_KEY, JSON.stringify({
+        interval: fs.interval, pingCount: fs.pingCount, soundEnabled: fs.soundEnabled,
+        locationName: fs.locationName, date: fs.date, results: fs.results, fishCounts: fs.fishCounts
+      })); } catch(e) {}
+    }
+
+    var saved = loadFeeder();
+    var fs = {
+      swSeconds: 0, ftSeconds: 300, swRunning: false, ftRunning: false,
+      interval: (saved && saved.interval) || 5, pingCount: (saved && saved.pingCount) || 1,
+      soundEnabled: (saved && saved.soundEnabled !== undefined) ? saved.soundEnabled : true,
+      locationName: (saved && saved.locationName) || '', date: (saved && saved.date) || '',
+      results: (saved && saved.results) || [],
+      fishCounts: (saved && saved.fishCounts) || { kroes:0, schub:0, spiegel:0, ander:0 },
+      showFishChoices: false, sessionStart: null, _interval: null, _hiddenAt: null
+    };
+    if (!fs.interval) fs.interval = 5;
+    fs.ftSeconds = fs.interval * 60;
+
+    var fStatus = document.getElementById('f-status');
+    var fResultsList = document.getElementById('f-results-list');
+    var fSyncDebug = document.getElementById('f-sync-debug');
+
+    function fmt(s) { var m = Math.floor(s/60); var sec = s%60; return (m<10?'0':'')+m+':'+(sec<10?'0':'')+sec; }
+    function updateDisplay() {
+      document.getElementById('f-stopwatch').textContent = fmt(fs.swSeconds);
+      document.getElementById('f-voertimer').textContent = fmt(fs.ftSeconds);
+      document.getElementById('f-interval-label').textContent = fs.interval;
+    }
+    function toggleBtnState() {
+      var sw = document.getElementById('f-sw-toggle'); sw.textContent = fs.swRunning ? 'Stop' : 'Start'; sw.classList.toggle('running', fs.swRunning);
+      var ft = document.getElementById('f-ft-toggle'); ft.textContent = fs.ftRunning ? 'Stop' : 'Start'; ft.classList.toggle('running', fs.ftRunning);
+    }
+    function updateFeederFishSummary() {
+      var el = document.getElementById('fish-summary');
+      if (!el) return;
+      var k = fs.fishCounts.kroes||0, s = fs.fishCounts.schub||0, p = fs.fishCounts.spiegel||0, a = fs.fishCounts.ander||0;
+      var total = k+s+p+a;
+      if (total === 0) { el.textContent = ''; return; }
+      var weight = k*300 + s*1500 + p*1600 + a*100;
+      var w = weight >= 1000 ? (weight/1000).toFixed(1) + ' kg' : weight + ' g';
+      el.textContent = total + ' v \u00b7 ' + w;
+    }
+    function updateResults() {
+      if (!fs.results.length) { fResultsList.innerHTML = '<div class="f-results-empty">Nog geen resultaten.</div>'; updateFeederFishSummary(); return; }
+      var fishResults = fs.results.filter(function(r) { return r.type !== 'misser'; });
+      var show = fs.results.slice(0, 3);
+      var avgSec = 0;
+      if (fishResults.length) { var total = 0; for (var i=0;i<fishResults.length;i++) total += (function(s){var p=s.split(':');return parseInt(p[0])*60+parseInt(p[1]);})(fishResults[i].time); avgSec = total/fishResults.length; }
+      var html = show.map(function(r) {
+        var labels = { vis:'V', misser:'M', kroes:'KR', schub:'SC', spiegel:'SP', ander:'AN' };
+        var label = labels[r.type] || r.type;
+        return '<div class="f-result-item"><span class="r-type '+r.type+'">'+label+'</span><span class="r-time">'+r.time+'</span></div>';
+      }).join('');
+      var ma = Math.floor(avgSec/60), sa = Math.round(avgSec%60);
+      if (sa === 60) { ma++; sa = 0; }
+      var avgStr = (ma<10?'0':'')+ma+':'+(sa<10?'0':'')+sa;
+      html += '<div class="f-result-item" style="border-color:#fbbf24;font-size:13px"><span style="color:#fff">⬡</span><span style="flex:1;font-weight:600;color:#fff">Gem.</span><span class="r-time" style="font-weight:900;color:#fff">'+avgStr+'</span></div>';
+      fResultsList.innerHTML = html;
+      updateFeederFishSummary();
+    }
+    function updateStatus(text, cls) {
+      fStatus.textContent = text;
+      fStatus.className = 'f-status-line' + (cls ? ' ' + cls : '');
+    }
+    function updateIntervalUI() {
+      document.querySelectorAll('.f-interval-btn').forEach(function(b) { b.classList.toggle('active', parseInt(b.dataset.min) === fs.interval); });
+    }
+    function updatePingUI() {
+      document.querySelectorAll('.f-ping-btn').forEach(function(b) { b.classList.toggle('active', parseInt(b.dataset.count) === fs.pingCount); });
+    }
+
+    function tick() {
+      if (fs.swRunning) fs.swSeconds++;
+      if (fs.ftRunning) {
+        fs.ftSeconds--;
+        if (fs.ftSeconds <= 0) {
+          fs.ftSeconds = 0; fs.ftRunning = false;
+          if (fs.soundEnabled) playPing(fs.pingCount);
+          var flash = document.getElementById('flash');
+          flash.className = 'flash gold show';
+          setTimeout(function() { flash.classList.remove('show'); }, 200);
+          updateStatus('⏰ Voermoment!', 'feed');
+          showToast('Voermoment!');
+          toggleBtnState();
+          if (!fs.swRunning && !fs.ftRunning) stopTimer();
+        }
+      }
+      updateDisplay();
+    }
+    var timerInterval = null;
+    function startTimer() { if (!timerInterval) timerInterval = setInterval(tick, 1000); }
+    function stopTimer() { if (timerInterval) { clearInterval(timerInterval); timerInterval = null; } }
+
+    // Audio
+    var audioCtx = null;
+    function getAudioCtx() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); return audioCtx; }
+    function playPing(count) {
+      try {
+        var ctx = getAudioCtx();
+        if (ctx.state === 'suspended') ctx.resume();
+        for (var i=0;i<count;i++) {
+          setTimeout(function() {
+            var osc = ctx.createOscillator(); var gain = ctx.createGain();
+            osc.connect(gain); gain.connect(ctx.destination);
+            osc.type = 'sine'; osc.frequency.value = 880;
+            gain.gain.setValueAtTime(0.3, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+            osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.3);
+          }, i*200);
+        }
+      } catch(e) {}
+    }
+
+    function syncVissessie(begin, einde, duurMin) {
+      try {
+        var key = STORAGE_KEY;
+        var raw = localStorage.getItem(key);
+        var data = JSON.parse(raw) || [];
+        if (!Array.isArray(data)) data = [];
+        var stek = (fs.locationName || '--').replace(/\s+/g, ' ').trim();
+        var datum = fs.date || (function(){var d=new Date();return ('0'+d.getDate()).slice(-2)+'/'+('0'+(d.getMonth()+1)).slice(-2);})();
+        var idx = -1;
+        for (var i=0;i<data.length;i++) { if (data[i].stek === stek && data[i].datum === datum) { idx = i; break; } }
+        var entry = { stek: stek, datum: datum, kroes: fs.fishCounts.kroes||0, schub: fs.fishCounts.schub||0, spiegel: fs.fishCounts.spiegel||0, ander: fs.fishCounts.ander||0 };
+        entry.aantal = entry.kroes+entry.schub+entry.spiegel+entry.ander;
+        entry.gewicht = entry.kroes*300 + entry.schub*1500 + entry.spiegel*1600 + entry.ander*100;
+        entry.begin = begin||''; entry.einde = einde||''; entry.duurMin = duurMin||0; entry.tijdMin = entry.duurMin; entry.wedstrijd = '';
+        var m = datum.match(/\/(\d+)/);
+        if (m) { var mn = parseInt(m[1]); entry.month = (MAANDEN[mn-1]||'???')+' '+new Date().getFullYear(); }
+        else { entry.month = MAANDEN[new Date().getMonth()]+' '+new Date().getFullYear(); }
+        if (idx >= 0) data[idx] = entry; else data.push(entry);
+        localStorage.setItem(key, JSON.stringify(data));
+        if (fSyncDebug) fSyncDebug.textContent = '✅ Sync: '+data.length+' entry';
+      } catch(e) { if (fSyncDebug) fSyncDebug.textContent = '❌ Sync error: '+e.message; }
+    }
+
+    // Actions
+    function worp() {
+      fs.swRunning = false; fs.ftRunning = false; stopTimer();
+      fs.swSeconds = 0; fs.ftSeconds = fs.interval*60;
+      fs.swRunning = true; fs.ftRunning = true;
+      if (!fs.sessionStart) fs.sessionStart = Date.now();
+      startTimer(); updateDisplay(); toggleBtnState();
+      updateStatus('Worp → ...', 'worp');
+      var flash = document.getElementById('flash');
+      flash.className = 'flash green show';
+      setTimeout(function() { flash.classList.remove('show'); }, 150);
+    }
+
+    function recordResult(type) {
+      var swTime = fmt(fs.swSeconds);
+      fs.swRunning = false; fs.ftRunning = false; stopTimer();
+      fs.swSeconds = 0; fs.ftSeconds = fs.interval*60; updateDisplay();
+      var FISH_NAMES = { kroes:'Kroes', schub:'Schub', spiegel:'Spiegel', ander:'Ander' };
+      var label = type === 'misser' ? 'MISSER' : (FISH_NAMES[type]||'VIS');
+      var cls = type === 'misser' ? 'result-misser' : 'result-vis';
+      fs.results.unshift({ type: type, time: swTime, location: fs.locationName||'', ts: new Date().toISOString() });
+      if (fs.results.length > 3) fs.results.length = 3;
+      if (type !== 'misser') { fs.fishCounts[type] = (fs.fishCounts[type]||0)+1; syncVissessie(); }
+      updateStatus('Worp → '+label+' '+swTime, cls);
+      updateResults(); saveFeeder();
+      var flash = document.getElementById('flash');
+      flash.className = 'flash '+(type==='misser'?'red':'blue')+' show';
+      setTimeout(function() { flash.classList.remove('show'); }, 150);
+      if (fs.soundEnabled && type !== 'misser') playPing(1);
+      showToast(label+' '+swTime); toggleBtnState();
+    }
+
+    var FISH_NAMES = { kroes:'Kroes', schub:'Schub', spiegel:'Spiegel', ander:'Ander' };
+
+    // Event listeners
+    document.getElementById('f-sw-toggle').addEventListener('click', function() { if (fs.swRunning) { fs.swRunning=false; if(!fs.ftRunning) stopTimer(); } else { startTimer(); fs.swRunning=true; } toggleBtnState(); updateDisplay(); startTimer(); });
+    document.getElementById('f-sw-reset').addEventListener('click', function() { fs.swRunning=false; fs.swSeconds=0; if(!fs.ftRunning) stopTimer(); updateDisplay(); toggleBtnState(); showToast('Stopwatch gereset'); });
+    document.getElementById('f-ft-toggle').addEventListener('click', function() { if (fs.ftRunning) { fs.ftRunning=false; if(!fs.swRunning) stopTimer(); } else { if(fs.ftSeconds<=0) fs.ftSeconds=fs.interval*60; fs.ftRunning=true; startTimer(); } toggleBtnState(); updateDisplay(); });
+    document.getElementById('f-ft-reset').addEventListener('click', function() { fs.ftRunning=false; fs.ftSeconds=fs.interval*60; if(!fs.swRunning) stopTimer(); updateDisplay(); toggleBtnState(); showToast('Voertimer gereset'); });
+    document.getElementById('f-worp').addEventListener('click', worp);
+    document.getElementById('f-hervoer').addEventListener('click', function() {
+      fs.swSeconds=0; fs.ftSeconds=fs.interval*60; fs.swRunning=false; fs.ftRunning=false; stopTimer();
+      fs.swRunning=true; fs.ftRunning=true; startTimer(); updateDisplay(); toggleBtnState();
+      updateStatus('Opnieuw voeren → ...', 'worp');
+      var flash = document.getElementById('flash');
+      flash.className = 'flash green show';
+      setTimeout(function() { flash.classList.remove('show'); }, 150);
+    });
+    document.getElementById('f-vis').addEventListener('click', function() {
+      fs.showFishChoices = true;
+      document.getElementById('f-vis').style.display = 'none';
+      document.getElementById('f-fish-choices').style.display = 'flex';
+    });
+    document.querySelectorAll('#f-fish-choices button').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        recordResult(this.dataset.fish);
+        fs.showFishChoices = false;
+        document.getElementById('f-vis').style.display = '';
+        document.getElementById('f-fish-choices').style.display = 'none';
+      });
+    });
+    document.getElementById('f-misser').addEventListener('click', function() {
+      if (fs.showFishChoices) { fs.showFishChoices=false; document.getElementById('f-vis').style.display=''; document.getElementById('f-fish-choices').style.display='none'; }
+      recordResult('misser');
+    });
+    document.getElementById('f-location').addEventListener('change', function() { fs.locationName = this.value.trim(); saveFeeder(); });
+    document.getElementById('f-date').addEventListener('input', function() {
+      var v = this.value.replace(/[^0-9]/g,''); if (v.length >= 3) v = v.slice(0,2)+'/'+v.slice(2,4);
+      this.value = v; fs.date = v; saveFeeder();
+    });
+
+    // Interval/ping
+    document.querySelectorAll('.f-interval-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        fs.interval = parseInt(this.dataset.min); fs.ftSeconds = fs.interval*60;
+        if (!fs.ftRunning) updateDisplay();
+        updateIntervalUI(); saveFeeder();
+      });
+    });
+    document.querySelectorAll('.f-ping-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        fs.pingCount = parseInt(this.dataset.count); updatePingUI(); saveFeeder();
+        if (fs.soundEnabled) playPing(fs.pingCount);
+      });
+    });
+
+    // Settings overlay
+    var fOverlay = document.getElementById('f-overlay');
+    var fSound = document.getElementById('f-sound');
+    fSound.checked = fs.soundEnabled;
+    fSound.addEventListener('change', function() { fs.soundEnabled = this.checked; saveFeeder(); if (fs.soundEnabled) playPing(1); });
+    document.getElementById('f-settings-btn').addEventListener('click', function() { fOverlay.classList.add('show'); });
+    document.getElementById('f-close-settings').addEventListener('click', function() { fOverlay.classList.remove('show'); });
+    fOverlay.addEventListener('click', function(e) { if (e.target === fOverlay) fOverlay.classList.remove('show'); });
+
+    document.getElementById('f-clear-results').addEventListener('click', function() {
+      if (confirm('Alle resultaten wissen?')) { fs.results = []; fs.fishCounts = { kroes:0, schub:0, spiegel:0, ander:0 }; updateResults(); saveFeeder(); fOverlay.classList.remove('show'); showToast('Resultaten gewist'); }
+    });
+    document.getElementById('f-reset-results').addEventListener('click', function() { fs.results = []; updateResults(); saveFeeder(); showToast('Resultaten gewist'); });
+
+    function formatClockTime(ts) { if (!ts) return ''; var d = new Date(ts); return d.getHours()+'u '+d.getMinutes()+'m'; }
+    document.getElementById('f-end-session').addEventListener('click', function() {
+      var k = fs.fishCounts.kroes||0, s=fs.fishCounts.schub||0, p=fs.fishCounts.spiegel||0, a=fs.fishCounts.ander||0;
+      var parts = []; if (k) parts.push(k+' Kroes'); if (s) parts.push(s+' Schub'); if (p) parts.push(p+' Spiegel'); if (a) parts.push(a+' Ander');
+      var begin = fs.sessionStart ? formatClockTime(fs.sessionStart) : '';
+      var einde = formatClockTime(Date.now());
+      var duurMin = fs.sessionStart ? Math.round((Date.now()-fs.sessionStart)/60000) : 0;
+      syncVissessie(begin, einde, duurMin);
+      fs.results = []; fs.fishCounts = { kroes:0, schub:0, spiegel:0, ander:0 }; fs.sessionStart = null;
+      fs.locationName = ''; fs.date = '';
+      document.getElementById('f-location').value = ''; document.getElementById('f-date').value = '';
+      updateResults(); saveFeeder(); fOverlay.classList.remove('show');
+      showToast('✅ '+(parts.length ? parts.join(', ')+' → bewaard' : 'Geen vangsten'));
+    });
+
+    // Visibility for timer accuracy
+    document.addEventListener('visibilitychange', function() {
+      if (document.hidden) { fs._hiddenAt = Date.now(); }
+      else if ((fs.swRunning||fs.ftRunning) && fs._hiddenAt) {
+        var elapsed = Math.floor((Date.now()-fs._hiddenAt)/1000);
+        if (elapsed > 0) {
+          if (fs.swRunning) fs.swSeconds += elapsed;
+          if (fs.ftRunning) {
+            fs.ftSeconds -= elapsed;
+            if (fs.ftSeconds <= 0) { fs.ftSeconds=0; fs.ftRunning=false; toggleBtnState(); if(fs.soundEnabled) playPing(fs.pingCount); updateStatus('⏰ Voermoment!','feed'); showToast('Voermoment!'); if(!fs.swRunning) stopTimer(); }
+          }
+          updateDisplay();
+        }
+        fs._hiddenAt = null;
+      }
+    });
+
+    // Init
+    document.getElementById('f-location').value = fs.locationName;
+    document.getElementById('f-date').value = fs.date;
+    updateDisplay(); toggleBtnState(); updateIntervalUI(); updatePingUI(); updateResults();
+
+    // Listen for feeder data changes from other tabs
+    window.addEventListener('storage', function(e) {
+      if (e.key === FEEDER_KEY) {
+        saved = loadFeeder();
+        if (saved) { fs.interval=saved.interval||fs.interval; fs.pingCount=saved.pingCount||fs.pingCount; fs.soundEnabled=saved.soundEnabled!==undefined?saved.soundEnabled:fs.soundEnabled; fs.locationName=saved.locationName||fs.locationName; fs.date=saved.date||fs.date; fs.results=saved.results||fs.results; fs.fishCounts=saved.fishCounts||fs.fishCounts; updateDisplay(); updateIntervalUI(); updatePingUI(); updateResults(); }
+      }
+    });
+
+    window.updateFeederFishSummary = updateFeederFishSummary;
+  })();
+
+  /* ============ INVOER TAB ============ */
+  (function() {
+    function ivAdjust(id, delta) {
+      var el = document.getElementById(id);
+      var v = parseInt(el.value) || 0;
+      v = Math.max(0, Math.min(999, v + delta));
+      el.value = String(v).padStart(3, '0');
+      updateAantal();
+    }
+    function calcDuur(beginVal, eindeVal) {
+      if (!beginVal || !eindeVal) return null;
+      function parse(t) {
+        var m = t.match(/(\d{1,2})u\s*(\d{1,2})m/);
+        if (m) return parseInt(m[1])*60+parseInt(m[2]);
+        var m2 = t.match(/^(\d{3,4})$/);
+        if (m2) { var s=m2[1].padStart(4,'0'); return parseInt(s.substring(0,2))*60+parseInt(s.substring(2,4)); }
+        return null;
+      }
+      var b = parse(beginVal), e = parse(eindeVal);
+      if (b != null && e != null && e > b) return e - b;
+      return null;
+    }
+    function updateAantal() {
+      var ids = ['i-kroes','i-schub','i-spiegel','i-ander'];
+      var sum = ids.reduce(function(a,id) { return a+(parseInt(document.getElementById(id).value)||0); }, 0);
+      document.getElementById('i-aantal').textContent = sum;
+      var gram = (function(){var k=parseInt(document.getElementById('i-kroes').value)||0,s=parseInt(document.getElementById('i-schub').value)||0,p=parseInt(document.getElementById('i-spiegel').value)||0,a=parseInt(document.getElementById('i-ander').value)||0; return k*GEW_KROES+s*GEW_SCHUB+p*GEW_SPIEGEL+a*GEW_ANDER;})();
+      var el = document.getElementById('i-gewicht');
+      el.textContent = (gram/1000).toLocaleString('nl-NL',{minimumFractionDigits:3,maximumFractionDigits:3});
+      el.setAttribute('data-gram', String(gram));
+    }
+    function updateDuur() {
+      var begin = document.getElementById('i-begin').value;
+      var einde = document.getElementById('i-einde').value;
+      var d = calcDuur(begin, einde);
+      var container = document.getElementById('i-duur-container');
+      document.getElementById('i-duur').textContent = d != null ? fmtTime(d) : '--';
+      container.style.display = d != null ? '' : 'none';
+    }
+    function renderInvoer() {
+      var stek = document.getElementById('i-stek').value.trim().toLowerCase();
+      var el = document.getElementById('i-list');
+      var data = loadData();
+      if (!stek) { el.innerHTML = '<p class="d-empty">Voer een stek in om eerdere sessies te zien.</p>'; return; }
+      var filtered = data.filter(function(r) { return r.stek && r.stek.toLowerCase() === stek; });
+      if (!filtered.length) { el.innerHTML = '<p class="d-empty">Geen sessies voor deze stek.</p>'; return; }
+      var computed = filtered.map(function(r) {
+        var duurMin = r.duurMin || calcDuur(r.begin, r.einde) || 0;
+        var kroes = parseInt(r.kroes)||0, schub = parseInt(r.schub)||0, spiegel = parseInt(r.spiegel)||0, ander = parseInt(r.ander)||0;
+        var aantal = kroes+schub+spiegel+ander;
+        var gewicht = parseInt(r.gewicht) || (kroes*GEW_KROES+schub*GEW_SCHUB+spiegel*GEW_SPIEGEL+ander*GEW_ANDER);
+        return { kroes:kroes, schub:schub, spiegel:spiegel, ander:ander, aantal:aantal, gewicht:gewicht, datum:r.datum, stek:r.stek, begin:r.begin, einde:r.einde, duurMin:duurMin, month:r.month };
+      }).sort(function(a,b) { function dv(r) { var p=r.datum?r.datum.split('/'):[]; return p.length===2?parseInt(p[1])*100+parseInt(p[0]):99999; } return dv(b)-dv(a); });
+      var html = '<table><thead><tr><th>Datum</th><th>Kroes</th><th>Schub</th><th>Spiegel</th><th>Ander</th><th>Aantal</th><th>Begin</th><th>Einde</th><th>Duur</th></tr></thead><tbody>';
+      for (var i=0;i<computed.length;i++) {
+        var c = computed[i];
+        html += '<tr><td>'+c.datum+'</td><td class="num">'+(c.kroes||'')+'</td><td class="num">'+(c.schub||'')+'</td><td class="num">'+(c.spiegel||'')+'</td><td class="num">'+(c.ander||'')+'</td><td class="num">'+c.aantal+'</td><td>'+(c.begin||'')+'</td><td>'+(c.einde||'')+'</td><td class="num">'+fmtTime(c.duurMin)+'</td></tr>';
+      }
+      var t = computed.reduce(function(acc,r) { return { kroes:acc.kroes+r.kroes, schub:acc.schub+r.schub, spiegel:acc.spiegel+r.spiegel, ander:acc.ander+r.ander, aantal:acc.aantal+r.aantal }; }, {kroes:0,schub:0,spiegel:0,ander:0,aantal:0});
+      html += '<tr class="subtotal"><td>TOTAAL</td><td class="num">'+t.kroes+'</td><td class="num">'+t.schub+'</td><td class="num">'+t.spiegel+'</td><td class="num">'+t.ander+'</td><td class="num">'+t.aantal+'</td><td colspan="3">'+filtered.length+' sessies</td></tr></tbody></table>';
+      el.innerHTML = html;
+    }
+
+    document.getElementById('i-save').addEventListener('click', function() {
+      function v(id) { return document.getElementById(id).value.trim(); }
+      function n(id) { return parseInt(document.getElementById(id).value)||0; }
+      var jaar = huidigJaar();
+      var datum = v('i-datum'), stek = v('i-stek') || 'Onbekend';
+      if (!datum) { showToast('Datum is verplicht'); return; }
+      var month = deriveMonth(datum, jaar) || 'Onbekend';
+      var kroes = n('i-kroes'), schub = n('i-schub'), spiegel = n('i-spiegel'), ander = n('i-ander');
+      var duur = calcDuur(v('i-begin'), v('i-einde')) || 0;
+      var row = { kroes:kroes, schub:schub, spiegel:spiegel, ander:ander, aantal:kroes+schub+spiegel+ander, gewicht:kroes*GEW_KROES+schub*GEW_SCHUB+spiegel*GEW_SPIEGEL+ander*GEW_ANDER, datum:datum, stek:stek, begin:v('i-begin'), einde:v('i-einde'), duurMin:duur, tijdMin:duur, month:month, wedstrijd:'' };
+      var data = loadData();
+      var bestaand = -1;
+      for (var i=0;i<data.length;i++) { if (data[i].datum===datum && data[i].month===month) { bestaand = i; break; } }
+      if (bestaand >= 0) { data[bestaand] = row; showToast('Bestaande sessie bijgewerkt'); }
+      else { data.push(row); showToast(datum+' - '+month+' - '+stek); }
+      sortData(data); saveData(data);
+      document.getElementById('i-datum').value=''; document.getElementById('i-begin').value=''; document.getElementById('i-einde').value='';
+      document.getElementById('i-begin-display').textContent=''; document.getElementById('i-einde-display').textContent='';
+      ['i-kroes','i-schub','i-spiegel','i-ander'].forEach(function(id){document.getElementById(id).value='0';});
+      document.getElementById('i-aantal').textContent='0';
+      var gew = document.getElementById('i-gewicht'); gew.textContent='0,000'; gew.setAttribute('data-gram','0');
+      updateAantal(); renderInvoer(); document.getElementById('i-datum').focus();
+    });
+
+    // Stepper buttons
+    document.querySelectorAll('.i-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() { ivAdjust(this.dataset.id, parseInt(this.dataset.d)); });
+    });
+    // Input events
+    ['i-kroes','i-schub','i-spiegel','i-ander'].forEach(function(id) {
+      document.getElementById(id).addEventListener('input', function() {
+        this.value = this.value.replace(/[^0-9]/g,'').slice(0,3);
+        var v = parseInt(this.value); if (v>999) this.value='999';
+        updateAantal();
+      });
+      document.getElementById(id).addEventListener('blur', function() {
+        if (this.value === '') this.value='0';
+        this.value = String(parseInt(this.value)||0).padStart(3,'0');
+        updateAantal();
+      });
+    });
+    ['i-begin','i-einde'].forEach(function(id) {
+      document.getElementById(id).addEventListener('input', function() {
+        if (this.value.length > 4) this.value = this.value.slice(0,4);
+        var display = document.getElementById(id+'-display');
+        if (!this.value || this.value.length<3) { if(display) display.textContent=''; return; }
+        var s = this.value.padStart(4,'0');
+        display.textContent = s.substring(0,2)+'u '+s.substring(2,4)+'m';
+        updateDuur();
+      });
+      document.getElementById(id).addEventListener('blur', function() {
+        var val = this.value;
+        if (/^\d{3,4}$/.test(val)) {
+          var s = val.padStart(4,'0');
+          var h = parseInt(s.substring(0,2)), m = parseInt(s.substring(2,4));
+          if (h>=0&&h<=23&&m>=0&&m<=59) this.value = h+'u '+m+'m';
+          updateDuur();
+        }
+      });
+    });
+    document.getElementById('i-stek').addEventListener('input', renderInvoer);
+    document.getElementById('i-datum').addEventListener('input', function() {
+      var stek = document.getElementById('i-stek').value.trim().toLowerCase(), datum = this.value.trim();
+      if (!stek||!datum) return;
+      var jaar = huidigJaar(), month = deriveMonth(datum, jaar);
+      var data = loadData();
+      for (var i=0;i<data.length;i++) { if (data[i].datum===datum&&data[i].month===month&&data[i].stek&&data[i].stek.toLowerCase()===stek) {
+        document.getElementById('i-kroes').value=String(data[i].kroes||0).padStart(3,'0');
+        document.getElementById('i-schub').value=String(data[i].schub||0).padStart(3,'0');
+        document.getElementById('i-spiegel').value=String(data[i].spiegel||0).padStart(3,'0');
+        document.getElementById('i-ander').value=String(data[i].ander||0).padStart(3,'0');
+        document.getElementById('i-begin').value=data[i].begin||'';
+        document.getElementById('i-einde').value=data[i].einde||'';
+        updateAantal(); break;
+      }}
+    });
+    // Enter key
+    document.querySelectorAll('#tab-invoer input').forEach(function(inp) {
+      inp.addEventListener('keydown', function(e) { if (e.key === 'Enter') document.getElementById('i-save').click(); });
+    });
+
+    window.renderInvoer = renderInvoer;
+  })();
+
+  /* ============ DATA TAB ============ */
+  (function() {
+    function updateYearSelector() {
+      var sel = document.getElementById('d-year');
+      var actief = huidigJaar();
+      sel.innerHTML = jaarOpties.map(function(y) { return '<option value="'+y+'"'+(y===actief?' selected':'')+'>'+y+'</option>'; }).join('');
+      sel.addEventListener('change', function() { localStorage.setItem(JAAR_KEY, sel.value); renderData(); });
+    }
+
+    function fmtDecimal(v) { if (v==null||isNaN(v)) return '—'; return v.toFixed(1); }
+    function fmtEenheid(m) { if (m == null || isNaN(m) || m <= 0) return '—'; var h = Math.floor(m/60); var min = m%60; return h+'u'+('0'+min).slice(-2)+'m'; }
+
+    function renderData() {
+      var alleData = loadData();
+      var jaar = huidigJaar();
+      localStorage.setItem(JAAR_KEY, jaar);
+      var data = filterJaar(alleData, jaar);
+      document.getElementById('d-row-count').textContent = data.length + ' sessies in ' + jaar;
+      document.getElementById('d-year-count').textContent = '(' + alleData.length + ' totaal)';
+      var container = document.getElementById('d-table-wrap');
+
+      if (!data.length) { container.innerHTML = '<p class="d-empty">Geen data voor '+jaar+'.</p>'; renderStats(alleData, jaar); return; }
+
+      var groups = {};
+      for (var ri=0; ri<data.length; ri++) {
+        var m = data[ri].month || 'Onbekend';
+        if (!groups[m]) groups[m] = [];
+        groups[m].push(data[ri]);
+      }
+      for (var g in groups) { groups[g].sort(function(a,b) { var p1=a.datum?a.datum.split('/'):[], p2=b.datum?b.datum.split('/'):[]; return p1.length===2&&p2.length===2?parseInt(p2[1])*100+parseInt(p2[0])-parseInt(p1[1])*100-parseInt(p1[0]):0; }); }
+
+      var monthOrder = Object.keys(groups).sort(function(a,b) {
+        var ma = a.match(/([a-z]+)\s*(\d+)/i), mb = b.match(/([a-z]+)\s*(\d+)/i);
+        if (ma && mb) {
+          if (parseInt(ma[2]) !== parseInt(mb[2])) return parseInt(ma[2])-parseInt(mb[2]);
+          return MAANDEN.indexOf(ma[1].toLowerCase().substring(0,3)) - MAANDEN.indexOf(mb[1].toLowerCase().substring(0,3));
+        }
+        return 0;
+      });
+
+      var grandKroes=0, grandSchub=0, grandSpiegel=0, grandAnder=0, grandAantal=0, grandGewicht=0, grandTijd=0;
+      var html = '';
+      for (var mi=0; mi<monthOrder.length; mi++) {
+        var month = monthOrder[mi];
+        var items = groups[month];
+        var mKroes=0, mSchub=0, mSpiegel=0, mAnder=0, mAantal=0, mGewicht=0, mTijd=0;
+        for (var ii=0; ii<items.length; ii++) {
+          var r = items[ii];
+          var duurMin = r.duurMin || 0;
+          var kroes = parseInt(r.kroes)||0, schub = parseInt(r.schub)||0, spiegel = parseInt(r.spiegel)||0, ander = parseInt(r.ander)||0;
+          var aantal = kroes+schub+spiegel+ander;
+          var gewicht = parseInt(r.gewicht) || (kroes*GEW_KROES+schub*GEW_SCHUB+spiegel*GEW_SPIEGEL+ander*GEW_ANDER);
+          mKroes+=kroes; mSchub+=schub; mSpiegel+=spiegel; mAnder+=ander; mAantal+=aantal; mGewicht+=gewicht; mTijd+=duurMin;
+        }
+        grandKroes+=mKroes; grandSchub+=mSchub; grandSpiegel+=mSpiegel; grandAnder+=mAnder; grandAantal+=mAantal; grandGewicht+=mGewicht; grandTijd+=mTijd;
+        html += '<div class="d-month-group"><div class="d-month-header">▼ '+month+'</div><div class="d-month-body"><table><thead><tr><th>Datum</th><th>Kroes</th><th>Schub</th><th>Spiegel</th><th>Ander</th><th>Aantal</th><th>Gewicht</th><th>Stek</th><th>Begin</th><th>Einde</th><th>Duur</th></tr></thead><tbody>';
+        for (var ji=0; ji<items.length; ji++) {
+          var ri2 = items[ji];
+          var d2 = ri2.duurMin||0;
+          var k2 = parseInt(ri2.kroes)||0, s2 = parseInt(ri2.schub)||0, p2 = parseInt(ri2.spiegel)||0, a2 = parseInt(ri2.ander)||0;
+          var ant2 = k2+s2+p2+a2;
+          var g2 = parseInt(ri2.gewicht) || (k2*GEW_KROES+s2*GEW_SCHUB+p2*GEW_SPIEGEL+a2*GEW_ANDER);
+          html += '<tr><td>'+(ri2.datum||'')+'</td><td class="num">'+(k2||'')+'</td><td class="num">'+(s2||'')+'</td><td class="num">'+(p2||'')+'</td><td class="num">'+(a2||'')+'</td><td class="num">'+ant2+'</td><td class="num">'+g2+'</td><td>'+(ri2.stek||'')+'</td><td>'+(ri2.begin||'')+'</td><td>'+(ri2.einde||'')+'</td><td class="num">'+fmtTime(d2)+'</td></tr>';
+        }
+        html += '<tr class="subtotal"><td>Subtotaal</td><td class="num">'+(mKroes||'')+'</td><td class="num">'+(mSchub||'')+'</td><td class="num">'+(mSpiegel||'')+'</td><td class="num">'+(mAnder||'')+'</td><td class="num">'+mAantal+'</td><td class="num">'+(mGewicht/1000).toFixed(1)+' kg</td><td></td><td></td><td></td><td class="num">'+fmtTime(mTijd)+'</td></tr>';
+        html += '</tbody></table></div></div>';
+      }
+      html += '<div class="d-grand"><table><tr><td>TOTAAL</td><td class="num">'+(grandKroes||'')+'</td><td class="num">'+(grandSchub||'')+'</td><td class="num">'+(grandSpiegel||'')+'</td><td class="num">'+(grandAnder||'')+'</td><td class="num">'+grandAantal+'</td><td class="num">'+(grandGewicht/1000).toFixed(1)+' kg</td><td>'+data.length+' sessies</td><td></td><td></td><td class="num">'+fmtTime(grandTijd)+'</td></tr></table></div>';
+      container.innerHTML = html;
+      renderStats(alleData, jaar);
+    }
+
+    function renderStats(alleData, jaar) {
+      var data = filterJaar(alleData, jaar);
+      var totaalKroes=0, totaalSchub=0, totaalSpiegel=0, totaalAnder=0, totaalAantal=0, totaalGewicht=0, totaalTijd=0;
+      var stekCounts = {};
+      for (var i=0; i<data.length; i++) {
+        var r = data[i];
+        var k = parseInt(r.kroes)||0, s = parseInt(r.schub)||0, p = parseInt(r.spiegel)||0, a = parseInt(r.ander)||0;
+        totaalKroes+=k; totaalSchub+=s; totaalSpiegel+=p; totaalAnder+=a;
+        totaalAantal += k+s+p+a;
+        totaalGewicht += parseInt(r.gewicht)||(k*GEW_KROES+s*GEW_SCHUB+p*GEW_SPIEGEL+a*GEW_ANDER);
+        totaalTijd += r.duurMin||0;
+        var st = r.stek||'Onbekend';
+        stekCounts[st] = (stekCounts[st]||0) + 1;
+      }
+      var stekRanking = Object.keys(stekCounts).sort(function(a,b) { return stekCounts[b]-stekCounts[a]; }).slice(0,5);
+      var html = '<div class="d-stats-grid">';
+      html += '<div class="d-stat-card"><div class="d-stat-val">'+totaalAantal+'</div><div class="d-stat-label">Totaal vis</div></div>';
+      html += '<div class="d-stat-card"><div class="d-stat-val">'+(totaalGewicht/1000).toFixed(1)+' kg</div><div class="d-stat-label">Totaal gewicht</div></div>';
+      html += '<div class="d-stat-card"><div class="d-stat-val">'+totaalKroes+'</div><div class="d-stat-label">Kroes</div></div>';
+      html += '<div class="d-stat-card"><div class="d-stat-val">'+totaalSchub+'</div><div class="d-stat-label">Schub</div></div>';
+      html += '<div class="d-stat-card"><div class="d-stat-val">'+totaalAnder+'</div><div class="d-stat-label">Ander</div></div>';
+      html += '<div class="d-stat-card"><div class="d-stat-val">'+totaalTijd+' min</div><div class="d-stat-label">Tijd op het water</div></div>';
+      if (totaalTijd > 0) html += '<div class="d-stat-card"><div class="d-stat-val">'+fmtDecimal(totaalGewicht/totaalTijd)+'</div><div class="d-stat-label">Gr/min</div></div>';
+      html += '<div class="d-stat-card"><div class="d-stat-val">'+data.length+'</div><div class="d-stat-label">Sessies</div></div>';
+      html += '</div>';
+      if (stekRanking.length) {
+        html += '<p class="d-sub" style="font-weight:700;margin:8px 0 4px">Top stekken</p><ol style="color:var(--text);font-size:14px;padding-left:20px">';
+        for (var si=0; si<stekRanking.length; si++) {
+          html += '<li>'+stekRanking[si]+' ('+stekCounts[stekRanking[si]]+' sessies)</li>';
+        }
+        html += '</ol>';
+      }
+      document.getElementById('d-stats-content').innerHTML = html;
+    }
+
+    // Tab switching for data subtabs
+    document.querySelectorAll('.d-tab').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.d-tab').forEach(function(b) { b.classList.remove('active'); });
+        document.querySelectorAll('.d-panel').forEach(function(p) { p.classList.remove('show'); });
+        this.classList.add('active');
+        document.getElementById('d-tab-'+this.dataset.dtab).classList.add('show');
+      });
+    });
+
+    // Beheer
+    document.getElementById('d-clear').addEventListener('click', function() {
+      if (confirm('Alle data wissen?')) { saveData([]); renderData(); showToast('Data gewist'); }
+    });
+    document.getElementById('d-remove-empty').addEventListener('click', function() {
+      var data = loadData().filter(function(r) {
+        var k = parseInt(r.kroes)||0, s = parseInt(r.schub)||0, p = parseInt(r.spiegel)||0, a = parseInt(r.ander)||0;
+        return k+s+p+a > 0;
+      });
+      saveData(data); renderData(); showToast('Lege sessies verwijderd');
+    });
+    document.getElementById('d-export').addEventListener('click', function() {
+      var data = JSON.stringify(loadData(), null, 2);
+      var blob = new Blob([data], {type:'application/json'});
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a'); a.href=url; a.download='vissessies-export.json'; a.click();
+      URL.revokeObjectURL(url);
+    });
+    document.getElementById('d-import').addEventListener('click', function() {
+      document.getElementById('d-import-file').click();
+    });
+    document.getElementById('d-import-file').addEventListener('change', function() {
+      if (!this.files.length) return;
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          var imported = JSON.parse(e.target.result);
+          if (!Array.isArray(imported)) throw new Error('Ongeldig formaat');
+          var existing = loadData();
+          for (var i=0; i<imported.length; i++) {
+            var dup = false;
+            for (var j=0; j<existing.length; j++) {
+              if (existing[j].stek===imported[i].stek && existing[j].datum===imported[i].datum && existing[j].month===imported[i].month) { dup=true; break; }
+            }
+            if (!dup) existing.push(imported[i]);
+          }
+          sortData(existing); saveData(existing); renderData(); showToast('Geimporteerd: '+imported.length+' entries');
+        } catch(err) { showToast('Fout bij importeren'); }
+      };
+      reader.readAsText(this.files[0]);
+      this.value = '';
+    });
+
+    // Month collapse
+    document.addEventListener('click', function(e) {
+      var h = e.target.closest('.d-month-header');
+      if (h) {
+        var body = h.nextElementSibling;
+        if (body) body.classList.toggle('collapsed');
+        h.innerHTML = h.innerHTML.replace('▼','▶').replace('▶','▼');
+      }
+    });
+
+    updateYearSelector();
+    renderData();
+
+    // Re-render on storage change
+    window.addEventListener('storage', function(e) {
+      if (e.key === STORAGE_KEY) renderData();
+    });
+    document.addEventListener('visibilitychange', function() {
+      if (!document.hidden) renderData();
+    });
+  })();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "name": "Hengel App",
+  "short_name": "Hengel",
+  "description": "Feeder assistent, vangsten invoeren en overzicht",
+  "start_url": "/hengel-app",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#003366",
+  "icons": [
+    { "src": "/icons/AppIcoon.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/AppIcoon.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
