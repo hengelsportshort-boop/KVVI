@@ -294,6 +294,7 @@ body {
     </div>
     <div id="results-list" class="results-list"></div>
   </div>
+  <div id="sync-debug" style="font-size:10px;color:var(--muted);text-align:center;flex-shrink:0;min-height:14px"></div>
 </div>
 
 <div class="flash" id="flash"></div>
@@ -638,12 +639,16 @@ body {
   }
 
   function syncVissessie(begin, einde, duurMin) {
+    var debugEl = document.getElementById('sync-debug');
     try {
       var key = 'kvvi_vissessies';
-      if (!localStorage.getItem(key) && localStorage.getItem('kvvi_vissessies_public')) {
+      var raw = localStorage.getItem(key);
+      if (!raw && localStorage.getItem('kvvi_vissessies_public')) {
         key = 'kvvi_vissessies_public';
+        raw = localStorage.getItem(key);
       }
-      var data = JSON.parse(localStorage.getItem(key)) || [];
+      var data = JSON.parse(raw) || [];
+      if (!Array.isArray(data)) data = [];
       var stek = (state.locationName || '--').replace(/\s+/g, ' ').trim();
       var datum = state.date || (function(){var d=new Date();return ('0'+d.getDate()).slice(-2)+'/'+('0'+(d.getMonth()+1)).slice(-2);})();
       var idx = -1;
@@ -679,7 +684,10 @@ body {
         data.push(entry);
       }
       localStorage.setItem(key, JSON.stringify(data));
-    } catch(e) {}
+      if (debugEl) debugEl.textContent = '✅ Sync: ' + data.length + ' entry in kvvi_vissessies';
+    } catch(e) {
+      if (debugEl) debugEl.textContent = '❌ Sync error: ' + e.message;
+    }
     syncToServer(entry);
   }
 
