@@ -20,29 +20,74 @@ body {
   -webkit-tap-highlight-color: transparent;
   padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
-#app { max-width: 600px; margin: 0 auto; padding: 12px 16px calc(24px + env(safe-area-inset-bottom)); }
-.header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid var(--gold); }
+#app { max-width: 640px; margin: 0 auto; padding: 12px 16px calc(24px + env(safe-area-inset-bottom)); }
+.header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px solid var(--gold); }
 .back-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 10px; border: 2px solid var(--blue); background: var(--card); color: var(--blue); font-size: 14px; font-weight: 700; cursor: pointer; -webkit-appearance: none; text-decoration: none; transition: all 0.12s; }
 .back-btn:active { transform: scale(0.96); background: #eff6ff; }
 h1 { font-size: 22px; font-weight: 900; color: var(--blue); flex: 1; }
-h2 { font-size: 17px; font-weight: 800; color: var(--blue); margin: 24px 0 8px; }
-h3 { font-size: 14px; font-weight: 700; color: var(--text); margin: 16px 0 4px; }
-p, li { font-size: 14px; line-height: 1.6; color: var(--text); margin-bottom: 8px; }
-ul, ol { padding-left: 20px; margin-bottom: 12px; }
-li { margin-bottom: 4px; }
-.card { background: var(--card); border-radius: 14px; border: 1px solid var(--border); padding: 14px 16px; margin-bottom: 12px; }
-.tag { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; margin: 0 2px; }
+
+/* Nav tabs */
+.nav { display: flex; gap: 4px; margin-bottom: 20px; }
+.nav a { flex: 1; text-align: center; padding: 8px 4px; border-radius: 10px; font-size: 13px; font-weight: 800; text-decoration: none; color: #fff; transition: opacity 0.12s; }
+.nav a:active { opacity: 0.8; }
+.nav-feed { background: var(--blue); }
+.nav-hengel { background: var(--green); }
+.nav-data { background: #a16207; }
+
+/* Section headers with accent line */
+.sect { margin-bottom: 20px; }
+.sect-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 3px solid; }
+.sect-header h2 { font-size: 17px; font-weight: 900; }
+.sect-feed .sect-header { border-color: var(--blue); }
+.sect-feed .sect-header h2 { color: var(--blue); }
+.sect-hengel .sect-header { border-color: var(--green); }
+.sect-hengel .sect-header h2 { color: var(--green); }
+.sect-data .sect-header { border-color: #a16207; }
+.sect-data .sect-header h2 { color: #a16207; }
+.sect-settings .sect-header { border-color: #475569; }
+.sect-settings .sect-header h2 { color: #475569; }
+
+/* Content cards */
+.c { background: var(--card); border-radius: 12px; border: 1px solid var(--border); padding: 12px 14px; margin-bottom: 8px; }
+.c p, .c li { font-size: 14px; line-height: 1.6; margin-bottom: 4px; }
+.c p:last-child { margin-bottom: 0; }
+.c ul, .c ol { padding-left: 18px; margin-bottom: 4px; }
+.c li { margin-bottom: 2px; }
+.c strong { color: #0f172a; }
+
+/* Highlight boxes */
+.box { border-radius: 10px; padding: 10px 14px; margin-bottom: 8px; font-size: 14px; line-height: 1.6; }
+.box-info { background: #eff6ff; border-left: 4px solid var(--blue); }
+.box-warn { background: #fef8ee; border-left: 4px solid var(--gold); }
+.box-tip { background: #f0fdf4; border-left: 4px solid var(--green); }
+
+/* Tags */
+.tag { display: inline-block; padding: 1px 7px; border-radius: 5px; font-size: 11px; font-weight: 700; margin: 0 1px; }
 .tag-blue { background: #eff6ff; color: var(--blue); }
 .tag-gold { background: #fef8ee; color: #a16207; }
 .tag-green { background: #f0fdf4; color: var(--green); }
 .tag-red { background: #fef2f2; color: #dc2626; }
 .tag-cyan { background: #ecfeff; color: #0891b2; }
 .tag-gray { background: #f1f5f9; color: #475569; }
-.step { display: flex; gap: 10px; margin-bottom: 10px; }
-.step-num { width: 24px; height: 24px; border-radius: 50%; background: var(--blue); color: #fff; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
-.step-body { flex: 1; }
-.sync-box { background: #fef8ee; border: 2px solid var(--gold); border-radius: 12px; padding: 12px 14px; margin-bottom: 12px; }
-.sync-box h3 { color: #a16207; margin-top: 0; }
+
+/* Steps - compact row */
+.step { display: flex; gap: 8px; margin-bottom: 6px; align-items: flex-start; }
+.step-num { width: 22px; height: 22px; border-radius: 50%; background: var(--blue); color: #fff; font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+.step-body { flex: 1; font-size: 14px; line-height: 1.5; }
+.step-body strong { color: #0f172a; }
+
+/* Grid for fish choices */
+.fish-grid { display: flex; gap: 4px; margin: 4px 0; }
+.fish-grid .tag { flex: 1; text-align: center; padding: 4px 0; font-size: 12px; }
+
+/* settings table */
+.settings { width: 100%; border-collapse: collapse; font-size: 14px; }
+.settings td { padding: 8px 10px; border-bottom: 1px solid var(--border); }
+.settings td:first-child { font-weight: 700; white-space: nowrap; color: #0f172a; }
+.settings tr:last-child td { border-bottom: none; }
+
+/* inline icon labels */
+.il { display: inline-flex; align-items: center; gap: 6px; background: #f1f5f9; border-radius: 6px; padding: 2px 10px; font-size: 13px; font-weight: 700; }
 </style>
 </head>
 <body>
@@ -52,109 +97,150 @@ li { margin-bottom: 4px; }
     <a href="/hengel-app" class="back-btn">✕ Sluiten</a>
   </div>
 
-  <p>De app bestaat uit drie tabbladen: <span class="tag tag-blue">⏱️ Feeder</span>, <span class="tag tag-green">📝 Hengel</span> en <span class="tag tag-gold">📊 Data</span>.</p>
+  <!-- Quick nav -->
+  <div class="nav">
+    <a href="#feeder" class="nav-feed">⏱️ Feeder</a>
+    <a href="#hengel" class="nav-hengel">📝 Hengel</a>
+    <a href="#data" class="nav-data">📊 Data</a>
+  </div>
 
-  <h2>⏱️ Feeder — live vissen met timers</h2>
-  <p>Dit tabblad gebruik je terwijl je aan het water zit. Het combineert een stopwatch (hoe lang tot een vis bijt) met een voertimer (wanneer bijvoeren) en registreert elke vangst of misser.</p>
+  <!-- Intro -->
+  <div class="box box-info">
+    Drie tabbladen in één app: <strong>⏱️ Feeder</strong> voor live vissen met timers,
+    <strong>📝 Hengel</strong> voor sessies bijhouden,
+    <strong>📊 Data</strong> voor overzicht en statistieken.
+  </div>
 
-  <h3>Stap voor stap</h3>
+  <!-- ================ FEEDER ================ -->
+  <div class="sect sect-feed" id="feeder">
+    <div class="sect-header">
+      <span style="font-size:22px">⏱️</span>
+      <h2>Feeder — live vissen met timers</h2>
+    </div>
 
-  <div class="step">
-    <div class="step-num">1</div>
-    <div class="step-body">
-      <strong>Locatie &amp; datum</strong><br>
-      Vul bovenaan de stek (max. 5 tekens, bv. "G 7") en de datum in. De app herkent hierop of het om een nieuwe of bestaande sessie gaat.
+    <div class="c">
+      <p><strong>Wanneer gebruiken?</strong> Terwijl je aan het water zit. De Feeder-tab combineert een stopwatch (tijd tussen worp en beet) met een voertimer (periodiek bijvoeren) en registreert elke vangst of misser.</p>
+    </div>
+
+    <h3 style="font-size:14px;font-weight:800;color:var(--blue);margin:0 0 8px">Stap voor stap</h3>
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body"><strong>Locatie &amp; datum</strong> — Vul bovenaan de stek (max. 5 tekens, bv. "G 7") en de datum in. De app herkent hierop of het om een nieuwe of bestaande sessie gaat.</div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body"><strong>Timers instellen</strong> — Kies interval (3, 5 of 8 min) en aantal signalen (1× of 2× 🔔) via de balk onder de timers.</div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body"><strong>Worp</strong> — Druk op <span class="tag tag-green">🟢 WORP</span>. Beide timers starten automatisch.</div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <strong>Vangst of misser</strong><br>
+        <strong>VIS</strong> → druk op <span class="tag tag-blue">🔵 VIS BINNEN</span>, kies type:
+        <div class="fish-grid">
+          <span class="tag tag-cyan">KR</span>
+          <span class="tag tag-cyan">SC</span>
+          <span class="tag tag-cyan">SP</span>
+          <span class="tag tag-cyan">AN</span>
+        </div>
+        <strong>BIJVOEREN</strong> (geen beet) → <span class="tag tag-gray">🔄 Opnieuw voeren</span> — timers resetten zonder vangst.<br>
+        <strong>MISSER</strong> → <span class="tag tag-red">🔴 MISSER</span> — telt in statistieken maar niet als vangst.
+      </div>
+    </div>
+
+    <div class="c" style="margin-top:4px">
+      <p><strong>Resultaten</strong> — De laatste 3 vangsten/missers verschijnen met tijdstempel. De 4de regel toont de gemiddelde vangsttijd (alle vangsten, exclusief missers). Hoe korter, hoe actiever de vis bijt.</p>
+    </div>
+
+    <div class="c">
+      <p><strong>Sessie afsluiten</strong> — Via <span class="tag">⚙️</span> → <strong>Vissessie beëindigen</strong>. De app slaat begin- en einduur, totaal per vissoort, gewicht en locatie op. Alles wordt gereset voor een nieuwe sessie.</p>
+    </div>
+
+    <div class="box box-warn">
+      <strong>⚖️ Standaard gewichten:</strong> Kroes/F1 = 300 g · Schub = 1500 g · Spiegel = 1600 g · Ander = 100 g.<br>
+      <span style="font-size:13px">Aanpasbaar via Instellingen in het Data-tabblad.</span>
     </div>
   </div>
 
-  <div class="step">
-    <div class="step-num">2</div>
-    <div class="step-body">
-      <strong>Timers instellen</strong><br>
-      Stel de interval en het aantal geluidssignalen in via de balk onder de timers.
+  <!-- ================ HENGEL ================ -->
+  <div class="sect sect-hengel" id="hengel">
+    <div class="sect-header">
+      <span style="font-size:22px">📝</span>
+      <h2>Hengel — vissessies bijhouden</h2>
+    </div>
+
+    <div class="c">
+      <p><strong>Wanneer gebruiken?</strong> Voor het beheren van alle vissessies: manueel ingeven, aanvullen of bewerken wat de Feeder-tab al aanmaakte.</p>
+    </div>
+
+    <div class="c">
+      <p style="font-weight:700;margin-bottom:6px">Velden</p>
+      <table class="settings">
+        <tr><td>Stek</td><td>Locatienaam, max. 5 tekens (bv. "G 7", "Hoek")</td></tr>
+        <tr><td>Datum</td><td>Visdatum. Samen met stek = unieke sessie</td></tr>
+        <tr><td>Begin / Einde</td><td>Begin- en eindtijd van de sessie</td></tr>
+        <tr><td>Vangst per type</td><td>&minus; en + om aantallen per vissoort in te stellen</td></tr>
+        <tr><td>Aantal &amp; gewicht</td><td>Worden automatisch berekend</td></tr>
+      </table>
+      <p style="margin-top:6px">Druk op <span class="tag tag-blue">💾 Opslaan</span> na elke aanpassing. Zonder opslaan gaan wijzigingen verloren.</p>
+    </div>
+
+    <div class="box box-tip">
+      <strong>Koppeling met Feeder-tab:</strong> Alles wat je in de Feeder-tab registreert, verschijnt hier automatisch als sessie. Begin- en eindtijd kun je nog bijsturen.
     </div>
   </div>
 
-  <div class="step">
-    <div class="step-num">3</div>
-    <div class="step-body">
-      <strong>Worp</strong><br>
-      Druk op <span class="tag tag-green">🟢 WORP</span>. Beide timers starten automatisch.
+  <!-- ================ DATA ================ -->
+  <div class="sect sect-data" id="data">
+    <div class="sect-header">
+      <span style="font-size:22px">📊</span>
+      <h2>Data — overzicht &amp; beheer</h2>
+    </div>
+
+    <div class="c">
+      <table class="settings">
+        <tr><td>📊 Data</td><td>Lijst van alle sessies, filterbaar per jaar</td></tr>
+        <tr><td>📈 Statistieken</td><td>Grafieken: top stekken, vangsten over tijd, verdeling per vissoort</td></tr>
+        <tr><td>⚙️ Beheer</td><td>Data wissen, lege sessies opruimen</td></tr>
+        <tr><td>📥 / 📤 JSON</td><td>Back-up exporteren of importeren vanaf ander toestel</td></tr>
+      </table>
+    </div>
+
+    <div class="box box-warn">
+      <strong>Top stekken:</strong> Alleen stekken van max. 5 tekens verschijnen in de grafiek. Gebruik consistent dezelfde naam (hoofdletters tellen mee).
+    </div>
+
+    <div class="c">
+      <p style="font-weight:700;margin-bottom:6px">Back-up &amp; overzetten</p>
+      <ol>
+        <li><strong>⚙️ Beheer → Exporteer JSON</strong> — sla het bestand op je toestel.</li>
+        <li>Open de app op het nieuwe toestel → <strong>Importeer JSON</strong>.</li>
+        <li>Selecteer het opgeslagen bestand — alle sessies worden ingeladen.</li>
+      </ol>
     </div>
   </div>
 
-  <div class="step">
-    <div class="step-num">4</div>
-    <div class="step-body">
-      <strong>Vangst of misser</strong><br>
-      Bij een vis: druk op <span class="tag tag-blue">🔵 VIS BINNEN</span> en kies het type
-      (<span class="tag tag-cyan">KR</span> Kroes,
-      <span class="tag tag-cyan">SC</span> Schub,
-      <span class="tag tag-cyan">SP</span> Spiegel,
-      <span class="tag tag-cyan">AN</span> Ander).<br>
-      Geen beet maar wel bijvoeren? Druk op <span class="tag tag-gray">🔄 Opnieuw voeren</span> — timers resetten zonder vangst te tellen.<br>
-      Mis je de vis? Druk op <span class="tag tag-red">🔴 MISSER</span>. Dit telt mee in de statistieken maar niet als vangst.
+  <!-- ================ SETTINGS ================ -->
+  <div class="sect sect-settings">
+    <div class="sect-header">
+      <span style="font-size:22px">⚙️</span>
+      <h2>Instellingen</h2>
+    </div>
+    <div class="c">
+      <table class="settings">
+        <tr><td>Interval</td><td>Voertimer: 3, 5 of 8 minuten</td></tr>
+        <tr><td>🔔 Signalen</td><td>1× of 2× piepsignaal bij voermoment</td></tr>
+        <tr><td>Geluid aan/uit</td><td>Schakel alle geluiden uit (bv. op rustige plekken)</td></tr>
+      </table>
     </div>
   </div>
-
-  <h3>Resultaten onder de knoppen</h3>
-  <p>De laatste 3 resultaten verschijnen direct met tijdstempel. De 4de regel toont de gemiddelde vangsttijd (alle vangsten, geen missers) — hoe korter, hoe actiever de vis bijt.</p>
-
-  <h3>Sessie afsluiten</h3>
-  <p>Ga naar <span class="tag">⚙️</span> → <strong>Vissessie beëindigen</strong>. De app slaat begin- en einduur, totaal vissen per type, totaal gewicht en de locatie op. Daarna wordt alles gereset voor een nieuwe sessie.</p>
-
-  <div class="sync-box">
-    <h3>⚖️ Gewichten (schattingen)</h3>
-    <p>Kroes/F1 = 300 g · Schub = 1500 g · Spiegel = 1600 g · Ander = 100 g.<br>
-    Deze kun je later aanpassen via Instellingen in het Data-tabblad.</p>
-  </div>
-
-  <h2>📝 Hengel — vissessies bijhouden</h2>
-  <p>In dit tabblad beheer je alle vissessies: manueel ingeven, aanvullen of bewerken wat de Feeder-tab al aanmaakte.</p>
-
-  <h3>Een sessie invullen</h3>
-  <ul>
-    <li><strong>Stek</strong> — locatienaam, max. 5 tekens (bv. "G 7", "Hoek")</li>
-    <li><strong>Datum</strong> — de visdatum. Samen met de stek = unieke sessie</li>
-    <li><strong>Begin / Einde</strong> — begin- en eindtijd van de sessie</li>
-    <li><strong>Vangst per type</strong> — gebruik &minus; en + om aantallen per vissoort bij te houden</li>
-    <li><strong>Aantal &amp; gewicht</strong> — worden automatisch berekend op basis van de vangsten</li>
-  </ul>
-  <p>Druk op <span class="tag tag-blue">💾 Opslaan</span> na elke aanpassing. Zonder opslaan gaan wijzigingen verloren bij navigeren.</p>
-
-  <h3>Koppeling met de Feeder-tab</h3>
-  <div class="sync-box">
-    <p>Alles wat je in de Feeder-tab registreert, verschijnt hier automatisch als sessie. Je kunt begin- en eindtijd dan nog bijsturen, of extra notities toevoegen.</p>
-  </div>
-
-  <h2>📊 Data — overzicht &amp; beheer</h2>
-  <p>Het Data-tabblad geeft je een overzicht van alle opgeslagen sessies en laat je statistieken bekijken per jaar of per stek.</p>
-
-  <h3>Onderdelen</h3>
-  <ul>
-    <li><strong>📊 Data</strong> — lijst van alle sessies, filterbaar per jaar</li>
-    <li><strong>📈 Statistieken</strong> — grafieken: top stekken, vangsten over tijd, verdeling per vissoort</li>
-    <li><strong>⚙️ Beheer</strong> — gevaarlijke acties: alle data wissen of lege sessies opruimen</li>
-    <li><strong>📥 / 📤 JSON</strong> — exporteer je data als back-up, of importeer van een ander toestel</li>
-  </ul>
-
-  <div class="card" style="border-color:var(--gold);background:#fef8ee">
-    <p style="font-size:13px"><strong>Top stekken:</strong> Alleen stekken met een naam van max. 5 tekens verschijnen in de grafiek. Zorg dat je locaties consistent dezelfde naam krijgen (hoofd- en kleine letters tellen mee).</p>
-  </div>
-
-  <h3>Back-up &amp; overzet naar ander toestel</h3>
-  <ol>
-    <li>Ga naar <strong>⚙️ Beheer</strong> → <strong>Exporteer JSON</strong> en sla het bestand op.</li>
-    <li>Open de app op het nieuwe toestel en ga naar <strong>Importeer JSON</strong>.</li>
-    <li>Selecteer het opgeslagen bestand — alle sessies worden ingeladen.</li>
-  </ol>
-
-  <h2>⚙️ Instellingen</h2>
-  <ul>
-    <li><strong>Interval</strong> — voertimer: 3, 5 of 8 minuten</li>
-    <li><strong>🔔 Signalen</strong> — 1&times; of 2&times; piepsignaal bij voermoment</li>
-    <li><strong>Geluid aan/uit</strong> — schakel alle geluiden uit (bv. op rustige plekken)</li>
-  </ul>
 </div>
 </body>
 </html>
