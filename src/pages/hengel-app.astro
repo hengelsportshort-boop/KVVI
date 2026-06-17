@@ -258,12 +258,7 @@ td { padding: 4px; border-bottom: 1px solid #0f172a; vertical-align: top; text-a
       </div>
       <div class="f-action-row" id="f-vis-row">
         <button class="f-action-btn blue" id="f-vis">🔵 VIS BINNEN</button>
-        <div id="f-fish-choices" style="display:none;flex:1;gap:4px">
-          <button class="f-action-btn fish-btn" data-fish="kroes">KR</button>
-          <button class="f-action-btn fish-btn" data-fish="schub">SC</button>
-          <button class="f-action-btn fish-btn" data-fish="spiegel">SP</button>
-          <button class="f-action-btn fish-btn" data-fish="ander">AN</button>
-        </div>
+        <div id="f-fish-choices" style="display:none;flex:1;gap:4px"></div>
       </div>
       <div class="f-action-row"><button class="f-action-btn red" id="f-misser">🔴 MISSER</button></div>
     </div>
@@ -286,12 +281,7 @@ td { padding: 4px; border-bottom: 1px solid #0f172a; vertical-align: top; text-a
         <div><div class="i-label">Einde</div><input id="i-einde" maxlength="4" inputmode="numeric" placeholder="1800" class="i-input-text" value="" autocomplete="off"><div class="i-hint" id="i-einde-display"></div></div>
       </div>
       <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px">Vangst</div>
-      <div class="i-grid">
-        <div class="i-fish-box" style="border-color:#059669"><div class="i-label" style="color:#059669;text-align:center">Kroes</div><input id="i-kroes" type="text" inputmode="numeric" maxlength="3" value="0" class="i-fish-input" style="border-color:#059669;color:#fff"><div class="i-stepper"><button class="i-btn" data-id="i-kroes" data-d="-1" style="border-color:#059669;color:#059669">−</button><button class="i-btn" data-id="i-kroes" data-d="1" style="border-color:#059669;color:#059669">+</button></div></div>
-        <div class="i-fish-box" style="border-color:#2563eb"><div class="i-label" style="color:#2563eb;text-align:center">Schub</div><input id="i-schub" type="text" inputmode="numeric" maxlength="3" value="0" class="i-fish-input" style="border-color:#2563eb;color:#fff"><div class="i-stepper"><button class="i-btn" data-id="i-schub" data-d="-1" style="border-color:#2563eb;color:#2563eb">−</button><button class="i-btn" data-id="i-schub" data-d="1" style="border-color:#2563eb;color:#2563eb">+</button></div></div>
-        <div class="i-fish-box" style="border-color:#7c3aed"><div class="i-label" style="color:#7c3aed;text-align:center">Spiegel</div><input id="i-spiegel" type="text" inputmode="numeric" maxlength="3" value="0" class="i-fish-input" style="border-color:#7c3aed;color:#fff"><div class="i-stepper"><button class="i-btn" data-id="i-spiegel" data-d="-1" style="border-color:#7c3aed;color:#7c3aed">−</button><button class="i-btn" data-id="i-spiegel" data-d="1" style="border-color:#7c3aed;color:#7c3aed">+</button></div></div>
-        <div class="i-fish-box" style="border-color:#d97706"><div class="i-label" style="color:#d97706;text-align:center">Ander</div><input id="i-ander" type="text" inputmode="numeric" maxlength="3" value="0" class="i-fish-input" style="border-color:#d97706;color:#fff"><div class="i-stepper"><button class="i-btn" data-id="i-ander" data-d="-1" style="border-color:#d97706;color:#d97706">−</button><button class="i-btn" data-id="i-ander" data-d="1" style="border-color:#d97706;color:#d97706">+</button></div></div>
-      </div>
+      <div class="i-grid" id="i-fish-grid"></div>
       <div class="i-pair">
         <div><div class="i-label">Aantal</div><div id="i-aantal" class="i-stat" style="border-color:#059669;color:#059669">0</div></div>
         <div><div class="i-label">Gewicht</div><div class="i-stat" style="border-color:#2563eb;color:#2563eb"><span id="i-gewicht" data-gram="0">0,000</span></div></div>
@@ -313,6 +303,7 @@ td { padding: 4px; border-bottom: 1px solid #0f172a; vertical-align: top; text-a
       <button class="d-tab active" data-dtab="data">📊 Data</button>
       <button class="d-tab" data-dtab="stats">📈 Statistieken</button>
       <button class="d-tab danger" data-dtab="beheer">⚙️ Beheer</button>
+      <button class="d-tab" data-dtab="vissoorten">🐟 Vissoorten</button>
     </div>
     <div id="d-tab-data" class="d-panel show">
       <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px;flex-shrink:0">
@@ -337,6 +328,9 @@ td { padding: 4px; border-bottom: 1px solid #0f172a; vertical-align: top; text-a
         <button class="d-beheer-btn" id="d-export">📤 Exporteer JSON</button>
       </div>
     </div>
+    <div id="d-tab-vissoorten" class="d-panel">
+      <div id="d-vissoorten-content"><p class="d-empty">Laden...</p></div>
+    </div>
   </div>
 </div>
 
@@ -359,8 +353,64 @@ td { padding: 4px; border-bottom: 1px solid #0f172a; vertical-align: top; text-a
   var STORAGE_KEY = 'kvvi_vissessies';
   var FEEDER_KEY = 'hengel_app_feeder';
   var JAAR_KEY = 'kvvi_jaar';
-  var GEW_KROES = 300, GEW_SCHUB = 1500, GEW_SPIEGEL = 1600, GEW_ANDER = 100;
+  var GEW_KROES = function(){return visGewicht('kroes');}, GEW_SCHUB = function(){return visGewicht('schub');}, GEW_SPIEGEL = function(){return visGewicht('spiegel');}, GEW_ANDER = function(){return visGewicht('ander');};
   var MAANDEN = ['jan','feb','mar','apr','mei','jun','jul','aug','sep','okt','nov','dec'];
+  var VISSOORTEN_KEY = 'kvvi_vissoorten';
+  var DEFAULT_VISSOORTEN = [
+    {id:'kroes',code:'KR',name:'Kroes',weight:300,color:'#059669'},
+    {id:'schub',code:'SC',name:'Schub',weight:1500,color:'#2563eb'},
+    {id:'spiegel',code:'SP',name:'Spiegel',weight:1600,color:'#7c3aed'},
+    {id:'ander',code:'AN',name:'Ander',weight:100,color:'#d97706'}
+  ];
+  function getVissoorten(){
+    try{var d=JSON.parse(localStorage.getItem(VISSOORTEN_KEY));if(d&&d.length===4)return d;}catch(e){}
+    return DEFAULT_VISSOORTEN.map(function(x){return{id:x.id,code:x.code,name:x.name,weight:x.weight,color:x.color};});
+  }
+  function saveVissoorten(d){try{localStorage.setItem(VISSOORTEN_KEY,JSON.stringify(d));}catch(e){}}
+  function visGewicht(id){var v=getVissoorten();for(var i=0;i<v.length;i++){if(v[i].id===id)return v[i].weight;}return 300;}
+  function visName(id){var v=getVissoorten();for(var i=0;i<v.length;i++){if(v[i].id===id)return v[i].name;}return id;}
+  function visCode(id){var v=getVissoorten();for(var i=0;i<v.length;i++){if(v[i].id===id)return v[i].code;}return id;}
+  function renderFishButtons(){
+    var vs=getVissoorten();var el=document.getElementById('f-fish-choices');if(!el)return;
+    el.innerHTML=vs.map(function(x){return'<button class="f-action-btn fish-btn" data-fish="'+x.id+'">'+x.code+'</button>';}).join('');
+  }
+  function renderFishGrid(){
+    var vs=getVissoorten();var el=document.getElementById('i-fish-grid');if(!el)return;
+    el.innerHTML=vs.map(function(x){return'<div class="i-fish-box" style="border-color:'+x.color+'"><div class="i-label" style="color:'+x.color+';text-align:center">'+x.name+'</div><input id="i-'+x.id+'" type="text" inputmode="numeric" maxlength="3" value="0" class="i-fish-input" style="border-color:'+x.color+';color:#fff"><div class="i-stepper"><button class="i-btn" data-id="i-'+x.id+'" data-d="-1" style="border-color:'+x.color+';color:'+x.color+'">−</button><button class="i-btn" data-id="i-'+x.id+'" data-d="1" style="border-color:'+x.color+';color:'+x.color+'">+</button></div></div>';}).join('');
+  }
+  function renderVissoortenPanel(){
+    var container=document.getElementById('d-vissoorten-content');if(!container)return;
+    var vs=getVissoorten();
+    var html='<div style="margin-bottom:10px;font-size:13px;color:var(--muted)">Namen en gewichten per vissoort aanpassen.</div><div id="vs-list">';
+    for(var i=0;i<vs.length;i++){
+      html+='<div class="vs-row" style="display:flex;gap:6px;align-items:center;margin-bottom:6px;background:var(--card);border:2px solid var(--border);border-radius:10px;padding:8px 10px">';
+      html+='<div style="flex:0.6"><div style="font-size:10px;color:var(--muted);font-weight:600">Code</div><input class="vs-code" data-id="'+vs[i].id+'" value="'+vs[i].code+'" maxlength="2" style="width:100%;padding:3px 4px;border:2px solid var(--border);border-radius:6px;font-size:12px;font-weight:700;background:#0f172a;color:#fff;text-align:center"></div>';
+      html+='<div style="flex:2"><div style="font-size:10px;color:var(--muted);font-weight:600">Naam</div><input class="vs-name" data-id="'+vs[i].id+'" value="'+vs[i].name+'" maxlength="20" style="width:100%;padding:3px 6px;border:2px solid var(--border);border-radius:6px;font-size:12px;font-weight:700;background:#0f172a;color:#fff"></div>';
+      html+='<div style="flex:0.7"><div style="font-size:10px;color:var(--muted);font-weight:600">Gewicht (g)</div><input class="vs-weight" data-id="'+vs[i].id+'" value="'+vs[i].weight+'" type="number" min="1" max="99999" style="width:100%;padding:3px 4px;border:2px solid var(--border);border-radius:6px;font-size:12px;font-weight:700;background:#0f172a;color:#fff"></div>';
+      html+='</div>';
+    }
+    html+='</div><div style="display:flex;gap:8px;margin-top:8px"><button class="d-beheer-btn primary" id="vs-save">💾 Opslaan</button><button class="d-beheer-btn" id="vs-reset">↩️ Standaard</button></div>';
+    html+='<div id="vs-toast" style="margin-top:8px;font-size:13px;font-weight:700"></div>';
+    container.innerHTML=html;
+    document.getElementById('vs-save').addEventListener('click',function(){
+      var inputs=container.querySelectorAll('.vs-code,.vs-name,.vs-weight');
+      var newVs=[];
+      for(var j=0;j<inputs.length;j+=3){
+        newVs.push({id:inputs[j].dataset.id,code:inputs[j].value,name:inputs[j+1].value,weight:parseInt(inputs[j+2].value)||300,color:(DEFAULT_VISSOORTEN.filter(function(x){return x.id===inputs[j].dataset.id;})[0]||{}).color||'#fff'});
+      }
+      saveVissoorten(newVs);
+      renderFishButtons();renderFishGrid();
+      document.getElementById('vs-toast').textContent='✅ Vissoorten opgeslagen';
+      showToast('Vissoorten opgeslagen');
+    });
+    document.getElementById('vs-reset').addEventListener('click',function(){
+      localStorage.removeItem(VISSOORTEN_KEY);
+      renderVissoortenPanel();
+      renderFishButtons();renderFishGrid();
+      document.getElementById('vs-toast').textContent='↩️ Teruggezet naar standaard';
+      showToast('Standaard vissoorten hersteld');
+    });
+  }
   var jaarOpties = [];
   (function() { var y = new Date().getFullYear(); for (var y2 = 2026; y2 <= y + 5; y2++) jaarOpties.push(y2); })();
 
@@ -479,7 +529,7 @@ td { padding: 4px; border-bottom: 1px solid #0f172a; vertical-align: top; text-a
       var k = fs.fishCounts.kroes||0, s = fs.fishCounts.schub||0, p = fs.fishCounts.spiegel||0, a = fs.fishCounts.ander||0;
       var total = k+s+p+a;
       if (total === 0) { el.textContent = ''; return; }
-      var weight = k*300 + s*1500 + p*1600 + a*100;
+      var weight = k*visGewicht('kroes') + s*visGewicht('schub') + p*visGewicht('spiegel') + a*visGewicht('ander');
       var w = weight >= 1000 ? (weight/1000).toFixed(1) + ' kg' : weight + ' g';
       el.textContent = total + ' v \u00b7 ' + w;
     }
@@ -490,7 +540,7 @@ td { padding: 4px; border-bottom: 1px solid #0f172a; vertical-align: top; text-a
       var avgSec = 0;
       if (fishResults.length) { var total = 0; for (var i=0;i<fishResults.length;i++) total += (function(s){var p=s.split(':');return parseInt(p[0])*60+parseInt(p[1]);})(fishResults[i].time); avgSec = total/fishResults.length; }
       var html = show.map(function(r) {
-        var labels = { vis:'V', misser:'M', kroes:'KR', schub:'SC', spiegel:'SP', ander:'AN' };
+        var vs = getVissoorten(); var labels = { vis:'V', misser:'M' }; vs.forEach(function(x){labels[x.id]=x.code;});
         var label = labels[r.type] || r.type;
         return '<div class="f-result-item"><span class="r-type '+r.type+'">'+label+'</span><span class="r-time">'+r.time+'</span></div>';
       }).join('');
@@ -566,7 +616,7 @@ td { padding: 4px; border-bottom: 1px solid #0f172a; vertical-align: top; text-a
         for (var i=0;i<data.length;i++) { if (data[i].stek === stek && data[i].datum === datum) { idx = i; break; } }
         var entry = { stek: stek, datum: datum, kroes: fs.fishCounts.kroes||0, schub: fs.fishCounts.schub||0, spiegel: fs.fishCounts.spiegel||0, ander: fs.fishCounts.ander||0 };
         entry.aantal = entry.kroes+entry.schub+entry.spiegel+entry.ander;
-        entry.gewicht = entry.kroes*300 + entry.schub*1500 + entry.spiegel*1600 + entry.ander*100;
+        entry.gewicht = entry.kroes*visGewicht('kroes') + entry.schub*visGewicht('schub') + entry.spiegel*visGewicht('spiegel') + entry.ander*visGewicht('ander');
         entry.begin = begin||''; entry.einde = einde||''; entry.duurMin = duurMin||0; entry.tijdMin = entry.duurMin; entry.wedstrijd = '';
         var m = datum.match(/\/(\d+)/);
         if (m) { var mn = parseInt(m[1]); entry.month = (MAANDEN[mn-1]||'???')+' '+new Date().getFullYear(); }
@@ -594,8 +644,7 @@ td { padding: 4px; border-bottom: 1px solid #0f172a; vertical-align: top; text-a
       var swTime = fmt(fs.swSeconds);
       fs.swRunning = false; fs.ftRunning = false; stopTimer();
       fs.swSeconds = 0; fs.ftSeconds = fs.interval*60; updateDisplay();
-      var FISH_NAMES = { kroes:'Kroes', schub:'Schub', spiegel:'Spiegel', ander:'Ander' };
-      var label = type === 'misser' ? 'MISSER' : (FISH_NAMES[type]||'VIS');
+      var label = type === 'misser' ? 'MISSER' : (visName(type)||'VIS');
       var cls = type === 'misser' ? 'result-misser' : 'result-vis';
       fs.results.unshift({ type: type, time: swTime, location: fs.locationName||'', ts: new Date().toISOString() });
       if (fs.results.length > 3) fs.results.length = 3;
@@ -609,7 +658,7 @@ td { padding: 4px; border-bottom: 1px solid #0f172a; vertical-align: top; text-a
       showToast(label+' '+swTime); toggleBtnState();
     }
 
-    var FISH_NAMES = { kroes:'Kroes', schub:'Schub', spiegel:'Spiegel', ander:'Ander' };
+    var FISH_NAMES = {}; (function(){var vs=getVissoorten();vs.forEach(function(x){FISH_NAMES[x.id]=x.name;});})();
 
     // Event listeners
     document.getElementById('f-sw-toggle').addEventListener('click', function() { if (fs.swRunning) { fs.swRunning=false; if(!fs.ftRunning) stopTimer(); } else { startTimer(); fs.swRunning=true; } toggleBtnState(); updateDisplay(); startTimer(); });
@@ -630,13 +679,14 @@ td { padding: 4px; border-bottom: 1px solid #0f172a; vertical-align: top; text-a
       document.getElementById('f-vis').style.display = 'none';
       document.getElementById('f-fish-choices').style.display = 'flex';
     });
-    document.querySelectorAll('#f-fish-choices button').forEach(function(btn) {
-      btn.addEventListener('click', function() {
-        recordResult(this.dataset.fish);
+    document.getElementById('f-fish-choices').addEventListener('click', function(e) {
+      var btn = e.target.closest('.fish-btn');
+      if (btn) {
+        recordResult(btn.dataset.fish);
         fs.showFishChoices = false;
         document.getElementById('f-vis').style.display = '';
         document.getElementById('f-fish-choices').style.display = 'none';
-      });
+      }
     });
     document.getElementById('f-misser').addEventListener('click', function() {
       if (fs.showFishChoices) { fs.showFishChoices=false; document.getElementById('f-vis').style.display=''; document.getElementById('f-fish-choices').style.display='none'; }
@@ -679,8 +729,13 @@ td { padding: 4px; border-bottom: 1px solid #0f172a; vertical-align: top; text-a
 
     function formatClockTime(ts) { if (!ts) return ''; var d = new Date(ts); return d.getHours()+'u '+d.getMinutes()+'m'; }
     document.getElementById('f-end-session').addEventListener('click', function() {
-      var k = fs.fishCounts.kroes||0, s=fs.fishCounts.schub||0, p=fs.fishCounts.spiegel||0, a=fs.fishCounts.ander||0;
-      var parts = []; if (k) parts.push(k+' Kroes'); if (s) parts.push(s+' Schub'); if (p) parts.push(p+' Spiegel'); if (a) parts.push(a+' Ander');
+      var vsEnd = getVissoorten();
+      var parts = []; var totalCount = 0;
+      vsEnd.forEach(function(x){
+        var c = fs.fishCounts[x.id]||0;
+        if (c) parts.push(c+' '+x.name);
+        totalCount += c;
+      });
       var begin = fs.sessionStart ? formatClockTime(fs.sessionStart) : '';
       var einde = formatClockTime(Date.now());
       var duurMin = fs.sessionStart ? Math.round((Date.now()-fs.sessionStart)/60000) : 0;
@@ -713,6 +768,7 @@ td { padding: 4px; border-bottom: 1px solid #0f172a; vertical-align: top; text-a
     document.getElementById('f-location').value = fs.locationName;
     document.getElementById('f-date').value = fs.date;
     updateDisplay(); toggleBtnState(); updateIntervalUI(); updatePingUI(); updateResults();
+    renderFishButtons();
 
     // Listen for feeder data changes from other tabs
     window.addEventListener('storage', function(e) {
@@ -748,10 +804,10 @@ td { padding: 4px; border-bottom: 1px solid #0f172a; vertical-align: top; text-a
       return null;
     }
     function updateAantal() {
-      var ids = ['i-kroes','i-schub','i-spiegel','i-ander'];
-      var sum = ids.reduce(function(a,id) { return a+(parseInt(document.getElementById(id).value)||0); }, 0);
+      var vs = getVissoorten();
+      var sum = vs.reduce(function(a,x) { return a+(parseInt(document.getElementById('i-'+x.id).value)||0); }, 0);
       document.getElementById('i-aantal').textContent = sum;
-      var gram = (function(){var k=parseInt(document.getElementById('i-kroes').value)||0,s=parseInt(document.getElementById('i-schub').value)||0,p=parseInt(document.getElementById('i-spiegel').value)||0,a=parseInt(document.getElementById('i-ander').value)||0; return k*GEW_KROES+s*GEW_SCHUB+p*GEW_SPIEGEL+a*GEW_ANDER;})();
+      var gram = vs.reduce(function(a,x) { return a+((parseInt(document.getElementById('i-'+x.id).value)||0)*x.weight); }, 0);
       var el = document.getElementById('i-gewicht');
       el.textContent = (gram/1000).toLocaleString('nl-NL',{minimumFractionDigits:3,maximumFractionDigits:3});
       el.setAttribute('data-gram', String(gram));
@@ -765,25 +821,34 @@ td { padding: 4px; border-bottom: 1px solid #0f172a; vertical-align: top; text-a
       container.style.display = d != null ? '' : 'none';
     }
     function renderInvoer() {
+      renderFishGrid();
       var stek = document.getElementById('i-stek').value.trim().toLowerCase();
       var el = document.getElementById('i-list');
       var data = loadData();
       if (!data.length) { el.innerHTML = '<p class="d-empty">Nog geen sessies.</p>'; return; }
       var filtered = stek ? data.filter(function(r) { return r.stek && r.stek.toLowerCase() === stek; }) : data;
       if (!filtered.length) { el.innerHTML = '<p class="d-empty">Geen sessies voor deze stek.</p>'; return; }
+      var vs = getVissoorten();
       var computed = filtered.map(function(r) {
         var duurMin = r.duurMin || calcDuur(r.begin, r.einde) || 0;
-        var kroes = parseInt(r.kroes)||0, schub = parseInt(r.schub)||0, spiegel = parseInt(r.spiegel)||0, ander = parseInt(r.ander)||0;
-        var aantal = kroes+schub+spiegel+ander;
-        var gewicht = parseInt(r.gewicht) || (kroes*GEW_KROES+schub*GEW_SCHUB+spiegel*GEW_SPIEGEL+ander*GEW_ANDER);
-        return { kroes:kroes, schub:schub, spiegel:spiegel, ander:ander, aantal:aantal, gewicht:gewicht, datum:r.datum, stek:r.stek, begin:r.begin, einde:r.einde, duurMin:duurMin, month:r.month };
+        var gewicht = parseInt(r.gewicht);
+        if (!gewicht) {
+          gewicht = vs.reduce(function(a,x){return a+((parseInt(r[x.id])||0)*x.weight);},0);
+        }
+        var row = { aantal:0, datum:r.datum, stek:r.stek, begin:r.begin, einde:r.einde, duurMin:duurMin, month:r.month };
+        vs.forEach(function(x){row[x.id]=parseInt(r[x.id])||0; row.aantal+=row[x.id];});
+        row.gewicht = gewicht;
+        return row;
       }).sort(function(a,b) { function sv(r) { var p=r.datum?r.datum.split('/'):[]; if (p.length!==2) return 999999999; var d=parseInt(p[0]),m=parseInt(p[1]),j=0,x=r.month&&r.month.match(/\b(\d{4})\b/); if(x)j=parseInt(x[1]); return j*10000+m*100+d; } return sv(a)-sv(b); });
-      var html = '<table><thead><tr><th>Datum</th><th>Kroes</th><th>Schub</th><th>Spiegel</th><th>Ander</th><th>Aantal</th><th>Begin</th><th>Einde</th><th>Duur</th></tr></thead><tbody>';
+      var html = '<table><thead><tr><th>Datum</th>'; (function(){var v=getVissoorten();v.forEach(function(x){html+='<th>'+x.name+'</th>';});})(); html+='<th>Aantal</th><th>Begin</th><th>Einde</th><th>Duur</th></tr></thead><tbody>';
+      var vs = getVissoorten();
       for (var i=0;i<computed.length;i++) {
         var c = computed[i];
-        html += '<tr><td>'+c.datum+'</td><td class="num">'+(c.kroes||'')+'</td><td class="num">'+(c.schub||'')+'</td><td class="num">'+(c.spiegel||'')+'</td><td class="num">'+(c.ander||'')+'</td><td class="num">'+c.aantal+'</td><td>'+(c.begin||'')+'</td><td>'+(c.einde||'')+'</td><td class="num">'+fmtTime(c.duurMin)+'</td></tr>';
+        html += '<tr><td>'+c.datum+'</td>';
+        vs.forEach(function(x){html+='<td class="num">'+(c[x.id]||'')+'</td>';});
+        html+='<td class="num">'+c.aantal+'</td><td>'+(c.begin||'')+'</td><td>'+(c.einde||'')+'</td><td class="num">'+fmtTime(c.duurMin)+'</td></tr>';
       }
-      var t = computed.reduce(function(acc,r) { return { kroes:acc.kroes+r.kroes, schub:acc.schub+r.schub, spiegel:acc.spiegel+r.spiegel, ander:acc.ander+r.ander, aantal:acc.aantal+r.aantal }; }, {kroes:0,schub:0,spiegel:0,ander:0,aantal:0});
+      var t = computed.reduce(function(acc,r) { acc.aantal += r.aantal; vs.forEach(function(x){acc[x.id]=(acc[x.id]||0)+(r[x.id]||0);}); return acc; }, {aantal:0});
       html += '<tr class="subtotal"><td>TOTAAL</td><td class="num">'+t.kroes+'</td><td class="num">'+t.schub+'</td><td class="num">'+t.spiegel+'</td><td class="num">'+t.ander+'</td><td class="num">'+t.aantal+'</td><td colspan="3">'+filtered.length+' sessies</td></tr></tbody></table>';
       el.innerHTML = html;
     }
@@ -795,9 +860,15 @@ td { padding: 4px; border-bottom: 1px solid #0f172a; vertical-align: top; text-a
       var datum = v('i-datum'), stek = v('i-stek') || 'Onbekend';
       if (!datum) { showToast('Datum is verplicht'); return; }
       var month = deriveMonth(datum, jaar) || 'Onbekend';
-      var kroes = n('i-kroes'), schub = n('i-schub'), spiegel = n('i-spiegel'), ander = n('i-ander');
-      var duur = calcDuur(v('i-begin'), v('i-einde')) || 0;
-      var row = { kroes:kroes, schub:schub, spiegel:spiegel, ander:ander, aantal:kroes+schub+spiegel+ander, gewicht:kroes*GEW_KROES+schub*GEW_SCHUB+spiegel*GEW_SPIEGEL+ander*GEW_ANDER, datum:datum, stek:stek, begin:v('i-begin'), einde:v('i-einde'), duurMin:duur, tijdMin:duur, month:month, wedstrijd:'' };
+      var vsSave = getVissoorten();
+      var row = { datum:datum, stek:stek, begin:v('i-begin'), einde:v('i-einde'), duurMin:calcDuur(v('i-begin'), v('i-einde'))||0, month:month, wedstrijd:'' };
+      row.aantal = 0; row.gewicht = 0;
+      vsSave.forEach(function(x){
+        row[x.id] = n('i-'+x.id);
+        row.aantal += row[x.id];
+        row.gewicht += row[x.id] * x.weight;
+      });
+      row.tijdMin = row.duurMin;
       var data = loadData();
       var bestaand = -1;
       for (var i=0;i<data.length;i++) { if (data[i].datum===datum && data[i].month===month) { bestaand = i; break; } }
@@ -806,29 +877,35 @@ td { padding: 4px; border-bottom: 1px solid #0f172a; vertical-align: top; text-a
       sortData(data); saveData(data);
       document.getElementById('i-datum').value=''; document.getElementById('i-begin').value=''; document.getElementById('i-einde').value='';
       document.getElementById('i-begin-display').textContent=''; document.getElementById('i-einde-display').textContent='';
-      ['i-kroes','i-schub','i-spiegel','i-ander'].forEach(function(id){document.getElementById(id).value='0';});
+      getVissoorten().forEach(function(x){document.getElementById('i-'+x.id).value='0';});
       document.getElementById('i-aantal').textContent='0';
       var gew = document.getElementById('i-gewicht'); gew.textContent='0,000'; gew.setAttribute('data-gram','0');
       updateAantal(); renderInvoer(); document.getElementById('i-datum').focus();
     });
 
     // Stepper buttons
-    document.querySelectorAll('.i-btn').forEach(function(btn) {
-      btn.addEventListener('click', function() { ivAdjust(this.dataset.id, parseInt(this.dataset.d)); });
+    document.addEventListener('click', function(e) {
+      var btn = e.target.closest('.i-btn');
+      if (btn && btn.dataset.id) ivAdjust(btn.dataset.id, parseInt(btn.dataset.d));
     });
     // Input events
-    ['i-kroes','i-schub','i-spiegel','i-ander'].forEach(function(id) {
-      document.getElementById(id).addEventListener('input', function() {
-        this.value = this.value.replace(/[^0-9]/g,'').slice(0,3);
-        var v = parseInt(this.value); if (v>999) this.value='999';
-        updateAantal();
+    (function(){
+      var ids = getVissoorten().map(function(x){return 'i-'+x.id;});
+      ids.forEach(function(id) {
+        var el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener('input', function() {
+          this.value = this.value.replace(/[^0-9]/g,'').slice(0,3);
+          var v = parseInt(this.value); if (v>999) this.value='999';
+          updateAantal();
+        });
+        el.addEventListener('blur', function() {
+          if (this.value === '') this.value='0';
+          this.value = String(parseInt(this.value)||0).padStart(3,'0');
+          updateAantal();
+        });
       });
-      document.getElementById(id).addEventListener('blur', function() {
-        if (this.value === '') this.value='0';
-        this.value = String(parseInt(this.value)||0).padStart(3,'0');
-        updateAantal();
-      });
-    });
+    })();
     ['i-begin','i-einde'].forEach(function(id) {
       document.getElementById(id).addEventListener('input', function() {
         if (this.value.length > 4) this.value = this.value.slice(0,4);
@@ -937,11 +1014,13 @@ td { padding: 4px; border-bottom: 1px solid #0f172a; vertical-align: top; text-a
           var duurMin = r.duurMin || 0;
           var kroes = parseInt(r.kroes)||0, schub = parseInt(r.schub)||0, spiegel = parseInt(r.spiegel)||0, ander = parseInt(r.ander)||0;
           var aantal = kroes+schub+spiegel+ander;
-          var gewicht = parseInt(r.gewicht) || (kroes*GEW_KROES+schub*GEW_SCHUB+spiegel*GEW_SPIEGEL+ander*GEW_ANDER);
+          var gewicht = parseInt(r.gewicht) || (kroes*GEW_KROES()+schub*GEW_SCHUB()+spiegel*GEW_SPIEGEL()+ander*GEW_ANDER());
           mKroes+=kroes; mSchub+=schub; mSpiegel+=spiegel; mAnder+=ander; mAantal+=aantal; mGewicht+=gewicht; mTijd+=duurMin;
         }
         grandKroes+=mKroes; grandSchub+=mSchub; grandSpiegel+=mSpiegel; grandAnder+=mAnder; grandAantal+=mAantal; grandGewicht+=mGewicht; grandTijd+=mTijd;
-        html += '<div class="d-month-group"><div class="d-month-header">▼ '+month+'</div><div class="d-month-body"><table><thead><tr><th>Datum</th><th>Kroes</th><th>Schub</th><th>Spiegel</th><th>Ander</th><th>Aantal</th><th>Gewicht</th><th>Stek</th><th>Begin</th><th>Einde</th><th>Duur</th><th>Duur/vangst</th><th>⬆⬇</th><th>Beoord</th><th>Tijd Min</th><th>Gr/min</th><th>4u wedstrijd</th><th>🏆</th><th style="width:24px">✕</th></tr></thead><tbody>';
+        html += '<div class="d-month-group"><div class="d-month-header">▼ '+month+'</div><div class="d-month-body"><table><thead><tr><th>Datum</th>';
+(function(){var vvs=getVissoorten();vvs.forEach(function(x){html+='<th>'+x.name+'</th>';});})();
+html+='<th>Aantal</th><th>Gewicht</th><th>Stek</th><th>Begin</th><th>Einde</th><th>Duur</th><th>Duur/vangst</th><th>⬆⬇</th><th>Beoord</th><th>Tijd Min</th><th>Gr/min</th><th>4u wedstrijd</th><th>🏆</th><th style="width:24px">✕</th></tr></thead><tbody>';
         var vorigeGramMin = -1;
         for (var ji=0; ji<items.length; ji++) {
           var ri2 = items[ji];
@@ -949,7 +1028,7 @@ td { padding: 4px; border-bottom: 1px solid #0f172a; vertical-align: top; text-a
           var d2 = ri2.duurMin||0;
           var k2 = parseInt(ri2.kroes)||0, s2 = parseInt(ri2.schub)||0, p2 = parseInt(ri2.spiegel)||0, a2 = parseInt(ri2.ander)||0;
           var ant2 = k2+s2+p2+a2;
-          var g2 = parseInt(ri2.gewicht) || (k2*GEW_KROES+s2*GEW_SCHUB+p2*GEW_SPIEGEL+a2*GEW_ANDER);
+          var g2 = parseInt(ri2.gewicht) || (k2*GEW_KROES()+s2*GEW_SCHUB()+p2*GEW_SPIEGEL()+a2*GEW_ANDER());
           var cf = computeFields({tijdMin: d2, duurMin: d2, gewicht: g2, aantal: ant2});
           var pijl = vorigeGramMin < 0 ? '–' : cf.gramMin > vorigeGramMin ? '⬆' : cf.gramMin < vorigeGramMin ? '⬇' : '–';
           vorigeGramMin = cf.gramMin;
@@ -1015,18 +1094,20 @@ td { padding: 4px; border-bottom: 1px solid #0f172a; vertical-align: top; text-a
         var k = parseInt(r.kroes)||0, s = parseInt(r.schub)||0, p = parseInt(r.spiegel)||0, a = parseInt(r.ander)||0;
         totaalKroes+=k; totaalSchub+=s; totaalSpiegel+=p; totaalAnder+=a;
         totaalAantal += k+s+p+a;
-        totaalGewicht += parseInt(r.gewicht)||(k*GEW_KROES+s*GEW_SCHUB+p*GEW_SPIEGEL+a*GEW_ANDER);
+        totaalGewicht += parseInt(r.gewicht)||(k*GEW_KROES()+s*GEW_SCHUB()+p*GEW_SPIEGEL()+a*GEW_ANDER());
         totaalTijd += r.duurMin||0;
         var st = r.stek||'Onbekend';
         stekCounts[st] = (stekCounts[st]||0) + 1;
       }
       var stekRanking = Object.keys(stekCounts).sort(function(a,b) { return stekCounts[b]-stekCounts[a]; }).slice(0,5);
       var html = '<div class="d-stats-grid">';
+      var vs = getVissoorten();
       html += '<div class="d-stat-card"><div class="d-stat-val">'+totaalAantal+'</div><div class="d-stat-label">Totaal vis</div></div>';
       html += '<div class="d-stat-card"><div class="d-stat-val">'+(totaalGewicht/1000).toFixed(1)+' kg</div><div class="d-stat-label">Totaal gewicht</div></div>';
-      html += '<div class="d-stat-card"><div class="d-stat-val">'+totaalKroes+'</div><div class="d-stat-label">Kroes</div></div>';
-      html += '<div class="d-stat-card"><div class="d-stat-val">'+totaalSchub+'</div><div class="d-stat-label">Schub</div></div>';
-      html += '<div class="d-stat-card"><div class="d-stat-val">'+totaalAnder+'</div><div class="d-stat-label">Ander</div></div>';
+      vs.forEach(function(x){
+        var count = {kroes:totaalKroes,schub:totaalSchub,spiegel:totaalSpiegel,ander:totaalAnder}[x.id]||0;
+        html += '<div class="d-stat-card"><div class="d-stat-val">'+count+'</div><div class="d-stat-label">'+x.name+'</div></div>';
+      });
       html += '<div class="d-stat-card"><div class="d-stat-val">'+totaalTijd+' min</div><div class="d-stat-label">Tijd op het water</div></div>';
       if (totaalTijd > 0) html += '<div class="d-stat-card"><div class="d-stat-val">'+fmtDecimal(totaalGewicht/totaalTijd)+'</div><div class="d-stat-label">Gr/min</div></div>';
       html += '<div class="d-stat-card"><div class="d-stat-val">'+data.length+'</div><div class="d-stat-label">Sessies</div></div>';
@@ -1048,6 +1129,7 @@ td { padding: 4px; border-bottom: 1px solid #0f172a; vertical-align: top; text-a
         document.querySelectorAll('.d-panel').forEach(function(p) { p.classList.remove('show'); });
         this.classList.add('active');
         document.getElementById('d-tab-'+this.dataset.dtab).classList.add('show');
+        if (this.dataset.dtab === 'vissoorten') renderVissoortenPanel();
       });
     });
 

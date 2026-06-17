@@ -94,7 +94,7 @@ h1 { font-size: 22px; font-weight: 900; color: var(--blue); flex: 1; }
 <div id="app">
   <div class="header">
     <h1>Sessie-Assistent</h1>
-    <a href="/hengel-app" class="back-btn">✕ Sluiten</a>
+    <a href="/tips-tricks" class="back-btn">✕ Sluiten</a>
   </div>
 
   <!-- Quick nav -->
@@ -102,13 +102,15 @@ h1 { font-size: 22px; font-weight: 900; color: var(--blue); flex: 1; }
     <a href="#feeder" class="nav-feed">⏱️ Feeder</a>
     <a href="#hengel" class="nav-hengel">📝 Hengel</a>
     <a href="#data" class="nav-data">📊 Data</a>
+    <a href="#vissoorten" class="nav-feed">🐟 Vissoorten</a>
   </div>
 
   <!-- Intro -->
   <div class="box box-info">
     Drie tabbladen in één app: <strong>⏱️ Feeder</strong> voor live vissen met timers,
     <strong>📝 Hengel</strong> voor sessies bijhouden,
-    <strong>📊 Data</strong> voor overzicht en statistieken.
+    <strong>📊 Data</strong> voor overzicht en statistieken.<br>
+    <span style="font-size:13px">📲 <strong>Installeren op startscherm:</strong> Open in Safari, tik op <strong>Delen</strong> → <strong>Zet in beginscherm</strong>. Werkt offline.</span>
   </div>
 
   <!-- ================ FEEDER ================ -->
@@ -164,8 +166,8 @@ h1 { font-size: 22px; font-weight: 900; color: var(--blue); flex: 1; }
     </div>
 
     <div class="box box-warn">
-      <strong>⚖️ Standaard gewichten:</strong> Kroes/F1 = 300 g · Schub = 1500 g · Spiegel = 1600 g · Ander = 100 g.<br>
-      <span style="font-size:13px">Aanpasbaar via Instellingen in het Data-tabblad.</span>
+      <strong>⚖️ Gewichten:</strong> Standaard: Kroes/F1 = 300 g · Schub = 1500 g · Spiegel = 1600 g · Ander = 100 g.<br>
+      <span style="font-size:13px">Aanpasbaar via <strong>📊 Data → 🐟 Vissoorten</strong>.</span>
     </div>
   </div>
 
@@ -209,6 +211,7 @@ h1 { font-size: 22px; font-weight: 900; color: var(--blue); flex: 1; }
         <tr><td>📊 Data</td><td>Lijst van alle sessies, filterbaar per jaar</td></tr>
         <tr><td>📈 Statistieken</td><td>Grafieken: top stekken, vangsten over tijd, verdeling per vissoort</td></tr>
         <tr><td>⚙️ Beheer</td><td>Data wissen, lege sessies opruimen</td></tr>
+        <tr><td>🐟 Vissoorten</td><td>Namen en gewichten per vissoort aanpassen</td></tr>
         <tr><td>📥 / 📤 JSON</td><td>Back-up exporteren of importeren vanaf ander toestel</td></tr>
       </table>
     </div>
@@ -239,6 +242,31 @@ h1 { font-size: 22px; font-weight: 900; color: var(--blue); flex: 1; }
         <tr><td>🔔 Signalen</td><td>1× of 2× piepsignaal bij voermoment</td></tr>
         <tr><td>Geluid aan/uit</td><td>Schakel alle geluiden uit (bv. op rustige plekken)</td></tr>
       </table>
+    </div>
+  </div>
+
+  <!-- ================ VISSOORTEN ================ -->
+  <div class="sect sect-feed" id="vissoorten">
+    <div class="sect-header">
+      <span style="font-size:22px">🐟</span>
+      <h2>Vissoorten — gewichten &amp; namen</h2>
+    </div>
+    <div class="c">
+      <p>In <strong>📊 Data → 🐟 Vissoorten</strong> kun je de <strong>code</strong>, <strong>naam</strong> en <strong>gewicht</strong> van elke vissoort aanpassen. Alle tabbladen gebruiken deze instellingen.</p>
+    </div>
+    <div class="c">
+      <table class="settings">
+        <tr><td>Code</td><td>Korte ID (bv. <code>kroes</code>, <code>schub</code>). Enkel kleine letters, geen spaties</td></tr>
+        <tr><td>Naam</td><td>Weergavenaam (bv. "Kroes/F1", "Schubkarper")</td></tr>
+        <tr><td>Gewicht</td><td>Standaardgewicht in gram (bv. <code>300</code> voor Kroes)</td></tr>
+      </table>
+      <div class="box box-tip" style="margin-top:6px">
+        Druk op <span class="tag tag-blue">💾 Opslaan</span> om wijzigingen toe te passen.
+        <span class="tag tag-cyan">↩️ Standaard</span> herstelt de originele waarden.
+      </div>
+    </div>
+    <div class="box box-warn">
+      Let op: de gewichten worden gebruikt voor <strong>automatische berekening</strong> in zowel de Feeder- als Hengel-tabbladen.
     </div>
   </div>
 </div>
