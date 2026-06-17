@@ -783,7 +783,7 @@ td { padding: 4px; border-bottom: 1px solid #0f172a; vertical-align: top; text-a
         var aantal = kroes+schub+spiegel+ander;
         var gewicht = parseInt(r.gewicht) || (kroes*GEW_KROES+schub*GEW_SCHUB+spiegel*GEW_SPIEGEL+ander*GEW_ANDER);
         return { kroes:kroes, schub:schub, spiegel:spiegel, ander:ander, aantal:aantal, gewicht:gewicht, datum:r.datum, stek:r.stek, begin:r.begin, einde:r.einde, duurMin:duurMin, month:r.month };
-      }).sort(function(a,b) { function sv(r) { var p=r.datum?r.datum.split('/'):[]; if (p.length!==2) return 999999999; var d=parseInt(p[0]),m=parseInt(p[1]),j=0,x=r.month&&r.month.match(/\b(\d{4})\b/); if(x)j=parseInt(x[1]); return j*10000+m*100+d; } return sv(b)-sv(a); });
+      }).sort(function(a,b) { function sv(r) { var p=r.datum?r.datum.split('/'):[]; if (p.length!==2) return 999999999; var d=parseInt(p[0]),m=parseInt(p[1]),j=0,x=r.month&&r.month.match(/\b(\d{4})\b/); if(x)j=parseInt(x[1]); return j*10000+m*100+d; } return sv(a)-sv(b); });
       var html = '<table><thead><tr><th>Datum</th><th>Kroes</th><th>Schub</th><th>Spiegel</th><th>Ander</th><th>Aantal</th><th>Begin</th><th>Einde</th><th>Duur</th></tr></thead><tbody>';
       for (var i=0;i<computed.length;i++) {
         var c = computed[i];
@@ -907,7 +907,7 @@ td { padding: 4px; border-bottom: 1px solid #0f172a; vertical-align: top; text-a
         if (!groups[m]) groups[m] = [];
         groups[m].push(data[ri]);
       }
-      for (var g in groups) { groups[g].sort(function(a,b) { var p1=a.datum?a.datum.split('/'):[], p2=b.datum?b.datum.split('/'):[]; return p1.length===2&&p2.length===2?parseInt(p2[1])*100+parseInt(p2[0])-parseInt(p1[1])*100-parseInt(p1[0]):0; }); }
+      for (var g in groups) { groups[g].sort(function(a,b) { var p1=a.datum?a.datum.split('/'):[], p2=b.datum?b.datum.split('/'):[]; return p1.length===2&&p2.length===2?parseInt(p1[1])*100+parseInt(p1[0])-parseInt(p2[1])*100-parseInt(p2[0]):0; }); }
 
       var monthOrder = Object.keys(groups).sort(function(a,b) {
         var ma = a.match(/([a-z]+)\s*(\d+)/i), mb = b.match(/([a-z]+)\s*(\d+)/i);
