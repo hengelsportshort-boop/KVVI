@@ -34,7 +34,7 @@ body {
   padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
 #app { height: 100vh; height: 100dvh; display: flex; flex-direction: column; max-width: 500px; margin: 0 auto; }
-@media (min-width: 769px) { #app { max-width: 900px; } }
+@media (min-width: 769px) { #app { max-width: 100%; max-width: calc(100% - 40px); } }
 .tab-content { display: none; flex: 1; flex-direction: column; min-height: 0; overflow-y: auto; padding: 6px 10px calc(4px + env(safe-area-inset-bottom)); gap: 4px; }
 .tab-content.active { display: flex; }
 
