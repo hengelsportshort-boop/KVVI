@@ -1111,6 +1111,8 @@ td { padding: 4px; border-bottom: 1px solid #0f172a; vertical-align: top; text-a
     document.addEventListener('visibilitychange', function() {
       if (!document.hidden) renderData();
     });
+
+    window.renderData = renderData;
   })();
 })();
 </script>
