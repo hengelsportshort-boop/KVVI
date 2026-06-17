@@ -400,6 +400,8 @@ td { padding: 4px; border-bottom: 1px solid #0f172a; vertical-align: top; text-a
       }
       saveVissoorten(newVs);
       renderFishButtons();renderFishGrid();
+      if (window.renderData) window.renderData();
+      if (window.renderInvoer) window.renderInvoer();
       document.getElementById('vs-toast').textContent='✅ Vissoorten opgeslagen';
       showToast('Vissoorten opgeslagen');
     });
@@ -407,6 +409,8 @@ td { padding: 4px; border-bottom: 1px solid #0f172a; vertical-align: top; text-a
       localStorage.removeItem(VISSOORTEN_KEY);
       renderVissoortenPanel();
       renderFishButtons();renderFishGrid();
+      if (window.renderData) window.renderData();
+      if (window.renderInvoer) window.renderInvoer();
       document.getElementById('vs-toast').textContent='↩️ Teruggezet naar standaard';
       showToast('Standaard vissoorten hersteld');
     });
@@ -481,6 +485,15 @@ td { padding: 4px; border-bottom: 1px solid #0f172a; vertical-align: top; text-a
   }
   document.querySelectorAll('.tab-btn').forEach(function(btn) {
     btn.addEventListener('click', function() { switchTab(this.dataset.tab); });
+  });
+
+  // Listen for vissoorten changes from other windows
+  window.addEventListener('storage', function(e) {
+    if (e.key === VISSOORTEN_KEY) {
+      renderFishButtons(); renderFishGrid();
+      if (window.renderData) window.renderData();
+      if (window.renderInvoer) window.renderInvoer();
+    }
   });
 
   /* ============ FEEDER TAB ============ */
@@ -775,6 +788,11 @@ td { padding: 4px; border-bottom: 1px solid #0f172a; vertical-align: top; text-a
       if (e.key === FEEDER_KEY) {
         saved = loadFeeder();
         if (saved) { fs.interval=saved.interval||fs.interval; fs.pingCount=saved.pingCount||fs.pingCount; fs.soundEnabled=saved.soundEnabled!==undefined?saved.soundEnabled:fs.soundEnabled; fs.locationName=saved.locationName||fs.locationName; fs.date=saved.date||fs.date; fs.results=saved.results||fs.results; fs.fishCounts=saved.fishCounts||fs.fishCounts; updateDisplay(); updateIntervalUI(); updatePingUI(); updateResults(); }
+      }
+      if (e.key === VISSOORTEN_KEY) {
+        renderFishButtons();
+        if (window.renderData) window.renderData();
+        if (window.renderInvoer) window.renderInvoer();
       }
     });
 
