@@ -15,8 +15,9 @@ try { serverData = JSON.parse(fs.readFileSync(DATA_PATH, 'utf-8')); } catch {}
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Hengel App">
-<link rel="apple-touch-icon" href="/icons/AppIcoon.png">
 <link rel="manifest" href="/manifest-hengel.json">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/icons/AppIcoon.png">
 <title>Hengel App</title>
 <style is:inline>
 :root { --blue: #002244; --gold: #b8860b; --bg: #0f172a; --card: #1e293b; --text: #f1f5f9; --green: #22c55e; --blue-btn: #3b82f6; --red: #ef4444; --muted: #94a3b8; --border: #475569; --accent: #1e40af; --accent-light: #3b82f6; --danger: #ef4444; }
@@ -33,6 +34,7 @@ body {
   padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
 #app { height: 100vh; height: 100dvh; display: flex; flex-direction: column; max-width: 500px; margin: 0 auto; }
+@media (min-width: 769px) { #app { max-width: 900px; } }
 .tab-content { display: none; flex: 1; flex-direction: column; min-height: 0; overflow-y: auto; padding: 6px 10px calc(4px + env(safe-area-inset-bottom)); gap: 4px; }
 .tab-content.active { display: flex; }
 
