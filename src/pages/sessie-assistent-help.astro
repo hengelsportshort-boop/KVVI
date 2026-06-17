@@ -1,0 +1,160 @@
+---
+export const prerender = false;
+---
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Sessie Help">
+<title>Sessie-Assistent — Help</title>
+<style is:inline>
+:root { --blue: #003366; --gold: #C5A059; --bg: #f1f5f9; --card: #fff; --text: #1e293b; --muted: #94a3b8; --border: #e2e8f0; --green: #16a34a; }
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  background: var(--bg); color: var(--text);
+  -webkit-tap-highlight-color: transparent;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+#app { max-width: 600px; margin: 0 auto; padding: 12px 16px calc(24px + env(safe-area-inset-bottom)); }
+.header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid var(--gold); }
+.back-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 10px; border: 2px solid var(--blue); background: var(--card); color: var(--blue); font-size: 14px; font-weight: 700; cursor: pointer; -webkit-appearance: none; text-decoration: none; transition: all 0.12s; }
+.back-btn:active { transform: scale(0.96); background: #eff6ff; }
+h1 { font-size: 22px; font-weight: 900; color: var(--blue); flex: 1; }
+h2 { font-size: 17px; font-weight: 800; color: var(--blue); margin: 24px 0 8px; }
+h3 { font-size: 14px; font-weight: 700; color: var(--text); margin: 16px 0 4px; }
+p, li { font-size: 14px; line-height: 1.6; color: var(--text); margin-bottom: 8px; }
+ul, ol { padding-left: 20px; margin-bottom: 12px; }
+li { margin-bottom: 4px; }
+.card { background: var(--card); border-radius: 14px; border: 1px solid var(--border); padding: 14px 16px; margin-bottom: 12px; }
+.tag { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; margin: 0 2px; }
+.tag-blue { background: #eff6ff; color: var(--blue); }
+.tag-gold { background: #fef8ee; color: #a16207; }
+.tag-green { background: #f0fdf4; color: var(--green); }
+.tag-red { background: #fef2f2; color: #dc2626; }
+.tag-cyan { background: #ecfeff; color: #0891b2; }
+.tag-gray { background: #f1f5f9; color: #475569; }
+.step { display: flex; gap: 10px; margin-bottom: 10px; }
+.step-num { width: 24px; height: 24px; border-radius: 50%; background: var(--blue); color: #fff; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+.step-body { flex: 1; }
+.sync-box { background: #fef8ee; border: 2px solid var(--gold); border-radius: 12px; padding: 12px 14px; margin-bottom: 12px; }
+.sync-box h3 { color: #a16207; margin-top: 0; }
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="header">
+    <h1>Sessie-Assistent</h1>
+    <a href="/hengel-app" class="back-btn">✕ Sluiten</a>
+  </div>
+
+  <p>De app bestaat uit drie tabbladen: <span class="tag tag-blue">⏱️ Feeder</span>, <span class="tag tag-green">📝 Hengel</span> en <span class="tag tag-gold">📊 Data</span>.</p>
+
+  <h2>⏱️ Feeder — live vissen met timers</h2>
+  <p>Dit tabblad gebruik je terwijl je aan het water zit. Het combineert een stopwatch (hoe lang tot een vis bijt) met een voertimer (wanneer bijvoeren) en registreert elke vangst of misser.</p>
+
+  <h3>Stap voor stap</h3>
+
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-body">
+      <strong>Locatie &amp; datum</strong><br>
+      Vul bovenaan de stek (max. 5 tekens, bv. "G 7") en de datum in. De app herkent hierop of het om een nieuwe of bestaande sessie gaat.
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-body">
+      <strong>Timers instellen</strong><br>
+      Stel de interval en het aantal geluidssignalen in via de balk onder de timers.
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-body">
+      <strong>Worp</strong><br>
+      Druk op <span class="tag tag-green">🟢 WORP</span>. Beide timers starten automatisch.
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-body">
+      <strong>Vangst of misser</strong><br>
+      Bij een vis: druk op <span class="tag tag-blue">🔵 VIS BINNEN</span> en kies het type
+      (<span class="tag tag-cyan">KR</span> Kroes,
+      <span class="tag tag-cyan">SC</span> Schub,
+      <span class="tag tag-cyan">SP</span> Spiegel,
+      <span class="tag tag-cyan">AN</span> Ander).<br>
+      Geen beet maar wel bijvoeren? Druk op <span class="tag tag-gray">🔄 Opnieuw voeren</span> — timers resetten zonder vangst te tellen.<br>
+      Mis je de vis? Druk op <span class="tag tag-red">🔴 MISSER</span>. Dit telt mee in de statistieken maar niet als vangst.
+    </div>
+  </div>
+
+  <h3>Resultaten onder de knoppen</h3>
+  <p>De laatste 3 resultaten verschijnen direct met tijdstempel. De 4de regel toont de gemiddelde vangsttijd (alle vangsten, geen missers) — hoe korter, hoe actiever de vis bijt.</p>
+
+  <h3>Sessie afsluiten</h3>
+  <p>Ga naar <span class="tag">⚙️</span> → <strong>Vissessie beëindigen</strong>. De app slaat begin- en einduur, totaal vissen per type, totaal gewicht en de locatie op. Daarna wordt alles gereset voor een nieuwe sessie.</p>
+
+  <div class="sync-box">
+    <h3>⚖️ Gewichten (schattingen)</h3>
+    <p>Kroes/F1 = 300 g · Schub = 1500 g · Spiegel = 1600 g · Ander = 100 g.<br>
+    Deze kun je later aanpassen via Instellingen in het Data-tabblad.</p>
+  </div>
+
+  <h2>📝 Hengel — vissessies bijhouden</h2>
+  <p>In dit tabblad beheer je alle vissessies: manueel ingeven, aanvullen of bewerken wat de Feeder-tab al aanmaakte.</p>
+
+  <h3>Een sessie invullen</h3>
+  <ul>
+    <li><strong>Stek</strong> — locatienaam, max. 5 tekens (bv. "G 7", "Hoek")</li>
+    <li><strong>Datum</strong> — de visdatum. Samen met de stek = unieke sessie</li>
+    <li><strong>Begin / Einde</strong> — begin- en eindtijd van de sessie</li>
+    <li><strong>Vangst per type</strong> — gebruik &minus; en + om aantallen per vissoort bij te houden</li>
+    <li><strong>Aantal &amp; gewicht</strong> — worden automatisch berekend op basis van de vangsten</li>
+  </ul>
+  <p>Druk op <span class="tag tag-blue">💾 Opslaan</span> na elke aanpassing. Zonder opslaan gaan wijzigingen verloren bij navigeren.</p>
+
+  <h3>Koppeling met de Feeder-tab</h3>
+  <div class="sync-box">
+    <p>Alles wat je in de Feeder-tab registreert, verschijnt hier automatisch als sessie. Je kunt begin- en eindtijd dan nog bijsturen, of extra notities toevoegen.</p>
+  </div>
+
+  <h2>📊 Data — overzicht &amp; beheer</h2>
+  <p>Het Data-tabblad geeft je een overzicht van alle opgeslagen sessies en laat je statistieken bekijken per jaar of per stek.</p>
+
+  <h3>Onderdelen</h3>
+  <ul>
+    <li><strong>📊 Data</strong> — lijst van alle sessies, filterbaar per jaar</li>
+    <li><strong>📈 Statistieken</strong> — grafieken: top stekken, vangsten over tijd, verdeling per vissoort</li>
+    <li><strong>⚙️ Beheer</strong> — gevaarlijke acties: alle data wissen of lege sessies opruimen</li>
+    <li><strong>📥 / 📤 JSON</strong> — exporteer je data als back-up, of importeer van een ander toestel</li>
+  </ul>
+
+  <div class="card" style="border-color:var(--gold);background:#fef8ee">
+    <p style="font-size:13px"><strong>Top stekken:</strong> Alleen stekken met een naam van max. 5 tekens verschijnen in de grafiek. Zorg dat je locaties consistent dezelfde naam krijgen (hoofd- en kleine letters tellen mee).</p>
+  </div>
+
+  <h3>Back-up &amp; overzet naar ander toestel</h3>
+  <ol>
+    <li>Ga naar <strong>⚙️ Beheer</strong> → <strong>Exporteer JSON</strong> en sla het bestand op.</li>
+    <li>Open de app op het nieuwe toestel en ga naar <strong>Importeer JSON</strong>.</li>
+    <li>Selecteer het opgeslagen bestand — alle sessies worden ingeladen.</li>
+  </ol>
+
+  <h2>⚙️ Instellingen</h2>
+  <ul>
+    <li><strong>Interval</strong> — voertimer: 3, 5 of 8 minuten</li>
+    <li><strong>🔔 Signalen</strong> — 1&times; of 2&times; piepsignaal bij voermoment</li>
+    <li><strong>Geluid aan/uit</strong> — schakel alle geluiden uit (bv. op rustige plekken)</li>
+  </ul>
+</div>
+</body>
+</html>

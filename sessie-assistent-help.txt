@@ -1,0 +1,71 @@
+Sessie-Assistent — Help
+
+De app bestaat uit drie tabbladen: ⏱️ Feeder, 📝 Hengel en 📊 Data.
+
+
+⏱️ Feeder — live vissen met timers
+
+Dit tabblad gebruik je terwijl je aan het water zit. Het combineert een stopwatch (hoe lang tot een vis bijt) met een voertimer (wanneer bijvoeren) en registreert elke vangst of misser.
+
+Stap voor stap
+
+Vul bovenaan de stek (max. 5 tekens, bv. "G 7") en de datum in. De app herkent hierop of het om een nieuwe of bestaande sessie gaat.
+Stel de interval en het aantal geluidssignalen in via de balk onder de timers.
+Druk op 🟢 WORP om de lijn uit te gooien. Beide timers starten automatisch.
+Komt er een vis? Druk op 🔵 VIS BINNEN en kies het type:
+
+KR Kroes
+SC Schub
+SP Spiegel
+AN Ander
+
+Geen beet maar wel bijvoeren? Druk op 🔄 Opnieuw voeren — timers resetten zonder vangst te tellen.
+Mis je de vis? Druk op 🔴 MISSER. Dit telt mee in de statistieken maar niet als vangst.
+
+Resultaten onder de knoppen
+
+De laatste 3 resultaten verschijnen direct met tijdstempel. De 4de regel toont de gemiddelde vangsttijd (alle vangsten, geen missers) — hoe korter, hoe actiever de vis bijt.
+
+Sessie afsluiten
+
+Ga naar ⚙️ → Vissessie beëindigen. De app slaat begin- en einduur, totaal vissen per type, totaal gewicht en de locatie op. Daarna wordt alles gereset voor een nieuwe sessie.
+
+Gewichten (schattingen): Kroes/F1 = 300 g · Schub = 1500 g · Spiegel = 1600 g · Ander = 100 g. Deze kun je later aanpassen via Instellingen in het Data-tabblad.
+
+
+📝 Hengel — vissessies bijhouden
+
+In dit tabblad beheer je alle vissessies: manueel ingeven, aanvullen of bewerken wat de Feeder-tab al aanmaakte.
+
+Een sessie invullen
+
+VeldUitlegStekLocatienaam, max. 5 tekens (bv. "G 7", "Hoek")DatumDe visdatum. Samen met de stek = unieke sessieBegin / EindeBegin- en eindtijd van de sessieVangst per typeGebruik − en + om aantallen per vissoort bij te houdenAantal & gewichtWorden automatisch berekend op basis van de vangsten
+
+Druk op 💾 Opslaan na elke aanpassing. Zonder opslaan gaan wijzigingen verloren bij navigeren.
+
+Koppeling met de Feeder-tab
+
+Alles wat je in de Feeder-tab registreert, verschijnt hier automatisch als sessie. Je kunt begin- en eindtijd dan nog bijsturen, of extra notities toevoegen.
+
+
+📊 Data — overzicht & beheer
+
+Het Data-tabblad geeft je een overzicht van alle opgeslagen sessies en laat je statistieken bekijken per jaar of per stek.
+
+Onderdelen
+
+OnderdeelFunctie📊 DataLijst van alle sessies, filterbaar per jaar📈 StatistiekenGrafieken: top stekken, vangsten over tijd, verdeling per vissoort⚙️ BeheerGevaarlijke acties: alle data wissen of lege sessies opruimen📥 / 📤 JSONExporteer je data als back-up, of importeer van een ander toestel
+
+Top stekken: Alleen stekken met een naam van max. 5 tekens verschijnen in de grafiek. Zorg dat je locaties consistent dezelfde naam krijgen (hoofd- en kleine letters tellen mee).
+
+Back-up & overzet naar ander toestel
+
+Ga naar ⚙️ Beheer → Exporteer JSON en sla het bestand op.
+Open de app op het nieuwe toestel en ga naar Importeer JSON.
+Selecteer het opgeslagen bestand — alle sessies worden ingeladen.
+
+
+⚙️ Instellingen
+
+InstellingUitlegIntervalVoertimer: 3, 5 of 8 minuten🔔 Signalen1× of 2× piepsignaal bij voermomentGeluid aan/uitSchakel alle geluiden uit (bv. op rustige plekken)
+
