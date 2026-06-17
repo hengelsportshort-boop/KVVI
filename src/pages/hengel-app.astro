@@ -185,7 +185,7 @@ td { padding: 4px; border-bottom: 1px solid #0f172a; vertical-align: top; text-a
 .d-panel { display: none; flex-direction: column; flex: 1; min-height: 0; }
 .d-panel.show { display: flex; }
 .d-table-wrap { overflow-x: auto; flex: 1; min-height: 0; }
-.d-table-wrap table { min-width: 800px; }
+.d-table-wrap table { min-width: 1200px; }
 .d-empty { text-align: center; color: var(--muted); padding: 40px; font-style: italic; }
 .d-month-group { margin-bottom: 12px; }
 .d-month-header { background: var(--accent); color: #fff; padding: 6px 10px; border-radius: 6px 6px 0 0; font-weight: 700; font-size: 13px; display: flex; justify-content: space-between; cursor: pointer; user-select: none; }
@@ -889,6 +889,20 @@ td { padding: 4px; border-bottom: 1px solid #0f172a; vertical-align: top; text-a
 
     function fmtDecimal(v) { if (v==null||isNaN(v)) return '—'; return v.toFixed(1); }
     function fmtEenheid(m) { if (m == null || isNaN(m) || m <= 0) return '—'; var h = Math.floor(m/60); var min = m%60; return h+'u'+('0'+min).slice(-2)+'m'; }
+    function fmtGewicht(g) { if (g==null||isNaN(g)) return '—'; return Number(g).toLocaleString('nl-NL',{minimumFractionDigits:0})+' gr'; }
+    function fmtDuurVangst(min, aantal) { if (!min||!aantal) return '—'; var pv = min/aantal; var m = Math.floor(pv); var s = Math.round((pv-m)*60); return m+'m '+s+'s'; }
+    function genId() { return '_'+Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+    function ensureId(entry) { if (!entry._id) entry._id = genId(); return entry; }
+
+    function computeFields(r) {
+      var tm = r.tijdMin || (r.duurMin || 0);
+      var gm = tm > 0 ? (r.gewicht / tm) : 0;
+      var w4 = gm * 240;
+      var dv = tm > 0 && r.aantal > 0 ? fmtDuurVangst(tm, r.aantal) : '—';
+      var a = r.aantal || 0;
+      var beoord = a >= 51 ? '*****' : a >= 36 ? '****' : a >= 20 ? '***' : a >= 11 ? '**' : '*';
+      return { tijdMin: tm, gramMin: gm, wedstrijd4uur: w4, duurVangst: dv, beoordeling: beoord };
+    }
 
     function renderData() {
       var alleData = loadData();
@@ -933,20 +947,65 @@ td { padding: 4px; border-bottom: 1px solid #0f172a; vertical-align: top; text-a
           mKroes+=kroes; mSchub+=schub; mSpiegel+=spiegel; mAnder+=ander; mAantal+=aantal; mGewicht+=gewicht; mTijd+=duurMin;
         }
         grandKroes+=mKroes; grandSchub+=mSchub; grandSpiegel+=mSpiegel; grandAnder+=mAnder; grandAantal+=mAantal; grandGewicht+=mGewicht; grandTijd+=mTijd;
-        html += '<div class="d-month-group"><div class="d-month-header">▼ '+month+'</div><div class="d-month-body"><table><thead><tr><th>Datum</th><th>Kroes</th><th>Schub</th><th>Spiegel</th><th>Ander</th><th>Aantal</th><th>Gewicht</th><th>Stek</th><th>Begin</th><th>Einde</th><th>Duur</th></tr></thead><tbody>';
+        html += '<div class="d-month-group"><div class="d-month-header">▼ '+month+'</div><div class="d-month-body"><table><thead><tr><th>Datum</th><th>Kroes</th><th>Schub</th><th>Spiegel</th><th>Ander</th><th>Aantal</th><th>Gewicht</th><th>Stek</th><th>Begin</th><th>Einde</th><th>Duur</th><th>Duur/vangst</th><th>⬆⬇</th><th>Beoord</th><th>Tijd Min</th><th>Gr/min</th><th>4u wedstrijd</th><th>🏆</th><th style="width:24px">✕</th></tr></thead><tbody>';
+        var vorigeGramMin = -1;
         for (var ji=0; ji<items.length; ji++) {
           var ri2 = items[ji];
+          ensureId(ri2);
           var d2 = ri2.duurMin||0;
           var k2 = parseInt(ri2.kroes)||0, s2 = parseInt(ri2.schub)||0, p2 = parseInt(ri2.spiegel)||0, a2 = parseInt(ri2.ander)||0;
           var ant2 = k2+s2+p2+a2;
           var g2 = parseInt(ri2.gewicht) || (k2*GEW_KROES+s2*GEW_SCHUB+p2*GEW_SPIEGEL+a2*GEW_ANDER);
-          html += '<tr><td>'+(ri2.datum||'')+'</td><td class="num">'+(k2||'')+'</td><td class="num">'+(s2||'')+'</td><td class="num">'+(p2||'')+'</td><td class="num">'+(a2||'')+'</td><td class="num">'+ant2+'</td><td class="num">'+g2+'</td><td>'+(ri2.stek||'')+'</td><td>'+(ri2.begin||'')+'</td><td>'+(ri2.einde||'')+'</td><td class="num">'+fmtTime(d2)+'</td></tr>';
+          var cf = computeFields({tijdMin: d2, duurMin: d2, gewicht: g2, aantal: ant2});
+          var pijl = vorigeGramMin < 0 ? '–' : cf.gramMin > vorigeGramMin ? '⬆' : cf.gramMin < vorigeGramMin ? '⬇' : '–';
+          vorigeGramMin = cf.gramMin;
+          var pijlClass = pijl === '⬆' ? ' style="color:#22c55e;font-size:18px;line-height:1"' : pijl === '⬇' ? ' style="color:#ef4444;font-size:18px;line-height:1"' : ' style="font-size:18px;line-height:1"';
+          var wedClass = ri2.wedstrijd ? ' style="background:#1e3a8a"' : '';
+          html += '<tr'+wedClass+'><td>'+(ri2.datum||'')+'</td><td class="num">'+(k2||'')+'</td><td class="num">'+(s2||'')+'</td><td class="num">'+(p2||'')+'</td><td class="num">'+(a2||'')+'</td><td class="num">'+ant2+'</td><td class="num">'+g2+'</td><td>'+(ri2.stek||'')+'</td><td>'+(ri2.begin||'')+'</td><td>'+(ri2.einde||'')+'</td><td class="num">'+fmtTime(d2)+'</td><td class="num">'+cf.duurVangst+'</td><td'+pijlClass+'>'+pijl+'</td><td style="font-weight:700;letter-spacing:2px">'+cf.beoordeling+'</td><td class="num">'+fmtEenheid(cf.tijdMin)+'</td><td class="num">'+fmtDecimal(cf.gramMin)+'</td><td class="num">'+fmtDecimal(cf.wedstrijd4uur)+'</td><td data-id="'+ri2._id+'" data-field="wedstrijd" class="wedstrijd-toggle" style="cursor:pointer;font-size:16px">'+(ri2.wedstrijd?'🏆':'⬜')+'</td><td style="cursor:pointer;color:#ef4444;font-weight:700" class="row-delete" data-id="'+ri2._id+'">✕</td></tr>';
         }
-        html += '<tr class="subtotal"><td>Subtotaal</td><td class="num">'+(mKroes||'')+'</td><td class="num">'+(mSchub||'')+'</td><td class="num">'+(mSpiegel||'')+'</td><td class="num">'+(mAnder||'')+'</td><td class="num">'+mAantal+'</td><td class="num">'+(mGewicht/1000).toFixed(1)+' kg</td><td></td><td></td><td></td><td class="num">'+fmtTime(mTijd)+'</td></tr>';
+        var mGrMin = mTijd > 0 ? mGewicht / mTijd : 0;
+        html += '<tr class="subtotal"><td>Subtotaal</td><td class="num">'+(mKroes||'')+'</td><td class="num">'+(mSchub||'')+'</td><td class="num">'+(mSpiegel||'')+'</td><td class="num">'+(mAnder||'')+'</td><td class="num">'+mAantal+'</td><td class="num">'+fmtGewicht(mGewicht)+'</td><td></td><td></td><td></td><td class="num">'+fmtTime(mTijd)+'</td><td></td><td></td><td></td><td class="num">'+fmtEenheid(mTijd)+'</td><td class="num">'+fmtDecimal(mGrMin)+'</td><td class="num">'+fmtDecimal(mGrMin*240)+'</td><td></td><td></td></tr>';
         html += '</tbody></table></div></div>';
       }
-      html += '<div class="d-grand"><table><tr><td>TOTAAL</td><td class="num">'+(grandKroes||'')+'</td><td class="num">'+(grandSchub||'')+'</td><td class="num">'+(grandSpiegel||'')+'</td><td class="num">'+(grandAnder||'')+'</td><td class="num">'+grandAantal+'</td><td class="num">'+(grandGewicht/1000).toFixed(1)+' kg</td><td>'+data.length+' sessies</td><td></td><td></td><td class="num">'+fmtTime(grandTijd)+'</td></tr></table></div>';
+      var grandGrMin = grandTijd > 0 ? grandGewicht / grandTijd : 0;
+      html += '<div class="d-grand"><table><tr><td>TOTAAL</td><td class="num">'+(grandKroes||'')+'</td><td class="num">'+(grandSchub||'')+'</td><td class="num">'+(grandSpiegel||'')+'</td><td class="num">'+(grandAnder||'')+'</td><td class="num">'+grandAantal+'</td><td class="num">'+fmtGewicht(grandGewicht)+'</td><td>'+data.length+' sessies</td><td></td><td></td><td class="num">'+fmtTime(grandTijd)+'</td><td></td><td></td><td></td><td class="num">'+fmtEenheid(grandTijd)+'</td><td class="num">'+fmtDecimal(grandGrMin)+'</td><td class="num">'+fmtDecimal(grandGrMin*240)+'</td><td></td><td></td></tr></table></div>';
       container.innerHTML = html;
+
+      // wedstrijd toggle
+      container.querySelectorAll('td.wedstrijd-toggle').forEach(function(td) {
+        td.addEventListener('click', function() {
+          var id = this.dataset.id;
+          var data = loadData();
+          for (var i=0;i<data.length;i++) {
+            if (data[i]._id === id) {
+              data[i].wedstrijd = data[i].wedstrijd ? '' : '🏆';
+              saveData(data);
+              renderData();
+              showToast(data[i].wedstrijd ? '🏆 Wedstrijd' : '⬜ Normaal');
+              return;
+            }
+          }
+        });
+      });
+
+      // delete row
+      container.querySelectorAll('td.row-delete').forEach(function(td) {
+        td.addEventListener('click', function() {
+          var id = this.dataset.id;
+          var data = loadData();
+          for (var i=0;i<data.length;i++) {
+            if (data[i]._id === id) {
+              if (!confirm('Verwijder sessie van '+data[i].datum+' (stek '+data[i].stek+')?')) return;
+              data.splice(i, 1);
+              saveData(data);
+              renderData();
+              showToast('🗑️ Verwijderd');
+              return;
+            }
+          }
+        });
+      });
+
       renderStats(alleData, jaar);
     }
 
