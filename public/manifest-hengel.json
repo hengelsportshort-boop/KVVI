@@ -1,7 +1,7 @@
 {
-  "name": "Hengel App",
-  "short_name": "Hengel",
-  "description": "Feeder assistent, vangsten invoeren en overzicht",
+  "name": "Sessie-Assistent",
+  "short_name": "Sessie",
+  "description": "Feeder timer, vangsten noteren en statistieken — alles in één app",
   "start_url": "/hengel-app",
   "display": "standalone",
   "background_color": "#0f172a",
