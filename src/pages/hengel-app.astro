@@ -208,10 +208,11 @@ td { padding: 4px; border-bottom: 1px solid #0f172a; vertical-align: top; text-a
     <button class="tab-btn active" data-tab="feeder">⏱️ Feeder</button>
     <button class="tab-btn" data-tab="invoer">📝 Hengel</button>
     <button class="tab-btn" data-tab="data">📊 Data</button>
-    <span class="tab-bar-right">
-      <span id="fish-summary" class="fish-summary"></span>
-      <a href="/feeder-assistent-help" class="help-link">❓</a>
-    </span>
+      <span class="tab-bar-right">
+        <span id="fish-summary" class="fish-summary"></span>
+        <a href="/" class="help-link" aria-label="Home">🏠</a>
+        <a href="/feeder-assistent-help" class="help-link">❓</a>
+      </span>
   </nav>
 
   <!-- FEEDER TAB -->
@@ -442,7 +443,7 @@ td { padding: 4px; border-bottom: 1px solid #0f172a; vertical-align: top; text-a
   }
   function saveData(data) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    fetch('/admin/api/vissessies', {
+    fetch('/api/vissessies', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
@@ -1216,7 +1217,7 @@ html+='<th>Aantal</th><th>Gewicht</th><th>Stek</th><th>Begin</th><th>Einde</th><
 
     // Sync van server (zonder admin login)
     function syncFromServer() {
-      fetch('/admin/api/vissessies')
+      fetch('/api/vissessies')
         .then(function(r) {
           if (!r.ok) throw new Error('Niet beschikbaar');
           return r.json();
