@@ -5,17 +5,22 @@ import path from 'node:path';
 const DATA_PATH = path.resolve('./public/data/vissessies.json');
 let serverData = [];
 try { serverData = JSON.parse(fs.readFileSync(DATA_PATH, 'utf-8')); } catch {}
+const BUILD_TS = Date.now();
+Astro.response.headers.set('Cache-Control', 'no-cache, no-store, must-revalidate');
 ---
 
 <!DOCTYPE html>
 <html lang="nl">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Sessie-Assistent">
-<link rel="manifest" href="/manifest-hengel.json">
+<link rel="manifest" href={"/manifest-hengel.json?v=" + BUILD_TS}>
 <link rel="icon" type="image/png" href="/icons/AppIcoon.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/icons/AppIcoon.png">
 <link rel="apple-touch-icon" href="/icons/AppIcoon.png">
@@ -1264,6 +1269,8 @@ html+='<th>Aantal</th><th>Gewicht</th><th>Stek</th><th>Begin</th><th>Einde</th><
     window.renderData = renderData;
   })();
 })();
+})();
 </script>
+<div style="display:none" data-build={BUILD_TS}></div>
 </body>
 </html>
