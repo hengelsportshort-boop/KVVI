@@ -13,7 +13,7 @@ if (Astro.request.method === 'POST') {
       path: '/',
       httpOnly: true,
       sameSite: 'strict',
-      maxAge: 60 * 60 * 24 * 7
+      maxAge: 60 * 60 * 24 * 365 * 10
     });
     return Astro.redirect('/admin/wedstrijden');
   } else {

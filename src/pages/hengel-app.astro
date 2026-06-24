@@ -440,7 +440,14 @@ td { padding: 4px; border-bottom: 1px solid #0f172a; vertical-align: top; text-a
       return d;
     } catch(e) { return []; }
   }
-  function saveData(data) { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+  function saveData(data) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    fetch('/admin/api/vissessies', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    }).catch(function(){});
+  }
   function sortData(arr) {
     arr.sort(function(a, b) {
       var ma = a.month.match(/([a-z]+)\s*(\d+)/i), mb = b.month.match(/([a-z]+)\s*(\d+)/i);
@@ -635,7 +642,7 @@ td { padding: 4px; border-bottom: 1px solid #0f172a; vertical-align: top; text-a
         if (m) { var mn = parseInt(m[1]); entry.month = (MAANDEN[mn-1]||'???')+' '+new Date().getFullYear(); }
         else { entry.month = MAANDEN[new Date().getMonth()]+' '+new Date().getFullYear(); }
         if (idx >= 0) data[idx] = entry; else data.push(entry);
-        localStorage.setItem(key, JSON.stringify(data));
+        saveData(data);
         if (fSyncDebug) fSyncDebug.textContent = '✅ Sync: '+data.length+' entry';
       } catch(e) { if (fSyncDebug) fSyncDebug.textContent = '❌ Sync error: '+e.message; }
     }
@@ -1207,7 +1214,45 @@ html+='<th>Aantal</th><th>Gewicht</th><th>Stek</th><th>Begin</th><th>Einde</th><
     updateYearSelector();
     renderData();
 
-    // Re-render on storage change
+    // Sync van server (zonder admin login)
+    function syncFromServer() {
+      fetch('/admin/api/vissessies')
+        .then(function(r) {
+          if (!r.ok) throw new Error('Niet beschikbaar');
+          return r.json();
+        })
+        .then(function(serverData) {
+          if (!Array.isArray(serverData) || !serverData.length) return;
+          var local = loadData();
+          var localStr = JSON.stringify(local);
+          var serverStr = JSON.stringify(serverData);
+          if (localStr === serverStr) return;
+          // Merge: lokale data is basis, voeg server entries toe die lokaal ontbreken
+          // Zo gaan lokale wijzigingen nooit verloren door verouderde server data
+          var merged = local.slice();
+          for (var i = 0; i < serverData.length; i++) {
+            var found = false;
+            for (var j = 0; j < merged.length; j++) {
+              if (merged[j]._id === serverData[i]._id) { found = true; break; }
+            }
+            if (!found) merged.push(serverData[i]);
+          }
+          if (JSON.stringify(merged) === localStr) return;
+          sortData(merged);
+          saveData(merged);
+          renderData();
+          showToast('📡 Data gesynchroniseerd');
+        })
+        .catch(function(){});
+    }
+
+    // Eerste sync bij laden
+    setTimeout(syncFromServer, 500);
+
+    // Periodieke sync elke 30 seconden
+    setInterval(syncFromServer, 30000);
+
+    // Re-render op storage change (andere tab)
     window.addEventListener('storage', function(e) {
       if (e.key === STORAGE_KEY) renderData();
     });
