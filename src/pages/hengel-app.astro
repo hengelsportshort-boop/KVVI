@@ -649,7 +649,7 @@ td { padding: 4px; border-bottom: 1px solid #0f172a; vertical-align: top; text-a
         var m = datum.match(/\/(\d+)/);
         if (m) { var mn = parseInt(m[1]); entry.month = (MAANDEN[mn-1]||'???')+' '+new Date().getFullYear(); }
         else { entry.month = MAANDEN[new Date().getMonth()]+' '+new Date().getFullYear(); }
-        if (idx >= 0) data[idx] = entry; else data.push(entry);
+        if (idx >= 0) { entry._id = data[idx]._id; data[idx] = entry; } else { entry._id = '_' + Date.now().toString(36) + Math.random().toString(36).slice(2,6); data.push(entry); }
         saveData(data);
         if (fSyncDebug) fSyncDebug.textContent = '✅ Sync: '+data.length+' entry';
       } catch(e) { if (fSyncDebug) fSyncDebug.textContent = '❌ Sync error: '+e.message; }
@@ -905,8 +905,8 @@ td { padding: 4px; border-bottom: 1px solid #0f172a; vertical-align: top; text-a
       var data = loadData();
       var bestaand = -1;
       for (var i=0;i<data.length;i++) { if (data[i].datum===datum && data[i].month===month) { bestaand = i; break; } }
-      if (bestaand >= 0) { data[bestaand] = row; showToast('Bestaande sessie bijgewerkt'); }
-      else { data.push(row); showToast(datum+' - '+month+' - '+stek); }
+      if (bestaand >= 0) { row._id = data[bestaand]._id; data[bestaand] = row; showToast('Bestaande sessie bijgewerkt'); }
+      else { row._id = '_' + Date.now().toString(36) + Math.random().toString(36).slice(2,6); data.push(row); showToast(datum+' - '+month+' - '+stek); }
       sortData(data); saveData(data);
       document.getElementById('i-datum').value=''; document.getElementById('i-begin').value=''; document.getElementById('i-einde').value='';
       document.getElementById('i-begin-display').textContent=''; document.getElementById('i-einde-display').textContent='';
