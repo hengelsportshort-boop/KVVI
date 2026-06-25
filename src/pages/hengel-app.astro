@@ -352,7 +352,7 @@ td { padding: 4px; border-bottom: 1px solid #0f172a; vertical-align: top; text-a
   </div>
 </div>
 
-<script is:inline>window.__SERVER_VISSESSIES__ = <>{JSON.stringify(serverData)}</>;</script>
+<div id="server-data" style="display:none" data-json={JSON.stringify(serverData)}></div>
 
 <script is:inline>
 (function() {
@@ -437,8 +437,10 @@ td { padding: 4px; border-bottom: 1px solid #0f172a; vertical-align: top; text-a
     try {
       var d = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
       if (!d.length) {
-        var sd = window.__SERVER_VISSESSIES__;
-        if (sd && sd.length) { d = sd; }
+        var el = document.getElementById('server-data');
+        if (el && el.dataset.json) {
+          try { var sd = JSON.parse(el.dataset.json); if (sd && sd.length) d = sd; } catch(e) {}
+        }
       }
       var changed = false;
       d.forEach(function(item) { if (!item._id) { item._id = '_' + Date.now().toString(36) + Math.random().toString(36).slice(2,6); changed = true; } });
@@ -1268,7 +1270,6 @@ html+='<th>Aantal</th><th>Gewicht</th><th>Stek</th><th>Begin</th><th>Einde</th><
 
     window.renderData = renderData;
   })();
-})();
 })();
 </script>
 <div style="display:none" data-build={BUILD_TS}></div>
