@@ -64,6 +64,12 @@ function serveStatic(req, res) {
 }
 
 const server = http.createServer((req, res) => {
+  // Redirect veelvoorkomende verkeerde URL's naar correcte versie
+  if (req.url === '/index.html' || req.url === '/index.htm' || req.url === '/default.html') {
+    res.writeHead(301, { Location: '/' });
+    res.end();
+    return;
+  }
   if (serveStatic(req, res)) return;
   compression()(req, res, () => handler(req, res));
 });
