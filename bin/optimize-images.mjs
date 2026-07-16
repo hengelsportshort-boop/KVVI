@@ -1,7 +1,9 @@
-import sharp from 'sharp';
 import { readdir, stat, rename } from 'fs/promises';
 import { join, extname, dirname, basename } from 'path';
 import { fileURLToPath } from 'url';
+
+let sharp;
+try { sharp = (await import('sharp')).default; } catch { console.log('⚠️ sharp niet beschikbaar, skip image optimalisatie'); process.exit(0); }
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
