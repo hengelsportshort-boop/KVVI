@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
-    "start": "astro dev",
+    "start": "node server.mjs",
     "prebuild": "node bin/optimize-images.mjs",
     "build": "astro build",
     "preview": "node server.mjs",
