@@ -253,28 +253,27 @@ const years = Array.from({length: currentYear + 4 - 2026 + 1}, (_, i) => 2026 + 
         return true;
       })
       .map(({ row, originalIndex }) => {
-        // Bereken Totaal kg voor elke deelnemer
-        if (totalIndex >= 0) {
-          // Alle gewichten voor totaal (inclusief 0)
-          const allWeights = dateIndices.map(dateIdx => parseWeight(row[dateIdx]));
-          const totalWeight = allWeights.reduce((sum, w) => sum + w, 0);
-          
-          // Alleen gewichten > 0 voor MINIFS
-          const positiveWeights = allWeights.filter(w => w > 0);
-          
-          // Numbers formule: ALS(AANTAL(C2:L2)<4; SOM(C2:L2); SOM(C2:L2)−MINIFS(C2:L2;C2:L2;">0"))
-          let finalTotal = totalWeight;
-          
-          // ALS aantal gewichten < 4 → SOM (geen aftrek)
-          if (positiveWeights.length >= 4) {
-            // ANDERS → SOM - MINIFS (laagste positieve score)
-            const lowestPositiveScore = Math.min(...positiveWeights);
-            finalTotal = totalWeight - lowestPositiveScore;
+          // Bereken Totaal kg voor elke deelnemer
+          if (totalIndex >= 0) {
+            const allWeights = dateIndices.map(dateIdx => parseWeight(row[dateIdx]));
+            const totalWeight = allWeights.reduce((sum, w) => sum + w, 0);
+            const positiveWeights = allWeights.filter(w => w > 0);
+            
+            // AANTAL(C2:L2) in Numbers telt cellen mét een getal (incl. 0)
+            // In CSV tellen we cellen met een waarde (niet leeg, niet "--")
+            const deelnames = dateIndices.filter(di => {
+              const val = (row[di] || '').toString().trim();
+              return val !== '' && val !== '--';
+            }).length;
+            
+            // Numbers: ALS(AANTAL(C2:L2)<4; SOM; SOM-MINIFS(>0))
+            let finalTotal = totalWeight;
+            if (deelnames >= 4 && positiveWeights.length > 0) {
+              finalTotal = totalWeight - Math.min(...positiveWeights);
+            }
+            const kgValue = finalTotal / 1000;
+            row[totalIndex] = kgValue > 0 ? `${kgValue.toFixed(3).replace('.', ',')} gr` : '0,000 gr';
           }
-          // Converteer gram naar kg en formatteer als "X.XXX gr"
-          const kgValue = finalTotal / 1000;
-          row[totalIndex] = kgValue > 0 ? `${kgValue.toFixed(3).replace('.', ',')} gr` : '0,000 gr';
-        }
         return { row, originalIndex };
       })
       .map(({ row, originalIndex }) => {

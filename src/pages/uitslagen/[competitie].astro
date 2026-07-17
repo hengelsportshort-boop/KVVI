@@ -62,10 +62,13 @@ try {
       const totalWeight = allWeights.reduce((sum, w) => sum + w, 0);
       const positiveWeights = allWeights.filter(w => w > 0);
 
-      // Zelfde logica als in admin/wedstrijden:
-      // ALS aantal gewichten < 4 -> SOM
-      // ANDERS -> SOM - MINIFS(>0) (laagste positieve score)
-      if (positiveWeights.length >= 4) {
+      // AANTAL(C2:L2) in Numbers telt cellen mét een getal (incl. 0)
+      const deelnames = dateIndices.filter(di => {
+        const val = (row[di] || '').toString().trim();
+        return val !== '' && val !== '--';
+      }).length;
+
+      if (deelnames >= 4 && positiveWeights.length > 0) {
         return totalWeight - Math.min(...positiveWeights);
       }
       return totalWeight;
@@ -243,7 +246,11 @@ try {
         const allWeights = dateIndices.map(di => parseW(row[di]));
         const totalWeight = allWeights.reduce((s, w) => s + w, 0);
         const positiveWeights = allWeights.filter(w => w > 0);
-        if (positiveWeights.length >= 4) return totalWeight - Math.min(...positiveWeights);
+        const deelnames = dateIndices.filter(di => {
+          const val = (row[di] || '').toString().trim();
+          return val !== '' && val !== '--';
+        }).length;
+        if (deelnames >= 4 && positiveWeights.length > 0) return totalWeight - Math.min(...positiveWeights);
         return totalWeight;
       };
 
