@@ -103,7 +103,7 @@ const pageTitle = "Tips & Tricks Beheer | KVVI Admin";
   body { overflow-x: hidden; }
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 3px; }
-  .tip-card textarea { min-height: 80px; resize: vertical; font-family: inherit; }
+  .tip-card textarea { min-height: 120px; resize: vertical; font-family: inherit; }
   .tip-card input[type="text"],
   .tip-card input[type="url"],
   .tip-card textarea { font-size: 13px; }
@@ -239,7 +239,7 @@ const pageTitle = "Tips & Tricks Beheer | KVVI Admin";
         '</div>' +
         '<div>' +
           '<label class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1">Info</label>' +
-          '<textarea class="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm" onchange="window._ttData.tips[' + i + '].info = this.value; scheduleSave()" placeholder="Beschrijving (optioneel) — URLs worden automatisch klikbaar">' + (tip.info || '').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</textarea>' +
+          '<textarea rows="8" class="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm" onchange="window._ttData.tips[' + i + '].info = this.value; scheduleSave()" placeholder="Beschrijving (optioneel) — URLs worden automatisch klikbaar">' + (tip.info || '').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</textarea>' +
         '</div>' +
         '<div>' +
           '<label class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1">Link (URL)</label>' +
