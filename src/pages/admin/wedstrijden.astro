@@ -410,17 +410,36 @@ const years = Array.from({length: currentYear + 4 - 2026 + 1}, (_, i) => 2026 + 
   saveBtn.onclick = async () => {
     if (!hasChanges || !currentData) return;
 
-    // Werk de totaalrij bij met herberekende totalen
     const headers = currentData.headers;
     const rows = currentData.rows;
+    const dateIndices = headers
+      .map((h, i) => ({ h: (h || '').toString(), i }))
+      .filter(item => item.h.includes('/') && item.i > 1)
+      .map(item => item.i);
+    const totalIndex = headers.findIndex(h => (h || '').toString().toLowerCase().includes('totaal gr') || (h || '').toString().toLowerCase().includes('totaal kg'));
+    const parseW = v => { if (!v) return 0; let c = v.toString().replace(/\./g,'').replace(/gr/gi,'').replace(/,/g,'.').trim(); const n = parseFloat(c); return isFinite(n) ? n : 0; };
+    const isEmptyC = v => { const s = (v || '').toString().trim(); return s === '' || s === '--'; };
+
+    // Herbereken Totaal kg Adjust voor elke deelnemer met formule
+    rows.forEach(row => {
+      const label = (row[1] || '').toString().toLowerCase();
+      if (label.includes('totaal') || label.includes('beste') || label.includes('slechtste')) return;
+      const pairs = dateIndices.map(di => ({ hasValue: !isEmptyC(row[di]), weight: parseW(row[di]) }));
+      const totalWeight = pairs.reduce((s, p) => s + p.weight, 0);
+      const deelnames = pairs.filter(p => p.hasValue).length;
+      let finalTotal = totalWeight;
+      if (deelnames >= 4) {
+        const filteredWeights = pairs.filter(p => p.hasValue).map(p => p.weight);
+        finalTotal = totalWeight - Math.min(...filteredWeights);
+      }
+      if (totalIndex >= 0) {
+        row[totalIndex] = finalTotal > 0 ? `${(finalTotal/1000).toFixed(3).replace('.', ',')} gr` : '0,000 gr';
+      }
+    });
+
+    // Herbereken totaalrij (totalen per wedstrijd)
     const totalRow = rows.find(row => (row[1] || '').toString().toLowerCase().includes('totaal'));
     if (totalRow) {
-      const dateIndices = headers
-        .map((h, i) => ({ h: (h || '').toString(), i }))
-        .filter(item => item.h.includes('/') && item.i > 1)
-        .map(item => item.i);
-      const totalIndex = headers.findIndex(h => (h || '').toString().toLowerCase().includes('totaal gr') || (h || '').toString().toLowerCase().includes('totaal kg'));
-      const parseW = v => { if (!v) return 0; let c = v.toString().replace(/\./g,'').replace(/gr/gi,'').replace(/,/g,'.').trim(); const n = parseFloat(c); return isFinite(n) ? n : 0; };
       const filtered = rows.filter(row => {
         const label = (row[1] || '').toString().toLowerCase();
         if (!row.some(c => (c||'').toString().trim())) return false;
