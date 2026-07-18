@@ -318,7 +318,8 @@ const pageTitle = "Tips & Tricks Beheer | KVVI Admin";
       const res = await fetch('/api/tips-tricks', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
+        credentials: 'include'
       });
       if (res.ok) {
         saveStatus.textContent = '✓ Opgeslagen';
