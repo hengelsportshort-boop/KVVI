@@ -174,11 +174,11 @@ try {
                       else if (colIdx === displayRow.length - 1) cls += ' font-black text-[#1E3D2C] text-right font-mono text-xs bg-green-50/30';
                       else cls += ' text-center font-mono text-slate-600';
 
-                      const value = colIdx === 0 ? String(rowIdx + 1) : (cell || '');
+                      const cellValue = (colIdx === 0 ? String(rowIdx + 1) : (cell || '')).toString().trim();
                       if (colIdx === 0 || colIdx === 1 || colIdx === displayRow.length - 1) {
-                        return <td class={cls}>{value}</td>;
+                        return <td class={cls}>{cellValue}</td>;
                       }
-                      return <td class={cls}>{value || '<span class="text-slate-200">0</span>'}</td>;
+                      return <td class={cls}>{cellValue}</td>;
                     })}
                   </tr>
                 );
@@ -298,8 +298,9 @@ try {
           else if (colIdx === 1) cls += ' font-bold text-slate-800 text-xs min-w-[160px] sticky left-14 z-10 ' + bgCls + ' border-r shadow-[5px_0_10px_rgba(0,0,0,0.03)]';
           else if (colIdx === colOrder.length - 1) cls += ' font-black text-[#1E3D2C] text-right font-mono text-xs bg-green-50/30';
           else cls += ' text-center font-mono text-slate-600';
-          const cell = row[ci] || '';
-          html += '<td class="' + cls + '">' + (ci === colOrder[0] ? (idx + 1) : (cell || '<span class="text-slate-200">0</span>')) + '</td>';
+          const cellVal = (row[ci] || '').toString().trim();
+          const display = (ci === colOrder[0]) ? (idx + 1) : (cellVal || '');
+          html += '<td class="' + cls + '">' + display + '</td>';
         });
         html += '</tr>';
       });
