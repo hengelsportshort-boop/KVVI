@@ -16,9 +16,42 @@ export async function GET({ url }) {
     const content = fs.readFileSync(csvPad, 'utf-8');
     const lines = content.split('\n').filter(l => l.trim());
 
-    // Parse: eerste lijn = headers, rest = data
     const headers = lines[0].split(';').map(h => h.trim());
     const rows = lines.slice(1).map(l => l.split(';').map(c => c.trim()));
+
+    // Bereken Totaal kg Adjust (formule: som - laagste bij >=4 deelnames)
+    const dateIndices = headers
+      .map((h, i) => ({ h: (h || '').toString(), i }))
+      .filter(item => item.h.includes('/') && item.i > 1)
+      .map(item => item.i);
+    const totalIndex = headers.findIndex(h => (h || '').toLowerCase().includes('totaal kg'));
+
+    if (totalIndex >= 0 && dateIndices.length > 0) {
+      for (const row of rows) {
+        const name = (row[1] || '').toLowerCase();
+        if (!name || name.includes('totaal') || name.includes('beste') || name.includes('slechtste')) continue;
+        const pairs = dateIndices.map(di => {
+          const val = (row[di] || '').toString().trim();
+          const hasValue = val !== '' && val !== '--';
+          let weight = 0;
+          if (hasValue) {
+            const cleaned = val.replace(/\./g, '').replace(/gr/gi, '').replace(/,/g, '.').trim();
+            weight = parseFloat(cleaned);
+            if (!Number.isFinite(weight)) weight = 0;
+          }
+          return { hasValue, weight };
+        });
+        const totalWeight = pairs.reduce((s, p) => s + p.weight, 0);
+        const deelnames = pairs.filter(p => p.hasValue).length;
+        let finalTotal = totalWeight;
+        if (deelnames >= 4) {
+          const filteredWeights = pairs.filter(p => p.hasValue).map(p => p.weight);
+          finalTotal = totalWeight - Math.min(...filteredWeights);
+        }
+        const kgValue = finalTotal / 1000;
+        row[totalIndex] = kgValue > 0 ? `${kgValue.toFixed(3).replace('.', ',')} gr` : '0,000 gr';
+      }
+    }
 
     return new Response(JSON.stringify({ headers, rows, raw: content }), {
       status: 200,
