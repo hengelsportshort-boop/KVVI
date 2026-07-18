@@ -20,9 +20,16 @@ const filePath = path.join(process.cwd(), 'public', 'data', jaar, `${competitie}
 
 const parseWeight = (value: string | undefined): number => {
   if (!value) return 0;
-  const cleaned = value.toString().replace(/\./g, '').replace(/gr/gi, '').replace(/,/g, '.').trim();
+  const s = value.toString().trim();
+  if (s === '' || s === '--') return 0;
+  const cleaned = s.replace(/\./g, '').replace(/gr/gi, '').replace(/,/g, '.').trim();
   const num = parseFloat(cleaned);
   return Number.isFinite(num) ? num : 0;
+};
+
+const isEmptyCell = (value: string | undefined): boolean => {
+  const s = (value || '').toString().trim();
+  return s === '' || s === '--';
 };
 
 let headers: string[] = [];

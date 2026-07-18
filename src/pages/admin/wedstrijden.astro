@@ -235,11 +235,13 @@ const years = Array.from({length: currentYear + 4 - 2026 + 1}, (_, i) => 2026 + 
     visibleHeaders[1] = 'DEELNEMERS';
 
     const totalRow = rows.find(row => (row[1] || '').toString().toLowerCase().includes('totaal'));
+    const isEmptyCell = (value) => {
+      const s = (value || '').toString().trim();
+      return s === '' || s === '--';
+    };
     const parseWeight = (value) => {
-      if (!value) return 0;
-      // Vervang "--" door "0 gr" vooraleer we parsen
-      let cleaned = value.toString().replace(/--/g, '0 gr');
-      cleaned = cleaned.replace(/\./g, '').replace(/gr/gi, '').replace(/,/g, '.').trim();
+      if (isEmptyCell(value)) return 0;
+      let cleaned = value.toString().replace(/\./g, '').replace(/gr/gi, '').replace(/,/g, '.').trim();
       const num = parseFloat(cleaned);
       return Number.isFinite(num) ? num : 0;
     };
@@ -254,17 +256,14 @@ const years = Array.from({length: currentYear + 4 - 2026 + 1}, (_, i) => 2026 + 
       })
       .map(({ row, originalIndex }) => {
           if (totalIndex >= 0) {
-            const allWeights = dateIndices.map(dateIdx => parseWeight(row[dateIdx]));
-            const totalWeight = allWeights.reduce((sum, w) => sum + w, 0);
-            
-            const deelnames = dateIndices.filter(di => {
-              const val = (row[di] || '').toString().trim();
-              return val !== '' && val !== '--';
-            }).length;
-            
+            const pairs = dateIndices.map(di => ({ di, hasValue: !isEmptyCell(row[di]), weight: parseWeight(row[di]) }));
+            const allWeights = pairs.map(p => p.weight);
+            const deelnames = pairs.filter(p => p.hasValue).length;
+            const totalWeight = pairs.reduce((sum, p) => sum + p.weight, 0);
             let finalTotal = totalWeight;
             if (deelnames >= 4) {
-              const minScore = Math.min(...allWeights);
+              const filteredWeights = pairs.filter(p => p.hasValue).map(p => p.weight);
+              const minScore = Math.min(...filteredWeights);
               finalTotal = totalWeight - minScore;
             }
             const kgValue = finalTotal / 1000;
