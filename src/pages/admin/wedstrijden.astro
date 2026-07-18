@@ -272,9 +272,9 @@ const years = Array.from({length: currentYear + 4 - 2026 + 1}, (_, i) => 2026 + 
         return { row, originalIndex };
       })
       .map(({ row, originalIndex }) => {
-        // Calculate total weight for ranking
-        const totalWeight = dateIndices.reduce((sum, dateIdx) => sum + parseWeight(row[dateIdx]), 0);
-        return { row, originalIndex, totalWeight };
+        // Calculate final total from the row's Totaal column for ranking
+        const finalKg = parseWeight(row[totalIndex]);
+        return { row, originalIndex, totalWeight: finalKg };
       })
       .sort((a, b) => {
         // Sort by TOTAAL KG (descending)
