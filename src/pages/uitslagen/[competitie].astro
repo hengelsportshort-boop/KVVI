@@ -65,16 +65,12 @@ try {
     if (totalIndex >= 0) columnOrder.push(totalIndex);
 
     const computeFinalTotal = (row: any[]): number => {
-      const allWeights = dateIndices.map(dateIdx => parseWeight(row[dateIdx]));
-      const totalWeight = allWeights.reduce((sum, w) => sum + w, 0);
+      const weights = dateIndices.map(di => ({ idx: di, val: parseWeight(row[di]), empty: ((row[di] || '').toString().trim() === '' || (row[di] || '').toString().trim() === '--') }));
+      const nonEmpty = weights.filter(w => !w.empty);
+      const totalWeight = nonEmpty.reduce((sum, w) => sum + w.val, 0);
 
-      const deelnames = dateIndices.filter(di => {
-        const val = (row[di] || '').toString().trim();
-        return val !== '' && val !== '--';
-      }).length;
-
-      if (deelnames >= 4) {
-        return totalWeight - Math.min(...allWeights);
+      if (nonEmpty.length >= 4) {
+        return totalWeight - Math.min(...nonEmpty.map(w => w.val));
       }
       return totalWeight;
     };
@@ -248,6 +244,16 @@ try {
       const isEmptyC = v => { const s = (v || '').toString().trim(); return s === '' || s === '--'; };
       const parseW = v => { if (isEmptyC(v)) return 0; const c = v.toString().replace(/\./g,'').replace(/gr/gi,'').replace(/,/g,'.').trim(); const n = parseFloat(c); return isFinite(n) ? n : 0; };
 
+      const computeClientTotal = (row) => {
+        const weights = dateIndices.map(di => {
+          const val = (row[di] || '').toString().trim();
+          return { val: parseW(val), empty: val === '' || val === '--' };
+        });
+        const nonEmpty = weights.filter(w => !w.empty);
+        const total = nonEmpty.reduce((s, w) => s + w.val, 0);
+        return nonEmpty.length >= 4 ? total - Math.min(...nonEmpty.map(w => w.val)) : total;
+      };
+
       const filtered = rows.filter(row => {
         const label = (row[1] || '').toLowerCase();
         if (!row.some(c => (c||'').toString().trim())) return false;
@@ -255,7 +261,7 @@ try {
         return true;
       }).sort((a,b) => {
         if (totalIdx >= 0) {
-          return parseW(b[totalIdx]) - parseW(a[totalIdx]);
+          return computeClientTotal(b) - computeClientTotal(a);
         }
         return placeIdx >= 0 ? parseW(a[placeIdx]) - parseW(b[placeIdx]) : 0;
       });
@@ -309,6 +315,7 @@ try {
     }
   };
 
+  // Alleen bij jaarselectie loaden; bij initiële pagina-lading server-rendered HTML gebruiken
   jaarSelect.onchange = () => loadJaar(jaarSelect.value);
 })();
 </script>
