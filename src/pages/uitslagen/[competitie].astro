@@ -60,16 +60,14 @@ try {
     const computeFinalTotal = (row: any[]): number => {
       const allWeights = dateIndices.map(dateIdx => parseWeight(row[dateIdx]));
       const totalWeight = allWeights.reduce((sum, w) => sum + w, 0);
-      const positiveWeights = allWeights.filter(w => w > 0);
 
-      // AANTAL(C2:L2) in Numbers telt cellen mét een getal (incl. 0)
       const deelnames = dateIndices.filter(di => {
         const val = (row[di] || '').toString().trim();
         return val !== '' && val !== '--';
       }).length;
 
-      if (deelnames >= 4 && positiveWeights.length > 0) {
-        return totalWeight - Math.min(...positiveWeights);
+      if (deelnames >= 4) {
+        return totalWeight - Math.min(...allWeights);
       }
       return totalWeight;
     };
@@ -245,12 +243,11 @@ try {
       const computeTotal = row => {
         const allWeights = dateIndices.map(di => parseW(row[di]));
         const totalWeight = allWeights.reduce((s, w) => s + w, 0);
-        const positiveWeights = allWeights.filter(w => w > 0);
         const deelnames = dateIndices.filter(di => {
           const val = (row[di] || '').toString().trim();
           return val !== '' && val !== '--';
         }).length;
-        if (deelnames >= 4 && positiveWeights.length > 0) return totalWeight - Math.min(...positiveWeights);
+        if (deelnames >= 4) return totalWeight - Math.min(...allWeights);
         return totalWeight;
       };
 

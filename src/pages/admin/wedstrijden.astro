@@ -253,23 +253,19 @@ const years = Array.from({length: currentYear + 4 - 2026 + 1}, (_, i) => 2026 + 
         return true;
       })
       .map(({ row, originalIndex }) => {
-          // Bereken Totaal kg voor elke deelnemer
           if (totalIndex >= 0) {
             const allWeights = dateIndices.map(dateIdx => parseWeight(row[dateIdx]));
             const totalWeight = allWeights.reduce((sum, w) => sum + w, 0);
-            const positiveWeights = allWeights.filter(w => w > 0);
             
-            // AANTAL(C2:L2) in Numbers telt cellen mét een getal (incl. 0)
-            // In CSV tellen we cellen met een waarde (niet leeg, niet "--")
             const deelnames = dateIndices.filter(di => {
               const val = (row[di] || '').toString().trim();
               return val !== '' && val !== '--';
             }).length;
             
-            // Numbers: ALS(AANTAL(C2:L2)<4; SOM; SOM-MINIFS(>0))
             let finalTotal = totalWeight;
-            if (deelnames >= 4 && positiveWeights.length > 0) {
-              finalTotal = totalWeight - Math.min(...positiveWeights);
+            if (deelnames >= 4) {
+              const minScore = Math.min(...allWeights);
+              finalTotal = totalWeight - minScore;
             }
             const kgValue = finalTotal / 1000;
             row[totalIndex] = kgValue > 0 ? `${kgValue.toFixed(3).replace('.', ',')} gr` : '0,000 gr';
