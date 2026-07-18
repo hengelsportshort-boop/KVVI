@@ -140,6 +140,7 @@ const pageTitle = "Tips & Tricks Beheer | KVVI Admin";
     try {
       const res = await fetch('/api/tips-tricks');
       data = await res.json();
+      window._ttData = data;
       if (!data.tips) data.tips = [];
       nextId = data.tips.reduce((max, t) => Math.max(max, t.id || 0), 0) + 1;
       render();
@@ -359,8 +360,6 @@ const pageTitle = "Tips & Tricks Beheer | KVVI Admin";
       if (!hidden) renderPreview();
     });
   }
-
-  window._ttData = data;
 
   loadData();
 })();
