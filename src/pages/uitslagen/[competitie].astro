@@ -245,18 +245,8 @@ try {
       visHeaders[0] = '#';
       visHeaders[1] = 'DEELNEMERS';
 
-      const parseW = v => { if (!v) return 0; const c = v.toString().replace(/\./g,'').replace(/gr/gi,'').replace(/,/g,'.').trim(); const n = parseFloat(c); return isFinite(n) ? n : 0; };
-
-      const computeTotal = row => {
-        const allWeights = dateIndices.map(di => parseW(row[di]));
-        const totalWeight = allWeights.reduce((s, w) => s + w, 0);
-        const deelnames = dateIndices.filter(di => {
-          const val = (row[di] || '').toString().trim();
-          return val !== '' && val !== '--';
-        }).length;
-        if (deelnames >= 4) return totalWeight - Math.min(...allWeights);
-        return totalWeight;
-      };
+      const isEmptyC = v => { const s = (v || '').toString().trim(); return s === '' || s === '--'; };
+      const parseW = v => { if (isEmptyC(v)) return 0; const c = v.toString().replace(/\./g,'').replace(/gr/gi,'').replace(/,/g,'.').trim(); const n = parseFloat(c); return isFinite(n) ? n : 0; };
 
       const filtered = rows.filter(row => {
         const label = (row[1] || '').toLowerCase();
@@ -264,8 +254,8 @@ try {
         if (label.includes('totaal') || label.includes('beste') || label.includes('slechtste')) return false;
         return true;
       }).sort((a,b) => {
-        if (totalIdx >= 0 && dateIndices.length) {
-          return computeTotal(b) - computeTotal(a);
+        if (totalIdx >= 0) {
+          return parseW(b[totalIdx]) - parseW(a[totalIdx]);
         }
         return placeIdx >= 0 ? parseW(a[placeIdx]) - parseW(b[placeIdx]) : 0;
       });
