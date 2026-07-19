@@ -12,7 +12,7 @@ if (Astro.request.method === 'POST') {
     Astro.cookies.set('admin_token', key, {
       path: '/',
       httpOnly: true,
-      sameSite: 'strict',
+      sameSite: 'lax',
       maxAge: 60 * 60 * 24 * 365 * 10
     });
     return Astro.redirect('/admin/wedstrijden');

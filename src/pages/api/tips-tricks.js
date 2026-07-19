@@ -28,7 +28,14 @@ export async function GET() {
 
 export async function POST({ request, cookies }) {
   try {
-    const token = cookies.get('admin_token');
+    // Accept admin_token via cookie, Authorization header, of request body
+    let token = cookies.get('admin_token');
+    if (!token || token.value !== ADMIN_KEY) {
+      const auth = request.headers.get('Authorization');
+      if (auth === 'Bearer ' + ADMIN_KEY) {
+        token = { value: ADMIN_KEY };
+      }
+    }
     if (!token || token.value !== ADMIN_KEY) {
       return new Response(JSON.stringify({ error: 'Unauthorized' }), {
         status: 401,

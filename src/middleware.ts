@@ -71,7 +71,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
       if (ct.startsWith('text/html')) {
         headers.set('Content-Type', 'text/html; charset=utf-8');
       }
-      headers.set('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' https:; connect-src 'self' https:; frame-src 'self' https:; media-src 'self' https:;");
+      headers.set('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com https:; connect-src 'self' https:; frame-src 'self' https:; media-src 'self' https:; style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;");
       headers.set('X-Frame-Options', 'DENY');
       headers.set('X-Content-Type-Options', 'nosniff');
       headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
@@ -108,7 +108,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
     if (ct.startsWith('text/html')) {
       headers.set('Content-Type', 'text/html; charset=utf-8');
     }
-    headers.set('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' https:; connect-src 'self' https:; frame-src 'self' https:; media-src 'self' https:;");
+    headers.set('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com https:; connect-src 'self' https:; frame-src 'self' https:; media-src 'self' https:; style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;");
     headers.set('X-Frame-Options', 'DENY');
     headers.set('X-Content-Type-Options', 'nosniff');
     headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');

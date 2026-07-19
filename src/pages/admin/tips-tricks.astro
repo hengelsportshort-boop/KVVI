@@ -320,7 +320,7 @@ const pageTitle = "Tips & Tricks Beheer | KVVI Admin";
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
-        credentials: 'include'
+        credentials: 'same-origin'
       });
       if (res.ok) {
         saveStatus.textContent = '✓ Opgeslagen';
