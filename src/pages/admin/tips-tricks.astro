@@ -228,12 +228,19 @@ const pageTitle = "Tips & Tricks Beheer | KVVI Admin";
       return;
     }
     container.innerHTML = data.tips.map(function(tip, i) {
-      return '<div class="tip-card bg-white rounded-xl border border-slate-200 p-4 space-y-3" data-index="' + i + '">' +
-        '<div class="flex items-center justify-between">' +
-          '<input type="checkbox" id="tip-vis-' + tip.id + '" ' + (tip.visible !== false ? 'checked' : '') + ' class="w-4 h-4 rounded border-slate-300 text-[#003366] focus:ring-[#003366]" onchange="window._ttData.tips[' + i + '].visible = this.checked; scheduleSave()" />' +
-          '<label for="tip-vis-' + tip.id + '" class="text-xs font-semibold text-slate-500 cursor-pointer select-none mr-auto ml-2">Zichtbaar</label>' +
-          '<button class="text-red-500 hover:text-red-700 text-sm font-bold px-2 py-1" onclick="verwijderTip(' + i + ')">✕ Verwijderen</button>' +
+      return '<div class="tip-card bg-white rounded-xl border border-slate-200" data-index="' + i + '">' +
+        '<div class="flex items-center justify-between p-4 cursor-pointer hover:bg-slate-50 transition-colors" onclick="var s=this.nextElementSibling; s.classList.toggle(\'hidden\'); this.querySelector(\'.toggle-icon\').textContent = s.classList.contains(\'hidden\') ? \'▶\' : \'▼\'">' +
+          '<div class="flex items-center gap-3">' +
+            '<span class="toggle-icon text-xs text-slate-400 w-4">▶</span>' +
+            '<span class="font-semibold text-sm text-slate-800">' + (tip.name || 'Nieuwe tip').replace(/"/g,'&quot;') + '</span>' +
+          '</div>' +
+          '<div class="flex items-center gap-2">' +
+            '<input type="checkbox" id="tip-vis-' + tip.id + '" ' + (tip.visible !== false ? 'checked' : '') + ' class="w-4 h-4 rounded border-slate-300 text-[#003366] focus:ring-[#003366]" onclick="event.stopPropagation(); window._ttData.tips[' + i + '].visible = this.checked; scheduleSave()" />' +
+            '<label for="tip-vis-' + tip.id + '" class="text-[10px] font-semibold text-slate-400 cursor-pointer select-none">Zichtbaar</label>' +
+            '<button class="text-red-400 hover:text-red-600 text-xs font-bold px-1.5 py-0.5" onclick="event.stopPropagation(); verwijderTip(' + i + ')">✕</button>' +
+          '</div>' +
         '</div>' +
+        '<div class="hidden p-4 pt-0 space-y-3 border-t border-slate-100">' +
         '<div>' +
           '<label class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1">Naam</label>' +
           '<input type="text" value="' + (tip.name || '').replace(/"/g,'&quot;') + '" class="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm" onchange="window._ttData.tips[' + i + '].name = this.value; scheduleSave()" placeholder="Titel van de tip" />' +
@@ -247,6 +254,7 @@ const pageTitle = "Tips & Tricks Beheer | KVVI Admin";
           '<input type="url" value="' + (tip.link || '').replace(/"/g,'&quot;') + '" class="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm" onchange="window._ttData.tips[' + i + '].link = this.value; scheduleSave()" placeholder="https://..." />' +
         '</div>' +
         renderMediaSection(tip, i) +
+        '</div>' +
       '</div>';
     }).join('');
     renderPreview();
