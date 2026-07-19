@@ -39,9 +39,12 @@ export const prerender = false;
 
 <script>
 (async () => {
+  console.log('tips-tricks: start loading');
   try {
     const res = await fetch('/api/tips-tricks');
+    console.log('tips-tricks: fetch done', res.status);
     const data = await res.json();
+    console.log('tips-tricks: data loaded', { pageVisible: data.pageVisible, tips: data.tips?.length });
     const container = document.getElementById('tips-container');
     if (!data.pageVisible || !data.tips || !data.tips.length) {
       container.innerHTML = '<div class="text-center text-slate-400 py-20 italic">Nog geen tips &amp; tricks beschikbaar.</div>';
