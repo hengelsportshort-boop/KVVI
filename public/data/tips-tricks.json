@@ -1,5 +1,5 @@
 {
-  "pageVisible": false,
+  "pageVisible": true,
   "tips": [
     {
       "id": 1,
@@ -7,7 +7,7 @@
       "info": "Zorg dat je stok goed in balans is met een licht topkje en gebruik een sidepuller om het elastiek snel bij te regelen. Focus op een kort lash (20-30 cm) tussen top en dobber om de presentatie strak te houden en directe aanbeten te krijgen.\n\nVoer met kleine hoeveelheden tegelijk via de voerbak. Met de vaste stok op 13 meter draait alles om controle en precisie.",
       "link": "",
       "media": [],
-      "visible": false
+      "visible": true
     },
     {
       "id": 2,
@@ -15,7 +15,7 @@
       "info": "Bij vissen in ondiep water gebruik je strung out lood: kleine kogeltjes verdeeld over de onderste 20-30 cm van de lijn in plaats van een klomp lood. Dit zorgt voor een langzame, natuurlijke val van het aas.\n\nDeze setup is ideaal in commerciële wateren waar F1's en karpers hoog in het water zwemmen. Het aas zakt langzaam, net als de omringende partikels.",
       "link": "",
       "media": [],
-      "visible": false
+      "visible": true
     },
     {
       "id": 3,
@@ -23,7 +23,7 @@
       "info": "Margins liggen op 1 tot 3 meter van de kant, vaak het warmste water. Gebruik een korte stok (3-5 m) en een redelijk zware dobber (0.3-0.5g). De rig moet kort zijn met een 6 cm onderlijntje.\n\nEen stevig elastiek is aan te raden, want karper kan zich direct in de kant of het riet vastzwemmen. Wees muisstil en werp geen schaduw.",
       "link": "",
       "media": [],
-      "visible": false
+      "visible": true
     },
     {
       "id": 4,
@@ -31,7 +31,7 @@
       "info": "In de zomer zijn karpers actief en bereid om op de bodem te voeden. Gebruik een zware dobber (0.5-0.8g) om wind te trotseren en een snel zinkende rig. Een 15-20 cm onderlijntje en haakmaat 12-14 is een goed startpunt.\n\nVoer met gestoomde en geconserveerde partikels zoals mais of pellets. Vroege ochtend en late namiddag geven de hoogste vangsten.",
       "link": "",
       "media": [],
-      "visible": false
+      "visible": true
     },
     {
       "id": 5,
@@ -39,7 +39,7 @@
       "info": "In de winter is de stofwisseling van karpers veel lager. Gebruik een kleine, gevoelige dobber (0.2-0.4g) en zacht elastiek. Het aas moet klein en licht verteerbaar zijn: een paar maden, kleine worm of mini-pellet.\n\nVoer spaarzaam om de vis in de buurt te houden, niet om hem te vullen. Richt je op diepere plekken, waar het water het warmst blijft.",
       "link": "",
       "media": [],
-      "visible": false
+      "visible": true
     },
     {
       "id": 6,
@@ -47,7 +47,7 @@
       "info": "Start met 8-10 kleine voerballen (grootte van een mandarijn) om een goede bodembedekking te krijgen. Wacht 15-20 minuten tot de vissen vertrouwen hebben.\n\nDaarna voer je kleine beetjes bij elke gevangen vis of elke 5-10 minuten. Voer wat ze aankunnen; als ze stoppen met bijten, stop dan met voeren. Varieer met pellets, mais en partikels.",
       "link": "",
       "media": [],
-      "visible": false
+      "visible": true
     },
     {
       "id": 7,
@@ -55,7 +55,7 @@
       "info": "In de winter draait voeren om precisie, niet om volume. Start met een handjevol micro-pellets of een paar lepels maden. Wacht minstens 30 minuten voor je opnieuw voert.\n\nVoer nooit als je niet zeker weet of er nog vis aanwezig is. Te veel voer zorgt dat vissen snel verzadigd raken. Kwaliteit boven kwantiteit.",
       "link": "",
       "media": [],
-      "visible": false
+      "visible": true
     },
     {
       "id": 8,
@@ -63,7 +63,7 @@
       "info": "De Jigger is een schuivende float die tussen twee stoppen op de lijn beweegt. Dit maakt het mogelijk om meerdere dieptes tegelijk te bevissen. Het aas zinkt langzaam terwijl de float op het water blijft.\n\nOmdat de lijn rechtstreeks met het elastiek verbonden is, haken vissen zichzelf vaak vast. Dit is de techniek voor schuwe of voorzichtige karpers die de gebruikelijke rigs herkennen.",
       "link": "",
       "media": [],
-      "visible": false
+      "visible": true
     },
     {
       "id": 9,
@@ -71,7 +71,7 @@
       "info": "Een weersomslag (daling van luchtdruk, naderend onweer) kan karperactiviteit plots remmen of aanwakkeren. De dag voor een omslag vreten vissen zich vol; dat is het moment om veel te voeren en te vangen.\n\nTijdens de omslag kunnen ze stoppen met azen. Wacht het uit en schakel over op kleiner aas zoals mais of zachte paste. Na de regen kun je vissen weer in de bovenste waterlaag vinden.",
       "link": "",
       "media": [],
-      "visible": false
+      "visible": true
     },
     {
       "id": 10,
@@ -79,7 +79,7 @@
       "info": "Expander pellets drogen uit en worden te hard om goed aan de haak te blijven. Door ze te conserveren in zout (1 eetlepel op 200 g pellets) blijven ze langer vers en behouden ze hun sponsachtige structuur.\n\nBewaar ze in een afgesloten zak en laat minstens 24 uur intrekken. De pellets worden taaier en blijven beter aan de haak zitten tijdens het werpen.",
       "link": "",
       "media": [],
-      "visible": false
+      "visible": true
     },
     {
       "id": 11,
@@ -87,7 +87,7 @@
       "info": "Geef expander pellets een extra aantrekkingskracht door ze te laten trekken in een mengsel van visolie, knoflookextract of zoetstoffen. Doe droge pellets in een afsluitbare doos, voeg een paar druppels attractant toe, schud en laat 24 uur intrekken.\n\nHet resultaat is een pellet die geur en smaak afgeeft in het water. Voor koud water kun je vloeibaar mosselextract toevoegen. Let op: te veel olie maakt pellets vet en zorgt dat ze minder goed zinken.",
       "link": "",
       "media": [],
-      "visible": false
+      "visible": true
     },
     {
       "id": 12,
@@ -95,7 +95,7 @@
       "info": "Tijdens de paai (mei-juli) zijn karpers niet in voedsel geïnteresseerd — ze zijn gericht op voortplanting. Het is beter om deze periode te mijden voor gerichte bevissing.\n\nWil je toch vissen, kies extreem klein en makkelijk verteerbaar aas (maden, kleine worm). Vis niet op paaiplaatsen zelf, maar probeer de randen. Vangst en terugzetten moet met maximale zorg gebeuren.",
       "link": "",
       "media": [],
-      "visible": false
+      "visible": true
     },
     {
       "id": 13,
@@ -103,7 +103,7 @@
       "info": "Stenenbodems worden vaak overgeslagen vanwege het risico op vastzittende haken, maar ze zijn erg productief. Karpers zoeken er bodemorganismen en schuilplaatsen. Gebruik een stevig haakje met een korte snijrand en lichte lood om diep in spleten te voorkomen.\n\nEen eierlood of lood met rubberen insert helpt om niet vast te komen zitten. Kies voor een haak met lichte buiging die gemakkelijk loskomt als hij klemt.",
       "link": "",
       "media": [],
-      "visible": false
+      "visible": true
     },
     {
       "id": 14,
@@ -111,7 +111,7 @@
       "info": "Unifish is een weerapp speciaal voor vissers. Het geeft zeer nauwkeurige informatie over luchtdruk, wind, neerslag en UV-index voor elke exacte locatie. Het is een stap verder dan algemene weer-apps.\n\nDe app heeft een handige widget zodat je snel kunt zien of het de moeite is om te gaan vissen. Luchtdrukveranderingen zijn essentieel om karperactiviteit te voorspellen. Downloadbaar in de app store voor iOS en Android.",
       "link": "",
       "media": [],
-      "visible": false
+      "visible": true
     },
     {
       "id": 15,
@@ -119,7 +119,7 @@
       "info": "Een huisgemaakte paste op basis van visvoermeel, fijngemalen brok en een scheut water-olie mengsel. Het geheim zit in een theelepel bakpoeder per 500g meel, dat zorgt voor een luchtige textuur die in het water een fijn wolkje van smaakdeeltjes achterlaat.\n\nDe zachtheid van de paste zorgt dat de karper het aas langer vasthoudt. Gebruik een brede haak met weerhaak en draai de paste eromheen. Vooral effectief in de zomer op zwaar beviste wateren.",
       "link": "",
       "media": [],
-      "visible": false
+      "visible": true
     },
     {
       "id": 16,
@@ -127,7 +127,7 @@
       "info": "Speculooskruid is een verrassend effectieve attractant. De kruidige geurnoten van kaneel, kruidnagel, gember en nootmuskaat trekken karpers sterk aan. Maak een booster door een eetlepel speculooskruid te mengen met 100 ml zoetstof en een paar druppels vanille. Laat 48 uur trekken.\n\nMeng een theelepel van deze booster door 200 g fijngehakte partikels of gebruik het als paste-additief. Het is een cheap but cheerful aanpak voor wispelturige karpers.",
       "link": "",
       "media": [],
-      "visible": false
+      "visible": true
     },
     {
       "id": 17,
@@ -135,7 +135,7 @@
       "info": "Nog eenvoudiger: koop een potje speculaaspasta (goedkoop supermarktmerk) en meng een eetlepel met 200 g fijne vismeel. Laat een nacht op kamertemperatuur rusten. Gebruik dit als smeerbare pasta voor een breed, weerhaakloos haakje.\n\nHet vetgehalte van speculaaspasta geeft ook een mooi oliespoor in het water. Deze supersimpele booster werkt op elk water en is spotgoedkoop. Bewaar in de schaduw of koelbox bij warm weer.",
       "link": "",
       "media": [],
-      "visible": false
+      "visible": true
     },
     {
       "id": 18,
@@ -143,7 +143,7 @@
       "info": "Combineer speculaas-booster met one-on-one pasta: een 50/50-mix van zachte deegpasta en speculaas-booster. Het resultaat is een halfzoete, korrelige pasta die bij contact met water een zeer geurig effect geeft. Deze combinatie lokt karpers van grote afstand.\n\nDe pasta moet zacht genoeg zijn om in de haak te kneden en stevig genoeg om de worp te overleven. Perfect voor koud water.",
       "link": "",
       "media": [],
-      "visible": false
+      "visible": true
     },
     {
       "id": 19,
@@ -151,7 +151,7 @@
       "info": "Karpers hebben een zwemblaas en zijn zeer gevoelig voor luchtdrukveranderingen. Bij dalende druk (vóór weersverslechtering) worden ze actief en vreten ze zich vol. Dit is het beste moment om te gaan vissen. Bij stijgende druk worden ze passief.\n\nIdeale luchtdruk is tussen 1010-1020 hPa. Beneden 1000 hPa stoppen ze vaak met azen. Gebruik een barometer of app om de trend te volgen. Een daling van 5-10 hPa op een dag = karper zal hongerig zijn.",
       "link": "",
       "media": [],
-      "visible": false
+      "visible": true
     },
     {
       "id": 20,
@@ -159,7 +159,7 @@
       "info": "Kaas is een onderschat maar uiterst effectief aas, vooral in herfst en winter. De geur van gerijpte kaas (emmentaler, gruyère, gouda) trekt karpers aan op plekken waar ze gewend zijn aan partikels. Snijd in blokjes van 1-2 cm en rijg op een haak met elastiekje.\n\nKaas is vet en blijft lang op de bodem liggen. Gebruik geen smeltkaas; halfrijpe jong belegen kaas is perfect. Werkt het beste op wateren waar nog nooit kaas is gebruikt.",
       "link": "",
       "media": [],
-      "visible": false
+      "visible": true
     },
     {
       "id": 21,
@@ -167,7 +167,7 @@
       "info": "Aardappel is een onderschat karperaas. Kook een aardappel tot net gaar (nog stevig), snijd in blokjes van 1-2 cm en doe ze in een bakje met zout en eventueel MSG. Laat een nacht afkoelen in de koelkast. De aardappel wordt stevig en blijft goed aan de haak zitten.\n\nGebruik een zinkende rig of doorzichtige float voor naturelle presentatie. Werkt goed op water waar met granen en mais wordt gevoerd.",
       "link": "",
       "media": [],
-      "visible": false
+      "visible": true
     },
     {
       "id": 22,
@@ -175,7 +175,7 @@
       "info": "Bij zachte paste is haakkeuze en montage cruciaal. Gebruik een korte, brede haak met weerhaak (maat 6-10). Breng een balletje ter grote van een erwt rond de haak aan, met de punt vrij. Druk niet te hard aan.\n\nGebruik een klein elastiekje of micro-barbjes om de pasta te houden. Als paste bij werpen eraf vliegt, voeg dan een snufje maizena toe voor extra stevigheid.",
       "link": "",
       "media": [],
-      "visible": false
+      "visible": true
     }
   ]
 }

@@ -229,7 +229,7 @@ const pageTitle = "Tips & Tricks Beheer | KVVI Admin";
     }
     container.innerHTML = data.tips.map(function(tip, i) {
       return '<div class="tip-card bg-white rounded-xl border border-slate-200" data-index="' + i + '">' +
-        '<div class="flex items-center justify-between p-4 cursor-pointer hover:bg-slate-50 transition-colors" onclick="var s=this.nextElementSibling; s.classList.toggle(\'hidden\'); this.querySelector(\'.toggle-icon\').textContent = s.classList.contains(\'hidden\') ? \'▶\' : \'▼\'">' +
+        '<div class="flex items-center justify-between p-4 cursor-pointer hover:bg-slate-50 transition-colors" onclick="var s=this.nextElementSibling; s.classList.toggle(\'hidden\'); var ic=this.querySelector(\'.toggle-icon\'); ic.textContent=s.classList.contains(\'hidden\')?\'\\u25B6\':\'\\u25BC\'">' +
           '<div class="flex items-center gap-3">' +
             '<span class="toggle-icon text-xs text-slate-400 w-4">▶</span>' +
             '<span class="font-semibold text-sm text-slate-800">' + (tip.name || 'Nieuwe tip').replace(/"/g,'&quot;') + '</span>' +
