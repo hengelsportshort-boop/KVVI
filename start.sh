@@ -5,6 +5,7 @@ DATA_DIR="/app/public/data"
 SEED_DIR="/app/public/data-seed"
 SENIOREN_DIR="/app/public/images/senioren"
 UPLOADS_DIR="/app/public/data/uploads"
+HOME_UPLOADS_DIR="/app/public/data/home-uploads"
 
 if [ ! -d "$DATA_DIR" ]; then
   mkdir -p "$DATA_DIR"
@@ -16,6 +17,10 @@ fi
 
 if [ ! -d "$UPLOADS_DIR" ]; then
   mkdir -p "$UPLOADS_DIR"
+fi
+
+if [ ! -d "$HOME_UPLOADS_DIR" ]; then
+  mkdir -p "$HOME_UPLOADS_DIR"
 fi
 
 for f in "$SEED_DIR"/*; do

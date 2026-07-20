@@ -4,6 +4,7 @@ import path from 'node:path';
 const FOTOS_HOME_PATH = path.resolve('./public/Fotos Home');
 const FOTO_FOTOS_PATH = path.resolve('./public/Foto Fotos');
 const UPLOADS_PATH = path.resolve('./public/data/uploads');
+const HOME_UPLOADS_PATH = path.resolve('./public/data/home-uploads');
 const GALLERY_PATH = path.resolve('./public/data/gallery.json');
 
 export function getGalleryItems() {
@@ -24,6 +25,26 @@ export function getGalleryItems() {
         source: 'Fotos Home'
       });
     });
+  } catch (_) {}
+
+  // Read from persistent home uploads directory (admin uploads for Home that survive deploys)
+  try {
+    if (fs.existsSync(HOME_UPLOADS_PATH)) {
+      const homeUploadFiles = fs.readdirSync(HOME_UPLOADS_PATH)
+        .filter(f => /\.(png|jpe?g|webp|gif)$/i.test(f) && !f.includes('_640.'))
+        .filter(f => !seenFiles.has(f.toLowerCase()))
+        .sort();
+      homeUploadFiles.forEach((file, index) => {
+        seenFiles.add(file.toLowerCase());
+        allItems.push({
+          id: `home-upload-${index}`,
+          src: `/data/home-uploads/${encodeURIComponent(file)}`,
+          titel: file.replace(/\.(png|jpe?g|webp|gif)$/i, ''),
+          zichtbaar: true,
+          source: 'Fotos Home'
+        });
+      });
+    }
   } catch (_) {}
 
   try {

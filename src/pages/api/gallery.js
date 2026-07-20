@@ -7,6 +7,7 @@ import { getGalleryItems } from '../../lib/gallery';
 const GALLERY_PATH = path.resolve('./public/data/gallery.json');
 const FOTO_FOTOS_PATH = path.resolve('./public/Foto Fotos');
 const UPLOADS_PATH = path.resolve('./public/data/uploads');
+const HOME_UPLOADS_PATH = path.resolve('./public/data/home-uploads');
 
 export async function GET() {
   try {
@@ -28,6 +29,7 @@ export async function POST({ request }) {
     if (contentType && contentType.includes('multipart/form-data')) {
       const formData = await request.formData();
       const file = formData.get('file');
+      const category = formData.get('category') || 'fotos';
       
       if (!file) {
         return new Response(JSON.stringify({ error: 'Geen bestand geüpload' }), { status: 400 });
@@ -40,26 +42,28 @@ export async function POST({ request }) {
       }
       
       // Generate unique filename
-      const timestamp = Date.now();
-      const random = Math.random().toString(36).slice(2, 8);
       const extension = file.name.split('.').pop().toLowerCase();
       const now = new Date();
       const dateStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
       const timeStr = `${String(now.getHours()).padStart(2, '0')}.${String(now.getMinutes()).padStart(2, '0')}`;
       const filename = `Schermafbeelding ${dateStr} ${timeStr}.${extension}`;
       
+      // Determine target directory
+      const targetDir = category === 'home' ? HOME_UPLOADS_PATH : UPLOADS_PATH;
+      
       // Save file to persistent uploads directory (survives deploys)
-      if (!fs.existsSync(UPLOADS_PATH)) {
-        fs.mkdirSync(UPLOADS_PATH, { recursive: true });
+      if (!fs.existsSync(targetDir)) {
+        fs.mkdirSync(targetDir, { recursive: true });
       }
-      const filePath = path.join(UPLOADS_PATH, filename);
+      const filePath = path.join(targetDir, filename);
       const buffer = await file.arrayBuffer();
       fs.writeFileSync(filePath, new Uint8Array(buffer));
       
       return new Response(JSON.stringify({ 
         success: true, 
         filename: filename,
-        message: 'Foto succesvol geüpload'
+        category: category,
+        message: category === 'home' ? 'Home foto succesvol geüpload' : 'Foto succesvol geüpload'
       }), {
         status: 200,
         headers: { 'Content-Type': 'application/json' }
@@ -119,8 +123,8 @@ export async function DELETE({ request }) {
     let actualFilename = null;
     let targetDir = null;
     
-    // Check both directories
-    const dirs = [FOTO_FOTOS_PATH, UPLOADS_PATH].filter(d => {
+    // Check all directories
+    const dirs = [FOTO_FOTOS_PATH, UPLOADS_PATH, HOME_UPLOADS_PATH].filter(d => {
       try { return fs.statSync(d).isDirectory(); } catch { return false; }
     });
     
