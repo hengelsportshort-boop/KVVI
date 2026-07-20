@@ -210,7 +210,7 @@ const pageTitle = "Kalender Beheer | KVVI Admin";
 
   async function loadData() {
     try {
-      const resp = await fetch('/data/wedstrijdkalender.json?t=' + Date.now());
+      const resp = await fetch('/api/kalender');
       data = await resp.json();
       render();
     } catch (e) {
