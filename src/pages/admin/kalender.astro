@@ -243,14 +243,17 @@ const pageTitle = "Kalender Beheer | KVVI Admin";
     tbody.querySelectorAll('.delete-btn').forEach(btn => {
       btn.onclick = async () => {
         const id = btn.dataset.id;
+        console.log('kalender delete clicked:', id);
         if (!confirm('Weet je zeker dat je deze wedstrijd wilt verwijderen?')) return;
         try {
           const res = await fetch('/api/kalender', {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id })
+            body: JSON.stringify({ id }),
+            credentials: 'same-origin'
           });
           const result = await res.json();
+          console.log('kalender delete result:', result);
           if (result.success) {
             showStatus('✅ Verwijderd', 'text-green-600');
             await loadData();
@@ -258,6 +261,7 @@ const pageTitle = "Kalender Beheer | KVVI Admin";
             showStatus('❌ Fout bij verwijderen', 'text-red-600');
           }
         } catch (e) {
+          console.error('kalender delete error:', e);
           showStatus('❌ Fout bij verwijderen', 'text-red-600');
         }
       };
