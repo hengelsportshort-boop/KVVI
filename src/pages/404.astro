@@ -1,0 +1,26 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Pagina niet gevonden" description="Deze pagina bestaat niet. Ga terug naar de startpagina van KVVI.">
+  <div class="min-h-[60vh] flex items-center justify-center py-20">
+    <div class="max-w-lg mx-auto px-4 text-center">
+      <div class="text-8xl font-black text-[#004A99] opacity-20 mb-4">404</div>
+      <h1 class="text-3xl font-black text-[#004A99] mb-4 uppercase tracking-tight">
+        Pagina niet gevonden
+      </h1>
+      <p class="text-lg text-slate-600 mb-8">
+        De pagina die je zoekt bestaat niet of is verplaatst.
+        Controleer de URL of ga terug naar de startpagina.
+      </p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a href="/" class="bg-[#004A99] text-white px-8 py-4 rounded-lg font-bold uppercase tracking-widest hover:bg-[#003366] transition-all text-sm">
+          ← Naar Home
+        </a>
+        <a href="/hengelmap" class="bg-white text-[#004A99] px-8 py-4 rounded-lg font-bold uppercase tracking-widest hover:bg-slate-100 transition-all border-2 border-[#004A99] text-sm">
+          Hengelmap
+        </a>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

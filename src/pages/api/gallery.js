@@ -14,7 +14,12 @@ export async function GET() {
     const items = getGalleryItems();
     return new Response(JSON.stringify(items), {
       status: 200,
-      headers: { 'Content-Type': 'application/json' }
+      headers: {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      }
     });
   } catch (error) {
     return new Response(JSON.stringify({ error: error.message }), { status: 500 });
