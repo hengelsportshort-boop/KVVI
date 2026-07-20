@@ -210,7 +210,7 @@ const pageTitle = "Kalender Beheer | KVVI Admin";
 
   async function loadData() {
     try {
-      const resp = await fetch('/data/wedstrijdkalender.json');
+      const resp = await fetch('/data/wedstrijdkalender.json?t=' + Date.now());
       data = await resp.json();
       render();
     } catch (e) {
@@ -256,7 +256,8 @@ const pageTitle = "Kalender Beheer | KVVI Admin";
           console.log('kalender delete result:', result);
           if (result.success) {
             showStatus('✅ Verwijderd', 'text-green-600');
-            await loadData();
+            data = data.filter(w => w.id !== id);
+            render();
           } else {
             showStatus('❌ Fout bij verwijderen', 'text-red-600');
           }
@@ -304,7 +305,8 @@ const pageTitle = "Kalender Beheer | KVVI Admin";
         addForm.classList.add('hidden');
         document.getElementById('new-datum').value = '';
         document.getElementById('new-reeks').value = '';
-        await loadData();
+        data.push(result.data);
+        render();
       } else {
         showStatus('❌ ' + (result.error || 'Fout'), 'text-red-600');
       }
