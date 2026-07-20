@@ -3,6 +3,7 @@ import path from 'node:path';
 
 const FOTOS_HOME_PATH = path.resolve('./public/Fotos Home');
 const FOTO_FOTOS_PATH = path.resolve('./public/Foto Fotos');
+const UPLOADS_PATH = path.resolve('./public/data/uploads');
 const GALLERY_PATH = path.resolve('./public/data/gallery.json');
 
 export function getGalleryItems() {
@@ -40,6 +41,26 @@ export function getGalleryItems() {
         source: 'Foto Fotos'
       });
     });
+  } catch (_) {}
+
+  // Read from persistent uploads directory (admin uploads that survive deploys)
+  try {
+    if (fs.existsSync(UPLOADS_PATH)) {
+      const uploadFiles = fs.readdirSync(UPLOADS_PATH)
+        .filter(f => /\.(png|jpe?g|webp|gif)$/i.test(f) && !f.includes('_640.'))
+        .filter(f => !seenFiles.has(f.toLowerCase()))
+        .sort();
+      uploadFiles.forEach((file, index) => {
+        seenFiles.add(file.toLowerCase());
+        allItems.push({
+          id: `upload-${index}`,
+          src: `/data/uploads/${encodeURIComponent(file)}`,
+          titel: file.replace(/\.(png|jpe?g|webp|gif)$/i, ''),
+          zichtbaar: true,
+          source: 'Foto Fotos'
+        });
+      });
+    }
   } catch (_) {}
 
   if (fs.existsSync(GALLERY_PATH)) {

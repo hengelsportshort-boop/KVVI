@@ -6,6 +6,7 @@ import { getGalleryItems } from '../../lib/gallery';
 
 const GALLERY_PATH = path.resolve('./public/data/gallery.json');
 const FOTO_FOTOS_PATH = path.resolve('./public/Foto Fotos');
+const UPLOADS_PATH = path.resolve('./public/data/uploads');
 
 export async function GET() {
   try {
@@ -47,8 +48,11 @@ export async function POST({ request }) {
       const timeStr = `${String(now.getHours()).padStart(2, '0')}.${String(now.getMinutes()).padStart(2, '0')}`;
       const filename = `Schermafbeelding ${dateStr} ${timeStr}.${extension}`;
       
-      // Save file to Foto Fotos directory
-      const filePath = path.join(FOTO_FOTOS_PATH, filename);
+      // Save file to persistent uploads directory (survives deploys)
+      if (!fs.existsSync(UPLOADS_PATH)) {
+        fs.mkdirSync(UPLOADS_PATH, { recursive: true });
+      }
+      const filePath = path.join(UPLOADS_PATH, filename);
       const buffer = await file.arrayBuffer();
       fs.writeFileSync(filePath, new Uint8Array(buffer));
       
@@ -113,38 +117,50 @@ export async function DELETE({ request }) {
     // Try to find file by exact match first, then by partial match
     let targetFile = null;
     let actualFilename = null;
+    let targetDir = null;
     
-    try {
-      const files = fs.readdirSync(FOTO_FOTOS_PATH);
-      
-      // First try exact match
-      targetFile = files.find(file => file === filename);
-      if (targetFile) {
-        actualFilename = filename;
-      } else {
+    // Check both directories
+    const dirs = [FOTO_FOTOS_PATH, UPLOADS_PATH].filter(d => {
+      try { return fs.statSync(d).isDirectory(); } catch { return false; }
+    });
+    
+    for (const dir of dirs) {
+      try {
+        const files = fs.readdirSync(dir);
+        
+        // First try exact match
+        targetFile = files.find(file => file === filename);
+        if (targetFile) {
+          actualFilename = filename;
+          targetDir = dir;
+          break;
+        }
+        
         // Try to find by partial match (handle encoding issues)
         const decodedFilename = decodeURIComponent(filename);
         targetFile = files.find(file => file === decodedFilename);
         if (targetFile) {
           actualFilename = decodedFilename;
-        } else {
-          // Try to find by removing URL encoding artifacts
-          const cleanFilename = filename.replace(/%20/g, ' ').replace(/%2F/g, '/');
-          targetFile = files.find(file => file.includes(cleanFilename) || cleanFilename.includes(file));
-          if (targetFile) {
-            actualFilename = targetFile;
-          }
+          targetDir = dir;
+          break;
         }
-      }
-    } catch (error) {
-      return new Response(JSON.stringify({ error: 'Kan geen bestanden lezen' }), { status: 500 });
+        
+        // Try to find by removing URL encoding artifacts
+        const cleanFilename = filename.replace(/%20/g, ' ').replace(/%2F/g, '/');
+        targetFile = files.find(file => file.includes(cleanFilename) || cleanFilename.includes(file));
+        if (targetFile) {
+          actualFilename = targetFile;
+          targetDir = dir;
+          break;
+        }
+      } catch (_) {}
     }
     
-    if (!targetFile) {
+    if (!targetFile || !targetDir) {
       return new Response(JSON.stringify({ error: 'Bestand niet gevonden' }), { status: 404 });
     }
     
-    const filePath = path.join(FOTO_FOTOS_PATH, actualFilename);
+    const filePath = path.join(targetDir, actualFilename);
     
     // Check if file exists
     if (!fs.existsSync(filePath)) {
