@@ -2,79 +2,18 @@ export const prerender = false;
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { getGalleryItems } from '../../lib/gallery';
 
 const GALLERY_PATH = path.resolve('./public/data/gallery.json');
-const FOTOS_HOME_PATH = path.resolve('./public/Fotos Home');
 const FOTO_FOTOS_PATH = path.resolve('./public/Foto Fotos');
 
 export async function GET() {
   try {
-    let allItems = [];
-    const seenFiles = new Set();
-    
-    // Laad Fotos Home foto's
-    try {
-      const homeFiles = fs.readdirSync(FOTOS_HOME_PATH)
-        .filter(file => /\.(png|jpe?g|webp|gif)$/i.test(file) && !file.includes('_640.'))
-        .sort();
-      
-      const homeItems = homeFiles.map((file, index) => {
-        seenFiles.add(file.toLowerCase());
-        return {
-          id: `home-photo-${index}`,
-          src: `/Fotos Home/${encodeURIComponent(file)}`,
-          titel: file.replace(/\.(png|jpe?g|webp|gif)$/i, ''),
-          zichtbaar: true,
-          source: 'Fotos Home'
-        };
-      });
-
-      allItems.push(...homeItems);
-    } catch (error) {
-      console.log('Fotos Home map niet gevonden');
-    }
-    
-    // Laad Foto Fotos foto's
-    try {
-      const fotoFiles = fs.readdirSync(FOTO_FOTOS_PATH)
-        .filter(file => /\.(png|jpe?g|webp|gif)$/i.test(file) && !file.includes('_640.'))
-        .filter(file => !seenFiles.has(file.toLowerCase())) // Voorkom dubbelen
-        .sort();
-      
-      const fotoItems = fotoFiles.map((file, index) => {
-        seenFiles.add(file.toLowerCase());
-        return {
-          id: `foto-fotos-${index}`,
-          src: `/Foto Fotos/${encodeURIComponent(file)}`,
-          titel: file.replace(/\.(png|jpe?g|webp|gif)$/i, ''),
-          zichtbaar: true,
-          source: 'Foto Fotos'
-        };
-      });
-      
-      allItems.push(...fotoItems);
-    } catch (error) {
-      console.log('Foto Fotos map niet gevonden');
-    }
-    
-    // Als er lokale foto's zijn, geef die terug
-    if (allItems.length > 0) {
-      return new Response(JSON.stringify(allItems), {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' }
-      });
-    }
-    
-    // Fallback naar gallery.json als er geen lokale foto's zijn gevonden
-    if (fs.existsSync(GALLERY_PATH)) {
-      const content = fs.readFileSync(GALLERY_PATH, 'utf-8');
-      const data = JSON.parse(content);
-      return new Response(JSON.stringify(data), {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' }
-      });
-    }
-    return new Response(JSON.stringify([]), { status: 200, headers: { 'Content-Type': 'application/json' } });
+    const items = getGalleryItems();
+    return new Response(JSON.stringify(items), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    });
   } catch (error) {
     return new Response(JSON.stringify({ error: error.message }), { status: 500 });
   }
@@ -135,6 +74,22 @@ export async function POST({ request }) {
       titel: String(item.titel || '').trim(),
       zichtbaar: item.zichtbaar !== false
     }));
+
+    // Preserve external URL items (legacy) that are not managed via admin
+    if (fs.existsSync(GALLERY_PATH)) {
+      try {
+        const content = fs.readFileSync(GALLERY_PATH, 'utf-8');
+        const existing = JSON.parse(content);
+        if (Array.isArray(existing)) {
+          const incomingSrcs = new Set(cleaned.map(i => i.src));
+          existing.forEach(item => {
+            if (item.src && !item.src.startsWith('/') && !incomingSrcs.has(item.src)) {
+              cleaned.push(item);
+            }
+          });
+        }
+      } catch (_) {}
+    }
 
     fs.writeFileSync(GALLERY_PATH, JSON.stringify(cleaned, null, 2), 'utf-8');
     return new Response(JSON.stringify({ success: true, count: cleaned.length }), {

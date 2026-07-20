@@ -1,39 +1,10 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import fs from 'node:fs';
-import path from 'node:path';
+import { getGalleryItems } from '../../lib/gallery';
 
-const homeDir = path.resolve('./public/Fotos Home');
-const extraDir = path.resolve('./public/Foto Fotos');
-const galleryJson = path.resolve('./public/data/gallery.json');
+const items = getGalleryItems().filter(i => i.zichtbaar !== false);
 
-let imageFiles = [];
-try {
-  const seen = new Set();
-  
-  // 1. Laad uit Fotos Home
-  if (fs.existsSync(homeDir)) {
-    fs.readdirSync(homeDir).forEach(f => {
-      if (/\.(png|jpe?g|webp|gif)$/i.test(f) && !f.includes('_640.')) {
-        seen.add(f.toLowerCase());
-        imageFiles.push(`/Fotos Home/${encodeURIComponent(f)}`);
-      }
-    });
-  }
-  
-  // 2. Laad uit Foto Fotos (zonder dubbelen)
-  if (fs.existsSync(extraDir)) {
-    fs.readdirSync(extraDir).forEach(f => {
-      if (/\.(png|jpe?g|webp|gif)$/i.test(f) && !f.includes('_640.') && !seen.has(f.toLowerCase())) {
-        imageFiles.push(`/Foto Fotos/${encodeURIComponent(f)}`);
-      }
-    });
-  }
-
-  imageFiles.sort();
-} catch (error) {
-  console.error("Fout bij laden foto's op schijf:", error);
-}
+const imageFiles = items.map(i => i.src);
 
 const spanVariants = [
   'xl:col-span-2 xl:row-span-2',
