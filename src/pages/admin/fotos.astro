@@ -195,8 +195,6 @@ const pageTitle = "Fotobeheer | KVVI Admin";
     } catch (error) {
       list.innerHTML = '<div class="p-6 text-center text-red-500">Fout bij laden van foto&#39;s.</div>';
     }
-    
-    await loadFotoFotos();
   }
 
   async function loadFotoFotos() {
@@ -522,5 +520,6 @@ const pageTitle = "Fotobeheer | KVVI Admin";
   }
 
   loadData();
+  loadFotoFotos();
 })();
 </script>
