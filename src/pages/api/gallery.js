@@ -85,7 +85,8 @@ export async function POST({ request }) {
       id: item.id || `photo-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
       src: String(item.src || '').trim(),
       titel: String(item.titel || '').trim(),
-      zichtbaar: item.zichtbaar !== false
+      zichtbaar: item.zichtbaar !== false,
+      showOnHome: item.showOnHome === true
     }));
 
     // Preserve external URL items (legacy) that are not managed via admin

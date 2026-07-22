@@ -22,12 +22,12 @@ export function getGalleryItems() {
         src: `/Fotos Home/${encodeURIComponent(file)}`,
         titel: file.replace(/\.(png|jpe?g|webp|gif)$/i, ''),
         zichtbaar: true,
+        showOnHome: true,
         source: 'Fotos Home'
       });
     });
   } catch (_) {}
 
-  // Read from persistent home uploads directory (admin uploads for Home that survive deploys)
   try {
     if (fs.existsSync(HOME_UPLOADS_PATH)) {
       const homeUploadFiles = fs.readdirSync(HOME_UPLOADS_PATH)
@@ -41,6 +41,7 @@ export function getGalleryItems() {
           src: `/data/home-uploads/${encodeURIComponent(file)}`,
           titel: file.replace(/\.(png|jpe?g|webp|gif)$/i, ''),
           zichtbaar: true,
+          showOnHome: true,
           source: 'Fotos Home'
         });
       });
@@ -59,12 +60,12 @@ export function getGalleryItems() {
         src: `/Foto Fotos/${encodeURIComponent(file)}`,
         titel: file.replace(/\.(png|jpe?g|webp|gif)$/i, ''),
         zichtbaar: true,
+        showOnHome: false,
         source: 'Foto Fotos'
       });
     });
   } catch (_) {}
 
-  // Read from persistent uploads directory (admin uploads that survive deploys)
   try {
     if (fs.existsSync(UPLOADS_PATH)) {
       const uploadFiles = fs.readdirSync(UPLOADS_PATH)
@@ -78,6 +79,7 @@ export function getGalleryItems() {
           src: `/data/uploads/${encodeURIComponent(file)}`,
           titel: file.replace(/\.(png|jpe?g|webp|gif)$/i, ''),
           zichtbaar: true,
+          showOnHome: false,
           source: 'Foto Fotos'
         });
       });
@@ -100,24 +102,11 @@ export function getGalleryItems() {
             return {
               ...item,
               zichtbaar: match.zichtbaar !== false,
+              showOnHome: match.showOnHome !== undefined ? match.showOnHome : item.showOnHome,
               titel: match.titel || item.titel
             };
           }
           return item;
-        });
-
-        galleryData.forEach(item => {
-          if (item.src && !item.src.startsWith('/')) {
-            if (!allItems.some(i => i.src === item.src)) {
-              allItems.push({
-                id: item.id,
-                src: item.src,
-                titel: item.titel || '',
-                zichtbaar: item.zichtbaar !== false,
-                source: 'Extern'
-              });
-            }
-          }
         });
       }
     } catch (_) {}

@@ -94,70 +94,57 @@ const pageTitle = "Fotobeheer | KVVI Admin";
                 <p class="text-lg font-black text-[#003366]">📤 Upload Nieuwe Foto</p>
               </div>
               <div class="text-right">
-                <p class="text-slate-500 text-xs">Naar <strong>Foto Fotos</strong> map</p>
-                <p class="text-slate-400 text-xs">JPG, PNG, WebP, GIF</p>
+                <p class="text-slate-500 text-xs">JPG, PNG, WebP, GIF</p>
               </div>
             </div>
             
-            <div class="border-2 border-dashed border-slate-300 rounded-2xl p-8 text-center hover:border-[#003366] transition-colors">
-              <input type="file" id="file-input" accept="image/*" class="hidden" />
-              <label for="file-input" class="cursor-pointer">
-                <div class="mb-4">
-                  <div class="w-16 h-16 bg-[#003366]/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <svg class="w-8 h-8 text-[#003366]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                    </svg>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="border-2 border-dashed border-slate-300 rounded-2xl p-6 text-center hover:border-[#003366] transition-colors">
+                <input type="file" id="file-input" accept="image/*" class="hidden" />
+                <label for="file-input" class="cursor-pointer">
+                  <div class="mb-2">
+                    <div class="w-12 h-12 bg-[#003366]/10 rounded-full flex items-center justify-center mx-auto mb-3">
+                      <svg class="w-6 h-6 text-[#003366]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                      </svg>
+                    </div>
+                    <p class="text-sm font-medium text-slate-700">Upload naar Foto Fotos</p>
+                    <p class="text-xs text-slate-400 mt-1">of sleep hierheen</p>
                   </div>
-                  <p class="text-sm font-medium text-slate-700">Klik om foto te uploaden</p>
-                  <p class="text-xs text-slate-500 mt-1">of sleep en zet hier neer</p>
-                </div>
-              </label>
-              <div id="upload-status" class="mt-4 text-sm hidden"></div>
-            </div>
-          </div>
-
-          <!-- Foto Fotos Sectie -->
-          <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-4">
-            <div class="flex items-center justify-between gap-4 pb-4 border-b border-slate-200 mb-4">
-              <div>
-                <p class="text-slate-500 text-xs uppercase tracking-wider font-bold">Foto Fotos</p>
-                <p class="text-2xl font-black text-[#003366]" id="foto-fotos-count">0</p>
+                </label>
+                <div id="upload-status" class="mt-2 text-sm hidden"></div>
               </div>
-              <div class="text-right">
-                <p class="text-slate-500 text-xs">Foto's uit <strong>Foto Fotos</strong> map</p>
-                <p class="text-slate-400 text-xs">Upload & Delete</p>
-              </div>
-            </div>
-            <div id="foto-fotos-list" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
-          </div>
-
-          <!-- Home Foto's Sectie -->
-          <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-4">
-            <div class="flex items-center justify-between gap-4 pb-4 border-b border-slate-200 mb-4">
-              <div>
-                <p class="text-slate-500 text-xs uppercase tracking-wider font-bold">Home Foto's</p>
-                <p class="text-2xl font-black text-[#003366]" id="photo-count">0</p>
-              </div>
-              <div class="text-right">
-                <p class="text-slate-500 text-xs">Foto's uit <strong>Fotos Home</strong> + uploads</p>
-                <p class="text-slate-400 text-xs">Zichtbaarheid + upload</p>
-              </div>
-            </div>
-            <div class="mb-4">
-              <div class="border-2 border-dashed border-slate-300 rounded-2xl p-4 text-center hover:border-[#C5A059] transition-colors cursor-pointer" id="home-upload-area">
+              <div class="border-2 border-dashed border-slate-300 rounded-2xl p-6 text-center hover:border-[#C5A059] transition-colors" id="home-upload-area">
                 <input type="file" id="home-file-input" accept="image/*" class="hidden" />
                 <label for="home-file-input" class="cursor-pointer block">
-                  <div class="flex items-center justify-center gap-2">
-                    <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                    </svg>
-                    <p class="text-sm font-medium text-slate-600">Upload naar <strong>Home Foto's</strong></p>
+                  <div class="mb-2">
+                    <div class="w-12 h-12 bg-[#C5A059]/10 rounded-full flex items-center justify-center mx-auto mb-3">
+                      <svg class="w-6 h-6 text-[#C5A059]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                      </svg>
+                    </div>
+                    <p class="text-sm font-medium text-slate-700">Upload naar Home</p>
+                    <p class="text-xs text-slate-400 mt-1">of sleep hierheen</p>
                   </div>
                 </label>
                 <div id="home-upload-status" class="mt-2 text-sm hidden"></div>
               </div>
             </div>
-            <div id="photo-list" class="space-y-4"></div>
+          </div>
+
+          <!-- Alle Foto's -->
+          <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-4">
+            <div class="flex items-center justify-between gap-4 pb-4 border-b border-slate-200 mb-4">
+              <div>
+                <p class="text-slate-500 text-xs uppercase tracking-wider font-bold">Alle Foto's</p>
+                <p class="text-2xl font-black text-[#003366]" id="photo-count">0</p>
+              </div>
+              <div class="text-right">
+                <p class="text-slate-500 text-xs">Home = homepage carousel</p>
+                <p class="text-slate-500 text-xs">Galerij = fotopagina</p>
+              </div>
+            </div>
+            <div id="photo-list" class="grid grid-cols-1 gap-3"></div>
           </div>
         </div>
       </section>
@@ -174,13 +161,10 @@ const pageTitle = "Fotobeheer | KVVI Admin";
 
 <script>
 (() => {
-  let items = [];
-  let fotoFotosItems = [];
+  let allItems = [];
   let loadSeq = 0;
   const list = document.getElementById('photo-list');
-  const fotoFotosList = document.getElementById('foto-fotos-list');
   const countEl = document.getElementById('photo-count');
-  const fotoFotosCountEl = document.getElementById('foto-fotos-count');
   const saveStatus = document.getElementById('save-status');
   const uploadStatus = document.getElementById('upload-status');
   const fileInput = document.getElementById('file-input');
@@ -192,10 +176,8 @@ const pageTitle = "Fotobeheer | KVVI Admin";
       if (seq !== loadSeq) return;
       const data = await res.json();
       if (seq !== loadSeq) return;
-      items = data.filter(item => item.source === 'Fotos Home');
-      fotoFotosItems = data.filter(item => item.source === 'Foto Fotos');
+      allItems = data;
       render();
-      renderFotoFotos();
     } catch (error) {
       if (seq !== loadSeq) return;
       list.innerHTML = '<div class="p-6 text-center text-red-500">Fout bij laden van foto&#39;s.</div>';
@@ -203,50 +185,52 @@ const pageTitle = "Fotobeheer | KVVI Admin";
   }
 
   function render() {
-    countEl.textContent = String(items.length);
-    if (!items.length) {
-      list.innerHTML = '<div class="p-8 text-center text-slate-400 italic border-2 border-dashed border-slate-200 rounded-xl">Geen foto&#39;s in de "Fotos Home" map.</div>';
+    countEl.textContent = String(allItems.length);
+    if (!allItems.length) {
+      list.innerHTML = '<div class="p-8 text-center text-slate-400 italic border-2 border-dashed border-slate-200 rounded-xl">Geen foto&#39;s gevonden.</div>';
       return;
     }
 
     let html = '';
-    items.forEach((item, idx) => {
-      const isSeedPhoto = item.id && item.id.startsWith('home-photo-');
-      const isUploadedPhoto = item.id && item.id.startsWith('home-upload-');
-      const typeLabel = isSeedPhoto ? 'Seed foto' : (isUploadedPhoto ? 'Geüpload' : 'Externe URL');
-      const typeClass = isSeedPhoto ? 'bg-green-100 text-green-700' : (isUploadedPhoto ? 'bg-blue-100 text-blue-700' : 'bg-yellow-100 text-yellow-700');
-      html += `<div class="border border-slate-200 rounded-3xl overflow-hidden shadow-sm" data-home-idx="${idx}">
-        <div class="grid grid-cols-1 lg:grid-cols-[250px_1fr] gap-4">
-          <div class="h-48 lg:h-full bg-slate-100 overflow-hidden">
-            <img src="${item.src}" alt="${escapeHtml(item.titel || 'Foto')}" class="w-full h-full object-cover" />
+    allItems.forEach((item, idx) => {
+      const isSeedHome = item.id && item.id.startsWith('home-photo-');
+      const isUploadHome = item.id && item.id.startsWith('home-upload-');
+      const isSeedFoto = item.id && item.id.startsWith('foto-fotos-');
+      const isUploadFoto = item.id && item.id.startsWith('upload-');
+      const isUploaded = isUploadHome || isUploadFoto;
+      const isSeed = isSeedHome || isSeedFoto;
+
+      let typeLabel, typeClass;
+      if (isSeedHome) { typeLabel = 'Seed Home'; typeClass = 'bg-green-100 text-green-700'; }
+      else if (isUploadHome) { typeLabel = 'Upload Home'; typeClass = 'bg-blue-100 text-blue-700'; }
+      else if (isSeedFoto) { typeLabel = 'Seed Foto\'s'; typeClass = 'bg-purple-100 text-purple-700'; }
+      else if (isUploadFoto) { typeLabel = 'Upload Foto\'s'; typeClass = 'bg-amber-100 text-amber-700'; }
+      else { typeLabel = 'Overig'; typeClass = 'bg-slate-100 text-slate-700'; }
+
+      html += `<div class="border border-slate-200 rounded-2xl overflow-hidden shadow-sm bg-white" data-idx="${idx}">
+        <div class="flex flex-col sm:flex-row">
+          <div class="w-full sm:w-40 h-40 bg-slate-100 overflow-hidden shrink-0">
+            <img src="${item.src}" alt="${escapeHtml(item.titel || 'Foto')}" class="w-full h-full object-cover" loading="lazy" />
           </div>
-          <div class="p-4 space-y-3">
-            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-              <div>
-                <p class="text-xs uppercase tracking-wider text-slate-500">${escapeHtml(item.titel || 'Onbekende foto')}</p>
-                <p class="text-slate-600 text-sm">${escapeHtml(item.src)}</p>
-                <span class="inline-block mt-1 px-2 py-1 ${typeClass} text-xs rounded-full font-medium">${typeLabel}</span>
+          <div class="flex-1 p-4 space-y-2">
+            <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
+              <div class="min-w-0">
+                <p class="text-xs font-semibold text-slate-700 truncate">${escapeHtml(item.titel || 'Onbekende foto')}</p>
+                <p class="text-[11px] text-slate-400 truncate">${escapeHtml(item.src)}</p>
+                <span class="inline-block mt-1 px-2 py-0.5 ${typeClass} text-[10px] rounded-full font-bold">${typeLabel}</span>
               </div>
-              <div class="flex items-center gap-2">
-                <label class="flex items-center gap-2 text-sm font-semibold text-slate-700">
-                  <input type="checkbox" class="visibility-toggle" ${item.zichtbaar ? 'checked' : ''}>
-                  zichtbaar
+              <div class="flex items-center gap-3 shrink-0">
+                <label class="flex items-center gap-1.5 text-xs font-semibold text-slate-600 cursor-pointer">
+                  <input type="checkbox" class="toggle-home rounded border-slate-300 text-[#003366] focus:ring-[#003366]" ${item.showOnHome ? 'checked' : ''}>
+                  Home
                 </label>
-                ${isUploadedPhoto ? '<button class="delete-home-upload bg-red-500 text-white text-xs font-bold px-3 py-2 rounded-lg hover:bg-red-600 transition">🗑️ Verwijder</button>' : ''}
-                ${!isSeedPhoto && !isUploadedPhoto ? '<button class="delete-btn bg-red-50 text-red-600 text-xs font-bold px-3 py-2 rounded-lg border border-red-200 hover:bg-red-100 transition">Verwijderen</button>' : ''}
+                <label class="flex items-center gap-1.5 text-xs font-semibold text-slate-600 cursor-pointer">
+                  <input type="checkbox" class="toggle-gallery rounded border-slate-300 text-[#003366] focus:ring-[#003366]" ${item.zichtbaar !== false ? 'checked' : ''}>
+                  Galerij
+                </label>
+                ${isUploaded ? `<button class="delete-upload text-red-500 hover:text-red-700 text-xs font-bold px-2 py-1 rounded hover:bg-red-50 transition" title="Verwijder">🗑️</button>` : ''}
               </div>
             </div>
-            ${isSeedPhoto ? '<div class="text-xs text-slate-400 italic">Lokale seed foto — kan niet worden verwijderd.</div>' : ''}
-            ${isUploadedPhoto ? '<div class="text-xs text-slate-400 italic">Geüploade foto — verwijderen verwijdert het bestand.</div>' : ''}
-            ${!isSeedPhoto && !isUploadedPhoto ? `
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <label class="block text-xs text-slate-500 uppercase tracking-wider">Titel</label>
-              <input type="text" class="photo-title w-full rounded-lg border border-slate-200 px-3 py-2 text-sm" value="${escapeHtml(item.titel)}" />
-            </div>
-            <div class="grid grid-cols-1 gap-3">
-              <label class="block text-xs text-slate-500 uppercase tracking-wider">URL</label>
-              <input type="text" class="photo-src w-full rounded-lg border border-slate-200 px-3 py-2 text-sm" value="${escapeHtml(item.src)}" />
-            </div>` : ''}
           </div>
         </div>
       </div>`;
@@ -256,35 +240,6 @@ const pageTitle = "Fotobeheer | KVVI Admin";
     bindEvents();
   }
 
-  function renderFotoFotos() {
-    fotoFotosCountEl.textContent = String(fotoFotosItems.length);
-    if (!fotoFotosItems.length) {
-      fotoFotosList.innerHTML = '<div class="col-span-full p-8 text-center text-slate-400 italic border-2 border-dashed border-slate-200 rounded-xl">Geen foto&#39;s in de "Foto Fotos" map.</div>';
-      return;
-    }
-
-    let html = '';
-    fotoFotosItems.forEach((item, idx) => {
-      const filename = item.src.split('/').pop();
-      html += `<div class="relative group">
-        <div class="aspect-square bg-slate-100 rounded-xl overflow-hidden border border-slate-200">
-          <img src="${item.src}" alt="${escapeHtml(item.titel || 'Foto')}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-        </div>
-        <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl flex items-center justify-center">
-          <button class="delete-foto-foto bg-red-500 text-white text-xs font-bold px-3 py-2 rounded-lg hover:bg-red-600 transition" data-filename="${encodeURIComponent(filename)}">
-            🗑️ Verwijder
-          </button>
-        </div>
-        <div class="mt-2">
-          <p class="text-xs text-slate-600 truncate">${escapeHtml(filename)}</p>
-        </div>
-      </div>`;
-    });
-
-    fotoFotosList.innerHTML = html;
-    bindFotoFotosEvents();
-  }
-
   function escapeHtml(text) {
     const d = document.createElement('div');
     d.textContent = text;
@@ -292,43 +247,26 @@ const pageTitle = "Fotobeheer | KVVI Admin";
   }
 
   function bindEvents() {
-    list.querySelectorAll('.photo-title').forEach((input, idx) => {
-      if (!input) return;
+    list.querySelectorAll('.toggle-home').forEach((input, idx) => {
       input.addEventListener('change', () => {
-        if (items[idx]) items[idx].titel = input.value.trim();
+        if (allItems[idx]) allItems[idx].showOnHome = input.checked;
         scheduleSave();
       });
     });
-    list.querySelectorAll('.photo-src').forEach((input, idx) => {
-      if (!input) return;
+    list.querySelectorAll('.toggle-gallery').forEach((input, idx) => {
       input.addEventListener('change', () => {
-        if (items[idx]) items[idx].src = input.value.trim();
+        if (allItems[idx]) allItems[idx].zichtbaar = input.checked;
         scheduleSave();
       });
     });
-    list.querySelectorAll('.visibility-toggle').forEach((input, idx) => {
-      input.addEventListener('change', () => {
-        if (items[idx]) items[idx].zichtbaar = input.checked;
-        scheduleSave();
-      });
-    });
-    list.querySelectorAll('.delete-btn').forEach((button, idx) => {
-      button.addEventListener('click', () => {
-        if (confirm('Foto verwijderen?')) {
-          items.splice(idx, 1);
-          render();
-          scheduleSave();
-        }
-      });
-    });
-    list.querySelectorAll('.delete-home-upload').forEach(button => {
+    list.querySelectorAll('.delete-upload').forEach(button => {
       button.addEventListener('click', async () => {
-        const parent = button.closest('[data-home-idx]');
-        const idx = Number(parent?.dataset.homeIdx);
-        const item = items[idx];
+        const parent = button.closest('[data-idx]');
+        const idx = Number(parent?.dataset.idx);
+        const item = allItems[idx];
         if (!item) return;
         const filename = decodeURIComponent(item.src.split('/').pop());
-        if (confirm(`Geüploade foto "${filename}" verwijderen?`)) {
+        if (confirm(`"${filename}" verwijderen?`)) {
           try {
             const res = await fetch(`/api/gallery?filename=${encodeURIComponent(filename)}`, { method: 'DELETE' });
             const result = await res.json();
@@ -357,7 +295,7 @@ const pageTitle = "Fotobeheer | KVVI Admin";
       const res = await fetch('/api/gallery', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(items)
+        body: JSON.stringify(allItems)
       });
       const result = await res.json();
       if (result.success) showStatus('✅ Opgeslagen', 'text-green-600');
@@ -375,114 +313,49 @@ const pageTitle = "Fotobeheer | KVVI Admin";
     saveTimeout = setTimeout(() => saveStatus.classList.add('hidden'), 2000);
   }
 
-  function showUploadStatus(message, cls) {
-    uploadStatus.textContent = message;
-    uploadStatus.className = `text-sm ${cls} font-medium`;
-    uploadStatus.classList.remove('hidden');
-    clearTimeout(saveTimeout);
-    saveTimeout = setTimeout(() => uploadStatus.classList.add('hidden'), 2000);
-  }
-
-  function bindFotoFotosEvents() {
-    fotoFotosList.querySelectorAll('.delete-foto-foto').forEach(button => {
-      button.addEventListener('click', async () => {
-        const filename = decodeURIComponent(button.dataset.filename);
-        if (confirm(`Foto "${filename}" verwijderen?`)) {
-          try {
-            const res = await fetch(`/api/gallery?filename=${encodeURIComponent(filename)}`, {
-              method: 'DELETE'
-            });
-            const result = await res.json();
-            if (result.success) {
-              showUploadStatus('✅ Foto verwijderd', 'text-green-600');
-              await loadAll();
-            } else {
-              showUploadStatus('❌ Fout bij verwijderen', 'text-red-600');
-            }
-          } catch (error) {
-            showUploadStatus('❌ Fout bij verwijderen', 'text-red-600');
-          }
-        }
-      });
-    });
-  }
-
-  // Upload functionality — Foto Fotos
+  // Upload — Foto Fotos
   fileInput.addEventListener('change', async (e) => {
     const file = e.target.files[0];
-    if (file) {
-      await uploadFile(file, 'fotos');
-    }
+    if (file) await uploadFile(file, 'fotos');
   });
 
   const uploadArea = fileInput.parentElement.parentElement;
-  uploadArea.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    uploadArea.classList.add('border-[#003366]', 'bg-[#003366]/5');
-  });
-
-  uploadArea.addEventListener('dragleave', (e) => {
-    e.preventDefault();
-    uploadArea.classList.remove('border-[#003366]', 'bg-[#003366]/5');
-  });
-
+  uploadArea.addEventListener('dragover', (e) => { e.preventDefault(); uploadArea.classList.add('border-[#003366]', 'bg-[#003366]/5'); });
+  uploadArea.addEventListener('dragleave', (e) => { e.preventDefault(); uploadArea.classList.remove('border-[#003366]', 'bg-[#003366]/5'); });
   uploadArea.addEventListener('drop', async (e) => {
     e.preventDefault();
     uploadArea.classList.remove('border-[#003366]', 'bg-[#003366]/5');
-    const files = e.dataTransfer.files;
-    if (files.length > 0) {
-      await uploadFile(files[0], 'fotos');
-    }
+    if (e.dataTransfer.files.length > 0) await uploadFile(e.dataTransfer.files[0], 'fotos');
   });
 
-  // Upload functionality — Home Foto's
+  // Upload — Home
   const homeFileInput = document.getElementById('home-file-input');
   const homeUploadArea = document.getElementById('home-upload-area');
   const homeUploadStatus = document.getElementById('home-upload-status');
 
   homeFileInput.addEventListener('change', async (e) => {
     const file = e.target.files[0];
-    if (file) {
-      await uploadFile(file, 'home');
-    }
+    if (file) await uploadFile(file, 'home');
   });
-
-  homeUploadArea.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    homeUploadArea.classList.add('border-[#C5A059]', 'bg-amber-50');
-  });
-
-  homeUploadArea.addEventListener('dragleave', (e) => {
-    e.preventDefault();
-    homeUploadArea.classList.remove('border-[#C5A059]', 'bg-amber-50');
-  });
-
+  homeUploadArea.addEventListener('dragover', (e) => { e.preventDefault(); homeUploadArea.classList.add('border-[#C5A059]', 'bg-amber-50'); });
+  homeUploadArea.addEventListener('dragleave', (e) => { e.preventDefault(); homeUploadArea.classList.remove('border-[#C5A059]', 'bg-amber-50'); });
   homeUploadArea.addEventListener('drop', async (e) => {
     e.preventDefault();
     homeUploadArea.classList.remove('border-[#C5A059]', 'bg-amber-50');
-    const files = e.dataTransfer.files;
-    if (files.length > 0) {
-      await uploadFile(files[0], 'home');
-    }
+    if (e.dataTransfer.files.length > 0) await uploadFile(e.dataTransfer.files[0], 'home');
   });
 
   async function uploadFile(file, category) {
     const statusEl = category === 'home' ? homeUploadStatus : uploadStatus;
     showStatusMsg(statusEl, '⏳ Uploaden...', 'text-blue-600');
-    
     const formData = new FormData();
     formData.append('file', file);
     formData.append('category', category);
-    
     try {
-      const res = await fetch('/api/gallery', {
-        method: 'POST',
-        body: formData
-      });
-      
+      const res = await fetch('/api/gallery', { method: 'POST', body: formData });
       const result = await res.json();
       if (result.success) {
-        showStatusMsg(statusEl, '✅ Foto succesvol geüpload', 'text-green-600');
+        showStatusMsg(statusEl, '✅ Geüpload', 'text-green-600');
         fileInput.value = '';
         homeFileInput.value = '';
         await loadAll();
@@ -496,7 +369,7 @@ const pageTitle = "Fotobeheer | KVVI Admin";
 
   function showStatusMsg(el, message, cls) {
     el.textContent = message;
-    el.className = `mt-4 text-sm ${cls} font-medium`;
+    el.className = `mt-2 text-sm ${cls} font-medium`;
     el.classList.remove('hidden');
     setTimeout(() => el.classList.add('hidden'), 3000);
   }

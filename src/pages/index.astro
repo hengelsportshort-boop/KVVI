@@ -4,46 +4,11 @@ import KVVI3DLogo from '../components/KVVI3DLogo.astro';
 import ImageCarousel from '../components/ImageCarousel.astro';
 import WedstrijdTabel from '../components/WedstrijdTabel.astro';
 import WedstrijdKalender from '../components/WedstrijdKalender.astro';
-import fs from 'node:fs';
-import path from 'node:path';
+import { getGalleryItems } from '../lib/gallery';
 
-const photosPath = path.resolve('./public/Fotos Home');
-const homeDir = path.resolve('./public/Fotos Home');
-const extraDir = path.resolve('./public/Foto Fotos');
-
-let visibleImages = [];
-try {
-  const photoFiles = fs.readdirSync(photosPath)
-    .filter(file => file.endsWith('.png') || file.endsWith('.jpg') || file.endsWith('.jpeg'))
-    .filter(file => !file.includes('_640.'))
-    .sort();
-  const seen = new Set();
-  
-  visibleImages = photoFiles.map(file => `/Fotos Home/${encodeURIComponent(file)}`);
-  // 1. Laad uit Fotos Home
-  if (fs.existsSync(homeDir)) {
-    fs.readdirSync(homeDir).forEach(f => {
-      if (/\.(png|jpe?g|webp|gif)$/i.test(f) && !f.includes('_640.')) {
-        seen.add(f.toLowerCase());
-        visibleImages.push(`/Fotos Home/${encodeURIComponent(f)}`);
-      }
-    });
-  }
-  
-  // 2. Laad uit Foto Fotos (zonder dubbelen)
-  if (fs.existsSync(extraDir)) {
-    fs.readdirSync(extraDir).forEach(f => {
-      if (/\.(png|jpe?g|webp|gif)$/i.test(f) && !f.includes('_640.') && !seen.has(f.toLowerCase())) {
-        visibleImages.push(`/Foto Fotos/${encodeURIComponent(f)}`);
-      }
-    });
-  }
-
-  visibleImages.sort();
-} catch (error) {
-  console.error('Error loading photos:', error);
-  visibleImages = [];
-}
+const visibleImages = getGalleryItems()
+  .filter(i => i.zichtbaar !== false && i.showOnHome === true)
+  .map(i => i.src);
 ---
 
 <BaseLayout title="Koninklijke Vrije Vissers Izegem" description="KVVI — Koninklijke Vrije Vissers Izegem. Ontdek viswedstrijden, uitslagen, de hengelkaart en meer voor vissers in West-Vlaanderen.">
