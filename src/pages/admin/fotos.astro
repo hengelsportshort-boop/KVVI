@@ -176,6 +176,7 @@ const pageTitle = "Fotobeheer | KVVI Admin";
 (() => {
   let items = [];
   let fotoFotosItems = [];
+  let loadSeq = 0;
   const list = document.getElementById('photo-list');
   const fotoFotosList = document.getElementById('foto-fotos-list');
   const countEl = document.getElementById('photo-count');
@@ -184,30 +185,20 @@ const pageTitle = "Fotobeheer | KVVI Admin";
   const uploadStatus = document.getElementById('upload-status');
   const fileInput = document.getElementById('file-input');
 
-  async function loadData() {
+  async function loadAll() {
+    const seq = ++loadSeq;
     try {
       const res = await fetch('/api/gallery');
+      if (seq !== loadSeq) return;
       const data = await res.json();
-      
-      // Filter alleen Fotos Home items
+      if (seq !== loadSeq) return;
       items = data.filter(item => item.source === 'Fotos Home');
-      render();
-    } catch (error) {
-      list.innerHTML = '<div class="p-6 text-center text-red-500">Fout bij laden van foto&#39;s.</div>';
-    }
-  }
-
-  async function loadFotoFotos() {
-    try {
-      // Load Foto Fotos items via API
-      const res = await fetch('/api/gallery');
-      const data = await res.json();
-      
-      // Get Foto Fotos files using source field
       fotoFotosItems = data.filter(item => item.source === 'Foto Fotos');
+      render();
       renderFotoFotos();
     } catch (error) {
-      fotoFotosList.innerHTML = '<div class="p-6 text-center text-red-500">Fout bij laden van Foto Fotos.</div>';
+      if (seq !== loadSeq) return;
+      list.innerHTML = '<div class="p-6 text-center text-red-500">Fout bij laden van foto&#39;s.</div>';
     }
   }
 
@@ -343,7 +334,7 @@ const pageTitle = "Fotobeheer | KVVI Admin";
             const result = await res.json();
             if (result.success) {
               showStatus('✅ Verwijderd', 'text-green-600');
-              await loadData();
+              await loadAll();
             } else {
               showStatus('❌ Fout bij verwijderen', 'text-red-600');
             }
@@ -384,6 +375,14 @@ const pageTitle = "Fotobeheer | KVVI Admin";
     saveTimeout = setTimeout(() => saveStatus.classList.add('hidden'), 2000);
   }
 
+  function showUploadStatus(message, cls) {
+    uploadStatus.textContent = message;
+    uploadStatus.className = `text-sm ${cls} font-medium`;
+    uploadStatus.classList.remove('hidden');
+    clearTimeout(saveTimeout);
+    saveTimeout = setTimeout(() => uploadStatus.classList.add('hidden'), 2000);
+  }
+
   function bindFotoFotosEvents() {
     fotoFotosList.querySelectorAll('.delete-foto-foto').forEach(button => {
       button.addEventListener('click', async () => {
@@ -396,7 +395,7 @@ const pageTitle = "Fotobeheer | KVVI Admin";
             const result = await res.json();
             if (result.success) {
               showUploadStatus('✅ Foto verwijderd', 'text-green-600');
-              await loadFotoFotos();
+              await loadAll();
             } else {
               showUploadStatus('❌ Fout bij verwijderen', 'text-red-600');
             }
@@ -484,13 +483,9 @@ const pageTitle = "Fotobeheer | KVVI Admin";
       const result = await res.json();
       if (result.success) {
         showStatusMsg(statusEl, '✅ Foto succesvol geüpload', 'text-green-600');
-        if (category === 'home') {
-          homeFileInput.value = '';
-          await loadData();
-        } else {
-          fileInput.value = '';
-          await loadFotoFotos();
-        }
+        fileInput.value = '';
+        homeFileInput.value = '';
+        await loadAll();
       } else {
         showStatusMsg(statusEl, `❌ ${result.error}`, 'text-red-600');
       }
@@ -519,7 +514,6 @@ const pageTitle = "Fotobeheer | KVVI Admin";
     overlay.onclick = toggleMenu;
   }
 
-  loadData();
-  loadFotoFotos();
+  loadAll();
 })();
 </script>
