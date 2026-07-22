@@ -2,12 +2,17 @@ export const prerender = false;
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'url';
 import { getGalleryItems } from '../../lib/gallery';
 
-const GALLERY_PATH = path.resolve('./public/data/gallery.json');
-const FOTO_FOTOS_PATH = path.resolve('./public/Foto Fotos');
-const UPLOADS_PATH = path.resolve('./public/data/uploads');
-const HOME_UPLOADS_PATH = path.resolve('./public/data/home-uploads');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const BASE_DIR = path.resolve(__dirname, '..', '..');
+
+const GALLERY_PATH = path.join(BASE_DIR, 'public', 'data', 'gallery.json');
+const FOTO_FOTOS_PATH = path.join(BASE_DIR, 'public', 'Foto Fotos');
+const UPLOADS_PATH = path.join(BASE_DIR, 'public', 'data', 'uploads');
+const HOME_UPLOADS_PATH = path.join(BASE_DIR, 'public', 'data', 'home-uploads');
 
 export async function GET() {
   try {
