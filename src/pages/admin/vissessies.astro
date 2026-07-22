@@ -821,11 +821,21 @@ function updateStats() {
       for (const v of vals) {
         const pct = Math.max(3, (v.val / maxVal) * 100);
         const isCurrent = parseInt(v.jr) === parseInt(jaar);
-        html += '<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;font-size:11px">' +
-          '<div style="width:32px;font-weight:' + (isCurrent ? '700' : '500') + ';color:' + (isCurrent ? '#1e40af' : '#64748b') + '">' + v.jr + '</div>' +
-          '<div style="flex:1;height:16px;background:#f1f5f9;border-radius:3px;overflow:hidden">' +
-            '<div style="height:100%;width:' + pct + '%;background:' + (isCurrent ? '#1e40af' : '#94a3b8') + ';border-radius:3px;display:flex;align-items:center;padding-left:4px">' +
-              '<span style="font-size:8px;font-weight:600;color:#fff;white-space:nowrap">' + (m.fmt ? m.fmt(v.val) : v.val.toLocaleString('nl-NL')) + m.suffix + '</span></div></div></div>';
+        const barColor = isCurrent ? '#1e40af' : '#475569';
+        const label = (m.fmt ? m.fmt(v.val) : v.val.toLocaleString('nl-NL')) + m.suffix;
+        if (pct < 25) {
+          html += '<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;font-size:12px">' +
+            '<div style="width:32px;font-weight:' + (isCurrent ? '700' : '500') + ';color:' + (isCurrent ? '#1e40af' : '#64748b') + '">' + v.jr + '</div>' +
+            '<div style="height:22px;background:#f1f5f9;border-radius:4px;overflow:visible;display:flex;align-items:center">' +
+              '<div style="height:100%;width:' + pct + '%;background:' + barColor + ';border-radius:4px"></div>' +
+              '<span style="font-size:12px;font-weight:700;color:#1e293b;margin-left:6px;white-space:nowrap">' + label + '</span></div></div>';
+        } else {
+          html += '<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;font-size:12px">' +
+            '<div style="width:32px;font-weight:' + (isCurrent ? '700' : '500') + ';color:' + (isCurrent ? '#1e40af' : '#64748b') + '">' + v.jr + '</div>' +
+            '<div style="flex:1;height:22px;background:#f1f5f9;border-radius:4px;overflow:hidden">' +
+              '<div style="height:100%;width:' + pct + '%;background:' + barColor + ';border-radius:4px;display:flex;align-items:center;padding-left:6px">' +
+                '<span style="font-size:12px;font-weight:700;color:#fff;white-space:nowrap">' + label + '</span></div></div></div>';
+        }
       }
       html += '</div>';
     }
@@ -840,10 +850,10 @@ function updateStats() {
     if (!v) continue;
     const pct = Math.max(4, (v.aantal / maxMaandAantal) * 100);
     html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">' +
-      '<div style="width:28px;font-size:11px;font-weight:600;color:#64748b;text-align:right">' + m + '</div>' +
-      '<div style="flex:1;height:22px;background:#f1f5f9;border-radius:4px;overflow:hidden">' +
+      '<div style="width:28px;font-size:12px;font-weight:600;color:#475569;text-align:right">' + m + '</div>' +
+      '<div style="flex:1;height:26px;background:#f1f5f9;border-radius:4px;overflow:hidden">' +
         '<div style="height:100%;width:' + pct + '%;background:#1e40af;border-radius:4px;display:flex;align-items:center;padding-left:6px">' +
-          '<span style="font-size:10px;font-weight:700;color:#fff;white-space:nowrap">' + v.aantal + '</span></div></div></div>';
+          '<span style="font-size:12px;font-weight:700;color:#fff;white-space:nowrap">' + v.aantal + '</span></div></div></div>';
   }
   html += '</div>' +
     '<div style="background:#fff;border-radius:12px;border:1px solid #e2e8f0;padding:16px">' +
@@ -853,10 +863,10 @@ function updateStats() {
     if (!v) continue;
     const pct = Math.max(4, (v.gewicht / maxMaandGewicht) * 100);
     html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">' +
-      '<div style="width:28px;font-size:11px;font-weight:600;color:#64748b;text-align:right">' + m + '</div>' +
-      '<div style="flex:1;height:22px;background:#f1f5f9;border-radius:4px;overflow:hidden">' +
+      '<div style="width:28px;font-size:12px;font-weight:600;color:#475569;text-align:right">' + m + '</div>' +
+      '<div style="flex:1;height:26px;background:#f1f5f9;border-radius:4px;overflow:hidden">' +
         '<div style="height:100%;width:' + pct + '%;background:#16a34a;border-radius:4px;display:flex;align-items:center;padding-left:6px">' +
-          '<span style="font-size:10px;font-weight:700;color:#fff;white-space:nowrap">' + (v.gewicht/1000).toFixed(1) + '</span></div></div></div>';
+          '<span style="font-size:12px;font-weight:700;color:#fff;white-space:nowrap">' + (v.gewicht/1000).toFixed(1) + '</span></div></div></div>';
   }
   html += '</div></div>';
 
@@ -874,10 +884,10 @@ function updateStats() {
     const pct = total.aantal > 0 ? (s.count / total.aantal * 100) : 0;
     const barPct = Math.max(4, (s.count / maxSoort) * 100);
     html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">' +
-      '<div style="width:54px;font-size:11px;font-weight:600;color:#64748b;text-align:right">' + s.label + '</div>' +
-      '<div style="flex:1;height:22px;background:#f1f5f9;border-radius:4px;overflow:hidden">' +
+      '<div style="width:54px;font-size:12px;font-weight:600;color:#475569;text-align:right">' + s.label + '</div>' +
+      '<div style="flex:1;height:26px;background:#f1f5f9;border-radius:4px;overflow:hidden">' +
         '<div style="height:100%;width:' + barPct + '%;background:' + s.color + ';border-radius:4px;display:flex;align-items:center;padding-left:6px">' +
-          '<span style="font-size:10px;font-weight:700;color:#fff;white-space:nowrap">' + s.count + ' (' + pct.toFixed(0) + '%)</span></div></div></div>';
+          '<span style="font-size:12px;font-weight:700;color:#fff;white-space:nowrap">' + s.count + ' (' + pct.toFixed(0) + '%)</span></div></div></div>';
   }
   html += '</div>';
 
@@ -900,7 +910,7 @@ function updateStats() {
           '<line x1="' + padL + '" y1="' + (padT+ch) + '" x2="' + (padL+cw) + '" y2="' + (padT+ch) + '" stroke="#e2e8f0" stroke-width="1"/>';
     for (const v of yTicks) {
       const y = padT + ch - (v / range) * ch;
-      html += '<text x="' + (padL-6) + '" y="' + (y+4) + '" text-anchor="end" font-size="10" fill="#94a3b8">' + v + '</text>' +
+      html += '<text x="' + (padL-6) + '" y="' + (y+4) + '" text-anchor="end" font-size="12" fill="#475569" font-weight="600">' + v + '</text>' +
         '<line x1="' + padL + '" y1="' + y + '" x2="' + (padL+cw) + '" y2="' + y + '" stroke="#f1f5f9" stroke-width="1"/>';
     }
     html += '<polyline points="' + points.join(' ') + '" fill="none" stroke="#1e40af" stroke-width="2" stroke-linejoin="round"/>';
@@ -915,7 +925,7 @@ function updateStats() {
     for (let i = 0; i < trendData.length; i++) {
       const x = padL + (i / (trendData.length - 1)) * cw;
       const anchor = i === 0 ? 'start' : i === trendData.length-1 ? 'end' : 'middle';
-      html += '<text x="' + x + '" y="' + (padT+ch+14) + '" text-anchor="' + anchor + '" font-size="8" fill="#94a3b8" transform="rotate(-45,' + x + ',' + (padT+ch+14) + ')">' + trendData[i].datum + '</text>';
+      html += '<text x="' + x + '" y="' + (padT+ch+14) + '" text-anchor="' + anchor + '" font-size="11" fill="#475569" font-weight="600" transform="rotate(-45,' + x + ',' + (padT+ch+14) + ')">' + trendData[i].datum + '</text>';
     }
     html += '</svg></div>' +
       '<div id="trend-detail" style="display:none;margin-top:8px;padding:8px 12px;background:#f8fafc;border-radius:6px;font-size:12px;color:#1e293b;font-weight:500">' +
@@ -933,10 +943,10 @@ function updateStats() {
       h += '<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;font-size:12px">' +
         '<div style="width:16px;font-weight:600;color:#94a3b8">' + (i+1) + '</div>' +
         '<div style="width:42px;font-weight:500;color:#1e293b">' + r.datum + '</div>' +
-        '<div style="width:36px;font-size:11px;color:#64748b;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + (r.stek || '--') + '</div>' +
-        '<div style="flex:1;height:18px;background:#f8fafc;border-radius:3px;overflow:hidden">' +
-          '<div style="height:100%;width:' + pct + '%;background:' + borderColor + ';border-radius:3px;display:flex;align-items:center;padding-left:5px">' +
-            '<span style="font-size:9px;font-weight:600;color:#fff;white-space:nowrap">' + Math.round(r.gramMin).toLocaleString('nl-NL') + ' gr/min · ' + r.aantal + ' vis</span></div></div></div>';
+        '<div style="width:36px;font-size:11px;color:#475569;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + (r.stek || '--') + '</div>' +
+        '<div style="flex:1;height:24px;background:#f8fafc;border-radius:4px;overflow:hidden">' +
+          '<div style="height:100%;width:' + pct + '%;background:' + borderColor + ';border-radius:4px;display:flex;align-items:center;padding-left:6px">' +
+            '<span style="font-size:12px;font-weight:600;color:#fff;white-space:nowrap">' + Math.round(r.gramMin).toLocaleString('nl-NL') + ' gr/min · ' + r.aantal + ' vis</span></div></div></div>';
     }
     h += '</div>';
     return h;
@@ -947,8 +957,8 @@ function updateStats() {
   if (besteG.length || besteAndere.length) {
     html += '<div style="margin-bottom:20px">' +
       '<div style="font-size:13px;font-weight:700;color:#1e293b;margin-bottom:10px">Top 5 sessies (gr/min)</div>';
-    html += renderTopSessies(besteG, 'G-stekken', '#3b82f6');
-    html += renderTopSessies(besteAndere, 'Andere', '#64748b');
+    html += renderTopSessies(besteG, 'G-stekken', '#1e40af');
+    html += renderTopSessies(besteAndere, 'Andere', '#334155');
     html += '</div>';
   }
 
@@ -964,9 +974,9 @@ function updateStats() {
       h += '<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;font-size:12px">' +
         '<div style="width:16px;font-weight:600;color:#94a3b8">' + (i+1) + '</div>' +
         '<div style="width:42px;font-weight:500;color:#1e293b">' + stek + '</div>' +
-        '<div style="flex:1;height:18px;background:#f8fafc;border-radius:3px;overflow:hidden">' +
-          '<div style="height:100%;width:' + pct + '%;background:' + borderColor + ';border-radius:3px;display:flex;align-items:center;padding-left:5px">' +
-            '<span style="font-size:9px;font-weight:600;color:#fff;white-space:nowrap">' + gem.toFixed(1) + ' kg/sessie · ' + s.aantal + ' vis · ' + s.sessies + 'x</span></div></div></div>';
+        '<div style="flex:1;height:24px;background:#f8fafc;border-radius:4px;overflow:hidden">' +
+          '<div style="height:100%;width:' + pct + '%;background:' + borderColor + ';border-radius:4px;display:flex;align-items:center;padding-left:6px">' +
+            '<span style="font-size:12px;font-weight:600;color:#fff;white-space:nowrap">' + gem.toFixed(1) + ' kg/sessie · ' + s.aantal + ' vis · ' + s.sessies + 'x</span></div></div></div>';
     }
     h += '</div>';
     return h;
@@ -977,8 +987,8 @@ function updateStats() {
   if (stekEntriesG.length || stekEntriesAndere.length) {
     html += '<div style="margin-bottom:20px">' +
       '<div style="font-size:13px;font-weight:700;color:#1e293b;margin-bottom:10px">Top 5 Stekken (gem. kg/sessie)</div>';
-    html += renderTopStekken(stekEntriesG, 'G-stekken', '#3b82f6');
-    html += renderTopStekken(stekEntriesAndere, 'Andere', '#64748b');
+    html += renderTopStekken(stekEntriesG, 'G-stekken', '#1e40af');
+    html += renderTopStekken(stekEntriesAndere, 'Andere', '#334155');
     html += '</div>';
   }
 
