@@ -52,7 +52,7 @@
    - **Homepage**: compactere hero padding/buttons op mobiel, logo kleiner `w-48 h-48` op kleine schermen
    - **Fotos modal**: grotere touch targets (`w-16 h-16` op mobiel, `w-14 h-14` op desktop)
 8. **Leaflet CSS lokaal (29-05-2026)**: `/public/lib/leaflet.css` ipv unpkg.com preload — sneller (geen externe DNS/SSL), immutable cache (1 jaar), gzip via server.mjs
-9. **cron-job.org keep-alive (29-05-2026)**: elke minuut naar `https://kvvi-production.up.railway.app/` — voorkomt VM suspension na 30 min inactiviteit
+9. **cron-job.org keep-alive (29-05-2026)**: elke minuut naar `https://kvvi.onrender.com/` — voorkomt VM suspension na 30 min inactiviteit
 10. **ETag caching visstekken (30-05-2026)**: `?t=Date.now()` verwijderd uit fetch URLs, vervangen door `If-None-Match` headers. Server antwoordt met `304` (0 KB) zolang data niet wijzigt — bespaart ~45-90 MB/u op mobiel.
 
 ## Structuur
@@ -73,7 +73,7 @@
 - **WAARSCHUWING**: `.env` staat in `.dockerignore`, dus `import.meta.env` wordt leeg tijdens Docker build. Gebruik ALTIJD `process.env` voor runtime secrets.
 
 ## Railway
-- Host: `kvvi-production.up.railway.app`
+- Host: `kvvi.onrender.com`
 - Deploy trigger: `curl -s -X POST "https://backboard.railway.app/graphql/v2" -H "Authorization: Bearer <token>" -H "Content-Type: application/json" -d '{"query":"mutation { environmentTriggersDeploy(input: { environmentId: \"6d070451-3a0e-478d-91f7-aed2b7104d1c\", projectId: \"19766c01-d253-4bd7-96fe-bdbcbe1bc78f\", serviceId: \"b1442851-f031-4433-a041-4881dc33bbce\" }) }"}'`
 - Project: `distinguished-presence`, Service: `kvvi`
 - Persistent volume: `/app/public/data` — seed data in `/app/public/data-seed`, `start.sh` kopieert alleen ontbrekende bestanden (behoudt admin-wijzigingen)

@@ -4,11 +4,11 @@ import node from '@astrojs/node';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  site: 'https://kvvi-production.up.railway.app',
+  site: 'https://kvvi.onrender.com',
   integrations: [tailwind(), sitemap({
     filter: (page) => !page.includes('/admin/'),
     serialize: (item) => {
-      if (item.url === 'https://kvvi-production.up.railway.app/') {
+      if (item.url === 'https://kvvi.onrender.com/') {
         item.priority = 1.0;
         item.changefreq = 'daily';
       } else {
