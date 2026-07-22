@@ -40,14 +40,13 @@ export async function POST({ request }) {
         return new Response(JSON.stringify({ error: 'Geen bestand geüpload' }), { status: 400 });
       }
       
-      // Validate file type
-      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
-      if (!allowedTypes.includes(file.type)) {
+      // Validate file type (check MIME + extension as fallback)
+      const allowedMimes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
+      const allowedExts = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+      const extension = file.name.split('.').pop().toLowerCase();
+      if (!allowedMimes.includes(file.type) && !allowedExts.includes(extension)) {
         return new Response(JSON.stringify({ error: 'Alleen JPG, PNG, WebP en GIF bestanden zijn toegestaan' }), { status: 400 });
       }
-      
-      // Generate unique filename
-      const extension = file.name.split('.').pop().toLowerCase();
       const now = new Date();
       const dateStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
       const timeStr = `${String(now.getHours()).padStart(2, '0')}.${String(now.getMinutes()).padStart(2, '0')}`;
