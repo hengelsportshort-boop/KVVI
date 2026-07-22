@@ -1120,39 +1120,232 @@ html+='<th>Aantal</th><th>Gewicht</th><th>Stek</th><th>Begin</th><th>Einde</th><
 
     function renderStats(alleData, jaar) {
       var data = filterJaar(alleData, jaar);
-      var totaalKroes=0, totaalSchub=0, totaalSpiegel=0, totaalAnder=0, totaalAantal=0, totaalGewicht=0, totaalTijd=0;
-      var stekCounts = {};
-      for (var i=0; i<data.length; i++) {
-        var r = data[i];
+      var el = document.getElementById('d-stats-content');
+      if (!alleData.length) { el.innerHTML = '<p class="d-empty">Importeer eerst data.</p>'; return; }
+      if (!data.length) { el.innerHTML = '<p class="d-empty">Geen data voor '+jaar+'.</p>'; return; }
+
+      var computed = data.map(function(r) {
         var k = parseInt(r.kroes)||0, s = parseInt(r.schub)||0, p = parseInt(r.spiegel)||0, a = parseInt(r.ander)||0;
-        totaalKroes+=k; totaalSchub+=s; totaalSpiegel+=p; totaalAnder+=a;
-        totaalAantal += k+s+p+a;
-        totaalGewicht += parseInt(r.gewicht)||(k*GEW_KROES()+s*GEW_SCHUB()+p*GEW_SPIEGEL()+a*GEW_ANDER());
-        totaalTijd += r.duurMin||0;
-        var st = r.stek||'Onbekend';
-        stekCounts[st] = (stekCounts[st]||0) + 1;
-      }
-      var stekRanking = Object.keys(stekCounts).sort(function(a,b) { return stekCounts[b]-stekCounts[a]; }).slice(0,5);
-      var html = '<div class="d-stats-grid">';
-      var vs = getVissoorten();
-      html += '<div class="d-stat-card"><div class="d-stat-val">'+totaalAantal+'</div><div class="d-stat-label">Totaal vis</div></div>';
-      html += '<div class="d-stat-card"><div class="d-stat-val">'+(totaalGewicht/1000).toFixed(1)+' kg</div><div class="d-stat-label">Totaal gewicht</div></div>';
-      vs.forEach(function(x){
-        var count = {kroes:totaalKroes,schub:totaalSchub,spiegel:totaalSpiegel,ander:totaalAnder}[x.id]||0;
-        html += '<div class="d-stat-card"><div class="d-stat-val">'+count+'</div><div class="d-stat-label">'+x.name+'</div></div>';
+        var aantal = k+s+p+a;
+        var gewicht = parseInt(r.gewicht) || (k*GEW_KROES()+s*GEW_SCHUB()+p*GEW_SPIEGEL()+a*GEW_ANDER());
+        var tm = r.tijdMin || (r.duurMin || 0);
+        var gm = tm > 0 ? (gewicht / tm) : 0;
+        var w4 = gm * 240;
+        var dv = tm > 0 && aantal > 0 ? fmtDuurVangst(tm, aantal) : '—';
+        var beoord = aantal >= 51 ? '*****' : aantal >= 36 ? '****' : aantal >= 20 ? '***' : aantal >= 11 ? '**' : '*';
+        return { kroes:k, schub:s, spiegel:p, ander:a, aantal:aantal, gewicht:gewicht, tijdMin:tm, gramMin:gm, wedstrijd4uur:w4, duurVangst:dv, beoordeling:beoord, datum:r.datum||'', stek:r.stek||'', month:r.month||'', wedstrijd:r.wedstrijd||'' };
       });
-      html += '<div class="d-stat-card"><div class="d-stat-val">'+totaalTijd+' min</div><div class="d-stat-label">Tijd op het water</div></div>';
-      if (totaalTijd > 0) html += '<div class="d-stat-card"><div class="d-stat-val">'+fmtDecimal(totaalGewicht/totaalTijd)+'</div><div class="d-stat-label">Gr/min</div></div>';
-      html += '<div class="d-stat-card"><div class="d-stat-val">'+data.length+'</div><div class="d-stat-label">Sessies</div></div>';
-      html += '</div>';
-      if (stekRanking.length) {
-        html += '<p class="d-sub" style="font-weight:700;margin:8px 0 4px">Top stekken</p><ol style="color:var(--text);font-size:14px;padding-left:20px">';
-        for (var si=0; si<stekRanking.length; si++) {
-          html += '<li>'+stekRanking[si]+' ('+stekCounts[stekRanking[si]]+' sessies)</li>';
-        }
-        html += '</ol>';
+
+      var total = {kroes:0,schub:0,spiegel:0,ander:0,aantal:0,gewicht:0,tijdMin:0};
+      for (var i=0;i<computed.length;i++) { var c=computed[i]; total.kroes+=c.kroes; total.schub+=c.schub; total.spiegel+=c.spiegel; total.ander+=c.ander; total.aantal+=c.aantal; total.gewicht+=c.gewicht; total.tijdMin+=c.tijdMin; }
+
+      var metVangst = computed.filter(function(r){return r.aantal>0;});
+      var gemGramMin = total.tijdMin > 0 ? total.gewicht / total.tijdMin : 0;
+      var gemPerVis = total.aantal > 0 ? total.gewicht / total.aantal : 0;
+
+      var perMaand = {};
+      for (var i=0;i<computed.length;i++) {
+        var r = computed[i];
+        var m = r.month ? r.month.match(/([a-z]+)/i) : null;
+        var key = m ? m[1].toLowerCase().substring(0,3) : 'onb';
+        if (!perMaand[key]) perMaand[key] = {aantal:0,gewicht:0,tijd:0,sessies:0};
+        perMaand[key].aantal += r.aantal; perMaand[key].gewicht += r.gewicht; perMaand[key].tijd += r.tijdMin; perMaand[key].sessies++;
       }
-      document.getElementById('d-stats-content').innerHTML = html;
+      var maxMaandAantal = Math.max.apply(null, Object.keys(perMaand).map(function(k){return perMaand[k].aantal;}).concat([1]));
+      var maxMaandGewicht = Math.max.apply(null, Object.keys(perMaand).map(function(k){return perMaand[k].gewicht;}).concat([1]));
+
+      var steken = {};
+      for (var i=0;i<computed.length;i++) {
+        var r = computed[i];
+        if (r.stek && r.stek !== '--' && r.stek !== 'Onbekend') {
+          if (!steken[r.stek]) steken[r.stek] = {aantal:0,gewicht:0,sessies:0};
+          steken[r.stek].aantal += r.aantal; steken[r.stek].gewicht += r.gewicht; steken[r.stek].sessies++;
+        }
+      }
+
+      var trendData = computed.filter(function(r){return r.aantal>0&&r.datum;}).sort(function(a,b){
+        function dv(r){var p=r.datum.split('/');return p.length===2?parseInt(p[1])*100+parseInt(p[0]):99999;}
+        return dv(a)-dv(b);
+      });
+
+      var html = '';
+      var leeg = data.length - metVangst.length;
+
+      // Summary cards
+      html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:16px">' +
+        '<div style="background:#1e293b;border-radius:12px;border:1px solid #334155;padding:12px;text-align:center">' +
+          '<div style="font-size:10px;text-transform:uppercase;color:#94a3b8;font-weight:600;letter-spacing:0.5px">Totaal vis</div>' +
+          '<div style="font-size:26px;font-weight:800;color:#fff;margin-top:4px">'+total.aantal.toLocaleString('nl-NL')+'</div></div>' +
+        '<div style="background:#1e293b;border-radius:12px;border:1px solid #334155;padding:12px;text-align:center">' +
+          '<div style="font-size:10px;text-transform:uppercase;color:#94a3b8;font-weight:600;letter-spacing:0.5px">Totaal gewicht</div>' +
+          '<div style="font-size:26px;font-weight:800;color:#fff;margin-top:4px">'+(total.gewicht/1000).toLocaleString('nl-NL',{maximumFractionDigits:1})+' <span style="font-size:13px;font-weight:600;color:#94a3b8">kg</span></div></div>' +
+        '<div style="background:#1e293b;border-radius:12px;border:1px solid #334155;padding:12px;text-align:center">' +
+          '<div style="font-size:10px;text-transform:uppercase;color:#94a3b8;font-weight:600;letter-spacing:0.5px">Gr/min</div>' +
+          '<div style="font-size:26px;font-weight:800;color:#fff;margin-top:4px">'+Math.round(gemGramMin).toLocaleString('nl-NL')+'</div></div>' +
+        '<div style="background:#1e293b;border-radius:12px;border:1px solid #334155;padding:12px;text-align:center">' +
+          '<div style="font-size:10px;text-transform:uppercase;color:#94a3b8;font-weight:600;letter-spacing:0.5px">Gem. vis/sessie</div>' +
+          '<div style="font-size:26px;font-weight:800;color:#fff;margin-top:4px">'+(total.aantal/data.length).toLocaleString('nl-NL',{maximumFractionDigits:1})+'</div></div>' +
+        '<div style="background:#1e293b;border-radius:12px;border:1px solid #334155;padding:12px;text-align:center">' +
+          '<div style="font-size:10px;text-transform:uppercase;color:#94a3b8;font-weight:600;letter-spacing:0.5px">Gem. gewicht/vis</div>' +
+          '<div style="font-size:26px;font-weight:800;color:#fff;margin-top:4px">'+(gemPerVis/1000).toLocaleString('nl-NL',{maximumFractionDigits:2})+' <span style="font-size:13px;font-weight:600;color:#94a3b8">kg</span></div></div>' +
+        '<div style="background:#1e293b;border-radius:12px;border:1px solid #334155;padding:12px;text-align:center">' +
+          '<div style="font-size:10px;text-transform:uppercase;color:#94a3b8;font-weight:600;letter-spacing:0.5px">Sessies</div>' +
+          '<div style="font-size:26px;font-weight:800;color:#fff;margin-top:4px">'+data.length+' <span style="font-size:12px;font-weight:600;color:'+(leeg>0?'#ef4444':'#22c55e')+'">'+(leeg>0?'('+leeg+' leeg)':'(vol)')+'</span></div></div>' +
+      '</div>';
+
+      // Vis per maand + Gewicht per maand
+      html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">' +
+        '<div style="background:#1e293b;border-radius:12px;border:1px solid #334155;padding:14px">' +
+          '<div style="font-size:13px;font-weight:700;color:#C5A059;margin-bottom:10px">Vis per maand</div>';
+      for (var mi=0;mi<MAANDEN.length;mi++) {
+        var v = perMaand[MAANDEN[mi]]; if (!v) continue;
+        var pct = Math.max(4, (v.aantal / maxMaandAantal) * 100);
+        html += '<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px">' +
+          '<div style="width:26px;font-size:11px;font-weight:700;color:#fff;text-align:right">'+MAANDEN[mi]+'</div>' +
+          '<div style="flex:1;height:24px;background:#0f172a;border-radius:4px;overflow:hidden">' +
+            '<div style="height:100%;width:'+pct+'%;background:#3b82f6;border-radius:4px;display:flex;align-items:center;padding-left:5px">' +
+              '<span style="font-size:12px;font-weight:700;color:#fff;white-space:nowrap">'+v.aantal+'</span></div></div></div>';
+      }
+      html += '</div>' +
+        '<div style="background:#1e293b;border-radius:12px;border:1px solid #334155;padding:14px">' +
+          '<div style="font-size:13px;font-weight:700;color:#C5A059;margin-bottom:10px">Gewicht per maand</div>';
+      for (var mi=0;mi<MAANDEN.length;mi++) {
+        var v = perMaand[MAANDEN[mi]]; if (!v) continue;
+        var pct = Math.max(4, (v.gewicht / maxMaandGewicht) * 100);
+        html += '<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px">' +
+          '<div style="width:26px;font-size:11px;font-weight:700;color:#fff;text-align:right">'+MAANDEN[mi]+'</div>' +
+          '<div style="flex:1;height:24px;background:#0f172a;border-radius:4px;overflow:hidden">' +
+            '<div style="height:100%;width:'+pct+'%;background:#22c55e;border-radius:4px;display:flex;align-items:center;padding-left:5px">' +
+              '<span style="font-size:12px;font-weight:700;color:#fff;white-space:nowrap">'+(v.gewicht/1000).toFixed(1)+'</span></div></div></div>';
+      }
+      html += '</div></div>';
+
+      // Vissoort verdeling
+      var vs = getVissoorten();
+      var soorten = vs.map(function(x){ return {label:x.name, count:({kroes:total.kroes,schub:total.schub,spiegel:total.spiegel,ander:total.ander}[x.id]||0), color:x.color}; });
+      var maxSoort = Math.max.apply(null, soorten.map(function(s){return s.count;}).concat([1]));
+      html += '<div style="background:#1e293b;border-radius:12px;border:1px solid #334155;padding:14px;margin-bottom:16px">' +
+        '<div style="font-size:13px;font-weight:700;color:#C5A059;margin-bottom:10px">Vissoort verdeling</div>';
+      for (var si=0;si<soorten.length;si++) {
+        var s = soorten[si]; if (s.count<=0) continue;
+        var pct = total.aantal>0?(s.count/total.aantal*100):0;
+        var barPct = Math.max(4,(s.count/maxSoort)*100);
+        html += '<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px">' +
+          '<div style="width:50px;font-size:11px;font-weight:700;color:#fff;text-align:right">'+s.label+'</div>' +
+          '<div style="flex:1;height:24px;background:#0f172a;border-radius:4px;overflow:hidden">' +
+            '<div style="height:100%;width:'+barPct+'%;background:'+s.color+';border-radius:4px;display:flex;align-items:center;padding-left:5px">' +
+              '<span style="font-size:12px;font-weight:700;color:#fff;white-space:nowrap">'+s.count+' ('+pct.toFixed(0)+'%)</span></div></div></div>';
+      }
+      html += '</div>';
+
+      // Trend chart
+      if (trendData.length >= 2) {
+        var W=600,H=180,padL=40,padR=16,padT=16,padB=28;
+        var cw=W-padL-padR,ch=H-padT-padB;
+        var maxVal=Math.max.apply(null,trendData.map(function(r){return r.gramMin;}).concat([1]));
+        var range=maxVal||1;
+        var points=trendData.map(function(r,i){var x=padL+(i/(trendData.length-1))*cw;var y=padT+ch-(r.gramMin/range)*ch;return x+','+y;});
+        var yTicks=[0,Math.round(maxVal/2),Math.round(maxVal)];
+        html += '<div style="background:#1e293b;border-radius:12px;border:1px solid #334155;padding:14px;margin-bottom:16px">' +
+          '<div style="font-size:13px;font-weight:700;color:#C5A059;margin-bottom:8px">Trend \u2014 gr/min per sessie</div>' +
+          '<div style="overflow-x:auto">' +
+            '<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;max-width:100%;height:auto">' +
+              '<line x1="'+padL+'" y1="'+padT+'" x2="'+padL+'" y2="'+(padT+ch)+'" stroke="#334155" stroke-width="1"/>' +
+              '<line x1="'+padL+'" y1="'+(padT+ch)+'" x2="'+(padL+cw)+'" y2="'+(padT+ch)+'" stroke="#334155" stroke-width="1"/>';
+        for (var yi=0;yi<yTicks.length;yi++) {
+          var v=yTicks[yi]; var y=padT+ch-(v/range)*ch;
+          html += '<text x="'+(padL-6)+'" y="'+(y+4)+'" text-anchor="end" font-size="12" fill="#94a3b8" font-weight="700">'+v+'</text>' +
+            '<line x1="'+padL+'" y1="'+y+'" x2="'+(padL+cw)+'" y2="'+y+'" stroke="#334155" stroke-width="1"/>';
+        }
+        html += '<polyline points="'+points.join(' ')+'" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-linejoin="round"/>';
+        for (var i=0;i<trendData.length;i++) {
+          var r=trendData[i]; var x=padL+(i/(trendData.length-1))*cw; var y2=padT+ch-(r.gramMin/range)*ch;
+          var info=r.datum+' \u2014 '+(r.stek||'--')+': '+r.aantal+' vis \u00b7 '+fmtGewicht(r.gewicht)+' \u00b7 '+Math.round(r.gramMin).toLocaleString('nl-NL')+' gr/min';
+          html += '<circle cx="'+x+'" cy="'+y2+'" r="5" fill="#1e293b" stroke="#3b82f6" stroke-width="2.5" style="cursor:pointer">' +
+            '<title>'+info+'</title></circle>';
+        }
+        for (var i=0;i<trendData.length;i++) {
+          var x=padL+(i/(trendData.length-1))*cw;
+          var anchor=i===0?'start':i===trendData.length-1?'end':'middle';
+          html += '<text x="'+x+'" y="'+(padT+ch+14)+'" text-anchor="'+anchor+'" font-size="11" fill="#94a3b8" font-weight="700" transform="rotate(-45,'+x+','+(padT+ch+14)+')">'+trendData[i].datum+'</text>';
+        }
+        html += '</svg></div></div>';
+      }
+
+      // Top 5 sessies (gr/min)
+      var besteG = computed.filter(function(r){return r.aantal>0&&r.stek&&r.stek.match(/^G/i);}).sort(function(a,b){return b.gramMin-a.gramMin;}).slice(0,5);
+      var besteAndere = computed.filter(function(r){return r.aantal>0&&(!r.stek||!r.stek.match(/^G/i));}).sort(function(a,b){return b.gramMin-a.gramMin;}).slice(0,5);
+      function renderTopSessies(sessies,label,borderColor) {
+        if (!sessies.length) return '';
+        var maxV=sessies[0].gramMin||1;
+        var h='<div style="background:#1e293b;border-radius:12px;border:1px solid #334155;border-left:3px solid '+borderColor+';padding:12px;margin-bottom:10px">'+
+          '<div style="font-size:12px;font-weight:700;color:#C5A059;margin-bottom:8px">'+label+'</div>';
+        for (var i=0;i<sessies.length;i++) {
+          var r=sessies[i]; var pct=Math.max(3,(r.gramMin/maxV)*100);
+          h+='<div style="display:flex;align-items:center;gap:5px;margin-bottom:3px;font-size:11px">'+
+            '<div style="width:14px;font-weight:700;color:#64748b">'+(i+1)+'</div>'+
+            '<div style="width:38px;font-weight:700;color:#fff">'+r.datum+'</div>'+
+            '<div style="width:30px;font-size:10px;color:#94a3b8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(r.stek||'--')+'</div>'+
+            '<div style="flex:1;height:22px;background:#0f172a;border-radius:4px;overflow:hidden">'+
+              '<div style="height:100%;width:'+pct+'%;background:'+borderColor+';border-radius:4px;display:flex;align-items:center;padding-left:5px">'+
+                '<span style="font-size:11px;font-weight:700;color:#fff;white-space:nowrap">'+Math.round(r.gramMin).toLocaleString('nl-NL')+' gr/min \u00b7 '+r.aantal+' vis</span></div></div></div>';
+        }
+        h+='</div>'; return h;
+      }
+      if (besteG.length || besteAndere.length) {
+        html += '<div style="margin-bottom:16px"><div style="font-size:13px;font-weight:700;color:#C5A059;margin-bottom:8px">Top 5 sessies (gr/min)</div>';
+        html += renderTopSessies(besteG,'G-stekken','#3b82f6');
+        html += renderTopSessies(besteAndere,'Andere','#64748b');
+        html += '</div>';
+      }
+
+      // Top 5 Stekken (gem. kg/sessie)
+      var stekEntriesG = Object.keys(steken).filter(function(k){return k.match(/^G/i);}).map(function(k){return [k,steken[k]]}).sort(function(a,b){return (b[1].gewicht/b[1].sessies)-(a[1].gewicht/a[1].sessies);}).slice(0,5);
+      var stekEntriesAndere = Object.keys(steken).filter(function(k){return !k.match(/^G/i);}).map(function(k){return [k,steken[k]]}).sort(function(a,b){return (b[1].gewicht/b[1].sessies)-(a[1].gewicht/a[1].sessies);}).slice(0,5);
+      function renderTopStekken(entries,label,borderColor) {
+        if (!entries.length) return '';
+        var maxV=(entries[0][1].gewicht/entries[0][1].sessies)||1;
+        var h='<div style="background:#1e293b;border-radius:12px;border:1px solid #334155;border-left:3px solid '+borderColor+';padding:12px;margin-bottom:10px">'+
+          '<div style="font-size:12px;font-weight:700;color:#C5A059;margin-bottom:8px">'+label+'</div>';
+        for (var i=0;i<entries.length;i++) {
+          var st=entries[i][0],s=entries[i][1];
+          var gem=s.gewicht/s.sessies/1000; var pct=Math.max(3,(gem/(maxV/1000))*100);
+          h+='<div style="display:flex;align-items:center;gap:5px;margin-bottom:3px;font-size:11px">'+
+            '<div style="width:14px;font-weight:700;color:#64748b">'+(i+1)+'</div>'+
+            '<div style="width:38px;font-weight:700;color:#fff">'+st+'</div>'+
+            '<div style="flex:1;height:22px;background:#0f172a;border-radius:4px;overflow:hidden">'+
+              '<div style="height:100%;width:'+pct+'%;background:'+borderColor+';border-radius:4px;display:flex;align-items:center;padding-left:5px">'+
+                '<span style="font-size:11px;font-weight:700;color:#fff;white-space:nowrap">'+gem.toFixed(1)+' kg/sessie \u00b7 '+s.aantal+' vis \u00b7 '+s.sessies+'x</span></div></div></div>';
+        }
+        h+='</div>'; return h;
+      }
+      if (stekEntriesG.length || stekEntriesAndere.length) {
+        html += '<div style="margin-bottom:16px"><div style="font-size:13px;font-weight:700;color:#C5A059;margin-bottom:8px">Top 5 Stekken (gem. kg/sessie)</div>';
+        html += renderTopStekken(stekEntriesG,'G-stekken','#3b82f6');
+        html += renderTopStekken(stekEntriesAndere,'Andere','#64748b');
+        html += '</div>';
+      }
+
+      // Bottom stats
+      var gemKgSessie = total.gewicht / data.length / 1000;
+      var visPerUur = total.tijdMin > 0 ? (total.aantal / total.tijdMin * 60).toFixed(1) : '—';
+      var kgPerUur = total.tijdMin > 0 ? (total.gewicht / total.tijdMin / 1000 * 60).toFixed(1) : '—';
+      html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:16px">' +
+        '<div style="background:#1e293b;border:1px solid #334155;border-radius:8px;padding:10px;text-align:center">' +
+          '<div style="font-size:10px;color:#94a3b8;font-weight:600">Gem. kg/sessie</div>' +
+          '<div style="font-size:16px;font-weight:800;color:#fff;margin-top:2px">'+gemKgSessie.toFixed(1)+' kg</div></div>' +
+        '<div style="background:#1e293b;border:1px solid #334155;border-radius:8px;padding:10px;text-align:center">' +
+          '<div style="font-size:10px;color:#94a3b8;font-weight:600">Vis/uur</div>' +
+          '<div style="font-size:16px;font-weight:800;color:#fff;margin-top:2px">'+visPerUur+'</div></div>' +
+        '<div style="background:#1e293b;border:1px solid #334155;border-radius:8px;padding:10px;text-align:center">' +
+          '<div style="font-size:10px;color:#94a3b8;font-weight:600">Kg/uur</div>' +
+          '<div style="font-size:16px;font-weight:800;color:#fff;margin-top:2px">'+kgPerUur+'</div></div>' +
+        '<div style="background:#1e293b;border:1px solid #334155;border-radius:8px;padding:10px;text-align:center">' +
+          '<div style="font-size:10px;color:#94a3b8;font-weight:600">Totaal tijd</div>' +
+          '<div style="font-size:16px;font-weight:800;color:#fff;margin-top:2px">'+fmtTime(total.tijdMin)+'</div></div>' +
+      '</div>';
+
+      el.innerHTML = html;
     }
 
     // Tab switching for data subtabs
