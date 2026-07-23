@@ -63,6 +63,21 @@ const cards = imageFiles.map((url, index) => {
       <div class="absolute inset-0 pointer-events-none bg-gradient-to-br from-black via-gray-900 to-black opacity-95"></div>
       <div class="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,_rgba(212,175,55,0.08)_0%,_transparent_50%)]"></div>
       
+      <!-- Sluit knop -->
+      <button id="close-modal" type="button" style="position:fixed; top:16px; right:16px; z-index:99999; pointer-events:auto; width:48px; height:48px; border-radius:50%; background:#dc2626; color:white; display:flex; align-items:center; justify-content:center; box-shadow:0 0 20px rgba(220,38,38,0.8); border:2px solid white;">
+        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+      
+      <!-- Vorige knop -->
+      <button id="prev-photo" type="button" style="position:fixed; left:16px; top:50%; transform:translateY(-50%); z-index:99999; pointer-events:auto; width:56px; height:56px; border-radius:50%; background:rgba(255,255,255,0.15); border:2px solid rgba(255,255,255,0.4); color:white; display:flex; align-items:center; justify-content:center;">
+        <svg width="28" height="28" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
+      </button>
+      
+      <!-- Volgende knop -->
+      <button id="next-photo" type="button" style="position:fixed; right:16px; top:50%; transform:translateY(-50%); z-index:99999; pointer-events:auto; width:56px; height:56px; border-radius:50%; background:rgba(255,255,255,0.15); border:2px solid rgba(255,255,255,0.4); color:white; display:flex; align-items:center; justify-content:center;">
+        <svg width="28" height="28" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+      </button>
+      
       <!-- Foto container met speciale effecten -->
       <div class="relative h-full w-full flex items-center justify-center p-8">
         <div class="relative max-w-7xl max-h-full">
@@ -79,27 +94,11 @@ const cards = imageFiles.map((url, index) => {
           </div>
         </div>
       </div>
-    </div>
-
-    <!-- Modal controls - buiten de modal voor eigen stacking context -->
-    <button id="close-modal" type="button" class="modal-control" style="position:fixed; top:16px; right:16px; z-index:99999; pointer-events:auto; width:48px; height:48px; border-radius:50%; background:#dc2626; color:white; display:none; align-items:center; justify-content:center; box-shadow:0 0 20px rgba(220,38,38,0.8); border:2px solid white;">
-      <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-    </button>
-    
-    <button id="prev-photo" type="button" class="modal-control" style="position:fixed; left:16px; top:50%; transform:translateY(-50%); z-index:99999; pointer-events:auto; width:56px; height:56px; border-radius:50%; background:rgba(255,255,255,0.15); border:2px solid rgba(255,255,255,0.4); color:white; display:none; align-items:center; justify-content:center; box-shadow:0 0 20px rgba(0,0,0,0.6);">
-      <svg width="28" height="28" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
-    </button>
-    
-    <button id="next-photo" type="button" class="modal-control" style="position:fixed; right:16px; top:50%; transform:translateY(-50%); z-index:99999; pointer-events:auto; width:56px; height:56px; border-radius:50%; background:rgba(255,255,255,0.15); border:2px solid rgba(255,255,255,0.4); color:white; display:none; align-items:center; justify-content:center; box-shadow:0 0 20px rgba(0,0,0,0.6);">
-      <svg width="28" height="28" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-    </button>
-    
-    <div id="photo-counter-wrap" class="modal-control" style="position:fixed; bottom:24px; left:50%; transform:translateX(-50%); z-index:99999; pointer-events:none; padding:8px 16px; border-radius:9999px; background:rgba(0,0,0,0.7); border:2px solid rgba(255,255,255,0.4); color:white; font-size:14px; font-weight:500; display:none; align-items:center;">
-      <span id="photo-counter">1 / 1</span>
-    </div>
-    
-    <div id="swipe-hint" class="modal-control md:hidden" style="position:fixed; bottom:80px; left:50%; transform:translateX(-50%); z-index:99999; pointer-events:none; color:rgba(255,255,255,0.4); font-size:12px; text-transform:uppercase; letter-spacing:0.1em; display:none;">
-      Swipe om te navigeren
+      
+      <!-- Photo counter -->
+      <div id="photo-counter-wrap" style="position:fixed; bottom:24px; left:50%; transform:translateX(-50%); z-index:99999; pointer-events:none; padding:8px 16px; border-radius:9999px; background:rgba(0,0,0,0.7); border:2px solid rgba(255,255,255,0.4); color:white; font-size:14px; font-weight:500;">
+        <span id="photo-counter">1 / 1</span>
+      </div>
     </div>
   </main>
 </BaseLayout>
@@ -112,17 +111,10 @@ const cards = imageFiles.map((url, index) => {
   const prevBtn = document.getElementById('prev-photo');
   const nextBtn = document.getElementById('next-photo');
   const closeBtn = document.getElementById('close-modal');
-  const counterWrap = document.getElementById('photo-counter-wrap');
-  const swipeHint = document.getElementById('swipe-hint');
   const urls = photoCards.map(card => card.querySelector('img')?.src || '');
   let currentIndex = 0;
   let touchStartX = 0;
   let touchEndX = 0;
-
-  const modalControls = [prevBtn, nextBtn, closeBtn, counterWrap, swipeHint].filter(Boolean);
-  function hideControls() { modalControls.forEach(el => el.style.display = 'none'); }
-  function showControls() { modalControls.forEach(el => el.style.display = 'flex'); }
-  hideControls();
 
   function updateCounter() {
     photoCounter.textContent = `${currentIndex + 1} / ${urls.length}`;
@@ -134,7 +126,6 @@ const cards = imageFiles.map((url, index) => {
     updateCounter();
     modal.classList.remove('hidden');
     modal.classList.add('flex');
-    showControls();
     setTimeout(() => {
       modalImage.style.transform = 'scale(1)';
       modalImage.style.opacity = '1';
@@ -144,7 +135,6 @@ const cards = imageFiles.map((url, index) => {
   function closeModal() {
     modalImage.style.transform = 'scale(0.95)';
     modalImage.style.opacity = '0';
-    hideControls();
     setTimeout(() => {
       modal.classList.add('hidden');
       modal.classList.remove('flex');
