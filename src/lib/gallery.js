@@ -11,7 +11,7 @@ export function getGalleryItems() {
   try {
     const homeFiles = fs.readdirSync(FOTOS_HOME_PATH)
       .filter(f => /\.(png|jpe?g|webp|gif)$/i.test(f) && !f.includes('_640.'))
-      .sort();
+      .sort((a, b) => fs.statSync(path.join(FOTOS_HOME_PATH, b)).mtimeMs - fs.statSync(path.join(FOTOS_HOME_PATH, a)).mtimeMs);
     homeFiles.forEach((file, index) => {
       seenFiles.add(file.toLowerCase());
       allItems.push({
@@ -29,7 +29,7 @@ export function getGalleryItems() {
     const fotoFiles = fs.readdirSync(FOTO_FOTOS_PATH)
       .filter(f => /\.(png|jpe?g|webp|gif)$/i.test(f) && !f.includes('_640.'))
       .filter(f => !seenFiles.has(f.toLowerCase()))
-      .sort();
+      .sort((a, b) => fs.statSync(path.join(FOTO_FOTOS_PATH, b)).mtimeMs - fs.statSync(path.join(FOTO_FOTOS_PATH, a)).mtimeMs);
     fotoFiles.forEach((file, index) => {
       seenFiles.add(file.toLowerCase());
       allItems.push({
