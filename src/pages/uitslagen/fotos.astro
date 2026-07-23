@@ -64,22 +64,18 @@ const cards = imageFiles.map((url, index) => {
       <div class="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,_rgba(212,175,55,0.08)_0%,_transparent_50%)]"></div>
       
       <!-- Sluit knop -->
-      <button id="close-modal" type="button" style="position:fixed; top:130px; right:16px; z-index:99999; pointer-events:auto; width:64px; height:64px; border-radius:50%; background:#dc2626; color:white; display:flex; align-items:center; justify-content:center; box-shadow: 0 0 40px rgba(220,38,38,0.9), 0 0 80px rgba(220,38,38,0.5); border:3px solid white;">
-        <svg width="32" height="32" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      <button id="close-modal" type="button" style="position:fixed; top:16px; right:16px; z-index:99999; pointer-events:auto; width:48px; height:48px; border-radius:50%; background:rgba(255,255,255,0.1); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); color:white; display:flex; align-items:center; justify-content:center; box-shadow: 0 0 20px rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.2); transition: all 0.3s ease;">
+        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
       </button>
       
       <!-- Vorige knop -->
-      <button id="prev-photo" type="button" class="absolute left-4 md:left-6 top-1/2 -translate-y-1/2 z-[10001] w-16 h-16 md:w-14 md:h-14 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20 transition-all duration-300 flex items-center justify-center group hover:scale-110">
-        <svg class="w-7 h-7 md:w-6 md:h-6 group-hover:-translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-        </svg>
+      <button id="prev-photo" type="button" style="position:fixed; left:16px; top:50%; transform:translateY(-50%); z-index:99999; pointer-events:auto; width:56px; height:56px; border-radius:50%; background:rgba(255,255,255,0.1); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,0.2); color:white; display:flex; align-items:center; justify-content:center; transition:all 0.3s ease; box-shadow:0 0 20px rgba(0,0,0,0.4);">
+        <svg width="28" height="28" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
       </button>
       
       <!-- Volgende knop -->
-      <button id="next-photo" type="button" class="absolute right-4 md:right-6 top-1/2 -translate-y-1/2 z-[10001] w-16 h-16 md:w-14 md:h-14 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20 transition-all duration-300 flex items-center justify-center group hover:scale-110">
-        <svg class="w-7 h-7 md:w-6 md:h-6 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-        </svg>
+      <button id="next-photo" type="button" style="position:fixed; right:16px; top:50%; transform:translateY(-50%); z-index:99999; pointer-events:auto; width:56px; height:56px; border-radius:50%; background:rgba(255,255,255,0.1); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,0.2); color:white; display:flex; align-items:center; justify-content:center; transition:all 0.3s ease; box-shadow:0 0 20px rgba(0,0,0,0.4);">
+        <svg width="28" height="28" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
       </button>
       
       <!-- Foto container met speciale effecten -->
@@ -100,12 +96,12 @@ const cards = imageFiles.map((url, index) => {
       </div>
       
       <!-- Photo counter -->
-      <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-[10001] px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-sm font-medium">
+      <div id="photo-counter-wrap" style="position:fixed; bottom:24px; left:50%; transform:translateX(-50%); z-index:99999; pointer-events:none; padding:8px 16px; border-radius:9999px; background:rgba(255,255,255,0.1); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,0.2); color:white; font-size:14px; font-weight:500;">
         <span id="photo-counter">1 / 1</span>
       </div>
       
       <!-- Touch/swipe indicators (mobiel) -->
-      <div class="absolute bottom-20 left-1/2 -translate-x-1/2 z-30 text-white/40 text-xs uppercase tracking-widest md:hidden">
+      <div id="swipe-hint" style="position:fixed; bottom:80px; left:50%; transform:translateX(-50%); z-index:99999; pointer-events:none; color:rgba(255,255,255,0.4); font-size:12px; text-transform:uppercase; letter-spacing:0.1em;" class="md:hidden">
         Swipe om te navigeren
       </div>
     </div>
@@ -120,10 +116,17 @@ const cards = imageFiles.map((url, index) => {
   const prevBtn = document.getElementById('prev-photo');
   const nextBtn = document.getElementById('next-photo');
   const closeBtn = document.getElementById('close-modal');
+  const counterWrap = document.getElementById('photo-counter-wrap');
+  const swipeHint = document.getElementById('swipe-hint');
   const urls = photoCards.map(card => card.querySelector('img')?.src || '');
   let currentIndex = 0;
   let touchStartX = 0;
   let touchEndX = 0;
+
+  const modalControls = [prevBtn, nextBtn, closeBtn, counterWrap, swipeHint].filter(Boolean);
+  function hideControls() { modalControls.forEach(el => el.style.display = 'none'); }
+  function showControls() { modalControls.forEach(el => el.style.display = ''); }
+  hideControls();
 
   function updateCounter() {
     photoCounter.textContent = `${currentIndex + 1} / ${urls.length}`;
@@ -135,7 +138,7 @@ const cards = imageFiles.map((url, index) => {
     updateCounter();
     modal.classList.remove('hidden');
     modal.classList.add('flex');
-    // Add entrance animation
+    showControls();
     setTimeout(() => {
       modalImage.style.transform = 'scale(1)';
       modalImage.style.opacity = '1';
@@ -145,6 +148,7 @@ const cards = imageFiles.map((url, index) => {
   function closeModal() {
     modalImage.style.transform = 'scale(0.95)';
     modalImage.style.opacity = '0';
+    hideControls();
     setTimeout(() => {
       modal.classList.add('hidden');
       modal.classList.remove('flex');
