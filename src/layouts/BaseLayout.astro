@@ -1,6 +1,6 @@
 ---
 /* src/layouts/BaseLayout.astro */
-const { title, description } = Astro.props;
+const { title, description, ogImage } = Astro.props;
 
 const isAdmin = Astro.url.pathname.startsWith('/admin');
 const isHengelmap = Astro.url.pathname === '/hengelmap';
@@ -12,12 +12,17 @@ const siteName = 'KVVI';
 const pageTitleFull = title === 'Home' ? siteName : `${siteName} - ${title}`;
 const schemaOrg = {
   "@context": "https://schema.org",
-  "@type": "Organization",
+  "@type": "SportsClub",
   "name": "KVVI — Koninklijke Vrije Vissers Izegem",
   "url": siteOrigin,
   "logo": siteOrigin + "/logo/IMG_9054.PNG",
   "description": defaultDesc,
-  "address": { "@type": "PostalAddress", "addressLocality": "Izegem", "addressCountry": "BE" }
+  "sport": "Fishing",
+  "address": { "@type": "PostalAddress", "addressLocality": "Izegem", "addressCountry": "BE" },
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "url": siteOrigin + "/contact"
+  }
 };
 ---
 <!doctype html>
@@ -33,9 +38,9 @@ const schemaOrg = {
     <meta property="og:description" content={metaDesc} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={`${siteOrigin}/logo/IMG_9054.PNG`} />
+    <meta property="og:image" content={ogImage || `${siteOrigin}/logo/IMG_9054.PNG`} />
     <meta property="og:site_name" content={siteName} />
-    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="generator" content="custom" />
     <link rel="icon" type="image/png" href="/icons/AppIcoon.png" />
     <link rel="manifest" href="/manifest.json" />
