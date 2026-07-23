@@ -1,0 +1,71 @@
+---
+import Layout from '../../layouts/Layout.astro';
+export const prerender = false;
+
+const pageTitle = "Backup | KVVI Admin";
+---
+
+<Layout title={pageTitle} noMainWrapper={true} hideNav={true}>
+  <main class="h-screen flex flex-col bg-slate-50">
+    <div class="md:hidden bg-[#003366] text-white p-4 flex justify-between items-center">
+      <div>
+        <h1 class="text-lg font-bold tracking-widest">KVVI ADMIN</h1>
+        <p class="text-[10px] text-[#C5A059] font-bold">BACKUP</p>
+      </div>
+      <a href="/admin" class="p-2 hover:bg-white/10 rounded-lg transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+      </a>
+    </div>
+
+    <div class="flex flex-1 min-h-0">
+      <aside class="hidden md:flex w-64 bg-[#003366] text-white flex-col border-r-4 border-[#C5A059] fixed left-0 top-0 h-screen z-30">
+        <div class="p-6 border-b border-white/10"><h1 class="text-xl font-bold tracking-widest">KVVI ADMIN</h1><p class="text-[10px] text-[#C5A059] font-bold">CONTROL PANEL</p></div>
+        <nav class="flex-1 p-4 space-y-1 overflow-y-auto">
+          <a href="/admin" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏠</span> Home</a>
+          <a href="/admin/wedstrijden" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏆</span> Wedstrijden</a>
+          <a href="/admin/kalender" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📅</span> Kalender</a>
+          <a href="/admin/visstekken" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📍</span> Visstekken</a>
+          <a href="/admin/visstekken-abc" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🌐</span> ABC Visstekken</a>
+          <a href="/admin/vissessies" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📊</span> Vissessies</a>
+          <a href="/admin/legende" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📖</span> Legende</a>
+          <a href="/admin/hengelshop" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📦</span> Hengelshop</a>          
+          <a href="/admin/koppelwedstrijden" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏆</span> Koppelwedstrijden</a>
+          <a href="/admin/kamp-izegem" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>🏅</span> Kamp. Izegem</a>
+          <a href="/admin/specials/vrouwvissing" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>👩</span> Vrouwvissing</a>
+          <a href="/admin/specials/seniorenvissing" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>👴</span> Seniorenvissing</a>
+          <a href="/admin/tips-tricks" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>💡</span> Tips &amp; Tricks</a>
+          <a href="/admin/fotos" class="flex items-center gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors text-sm font-semibold"><span>📸</span> Foto's</a>
+          <a href="/admin/backup" class="flex items-center gap-3 p-3 bg-white/10 rounded-lg border-l-4 border-[#C5A059] text-sm font-semibold"><span>💾</span> Backup</a>
+        </nav>
+        <div class="p-4 border-t border-white/10"><a href="/" class="text-sm text-slate-400 hover:text-white transition-colors flex items-center gap-2"><span>←</span> Terug naar Website</a></div>
+      </aside>
+
+      <section class="flex-1 flex flex-col min-h-0 md:ml-64">
+        <header class="h-16 bg-white border-b border-slate-200 flex items-center px-6 md:px-8">
+          <div class="flex items-center gap-3"><span class="text-slate-400 text-sm">Admin</span><span class="text-slate-300 text-sm">/</span><span class="font-semibold text-sm">Backup</span></div>
+        </header>
+
+        <div class="p-4 md:p-8 space-y-6 flex-1 overflow-y-auto">
+          <div>
+            <h1 class="text-2xl font-black text-[#003366] uppercase tracking-tight">Data Backup</h1>
+            <p class="text-sm text-slate-500 mt-2">Download een back-up van alle data op de server.</p>
+          </div>
+
+          <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 max-w-xl">
+            <h2 class="text-lg font-bold text-slate-800 mb-2">Complete data-backup</h2>
+            <p class="text-sm text-slate-500 mb-6">Bevat alle bestanden uit <code class="bg-slate-100 px-1 rounded">/data/</code>: gallery, uploads, CSV's, vissessies, bezoekers, en meer.</p>
+            <a
+              href="/admin/api/backup"
+              class="inline-flex items-center gap-2 bg-[#003366] text-white px-6 py-3 rounded-xl font-bold hover:bg-[#004A99] transition-all shadow-md"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+              Download backup (.tar.gz)
+            </a>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</Layout>
