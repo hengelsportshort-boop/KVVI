@@ -62,7 +62,27 @@ export async function POST({ request }) {
       const filePath = path.join(targetDir, filename);
       const buffer = await file.arrayBuffer();
       fs.writeFileSync(filePath, new Uint8Array(buffer));
-      
+
+      // Voeg toe aan gallery.json zodat de foto zichtbaar is op de publieke pagina's
+      const srcPath = category === 'home'
+        ? `/data/home-uploads/${encodeURIComponent(filename)}`
+        : `/data/uploads/${encodeURIComponent(filename)}`;
+      try {
+        let gallery = [];
+        if (fs.existsSync(GALLERY_PATH)) {
+          gallery = JSON.parse(fs.readFileSync(GALLERY_PATH, 'utf-8'));
+          if (!Array.isArray(gallery)) gallery = [];
+        }
+        gallery.push({
+          id: `upload-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+          src: srcPath,
+          titel: filename.replace(/\.(png|jpe?g|webp|gif)$/i, ''),
+          zichtbaar: true,
+          showOnHome: category === 'home'
+        });
+        fs.writeFileSync(GALLERY_PATH, JSON.stringify(gallery, null, 2), 'utf-8');
+      } catch (_) {}
+
       return new Response(JSON.stringify({ 
         success: true, 
         filename: filename,
