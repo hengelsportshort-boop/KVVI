@@ -11,6 +11,50 @@ export function getGalleryItems() {
   const seenFiles = new Set();
   let allItems = [];
 
+  // 1. Uploads eerst (nieuwste bovenaan)
+  try {
+    if (fs.existsSync(HOME_UPLOADS_PATH)) {
+      const homeUploadFiles = fs.readdirSync(HOME_UPLOADS_PATH)
+        .filter(f => /\.(png|jpe?g|webp|gif)$/i.test(f) && !f.includes('_640.'))
+        .filter(f => !seenFiles.has(f.toLowerCase()))
+        .sort()
+        .reverse();
+      homeUploadFiles.forEach((file, index) => {
+        seenFiles.add(file.toLowerCase());
+        allItems.push({
+          id: `home-upload-${index}`,
+          src: `/data/home-uploads/${encodeURIComponent(file)}`,
+          titel: file.replace(/\.(png|jpe?g|webp|gif)$/i, ''),
+          zichtbaar: true,
+          showOnHome: true,
+          source: 'Fotos Home'
+        });
+      });
+    }
+  } catch (_) {}
+
+  try {
+    if (fs.existsSync(UPLOADS_PATH)) {
+      const uploadFiles = fs.readdirSync(UPLOADS_PATH)
+        .filter(f => /\.(png|jpe?g|webp|gif)$/i.test(f) && !f.includes('_640.'))
+        .filter(f => !seenFiles.has(f.toLowerCase()))
+        .sort()
+        .reverse();
+      uploadFiles.forEach((file, index) => {
+        seenFiles.add(file.toLowerCase());
+        allItems.push({
+          id: `upload-${index}`,
+          src: `/data/uploads/${encodeURIComponent(file)}`,
+          titel: file.replace(/\.(png|jpe?g|webp|gif)$/i, ''),
+          zichtbaar: true,
+          showOnHome: false,
+          source: 'Foto Fotos'
+        });
+      });
+    }
+  } catch (_) {}
+
+  // 2. Seed-foto's daarna
   try {
     const homeFiles = fs.readdirSync(FOTOS_HOME_PATH)
       .filter(f => /\.(png|jpe?g|webp|gif)$/i.test(f) && !f.includes('_640.'))
@@ -29,26 +73,6 @@ export function getGalleryItems() {
   } catch (_) {}
 
   try {
-    if (fs.existsSync(HOME_UPLOADS_PATH)) {
-      const homeUploadFiles = fs.readdirSync(HOME_UPLOADS_PATH)
-        .filter(f => /\.(png|jpe?g|webp|gif)$/i.test(f) && !f.includes('_640.'))
-        .filter(f => !seenFiles.has(f.toLowerCase()))
-        .sort();
-      homeUploadFiles.forEach((file, index) => {
-        seenFiles.add(file.toLowerCase());
-        allItems.push({
-          id: `home-upload-${index}`,
-          src: `/data/home-uploads/${encodeURIComponent(file)}`,
-          titel: file.replace(/\.(png|jpe?g|webp|gif)$/i, ''),
-          zichtbaar: true,
-          showOnHome: true,
-          source: 'Fotos Home'
-        });
-      });
-    }
-  } catch (_) {}
-
-  try {
     const fotoFiles = fs.readdirSync(FOTO_FOTOS_PATH)
       .filter(f => /\.(png|jpe?g|webp|gif)$/i.test(f) && !f.includes('_640.'))
       .filter(f => !seenFiles.has(f.toLowerCase()))
@@ -64,26 +88,6 @@ export function getGalleryItems() {
         source: 'Foto Fotos'
       });
     });
-  } catch (_) {}
-
-  try {
-    if (fs.existsSync(UPLOADS_PATH)) {
-      const uploadFiles = fs.readdirSync(UPLOADS_PATH)
-        .filter(f => /\.(png|jpe?g|webp|gif)$/i.test(f) && !f.includes('_640.'))
-        .filter(f => !seenFiles.has(f.toLowerCase()))
-        .sort();
-      uploadFiles.forEach((file, index) => {
-        seenFiles.add(file.toLowerCase());
-        allItems.push({
-          id: `upload-${index}`,
-          src: `/data/uploads/${encodeURIComponent(file)}`,
-          titel: file.replace(/\.(png|jpe?g|webp|gif)$/i, ''),
-          zichtbaar: true,
-          showOnHome: false,
-          source: 'Foto Fotos'
-        });
-      });
-    }
   } catch (_) {}
 
   if (fs.existsSync(GALLERY_PATH)) {
