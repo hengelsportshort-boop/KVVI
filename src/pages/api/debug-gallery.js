@@ -2,7 +2,7 @@ export const prerender = false;
 
 import fs from 'node:fs';
 import path from 'node:path';
-import dataDir from '../../../lib/dataDir.js';
+import dataDir from '../../lib/dataDir.js';
 
 export async function GET() {
   const dirs = {
