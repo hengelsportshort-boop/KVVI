@@ -1,16 +1,11 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'url';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const BASE_DIR = path.resolve(__dirname, '..', '..');
-
-const FOTOS_HOME_PATH = path.join(BASE_DIR, 'public', 'Fotos Home');
-const FOTO_FOTOS_PATH = path.join(BASE_DIR, 'public', 'Foto Fotos');
-const UPLOADS_PATH = path.join(BASE_DIR, 'public', 'data', 'uploads');
-const HOME_UPLOADS_PATH = path.join(BASE_DIR, 'public', 'data', 'home-uploads');
-const GALLERY_PATH = path.join(BASE_DIR, 'public', 'data', 'gallery.json');
+const FOTOS_HOME_PATH = path.resolve('./public/Fotos Home');
+const FOTO_FOTOS_PATH = path.resolve('./public/Foto Fotos');
+const UPLOADS_PATH = path.resolve('./public/data/uploads');
+const HOME_UPLOADS_PATH = path.resolve('./public/data/home-uploads');
+const GALLERY_PATH = path.resolve('./public/data/gallery.json');
 
 export function getGalleryItems() {
   const seenFiles = new Set();
