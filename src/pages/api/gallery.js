@@ -3,11 +3,12 @@ export const prerender = false;
 import fs from 'node:fs';
 import path from 'node:path';
 import { getGalleryItems } from '../../lib/gallery';
+import dataDir from '../../lib/dataDir.js';
 
-const GALLERY_PATH = path.resolve('./public/data/gallery.json');
+const GALLERY_PATH = path.join(dataDir, 'gallery.json');
 const FOTO_FOTOS_PATH = path.resolve('./public/Foto Fotos');
-const UPLOADS_PATH = path.resolve('./public/data/uploads');
-const HOME_UPLOADS_PATH = path.resolve('./public/data/home-uploads');
+const UPLOADS_PATH = path.join(dataDir, 'uploads');
+const HOME_UPLOADS_PATH = path.join(dataDir, 'home-uploads');
 
 export async function GET() {
   try {

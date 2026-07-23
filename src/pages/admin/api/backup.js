@@ -3,8 +3,9 @@ export const prerender = false;
 import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
+import dataDir from '../../../lib/dataDir.js';
 
-const DATA_DIR = path.resolve('./public/data');
+const DATA_DIR = dataDir;
 
 export async function GET() {
   try {

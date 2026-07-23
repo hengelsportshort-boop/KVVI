@@ -2,6 +2,7 @@
 set -e
 
 DATA_DIR="/app/public/data"
+export DATA_DIR
 SEED_DIR="/app/public/data-seed"
 SENIOREN_DIR="/app/public/images/senioren"
 UPLOADS_DIR="/app/public/data/uploads"

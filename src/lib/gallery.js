@@ -1,11 +1,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import dataDir from './dataDir.js';
 
 const FOTOS_HOME_PATH = path.resolve('./public/Fotos Home');
 const FOTO_FOTOS_PATH = path.resolve('./public/Foto Fotos');
-const UPLOADS_PATH = path.resolve('./public/data/uploads');
-const HOME_UPLOADS_PATH = path.resolve('./public/data/home-uploads');
-const GALLERY_PATH = path.resolve('./public/data/gallery.json');
+const UPLOADS_PATH = path.join(dataDir, 'uploads');
+const HOME_UPLOADS_PATH = path.join(dataDir, 'home-uploads');
+const GALLERY_PATH = path.join(dataDir, 'gallery.json');
 
 export function getGalleryItems() {
   const seenFiles = new Set();

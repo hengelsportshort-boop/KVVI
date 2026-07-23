@@ -1,7 +1,8 @@
-import { readFileSync, readdirSync, statSync } from 'fs';
-import { join, relative, resolve } from 'path';
+import { readFileSync, statSync } from 'fs';
+import { join } from 'path';
+import dataDir from '../../lib/dataDir.js';
 
-const DATA_DIR = resolve('./public/data');
+const DATA_DIR = dataDir;
 
 const FILES = [
   'wedstrijdkalender.json',
