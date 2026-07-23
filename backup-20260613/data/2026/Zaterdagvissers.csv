@@ -1,27 +1,27 @@
 ;Deelnemers;11/04;25/04;09/05;23/05;06/06;20/06;18/07;22/08;19/09;;Totaal kg;Totaal kg Start
-1;Meurisse F;26.840 gr;18.320 gr;0 gr;22.920 gr;0 gr;0 gr;0 gr;0 gr;0 gr;--;45,160 gr;45.160 gr
-2;Demeester J;13.060 gr;25.200 gr;11.400 gr;0 gr;0 gr;0 gr;0 gr;0 gr;0 gr;--;49,660 gr;38.260 gr
-3;Debackere G;10.440 gr;24.380 gr;27.320 gr;20.860 gr;0 gr;0 gr;0 gr;0 gr;0 gr;--;62,140 gr;34.820 gr
-4;Decraene A;11.040 gr;21.640 gr;22.860 gr;0 gr;0 gr;0 gr;0 gr;0 gr;0 gr;--;55,540 gr;32.680 gr
-5;Depover JL;9.680 gr;16.560 gr;20.480 gr;12.640 gr;0 gr;0 gr;0 gr;0 gr;0 gr;--;46,720 gr;26.240 gr
-6;Degeldere K;8.320 gr;17.540 gr;0 gr;7.340 gr;0 gr;0 gr;0 gr;0 gr;0 gr;--;25,860 gr;25.860 gr
-7;Neirynck S;13.060 gr;11.660 gr;9.700 gr;7.660 gr;0 gr;0 gr;0 gr;0 gr;0 gr;--;34,420 gr;24.720 gr
-8;Feys R;8.960 gr;14.980 gr;8.740 gr;16.880 gr;0 gr;0 gr;0 gr;0 gr;0 gr;--;32,680 gr;23.940 gr
-9;Doom C;12.340 gr;7.080 gr;0 gr;21.140 gr;0 gr;0 gr;0 gr;0 gr;0 gr;--;19,420 gr;19.420 gr
-10;Vanhecke A;5.340 gr;11.100 gr;21.680 gr;18.340 gr;0 gr;0 gr;0 gr;0 gr;0 gr;--;38,120 gr;16.440 gr
-11;Cloet S;10.030 gr;6.400 gr;0 gr;6.720 gr;0 gr;0 gr;0 gr;0 gr;0 gr;--;16,430 gr;16.430 gr
-12;Bardoel G;0 gr;16.320 gr;16.200 gr;10.000 gr;0 gr;0 gr;0 gr;0 gr;0 gr;--;32,520 gr;16.320 gr
-13;Bardoel F;9.960 gr;4.740 gr;13.320 gr;17.960 gr;0 gr;0 gr;0 gr;0 gr;0 gr;--;28,020 gr;14.700 gr
-14;Depuydt F;9.100 gr;5.200 gr;7.220 gr;14.020 gr;0 gr;0 gr;0 gr;0 gr;0 gr;--;21,520 gr;14.300 gr
+1;Meurisse F;26.840 gr;18.320 gr;0 gr;22.920 gr;15.840 gr;23.380 gr;0 gr;0 gr;0 gr;--;107,300 gr;45.160 gr
+2;Demeester J;13.060 gr;25.200 gr;11.400 gr;0 gr;0 gr;27.980 gr;0 gr;0 gr;0 gr;--;77,640 gr;38.260 gr
+3;Debackere G;10.440 gr;24.380 gr;27.320 gr;20.860 gr;0 gr;25.260 gr;0 gr;0 gr;0 gr;--;108,260 gr;34.820 gr
+4;Decraene A;11.040 gr;21.640 gr;22.860 gr;0 gr;23.560 gr;26.840 gr;0 gr;0 gr;0 gr;--;105,940 gr;32.680 gr
+5;Depover JL;9.680 gr;16.560 gr;20.480 gr;12.640 gr;19.220 gr;22.700 gr;0 gr;0 gr;0 gr;--;101,280 gr;26.240 gr
+6;Degeldere K;8.320 gr;17.540 gr;0 gr;7.340 gr;17.420 gr;0 gr;0 gr;0 gr;0 gr;--;50,620 gr;25.860 gr
+7;Neirynck S;13.060 gr;11.660 gr;9.700 gr;7.660 gr;1.000 gr;1.000 gr;0 gr;0 gr;0 gr;--;44,080 gr;24.720 gr
+8;Feys R;8.960 gr;14.980 gr;8.740 gr;16.880 gr;4.260 gr;11.220 gr;0 gr;0 gr;0 gr;--;65,040 gr;23.940 gr
+9;Doom C;12.340 gr;7.080 gr;0 gr;21.140 gr;12.640 gr;15.340 gr;0 gr;0 gr;0 gr;--;68,540 gr;19.420 gr
+10;Vanhecke A;5.340 gr;11.100 gr;21.680 gr;18.340 gr;16.800 gr;16.380 gr;0 gr;0 gr;0 gr;--;89,640 gr;16.440 gr
+11;Cloet S;10.030 gr;6.400 gr;0 gr;6.720 gr;7.620 gr;7.540 gr;0 gr;0 gr;0 gr;--;38,310 gr;16.430 gr
+12;Bardoel G;0 gr;16.320 gr;16.200 gr;10.000 gr;16.380 gr;20.000 gr;0 gr;0 gr;0 gr;--;78,900 gr;16.320 gr
+13;Bardoel F;9.960 gr;4.740 gr;13.320 gr;17.960 gr;15.660 gr;22.420 gr;0 gr;0 gr;0 gr;--;84,060 gr;14.700 gr
+14;Depuydt F;9.100 gr;5.200 gr;7.220 gr;14.020 gr;10.420 gr;11.340 gr;0 gr;0 gr;0 gr;--;57,300 gr;14.300 gr
 15;Doom D;5.700 gr;8.400 gr;0 gr;0 gr;0 gr;0 gr;0 gr;0 gr;0 gr;--;14,100 gr;14.100 gr
-16;Popelier F;5.740 gr;7.880 gr;14.390 gr;11.820 gr;0 gr;0 gr;0 gr;0 gr;0 gr;--;28,010 gr;13.620 gr
-17;Feys K;7.620 gr;5.440 gr;0 gr;9.480 gr;0 gr;0 gr;0 gr;0 gr;0 gr;--;13,060 gr;13.060 gr
-18;Devisscher R;5.080 gr;6.200 gr;4.580 gr;9.580 gr;0 gr;0 gr;0 gr;0 gr;0 gr;--;15,860 gr;11.280 gr
-19;Leroy A;4.340 gr;5.220 gr;7.720 gr;9.680 gr;0 gr;0 gr;0 gr;0 gr;0 gr;--;17,280 gr;9.560 gr
+16;Popelier F;5.740 gr;7.880 gr;14.390 gr;11.820 gr;13.300 gr;0 gr;0 gr;0 gr;0 gr;--;53,130 gr;13.620 gr
+17;Feys K;7.620 gr;5.440 gr;0 gr;9.480 gr;10.980 gr;13.740 gr;0 gr;0 gr;0 gr;--;47,260 gr;13.060 gr
+18;Devisscher R;5.080 gr;6.200 gr;4.580 gr;9.580 gr;0 gr;0 gr;0 gr;0 gr;0 gr;--;25,440 gr;11.280 gr
+19;Leroy A;4.340 gr;5.220 gr;7.720 gr;9.680 gr;9.160 gr;10.920 gr;0 gr;0 gr;0 gr;--;47,040 gr;9.560 gr
 20;Verfaillie L;3.360 gr;4.640 gr;9.380 gr;0 gr;0 gr;0 gr;0 gr;0 gr;0 gr;--;17,380 gr;8.000 gr
-21;Devos K;1.000 gr;5.560 gr;5.680 gr;0 gr;0 gr;0 gr;0 gr;0 gr;0 gr;--;12,240 gr;6.560 gr
-22;Seynaeve C;1.000 gr;0 gr;5.000 gr;3.660 gr;0 gr;0 gr;0 gr;0 gr;0 gr;--;6,000 gr;1.000 gr
+21;Devos K;1.000 gr;5.560 gr;5.680 gr;0 gr;7.540 gr;4.980 gr;0 gr;0 gr;0 gr;--;24,760 gr;6.560 gr
+22;Seynaeve C;1.000 gr;0 gr;5.000 gr;3.660 gr;0 gr;0 gr;0 gr;0 gr;0 gr;--;9,660 gr;1.000 gr
 23;Demeester R;0 gr;0 gr;0 gr;0 gr;0 gr;0 gr;0 gr;0 gr;0 gr;--;0,000 gr;--
 24;Depoortere K;0 gr;0 gr;0 gr;0 gr;0 gr;0 gr;0 gr;0 gr;0 gr;--;0,000 gr;--
 25;Depoortere M;0 gr;0 gr;0 gr;0 gr;0 gr;0 gr;0 gr;0 gr;0 gr;--;0,000 gr;--
-;Totaal gewicht;182.010 gr;244.460 gr;--;--;--;--;--;--;--;--;426.470 gr;390.070 gr
+;Totaal gewicht;182.010 gr;244.460 gr;205.670 gr;220.700 gr;201.800 gr;261.040 gr;--;--;--;--;1.315.680 gr;390.070 gr

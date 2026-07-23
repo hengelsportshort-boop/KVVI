@@ -26,10 +26,10 @@ export async function POST({ request }) {
       `Bericht:\n${message}`;
 
     try {
-      const { execSync } = await import('node:child_process');
-      execSync(`echo ${JSON.stringify(text)} | mail -s "Contactformulier KVVI" hengelsport.short@gmail.com`, {
-        timeout: 10000,
-        shell: true
+      const { execFileSync } = await import('node:child_process');
+      execFileSync('mail', ['-s', subject, 'hengelsport.short@gmail.com'], {
+        input: text,
+        timeout: 10000
       });
       return new Response(JSON.stringify({ success: true }), {
         status: 200,
@@ -38,10 +38,10 @@ export async function POST({ request }) {
     } catch {
       // sendmail fallback
       try {
-        const { execSync } = await import('node:child_process');
-        execSync(`printf '%s' ${JSON.stringify(text)} | sendmail -i hengelsport.short@gmail.com`, {
-          timeout: 10000,
-          shell: true
+        const { execFileSync } = await import('node:child_process');
+        execFileSync('sendmail', ['-i', 'hengelsport.short@gmail.com'], {
+          input: text,
+          timeout: 10000
         });
         return new Response(JSON.stringify({ success: true }), {
           status: 200,

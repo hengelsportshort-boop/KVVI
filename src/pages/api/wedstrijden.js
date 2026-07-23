@@ -62,6 +62,8 @@ export async function GET({ url }) {
   }
 }
 
+const ALLOWED_GROEPEN = ['Zaterdagvissers', 'Veteranen'];
+
 export async function POST({ request }) {
   try {
     const { groep, jaar, csvContent } = await request.json();
@@ -69,7 +71,11 @@ export async function POST({ request }) {
       return new Response(JSON.stringify({ error: 'Geen CSV content' }), { status: 400 });
     }
 
-    const csvPad = path.resolve(`./public/data/${jaar || '2026'}/${groep || 'Zaterdagvissers'}.csv`);
+    const safeGroep = ALLOWED_GROEPEN.includes(groep) ? groep : 'Zaterdagvissers';
+    const safeJaar = /^\d{4}$/.test(String(jaar)) ? String(jaar) : '2026';
+    const dir = path.resolve(`./public/data/${safeJaar}`);
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    const csvPad = path.resolve(`./public/data/${safeJaar}/${safeGroep}.csv`);
     fs.writeFileSync(csvPad, csvContent, 'utf-8');
 
     return new Response(JSON.stringify({ success: true }), {
