@@ -1,7 +1,5 @@
 ---
-export const prerender = false;
-const referer = Astro.request.headers.get('referer') || '';
-const backUrl = referer.includes('feeder-assistent') ? '/feeder-assistent' : '/feeder-assistent';
+const backUrl = '/feeder-assistent';
 ---
 <!DOCTYPE html>
 <html lang="nl">

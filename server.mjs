@@ -1,5 +1,4 @@
 import compression from 'compression';
-import { handler } from './dist/server/entry.mjs';
 import http from 'http';
 import fs from 'fs';
 import path from 'path';
@@ -10,6 +9,16 @@ const CLIENT_DIR = path.join(__dirname, 'dist', 'client');
 const PUBLIC_DIR = path.join(__dirname, 'public');
 const PORT = parseInt(process.env.PORT || '4321');
 
+let astroHandler;
+
+async function getAstroHandler() {
+  if (!astroHandler) {
+    const mod = await import('./dist/server/entry.mjs');
+    astroHandler = mod.handler;
+  }
+  return astroHandler;
+}
+
 const MIME = {
   '.js': 'text/javascript', '.css': 'text/css', '.html': 'text/html',
   '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg',
@@ -18,12 +27,10 @@ const MIME = {
   '.xml': 'application/xml', '.txt': 'text/plain',
 };
 
-const STATIC_RX = /\.(js|css|png|jpg|jpeg|webp|svg|ico|woff2?|json|xml|txt)$/;
 const NO_CACHE = ['/sw.js', '/manifest.json', '/offline.html'];
 const CACHE_RX = /^\/_astro\/|\.(js|css|png|jpg|jpeg|webp|svg|ico|woff2?)$/i;
 
 function serveStatic(req, res) {
-  // Check dist/client first (build assets)
   let filePath = path.join(CLIENT_DIR, decodeURIComponent(req.url));
   if (filePath.includes('\0')) { res.writeHead(400); res.end(); return true; }
   try {
@@ -42,7 +49,6 @@ function serveStatic(req, res) {
     }
   } catch { }
 
-  // Fallback to public directory (runtime uploaded files)
   let publicFilePath = path.join(PUBLIC_DIR, decodeURIComponent(req.url));
   if (!publicFilePath.includes('\0')) {
     try {
@@ -64,14 +70,16 @@ function serveStatic(req, res) {
 }
 
 const server = http.createServer((req, res) => {
-  // Redirect veelvoorkomende verkeerde URL's naar correcte versie
   if (req.url === '/index.html' || req.url === '/index.htm' || req.url === '/default.html') {
     res.writeHead(301, { Location: '/' });
     res.end();
     return;
   }
   if (serveStatic(req, res)) return;
-  compression()(req, res, () => handler(req, res));
+  compression()(req, res, async () => {
+    const handler = await getAstroHandler();
+    handler(req, res);
+  });
 });
 
 const HOST = process.env.HOST || '0.0.0.0';
