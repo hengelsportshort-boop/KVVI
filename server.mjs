@@ -34,7 +34,11 @@ function serveStatic(req, res) {
   let filePath = path.join(CLIENT_DIR, decodeURIComponent(req.url));
   if (filePath.includes('\0')) { res.writeHead(400); res.end(); return true; }
   try {
-    const stat = fs.statSync(filePath);
+    let stat = fs.statSync(filePath);
+    if (stat.isDirectory()) {
+      filePath = path.join(filePath, 'index.html');
+      stat = fs.statSync(filePath);
+    }
     if (stat.isFile()) {
       const ext = path.extname(filePath).toLowerCase();
       const mime = MIME[ext] || 'application/octet-stream';
