@@ -14,7 +14,7 @@ const { images, autoPlay = true, interval = 4000 } = Astro.props;
       <div class="w-full flex-shrink-0 h-[420px] md:h-[520px] lg:h-[580px]">
         <img 
           src={src} 
-          srcset={src.replace(/(\.\w+)$/, '_640$1') + ' 640w, ' + src + ' 1920w'}
+          srcset={src.replace(/ /g, '%20').replace(/(\.\w+)$/, '_640$1') + ' 640w, ' + src.replace(/ /g, '%20') + ' 1920w'}
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1200px"
           alt={`KVVI foto ${index + 1}`} 
           class="w-full h-full object-cover"
