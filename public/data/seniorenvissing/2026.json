@@ -4,5 +4,10 @@
   "type": "seniorenvissing",
   "date": "2026-06-09",
   "visible": true,
-  "photos": []
+  "photos": [
+    {
+      "url": "/images/senioren/senioren-1785679835619-rgmb.jpg",
+      "alt": ""
+    }
+  ]
 }
