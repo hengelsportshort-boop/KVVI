@@ -6,7 +6,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   <style is:global>
     .submenu-link { font-size: 11px; font-weight: 900; text-transform: uppercase; color: #003366; text-decoration: none; padding: 8px 16px; border-radius: 8px; transition: all .2s; white-space: nowrap; }
     .submenu-link:hover { background: #003366; color: white; }
-
+    @keyframes float-slow {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+    .kvvi-float-card { animation: float-slow 10s ease-in-out infinite alternate; }
   </style>
   <main class="max-w-6xl mx-auto px-4 py-16" id="specials-page">
     <h1 class="text-4xl font-black text-[#004A99] mb-12 uppercase tracking-tight text-center">Specials</h1>
@@ -89,50 +93,89 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     container.addEventListener('click', (e) => {
       const thumb = e.target.closest('.photo-thumb');
       if (!thumb) return;
-      const lb = document.getElementById('lightbox');
-      if (!lb) return;
-      const idx = parseInt(thumb.dataset.idx);
       const photos = window._seniorenPhotos || [];
       if (!photos.length) return;
-      lb._idx = idx;
-      document.getElementById('lb-img').src = photos[idx];
-      lb.classList.remove('hidden');
-      lb.classList.add('flex');
-      document.body.style.overflow = 'hidden';
+      const idx = parseInt(thumb.dataset.idx);
+      openLightbox(idx, photos);
     });
-    document.addEventListener('click', (e) => {
-      if (e.target.closest('#lightbox') && !e.target.closest('#lb-img') && !e.target.closest('#lb-prev') && !e.target.closest('#lb-next')) {
-        closeLightbox();
-      }
-    });
+
     document.addEventListener('keydown', (e) => {
-      const lb = document.getElementById('lightbox');
-      if (!lb || lb.classList.contains('hidden')) return;
+      const lb = document.getElementById('kvvi-photo-modal');
+      if (!lb || lb.style.display !== 'flex') return;
       if (e.key === 'Escape') closeLightbox();
       if (e.key === 'ArrowLeft') navigateLightbox(-1);
       if (e.key === 'ArrowRight') navigateLightbox(1);
     });
-    const lbPrev = document.getElementById('lb-prev');
-    const lbNext = document.getElementById('lb-next');
-    if (lbPrev) lbPrev.addEventListener('click', (e) => { e.stopPropagation(); navigateLightbox(-1); });
-    if (lbNext) lbNext.addEventListener('click', (e) => { e.stopPropagation(); navigateLightbox(1); });
+  }
+
+  // Body-level modal (vermijdt overflow-container bugs) met werkend sluitkruisje
+  let lightboxPhotos = [];
+  let lightboxIndex = 0;
+
+  function ensureLightbox() {
+    let lb = document.getElementById('kvvi-photo-modal');
+    if (lb) return lb;
+    lb = document.createElement('div');
+    lb.id = 'kvvi-photo-modal';
+    lb.style.cssText = 'position:fixed;inset:0;z-index:10000;background:rgba(2,9,19,0.95);display:none;align-items:center;justify-content:center;';
+    lb.innerHTML = `
+      <button id="kvvi-lb-close" type="button" style="position:fixed;top:85px;right:16px;z-index:10001;pointer-events:auto;width:52px;height:52px;border-radius:50%;background:#003366;color:white;display:flex;align-items:center;justify-content:center;box-shadow:0 0 25px rgba(197,160,89,0.7),0 0 50px rgba(197,160,89,0.3);border:2px solid #C5A059;">
+        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+      <button id="kvvi-lb-prev" type="button" style="position:fixed;left:16px;top:50%;transform:translateY(-50%);z-index:10001;pointer-events:auto;width:56px;height:56px;border-radius:50%;background:rgba(0,51,102,0.85);border:2px solid #C5A059;color:white;display:flex;align-items:center;justify-content:center;box-shadow:0 0 25px rgba(197,160,89,0.7),0 0 50px rgba(197,160,89,0.3);">
+        <svg width="28" height="28" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+      </button>
+      <img id="kvvi-lb-img" src="" alt="" style="max-width:90vw;max-height:90vh;object-fit:contain;border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,0.5);" />
+      <button id="kvvi-lb-next" type="button" style="position:fixed;right:16px;top:50%;transform:translateY(-50%);z-index:10001;pointer-events:auto;width:56px;height:56px;border-radius:50%;background:rgba(0,51,102,0.85);border:2px solid #C5A059;color:white;display:flex;align-items:center;justify-content:center;box-shadow:0 0 25px rgba(197,160,89,0.7),0 0 50px rgba(197,160,89,0.3);">
+        <svg width="28" height="28" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+      </button>
+      <div id="kvvi-lb-counter" style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:10001;pointer-events:none;padding:8px 16px;border-radius:9999px;background:rgba(0,51,102,0.85);border:2px solid #C5A059;color:white;font-size:14px;font-weight:500;box-shadow:0 0 25px rgba(197,160,89,0.5);"></div>
+    `;
+    document.body.appendChild(lb);
+
+    lb.querySelector('#kvvi-lb-close').addEventListener('click', (e) => { e.stopPropagation(); closeLightbox(); });
+    lb.querySelector('#kvvi-lb-prev').addEventListener('click', (e) => { e.stopPropagation(); navigateLightbox(-1); });
+    lb.querySelector('#kvvi-lb-next').addEventListener('click', (e) => { e.stopPropagation(); navigateLightbox(1); });
+    lb.addEventListener('click', (e) => { if (e.target === lb) closeLightbox(); });
+
+    let touchStartX = 0;
+    lb.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+    lb.addEventListener('touchend', (e) => {
+      const diff = touchStartX - e.changedTouches[0].screenX;
+      if (Math.abs(diff) > 50) (diff > 0 ? navigateLightbox(1) : navigateLightbox(-1));
+    }, { passive: true });
+
+    return lb;
+  }
+
+  function openLightbox(index, photos) {
+    lightboxPhotos = photos;
+    lightboxIndex = index;
+    const lb = ensureLightbox();
+    updateLightbox();
+    lb.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+
+  function updateLightbox() {
+    const img = document.getElementById('kvvi-lb-img');
+    const counter = document.getElementById('kvvi-lb-counter');
+    if (!img || !counter) return;
+    img.src = lightboxPhotos[lightboxIndex];
+    counter.textContent = `${lightboxIndex + 1} / ${lightboxPhotos.length}`;
   }
 
   function closeLightbox() {
-    const lb = document.getElementById('lightbox');
+    const lb = document.getElementById('kvvi-photo-modal');
     if (!lb) return;
-    lb.classList.add('hidden');
-    lb.classList.remove('flex');
+    lb.style.display = 'none';
     document.body.style.overflow = '';
   }
 
   function navigateLightbox(dir) {
-    const lb = document.getElementById('lightbox');
-    if (!lb) return;
-    const photos = window._seniorenPhotos || [];
-    if (!photos.length) return;
-    lb._idx = ((lb._idx || 0) + dir + photos.length) % photos.length;
-    document.getElementById('lb-img').src = photos[lb._idx];
+    if (!lightboxPhotos.length) return;
+    lightboxIndex = (lightboxIndex + dir + lightboxPhotos.length) % lightboxPhotos.length;
+    updateLightbox();
   }
 
   function renderContent(item) {
@@ -216,21 +259,25 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     const photos = item.photos || [];
     if (!photos.length) return dateHtml + '<div class="text-center text-slate-400 py-10 italic">Nog geen foto&#39;s.</div>';
     window._seniorenPhotos = photos.map(p => p.url);
-    let html = dateHtml + '<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">';
+    const spanVariants = [
+      'xl:col-span-2 xl:row-span-2',
+      'xl:col-span-2',
+      'xl:row-span-2',
+      '',
+      'xl:col-span-2',
+      '',
+      'xl:row-span-2',
+      ''
+    ];
+    let html = dateHtml + '<div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">';
     photos.forEach((p, idx) => {
-      html += `<div class="cursor-pointer photo-thumb" data-idx="${idx}">
-        <div class="aspect-square bg-slate-100 rounded-xl overflow-hidden border border-slate-200 hover:border-[#004A99] transition-colors shadow-sm hover:shadow-md">
-          <img src="${escapeHtml(p.url)}" alt="${escapeHtml(p.alt || 'Seniorenfoto')}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-300" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'flex items-center justify-center h-full text-slate-400 text-xs\\'>Fout</div>'">
-        </div>
-      </div>`;
+      const delay = `${(idx % 4) * 0.2}s`;
+      html += `<button type="button" class="photo-thumb kvvi-float-card relative overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-[0_30px_80px_rgba(0,0,0,0.12)] aspect-square ${spanVariants[idx % spanVariants.length]}" style="animation-delay:${delay};" data-idx="${idx}">
+        <img src="${escapeHtml(p.url)}" alt="${escapeHtml(p.alt || 'Seniorenfoto')}" class="h-full w-full object-cover transition duration-1000 ease-out hover:scale-105" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'flex items-center justify-center h-full text-slate-400 text-xs\\'>Fout</div>'">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none"></div>
+      </button>`;
     });
     html += '</div>';
-    html += `<div id="lightbox" class="fixed inset-0 z-50 bg-black/90 hidden items-center justify-center" onclick="closeLightbox()">
-      <button class="absolute top-4 right-4 text-white text-3xl hover:text-slate-300 transition">&times;</button>
-      <button id="lb-prev" class="absolute left-4 top-1/2 -translate-y-1/2 text-white text-4xl hover:text-slate-300 transition">&lsaquo;</button>
-      <img id="lb-img" class="max-w-[90vw] max-h-[90vh] object-contain rounded-lg" src="" alt="">
-      <button id="lb-next" class="absolute right-4 top-1/2 -translate-y-1/2 text-white text-4xl hover:text-slate-300 transition">&rsaquo;</button>
-    </div>`;
     return html;
   }
 
