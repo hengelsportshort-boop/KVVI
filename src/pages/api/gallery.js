@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { getGalleryItems } from '../../lib/gallery';
 import dataDir from '../../lib/dataDir.js';
+import { syncFileToGitHub } from '../../lib/gitSync.js';
 
 const GALLERY_PATH = path.join(dataDir, 'gallery.json');
 const FOTO_FOTOS_PATH = path.resolve('./public/Foto Fotos');
@@ -64,6 +65,13 @@ export async function POST({ request }) {
       const buffer = await file.arrayBuffer();
       fs.writeFileSync(filePath, new Uint8Array(buffer));
 
+      const uploadSync = await syncFileToGitHub({
+        repoPath: category === 'home' ? `public/data/home-uploads/${filename}` : `public/data/uploads/${filename}`,
+        localPath: filePath,
+        commitMessage: `*KVVI foto sync* ${filename}`
+      });
+      if (!uploadSync.ok) console.warn(`[gitSync] gallery upload sync mislukt: ${uploadSync.reason}`);
+
       // Voeg toe aan gallery.json zodat de foto zichtbaar is op de publieke pagina's
       const srcPath = category === 'home'
         ? `/data/home-uploads/${encodeURIComponent(filename)}`
@@ -82,6 +90,12 @@ export async function POST({ request }) {
           showOnHome: category === 'home'
         });
         fs.writeFileSync(GALLERY_PATH, JSON.stringify(gallery, null, 2), 'utf-8');
+        const gallerySync = await syncFileToGitHub({
+          repoPath: 'public/data/gallery.json',
+          localPath: GALLERY_PATH,
+          commitMessage: '*KVVI gallery sync*'
+        });
+        if (!gallerySync.ok) console.warn(`[gitSync] gallery.json sync mislukt: ${gallerySync.reason}`);
       } catch (_) {}
 
       return new Response(JSON.stringify({ 
@@ -126,7 +140,12 @@ export async function POST({ request }) {
     }
 
     fs.writeFileSync(GALLERY_PATH, JSON.stringify(cleaned, null, 2), 'utf-8');
-    return new Response(JSON.stringify({ success: true, count: cleaned.length }), {
+    const gallerySync = await syncFileToGitHub({
+      repoPath: 'public/data/gallery.json',
+      localPath: GALLERY_PATH,
+      commitMessage: '*KVVI gallery sync*'
+    });
+    return new Response(JSON.stringify({ success: true, count: cleaned.length, gitSync: gallerySync.ok ? 'ok' : gallerySync.reason }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }
     });

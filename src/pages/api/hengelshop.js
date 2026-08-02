@@ -2,6 +2,7 @@ export const prerender = false;
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { syncFileToGitHub } from '../../lib/gitSync.js';
 
 const DATA_FILE = path.resolve('./public/data/hengelshop.json');
 
@@ -38,6 +39,12 @@ function syncCategories(data) {
 function saveData(data) {
   if (!data._categories) data._categories = ['00_IMPORT'];
   fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+  syncFileToGitHub({
+    repoPath: 'public/data/hengelshop.json',
+    localPath: DATA_FILE
+  }).then(r => {
+    if (!r.ok) console.warn(`[gitSync] hengelshop sync mislukt: ${r.reason}`);
+  }).catch(e => console.error('[gitSync] hengelshop sync error:', e.message));
 }
 
 function properCase(s) {

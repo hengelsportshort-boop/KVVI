@@ -1,6 +1,7 @@
 export const prerender = false;
 import fs from 'node:fs';
 import path from 'node:path';
+import { syncFileToGitHub } from '../../lib/gitSync.js';
 
 const ADMIN_KEY = (process.env.ADMIN_KEY || 'eV4VhIuB8dGjK2mN9pQrX5wZ7yC3fA0s').trim();
 const DATA_PATH = path.resolve('./public/data/tips-tricks.json');
@@ -47,7 +48,11 @@ export async function POST({ request, cookies }) {
       return new Response(JSON.stringify({ error: 'Invalid data' }), { status: 400 });
     }
     fs.writeFileSync(DATA_PATH, JSON.stringify(body, null, 2), 'utf-8');
-    return new Response(JSON.stringify({ success: true }), {
+    const gitSync = await syncFileToGitHub({
+      repoPath: 'public/data/tips-tricks.json',
+      localPath: DATA_PATH
+    });
+    return new Response(JSON.stringify({ success: true, gitSync: gitSync.ok ? 'ok' : gitSync.reason }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }
     });

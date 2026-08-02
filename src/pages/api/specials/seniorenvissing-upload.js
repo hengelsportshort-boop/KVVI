@@ -2,6 +2,7 @@ export const prerender = false;
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { syncFileToGitHub } from '../../../lib/gitSync.js';
 
 const UPLOAD_DIR = path.resolve('./public/images/senioren');
 
@@ -34,10 +35,17 @@ export async function POST({ request }) {
       const buffer = await file.arrayBuffer();
       fs.writeFileSync(filePath, new Uint8Array(buffer));
 
+      const gitSync = await syncFileToGitHub({
+        repoPath: `public/images/senioren/${filename}`,
+        localPath: filePath,
+        commitMessage: `*KVVI foto sync* ${filename}`
+      });
+
       return new Response(JSON.stringify({
         success: true,
         url: `/images/senioren/${filename}`,
-        message: 'Foto succesvol geüpload'
+        message: 'Foto succesvol geüpload',
+        gitSync: gitSync.ok ? 'ok' : gitSync.reason
       }), {
         status: 200,
         headers: { 'Content-Type': 'application/json' }

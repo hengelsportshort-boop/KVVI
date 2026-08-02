@@ -2,6 +2,7 @@ export const prerender = false;
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { syncFileToGitHub } from '../../lib/gitSync.js';
 
 export async function GET({ url }) {
   try {
@@ -78,7 +79,12 @@ export async function POST({ request }) {
     const csvPad = path.resolve(`./public/data/${safeJaar}/${safeGroep}.csv`);
     fs.writeFileSync(csvPad, csvContent, 'utf-8');
 
-    return new Response(JSON.stringify({ success: true }), {
+    const gitSync = await syncFileToGitHub({
+      repoPath: `public/data/${safeJaar}/${safeGroep}.csv`,
+      localPath: csvPad
+    });
+
+    return new Response(JSON.stringify({ success: true, gitSync: gitSync.ok ? 'ok' : gitSync.reason }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }
     });

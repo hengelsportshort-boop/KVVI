@@ -2,6 +2,7 @@ export const prerender = false;
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { syncFileToGitHub } from '../../../lib/gitSync.js';
 
 const BASE_DIR = path.resolve('./public/data/kamp-izegem');
 
@@ -51,7 +52,11 @@ export async function POST({ request, url }) {
     const filePath = getFilePath(year);
     if (!fs.existsSync(BASE_DIR)) fs.mkdirSync(BASE_DIR, { recursive: true });
     fs.writeFileSync(filePath, JSON.stringify(body, null, 2), 'utf-8');
-    return new Response(JSON.stringify({ success: true }), {
+    const gitSync = await syncFileToGitHub({
+      repoPath: `public/data/kamp-izegem/${year}.json`,
+      localPath: filePath
+    });
+    return new Response(JSON.stringify({ success: true, gitSync: gitSync.ok ? 'ok' : gitSync.reason }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }
     });

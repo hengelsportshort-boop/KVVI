@@ -2,6 +2,7 @@ export const prerender = false;
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { syncFileToGitHub } from '../../lib/gitSync.js';
 
 const BASE_DIR = path.resolve('./public/data/specials');
 
@@ -56,7 +57,11 @@ export async function POST({ request, url }) {
       return new Response(JSON.stringify({ error: 'Ongeldige data: array verwacht' }), { status: 400 });
     }
     fs.writeFileSync(filePath, JSON.stringify(body, null, 2), 'utf-8');
-    return new Response(JSON.stringify({ success: true, count: body.length }), {
+    const gitSync = await syncFileToGitHub({
+      repoPath: `public/data/specials/${year}.json`,
+      localPath: filePath
+    });
+    return new Response(JSON.stringify({ success: true, gitSync: gitSync.ok ? 'ok' : gitSync.reason, count: body.length }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }
     });
