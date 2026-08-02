@@ -131,22 +131,56 @@
 (async function() {
   const LAT = 50.92;
   const LON = 3.21;
-  const URL = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_sum,windspeed_10m_max&current_weather=true&timezone=Europe%2FBrussels&forecast_days=8`;
+  const URL = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,windspeed_10m_max&hourly=weathercode&current_weather=true&timezone=Europe%2FBrussels&forecast_days=8`;
 
   const container = document.getElementById('weather-scroll');
   if (!container) return;
 
   const weekdayShort = ['zo','ma','di','wo','do','vr','za'];
 
-  function weatherIcon(wmo) {
-    if (wmo >= 0 && wmo <= 1) return '☀️';
-    if (wmo === 2) return '⛅';
-    if (wmo === 3) return '☁️';
-    if (wmo >= 45 && wmo <= 48) return '🌫';
-    if (wmo >= 51 && wmo <= 67) return '🌧';
-    if (wmo >= 80 && wmo <= 82) return '🌦';
-    if (wmo >= 95 && wmo <= 99) return '⛈';
-    return '☀️';
+  // Categorie per WMO-code (dominante conditie van de dag bepalen)
+  function wmoCategory(wmo) {
+    if (wmo <= 1) return 'clear';
+    if (wmo === 2) return 'partly';
+    if (wmo === 3) return 'overcast';
+    if (wmo >= 45 && wmo <= 48) return 'fog';
+    if (wmo >= 51 && wmo <= 57) return 'drizzle';
+    if (wmo >= 61 && wmo <= 67) return 'rain';
+    if (wmo >= 71 && wmo <= 77) return 'snow';
+    if (wmo >= 80 && wmo <= 82) return 'rain';
+    if (wmo >= 85 && wmo <= 86) return 'snow';
+    if (wmo >= 95 && wmo <= 99) return 'thunder';
+    return 'clear';
+  }
+
+  function categoryIcon(cat) {
+    switch (cat) {
+      case 'clear': return '☀️';
+      case 'partly': return '⛅';
+      case 'overcast': return '☁️';
+      case 'fog': return '🌫️';
+      case 'drizzle': return '🌦️';
+      case 'rain': return '🌧️';
+      case 'snow': return '🌨️';
+      case 'thunder': return '⛈️';
+      default: return '☀️';
+    }
+  }
+
+  // Bepaal de overheersende weercategorie per dag (uren 6-22u, modus = meest voorkomend)
+  function dominantCategory(dayTime, hourly) {
+    const counts = {};
+    let max = 0, result = 'clear';
+    for (let i = 0; i < hourly.time.length; i++) {
+      const t = hourly.time[i];
+      if (!t.startsWith(dayTime)) continue;
+      const hour = parseInt(t.slice(11, 13));
+      if (hour < 6 || hour > 22) continue;
+      const cat = wmoCategory(hourly.weathercode[i]);
+      counts[cat] = (counts[cat] || 0) + 1;
+      if (counts[cat] > max) { max = counts[cat]; result = cat; }
+    }
+    return result;
   }
 
   try {
@@ -164,7 +198,7 @@
       const dayName = weekdayShort[date.getDay()];
       const dayNum = String(date.getDate());
       const temp = Math.round(daily.temperature_2m_max[i]);
-      const icon = weatherIcon(daily.weathercode[i]);
+      const icon = categoryIcon(dominantCategory(daily.time[i], json.hourly));
       html += `<div class="weather-card">
         <div class="weather-top">
           <span class="weather-day">${dayName}</span>
