@@ -198,7 +198,11 @@
       const dayName = weekdayShort[date.getDay()];
       const dayNum = String(date.getDate());
       const temp = Math.round(daily.temperature_2m_max[i]);
-      const icon = categoryIcon(dominantCategory(daily.time[i], json.hourly));
+      const isToday = i === 0;
+      const current = json.current_weather && isToday
+        ? wmoCategory(json.current_weather.weathercode)
+        : dominantCategory(daily.time[i], json.hourly);
+      const icon = categoryIcon(current);
       html += `<div class="weather-card">
         <div class="weather-top">
           <span class="weather-day">${dayName}</span>
