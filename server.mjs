@@ -79,6 +79,22 @@ const server = http.createServer((req, res) => {
     res.end();
     return;
   }
+  const urlObj = new URL(req.url, 'http://localhost');
+  const pathname = urlObj.pathname;
+  const lastSegment = pathname.split('/').pop();
+  const isFile = /\.[a-z0-9]+$/i.test(lastSegment);
+  if (
+    req.method === 'GET' &&
+    pathname.length > 1 &&
+    !pathname.endsWith('/') &&
+    !isFile &&
+    !pathname.startsWith('/api/') &&
+    !pathname.startsWith('/admin')
+  ) {
+    res.writeHead(301, { Location: pathname + '/' + urlObj.search });
+    res.end();
+    return;
+  }
   if (serveStatic(req, res)) return;
   compression()(req, res, async () => {
     const handler = await getAstroHandler();
