@@ -259,20 +259,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     const photos = item.photos || [];
     if (!photos.length) return dateHtml + '<div class="text-center text-slate-400 py-10 italic">Nog geen foto&#39;s.</div>';
     window._seniorenPhotos = photos.map(p => p.url);
-    const spanVariants = [
-      'xl:col-span-2 xl:row-span-2',
-      'xl:col-span-2',
-      'xl:row-span-2',
-      '',
-      'xl:col-span-2',
-      '',
-      'xl:row-span-2',
-      ''
-    ];
-    let html = dateHtml + '<div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">';
+    let html = dateHtml + '<div class="grid gap-4 grid-cols-2 md:grid-cols-3 xl:grid-cols-4">';
     photos.forEach((p, idx) => {
       const delay = `${(idx % 4) * 0.2}s`;
-      html += `<button type="button" class="photo-thumb kvvi-float-card relative overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-[0_30px_80px_rgba(0,0,0,0.12)] aspect-square ${spanVariants[idx % spanVariants.length]}" style="animation-delay:${delay};" data-idx="${idx}">
+      html += `<button type="button" class="photo-thumb kvvi-float-card relative overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-[0_30px_80px_rgba(0,0,0,0.12)] aspect-square" style="animation-delay:${delay};" data-idx="${idx}">
         <img src="${escapeHtml(p.url)}" alt="${escapeHtml(p.alt || 'Seniorenfoto')}" class="h-full w-full object-cover transition duration-1000 ease-out hover:scale-105" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'flex items-center justify-center h-full text-slate-400 text-xs\\'>Fout</div>'">
         <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none"></div>
       </button>`;
