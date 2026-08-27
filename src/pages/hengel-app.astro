@@ -1375,7 +1375,7 @@ html+='<th>Aantal</th><th>Gewicht</th><th>Stek</th><th>Begin</th><th>Einde</th><
       var data = JSON.stringify(loadData(), null, 2);
       var blob = new Blob([data], {type:'application/json'});
       var url = URL.createObjectURL(blob);
-      var a = document.createElement('a'); a.href=url; a.download='vissessies-export.json'; a.click();
+      var a = document.createElement('a'); a.href=url; a.download='vissessies.json'; a.click();
       URL.revokeObjectURL(url);
     });
     document.getElementById('d-import').addEventListener('click', function() {
