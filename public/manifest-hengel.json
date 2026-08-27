@@ -2,7 +2,7 @@
   "name": "Sessie-Assistent",
   "short_name": "Sessie",
   "description": "Feeder timer, vangsten noteren en statistieken — alles in één app",
-  ""start_url": "/hengel-app/"",
+  "start_url": "/hengel-app/"",
   "display": "standalone",
   "background_color": "#0f172a",
   "theme_color": "#003366",
