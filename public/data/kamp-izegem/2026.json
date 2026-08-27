@@ -6,7 +6,7 @@
   "tables": [
     {
       "name": "Voormiddag",
-      "visible": false,
+      "visible": true,
       "rows": [
         {
           "deeln": "Devisscher R",
