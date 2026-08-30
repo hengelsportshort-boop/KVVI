@@ -799,7 +799,7 @@
       "merk": "Matrix",
       "naam": "Side puller beads - medium",
       "prijs": "€ 2,99",
-      "categorie": "00_IMPORT",
+      "categorie": "ELASTIEK EN TOEBEHOREN",
       "bestel": "0"
     },
     {
@@ -807,16 +807,16 @@
       "merk": "Drennan",
       "naam": "Puller bead - pink",
       "prijs": "€ 2,99",
-      "categorie": "ELASTIEK EN TOEBEHOREN",
-      "bestel": "1"
+      "categorie": "00_IMPORT",
+      "bestel": "0"
     },
     {
       "id": 1788074394225.6677,
       "merk": "Drennan",
       "naam": "Dacron connector - red 18 to 20",
       "prijs": "€ 5,29",
-      "categorie": "ELASTIEK EN TOEBEHOREN",
-      "bestel": "1"
+      "categorie": "00_IMPORT",
+      "bestel": "0"
     }
   ],
   "_categories": [
