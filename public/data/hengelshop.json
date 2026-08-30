@@ -115,7 +115,7 @@
     {
       "id": 1780990123727.025,
       "merk": "Matrix",
-      "naam": "Slik elastic 8m - 2.2mm green - size 16-18 - 6m",
+      "naam": "Slik elastic 8m - 2.2mm green - size 16-18",
       "prijs": "€23,99",
       "categorie": "ELASTIEK EN TOEBEHOREN",
       "bestel": "0"
@@ -761,6 +761,14 @@
       "prijs": "€ 8,49",
       "categorie": "ELASTIEK EN TOEBEHOREN",
       "bestel": "3"
+    },
+    {
+      "id": 1788071236468.6375,
+      "merk": "Mvde",
+      "naam": "Maiskoek ttx grof - maiskoek ttx grof",
+      "prijs": "€ 2,19",
+      "categorie": "00_IMPORT",
+      "bestel": "0"
     }
   ],
   "_categories": [
