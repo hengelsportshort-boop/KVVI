@@ -763,11 +763,19 @@
       "bestel": "3"
     },
     {
+      "id": 1788071236468.6375,
+      "merk": "Mvde",
+      "naam": "Maiskoek ttx grof - 1kg",
+      "prijs": "€ 2,19",
+      "categorie": "00_IMPORT",
+      "bestel": "4"
+    },
+    {
       "id": 1788071387213.1443,
       "merk": "Sonubaits",
       "naam": "Supercrush mega carp method mix original - 2kg",
       "prijs": "€ 12,99",
-      "categorie": "00_IMPORT",
+      "categorie": "AAS",
       "bestel": "1"
     },
     {
@@ -775,7 +783,7 @@
       "merk": "Sonubaits",
       "naam": "Groundbait - power scopex - power scopex groundbait - 2kg",
       "prijs": "€ 12,99",
-      "categorie": "00_IMPORT",
+      "categorie": "AAS",
       "bestel": "0"
     },
     {
@@ -783,8 +791,8 @@
       "merk": "Mvde",
       "naam": "Maiskoek ttx grof - maiskoek - 1kg",
       "prijs": "€ 2,19",
-      "categorie": "00_IMPORT",
-      "bestel": "2"
+      "categorie": "AAS",
+      "bestel": "0"
     }
   ],
   "_categories": [
