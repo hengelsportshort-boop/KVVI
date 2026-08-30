@@ -807,7 +807,7 @@
       "merk": "Drennan",
       "naam": "Puller bead - pink",
       "prijs": "€ 2,99",
-      "categorie": "ELASTIEK EN TOEBEHOREN",
+      "categorie": "00_IMPORT",
       "bestel": "0"
     },
     {
@@ -815,23 +815,23 @@
       "merk": "Drennan",
       "naam": "Dacron connector - red 18 to 20",
       "prijs": "€ 5,29",
+      "categorie": "ELASTIEK EN TOEBEHOREN",
+      "bestel": "0"
+    },
+    {
+      "id": 1788085857222.399,
+      "merk": "",
+      "naam": "Nytro pack rivalist pro power",
+      "prijs": "11.50",
       "categorie": "00_IMPORT",
       "bestel": "0"
     },
     {
       "id": 1788085857222.8699,
-      "merk": "Nytro",
+      "merk": "0 beoordelingen",
       "naam": "Nytro pack rivalist pro power 11.50m",
-      "prijs": "€475",
-      "categorie": "00_IMPORT",
-      "bestel": "0"
-    },
-    {
-      "id": 1788085857222.8184,
-      "merk": "",
-      "naam": "Avp",
-      "prijs": "€475,00",
-      "categorie": "00_IMPORT",
+      "prijs": "€529,00",
+      "categorie": "RENIERS",
       "bestel": "0"
     }
   ],
@@ -847,6 +847,7 @@
     "KLEIN MATERIAAL",
     "LOOD",
     "METHOD FEEDER",
+    "RENIERS",
     "VISLIJN",
     "ZITKISTEN EN ACCESSOIRES"
   ]
