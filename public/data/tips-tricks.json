@@ -111,7 +111,7 @@
       "info": "Unifish is een weerapp speciaal voor vissers. Het geeft zeer nauwkeurige informatie over luchtdruk, wind, neerslag en UV-index voor elke exacte locatie. Het is een stap verder dan algemene weer-apps.\n\nDe app heeft een handige widget zodat je snel kunt zien of het de moeite is om te gaan vissen. Luchtdrukveranderingen zijn essentieel om karperactiviteit te voorspellen. Downloadbaar in de app store voor iOS en Android.",
       "link": "",
       "media": [],
-      "visible": true
+      "visible": false
     },
     {
       "id": 15,
