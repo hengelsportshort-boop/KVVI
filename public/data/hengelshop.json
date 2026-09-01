@@ -865,6 +865,22 @@
       "prijs": "€ 3,99",
       "categorie": "ELASTIEK EN TOEBEHOREN",
       "bestel": "0"
+    },
+    {
+      "id": 1788261045551.2441,
+      "merk": "",
+      "naam": "Nytro flex elastic - 2,2mm - 14-16",
+      "prijs": "€ 9,95",
+      "categorie": "00_IMPORT",
+      "bestel": "0"
+    },
+    {
+      "id": 1788261045551.6199,
+      "merk": "",
+      "naam": "Nytro flex elastic - 1,8mm - 10-12",
+      "prijs": "€ 9,95",
+      "categorie": "00_IMPORT",
+      "bestel": "0"
     }
   ],
   "_categories": [
