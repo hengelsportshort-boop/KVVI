@@ -752,7 +752,7 @@
       "naam": "Power pull elastic - 1,8mm",
       "prijs": "€ 8,49",
       "categorie": "ELASTIEK EN TOEBEHOREN",
-      "bestel": "0"
+      "bestel": "1"
     },
     {
       "id": 1788000947901.0198,
@@ -760,7 +760,7 @@
       "naam": "Power pull elastic - 2,2mm",
       "prijs": "€ 8,49",
       "categorie": "ELASTIEK EN TOEBEHOREN",
-      "bestel": "0"
+      "bestel": "2"
     },
     {
       "id": 1788071387213.1443,
@@ -808,7 +808,7 @@
       "naam": "Puller bead - pink",
       "prijs": "€ 2,99",
       "categorie": "ELASTIEK EN TOEBEHOREN",
-      "bestel": "1"
+      "bestel": "0"
     },
     {
       "id": 1788074394225.6677,
@@ -816,7 +816,7 @@
       "naam": "Dacron connector - red 18 to 20",
       "prijs": "€ 5,29",
       "categorie": "ELASTIEK EN TOEBEHOREN",
-      "bestel": "0"
+      "bestel": "1"
     },
     {
       "id": 1788085857222.8699,
@@ -871,16 +871,16 @@
       "merk": "",
       "naam": "Nytro flex elastic - 2,2mm - 14-16",
       "prijs": "€ 9,95",
-      "categorie": "ELASTIEK EN TOEBEHOREN",
-      "bestel": "1"
+      "categorie": "00_IMPORT",
+      "bestel": "0"
     },
     {
       "id": 1788261045551.6199,
       "merk": "",
       "naam": "Nytro flex elastic - 1,8mm - 10-12",
       "prijs": "€ 9,95",
-      "categorie": "ELASTIEK EN TOEBEHOREN",
-      "bestel": "1"
+      "categorie": "00_IMPORT",
+      "bestel": "0"
     }
   ],
   "_categories": [
