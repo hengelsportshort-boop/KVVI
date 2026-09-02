@@ -908,11 +908,19 @@
     },
     {
       "id": 1788328376049.1067,
-      "merk": "Korum",
+      "merk": "5056837211862 1",
       "naam": "Korum floating grubs - imitation maggots - red",
       "prijs": "€ 4,29",
-      "categorie": "HAAKAAS",
-      "bestel": "1"
+      "categorie": "00_IMPORT",
+      "bestel": "0"
+    },
+    {
+      "id": 1788328457728.7349,
+      "merk": "",
+      "naam": "Nytro chubby pellet wags - 4g",
+      "prijs": "€ 4,49",
+      "categorie": "00_IMPORT",
+      "bestel": "0"
     }
   ],
   "_categories": [
