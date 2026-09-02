@@ -602,8 +602,8 @@
     },
     {
       "id": 1781000662727.5457,
-      "merk": "",
-      "naam": "Carpe extrudee (purple pellet) 5mm, verpakking: 5kg",
+      "merk": "Captura",
+      "naam": "5mm, verpakking: 5kg",
       "prijs": "€12,99",
       "categorie": "AAS",
       "bestel": "0"
@@ -618,7 +618,7 @@
     },
     {
       "id": 1788071001832.9788,
-      "merk": "Captura",
+      "merk": "",
       "naam": "Captura baits ttx gemalen 2kg",
       "prijs": "€ 0,00",
       "categorie": "AAS",
@@ -626,10 +626,10 @@
     },
     {
       "id": 1788348278229.8823,
-      "merk": "Preston",
+      "merk": "Preston pelletpult - katapult",
       "naam": "Pelletpult small",
       "prijs": "€12,99",
-      "categorie": "KLEIN MATERIAAL",
+      "categorie": "00_IMPORT",
       "bestel": "0"
     }
   ],
