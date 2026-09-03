@@ -605,7 +605,7 @@
       "merk": "Captura",
       "naam": "Captura baits ttx gemalen 2kg",
       "prijs": "€ 0,00",
-      "categorie": "WENSLIJST",
+      "categorie": "AAS",
       "bestel": "0"
     },
     {
@@ -629,15 +629,15 @@
       "merk": "Captura baits",
       "naam": "Ground ttx 2kg – gemalen ttx",
       "prijs": "€4,25",
-      "categorie": "00_IMPORT",
+      "categorie": "AAS",
       "bestel": "0"
     },
     {
       "id": 1788437608077.9631,
-      "merk": "Matrix compact pole rollers",
-      "naam": "Double",
+      "merk": "Matrix",
+      "naam": "Compact pole rollers - double",
       "prijs": "€109,99",
-      "categorie": "00_IMPORT",
+      "categorie": "WENSLIJST",
       "bestel": "0"
     }
   ],
@@ -951,7 +951,7 @@
       "merk": "Matrix",
       "naam": "Slim line rubber stops - medium",
       "prijs": "€ 2,99",
-      "categorie": "00_IMPORT",
+      "categorie": "METHOD FEEDER",
       "bestel": "0"
     },
     {
@@ -959,7 +959,7 @@
       "merk": "Matrix",
       "naam": "Rubber line stops - medium",
       "prijs": "€ 2,50",
-      "categorie": "00_IMPORT",
+      "categorie": "METHOD FEEDER",
       "bestel": "0"
     },
     {
@@ -975,7 +975,7 @@
       "merk": "Guru",
       "naam": "Rig scissors - rig scissors",
       "prijs": "€ 8,99",
-      "categorie": "KLEIN MATERIAAL",
+      "categorie": "00_IMPORT",
       "bestel": "0"
     },
     {
@@ -983,7 +983,7 @@
       "merk": "",
       "naam": "Tubertini onthaker met metalen punt - medium",
       "prijs": "€ 4,39",
-      "categorie": "KLEIN MATERIAAL",
+      "categorie": "00_IMPORT",
       "bestel": "0"
     },
     {
@@ -991,7 +991,7 @@
       "merk": "Guru",
       "naam": "Qm1 disgorger - qm1 disgorger",
       "prijs": "€ 4,29",
-      "categorie": "KLEIN MATERIAAL",
+      "categorie": "00_IMPORT",
       "bestel": "0"
     }
   ],
