@@ -641,10 +641,18 @@
       "bestel": "0"
     },
     {
-      "id": 1788509563770.2817,
-      "merk": "Matrix compact pole rollers",
-      "naam": "Double",
-      "prijs": "€109,99",
+      "id": 1788510085077.311,
+      "merk": "Matrix bait boxes solid top",
+      "naam": "3.3 pint",
+      "prijs": "€4,49",
+      "categorie": "00_IMPORT",
+      "bestel": "0"
+    },
+    {
+      "id": 1788510085078.6086,
+      "merk": "Matrix bait boxes solid top",
+      "naam": "2 pint - 1 liter",
+      "prijs": "€11,97",
       "categorie": "00_IMPORT",
       "bestel": "0"
     }
@@ -1003,26 +1011,49 @@
       "bestel": "0"
     },
     {
-      "id": 1788509946478.706,
+      "id": 1788509652060.0393,
       "merk": "Matrix",
-      "naam": "Grey/lime bait box - 3,3pt",
-      "prijs": "€ 4,49",
-      "categorie": "AAS BENODIGDHEDEN",
+      "naam": "Compact pole roller - double",
+      "prijs": "€ 101,99",
+      "categorie": "WENSLIJST",
       "bestel": "0"
     },
     {
-      "id": 1788509946478.0889,
+      "id": 1788509652060.0889,
+      "merk": "Matrix",
+      "naam": "Hooklength swivels - size 14",
+      "prijs": "€ 2,95",
+      "categorie": "KLEIN MATERIAAL",
+      "bestel": "0"
+    },
+    {
+      "id": 1788509652060.7134,
+      "merk": "Matrix",
+      "naam": "Super soft bait bands - medium",
+      "prijs": "€ 2,49",
+      "categorie": "KLEIN MATERIAAL",
+      "bestel": "0"
+    },
+    {
+      "id": 1788509898042.4485,
+      "merk": "Matrix",
+      "naam": "Grey/lime bait box - 3,3pt",
+      "prijs": "€ 4,49",
+      "categorie": "00_IMPORT",
+      "bestel": "0"
+    },
+    {
+      "id": 1788509898042.9922,
       "merk": "Matrix",
       "naam": "Grey/lime bait box - 2,2pt",
       "prijs": "€ 11,97",
-      "categorie": "AAS BENODIGDHEDEN",
+      "categorie": "00_IMPORT",
       "bestel": "0"
     }
   ],
   "_categories": [
     "00_IMPORT",
     "AAS",
-    "AAS BENODIGDHEDEN",
     "BAGAGERIE",
     "DOBBERS",
     "ELASTIEK EN TOEBEHOREN",
