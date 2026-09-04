@@ -181,7 +181,7 @@
       "merk": "Matrix",
       "naam": "Latex bait bands - medium - 4-8mm",
       "prijs": "€2,99",
-      "categorie": "KLEIN MATERIAAL",
+      "categorie": "AAS BENODIGDHEDEN",
       "bestel": "0"
     },
     {
@@ -229,7 +229,7 @@
       "merk": "Preston",
       "naam": "Soft cad pots - medium",
       "prijs": "€5,99",
-      "categorie": "KLEIN MATERIAAL",
+      "categorie": "AAS BENODIGDHEDEN",
       "bestel": "0"
     },
     {
@@ -413,7 +413,7 @@
       "merk": "Preston",
       "naam": "Bait tubs - 2 pint - 1 liter",
       "prijs": "€3,99",
-      "categorie": "KLEIN MATERIAAL",
+      "categorie": "AAS BENODIGDHEDEN",
       "bestel": "0"
     },
     {
@@ -421,7 +421,7 @@
       "merk": "Preston",
       "naam": "Bait tubs - 2 pint bait strainer",
       "prijs": "€3,99",
-      "categorie": "KLEIN MATERIAAL",
+      "categorie": "AAS BENODIGDHEDEN",
       "bestel": "0"
     },
     {
@@ -517,7 +517,7 @@
       "merk": "Preston",
       "naam": "Latex bait bands - medium",
       "prijs": "€3,29",
-      "categorie": "KLEIN MATERIAAL",
+      "categorie": "AAS BENODIGDHEDEN",
       "bestel": "0"
     },
     {
@@ -573,7 +573,7 @@
       "merk": "Alltech coppens",
       "naam": "Premium coarse pellets 4.5mm, verpakking: 5kg",
       "prijs": "€16,99",
-      "categorie": "METHOD FEEDER",
+      "categorie": "AAS",
       "bestel": "0"
     },
     {
@@ -589,7 +589,7 @@
       "merk": "Alltech coppens",
       "naam": "Premium coarse pellets 2mm, verpakking: 5kg",
       "prijs": "€16,99",
-      "categorie": "METHOD FEEDER",
+      "categorie": "AAS",
       "bestel": "0"
     },
     {
@@ -610,8 +610,8 @@
     },
     {
       "id": 1788435880458.291,
-      "merk": "Matrix side puller beads",
-      "naam": "Medium",
+      "merk": "Matrix",
+      "naam": "Side puller beads - medium",
       "prijs": "€3,49",
       "categorie": "METHOD FEEDER",
       "bestel": "0"
@@ -641,11 +641,27 @@
       "bestel": "0"
     },
     {
-      "id": 1788510560741.339,
-      "merk": "Cresta",
-      "naam": "Solith c400 seatbox black – zitkist",
-      "prijs": "€349.99",
-      "categorie": "WENSLIJST",
+      "id": 1788510085077.311,
+      "merk": "Matrix",
+      "naam": "Bait boxes solid top 3.3 pint",
+      "prijs": "€4,49",
+      "categorie": "AAS BENODIGDHEDEN",
+      "bestel": "0"
+    },
+    {
+      "id": 1788510085078.6086,
+      "merk": "Matrix",
+      "naam": "Bait boxes solid top 2 pint - 1 liter",
+      "prijs": "€11,97",
+      "categorie": "AAS BENODIGDHEDEN",
+      "bestel": "0"
+    },
+    {
+      "id": 1788510326149.846,
+      "merk": "Matrix",
+      "naam": "Horizon® x sinking mono 300m - 0.24mm - 12lb - 5.4kg",
+      "prijs": "€9,99",
+      "categorie": "VISLIJN",
       "bestel": "0"
     }
   ],
@@ -947,14 +963,6 @@
       "bestel": "0"
     },
     {
-      "id": 1788341087336.913,
-      "merk": "Preston",
-      "naam": "Offbox 36 standard kit safe - offbox 36 - standard kit safe",
-      "prijs": "€ 75,95",
-      "categorie": "WENSLIJST",
-      "bestel": "0"
-    },
-    {
       "id": 1788347827060.6177,
       "merk": "Matrix",
       "naam": "Slim line rubber stops - medium",
@@ -1003,27 +1011,43 @@
       "bestel": "0"
     },
     {
-      "id": 1788509946478.706,
+      "id": 1788509652060.0393,
+      "merk": "Matrix",
+      "naam": "Compact pole roller - double",
+      "prijs": "€ 101,99",
+      "categorie": "WENSLIJST",
+      "bestel": "0"
+    },
+    {
+      "id": 1788509652060.0889,
+      "merk": "Matrix",
+      "naam": "Hooklength swivels - size 14",
+      "prijs": "€ 2,95",
+      "categorie": "KLEIN MATERIAAL",
+      "bestel": "0"
+    },
+    {
+      "id": 1788509652060.7134,
+      "merk": "Matrix",
+      "naam": "Super soft bait bands - medium",
+      "prijs": "€ 2,49",
+      "categorie": "KLEIN MATERIAAL",
+      "bestel": "0"
+    },
+    {
+      "id": 1788509898042.4485,
       "merk": "Matrix",
       "naam": "Grey/lime bait box - 3,3pt",
       "prijs": "€ 4,49",
-      "categorie": "AAS BENODIGDHEDEN",
+      "categorie": "00_IMPORT",
       "bestel": "0"
     },
     {
-      "id": 1788509946478.0889,
+      "id": 1788509898042.9922,
       "merk": "Matrix",
       "naam": "Grey/lime bait box - 2,2pt",
       "prijs": "€ 11,97",
-      "categorie": "AAS BENODIGDHEDEN",
-      "bestel": "0"
-    },
-    {
-      "id": 1788510637562.6526,
-      "merk": "Preston",
-      "naam": "Standard kit safe – topsetsteun",
-      "prijs": "€82,99",
-      "categorie": "WENSLIJST",
+      "categorie": "00_IMPORT",
       "bestel": "0"
     }
   ],
