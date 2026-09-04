@@ -653,7 +653,7 @@
       "merk": "Matrix",
       "naam": "Bait boxes solid top 2 pint - 1 liter",
       "prijs": "€11,97",
-      "categorie": "00_IMPORT",
+      "categorie": "AAS BENODIGDHEDEN",
       "bestel": "0"
     }
   ],
@@ -1054,6 +1054,7 @@
   "_categories": [
     "00_IMPORT",
     "AAS",
+    "AAS BENODIGDHEDEN",
     "BAGAGERIE",
     "DOBBERS",
     "ELASTIEK EN TOEBEHOREN",
