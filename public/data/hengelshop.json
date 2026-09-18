@@ -677,7 +677,7 @@
       "merk": "Matrix",
       "naam": "X7 carp method (eyed/barbless) - size 12",
       "prijs": "€ 7,47",
-      "categorie": "00_IMPORT",
+      "categorie": "HAKEN",
       "bestel": "0"
     },
     {
@@ -952,7 +952,7 @@
       "naam": "X7 carp method (eyed/barbless) - size 16",
       "prijs": "€ 2,49",
       "categorie": "HAKEN",
-      "bestel": "2"
+      "bestel": "0"
     },
     {
       "id": 1788261892058.4045,
@@ -1020,8 +1020,8 @@
     },
     {
       "id": 1788347827060.8042,
-      "merk": "",
-      "naam": "Tubertini onthaker met metalen punt - medium",
+      "merk": "Tubertini",
+      "naam": "Onthaker met metalen punt - medium",
       "prijs": "€ 4,39",
       "categorie": "KLEIN MATERIAAL",
       "bestel": "0"
@@ -1056,7 +1056,7 @@
       "naam": "Super soft bait bands - medium",
       "prijs": "€ 2,49",
       "categorie": "KLEIN MATERIAAL",
-      "bestel": "0"
+      "bestel": "1"
     },
     {
       "id": 1788510968582.3494,
@@ -1075,11 +1075,27 @@
       "bestel": "0"
     },
     {
-      "id": 1789725709749.9905,
+      "id": 1789725540948.6453,
+      "merk": "Guru",
+      "naam": "Margin diamond float - 0,40g",
+      "prijs": "€ 2,99",
+      "categorie": "DOBBERS",
+      "bestel": "0"
+    },
+    {
+      "id": 1789725540948.034,
+      "merk": "Guru",
+      "naam": "Margin diamond float - 0,30g",
+      "prijs": "€ 2,99",
+      "categorie": "DOBBERS",
+      "bestel": "0"
+    },
+    {
+      "id": 1789725540948.4934,
       "merk": "Preston",
-      "naam": "Reflo power - 0,17mm - 3,08kg",
-      "prijs": "€ 7,99",
-      "categorie": "VISLIJN",
+      "naam": "Dibber pole floats - 4x12",
+      "prijs": "€ 2,75",
+      "categorie": "DOBBERS",
       "bestel": "0"
     }
   ],
