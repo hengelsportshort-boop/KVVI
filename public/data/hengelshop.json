@@ -1075,11 +1075,19 @@
       "bestel": "0"
     },
     {
+      "id": 1789725540948.212,
+      "merk": "Guru",
+      "naam": "Margin diamond float -",
+      "prijs": "0,40",
+      "categorie": "00_IMPORT",
+      "bestel": "0"
+    },
+    {
       "id": 1789725540948.6453,
       "merk": "Guru",
       "naam": "Margin diamond float - 0,40g",
       "prijs": "€ 2,99",
-      "categorie": "DOBBERS",
+      "categorie": "00_IMPORT",
       "bestel": "0"
     },
     {
@@ -1087,15 +1095,15 @@
       "merk": "Guru",
       "naam": "Margin diamond float - 0,30g",
       "prijs": "€ 2,99",
-      "categorie": "DOBBERS",
-      "bestel": "0"
+      "categorie": "00_IMPORT",
+      "bestel": "4"
     },
     {
       "id": 1789725540948.4934,
       "merk": "Preston",
       "naam": "Dibber pole floats - 4x12",
       "prijs": "€ 2,75",
-      "categorie": "DOBBERS",
+      "categorie": "00_IMPORT",
       "bestel": "0"
     }
   ],
