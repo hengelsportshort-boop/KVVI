@@ -952,7 +952,7 @@
       "naam": "X7 carp method (eyed/barbless) - size 16",
       "prijs": "€ 2,49",
       "categorie": "HAKEN",
-      "bestel": "2"
+      "bestel": "0"
     },
     {
       "id": 1788261892058.4045,
@@ -1021,7 +1021,7 @@
     {
       "id": 1788347827060.8042,
       "merk": "",
-      "naam": "Tubertini onthaker met metalen punt - medium",
+      "naam": "Onthaker met metalen punt - medium",
       "prijs": "€ 4,39",
       "categorie": "KLEIN MATERIAAL",
       "bestel": "0"
@@ -1075,35 +1075,27 @@
       "bestel": "0"
     },
     {
-      "id": 1789725540948.212,
-      "merk": "Guru",
-      "naam": "Margin diamond float -",
-      "prijs": "0,40",
-      "categorie": "00_IMPORT",
-      "bestel": "0"
-    },
-    {
       "id": 1789725540948.6453,
       "merk": "Guru",
       "naam": "Margin diamond float - 0,40g",
       "prijs": "€ 2,99",
-      "categorie": "00_IMPORT",
-      "bestel": "4"
+      "categorie": "DOBBERS",
+      "bestel": "0"
     },
     {
       "id": 1789725540948.034,
       "merk": "Guru",
       "naam": "Margin diamond float - 0,30g",
       "prijs": "€ 2,99",
-      "categorie": "00_IMPORT",
-      "bestel": "4"
+      "categorie": "DOBBERS",
+      "bestel": "0"
     },
     {
       "id": 1789725540948.4934,
       "merk": "Preston",
       "naam": "Dibber pole floats - 4x12",
       "prijs": "€ 2,75",
-      "categorie": "00_IMPORT",
+      "categorie": "DOBBERS",
       "bestel": "0"
     }
   ],
