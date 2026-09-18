@@ -70,7 +70,7 @@
       "naam": "Reflo power - 0.17mm",
       "prijs": "€7,99",
       "categorie": "VISLIJN",
-      "bestel": "1"
+      "bestel": "0"
     },
     {
       "id": 1780989816943.6235,
@@ -174,7 +174,7 @@
       "naam": "X7 carp method barbless eyed - 16",
       "prijs": "€2,99",
       "categorie": "HAKEN",
-      "bestel": "0"
+      "bestel": "3"
     },
     {
       "id": 1780990123728.6206,
@@ -342,6 +342,14 @@
       "naam": "Mwg barbless - 12",
       "prijs": "€2,99",
       "categorie": "HAKEN",
+      "bestel": "0"
+    },
+    {
+      "id": 1780990639216.3613,
+      "merk": "Preston",
+      "naam": "Diamond (10 pcs) - 4 x 14 - 10 stuks (8 rood - 2 geel)",
+      "prijs": "€23,49",
+      "categorie": "DOBBERS",
       "bestel": "0"
     },
     {
@@ -649,35 +657,75 @@
       "bestel": "0"
     },
     {
+      "id": 1789724631988.8186,
+      "merk": "Guru",
+      "naam": "Diamond float -",
+      "prijs": "0,50",
+      "categorie": "DOBBERS",
+      "bestel": "0"
+    },
+    {
       "id": 1789724631988.0327,
       "merk": "Guru",
       "naam": "Diamond float - 0,50g",
       "prijs": "€ 5,98",
       "categorie": "DOBBERS",
+      "bestel": "2"
+    },
+    {
+      "id": 1789724631988.761,
+      "merk": "",
+      "naam": "Guru xs inline diamond -",
+      "prijs": "0,40",
+      "categorie": "DOBBERS",
       "bestel": "0"
     },
     {
       "id": 1789724631988.3633,
-      "merk": "5056400216249 1",
-      "naam": "Guru xs inline diamond - 0,40g",
+      "merk": "Guru",
+      "naam": "Xs inline diamond - 0,40g",
       "prijs": "€ 13,16",
-      "categorie": "DOBBERS",
+      "categorie": "00_IMPORT",
       "bestel": "0"
     },
     {
       "id": 1789724631988.4043,
-      "merk": "5056400216232 1",
-      "naam": "Guru xs inline diamond - 0,30g",
+      "merk": "Guru",
+      "naam": "Xs inline diamond - 0,30g",
       "prijs": "€ 13,16",
+      "categorie": "00_IMPORT",
+      "bestel": "0"
+    },
+    {
+      "id": 1789724631988.851,
+      "merk": "Preston",
+      "naam": "Dibber pole floats - 4x12",
+      "prijs": "€ 11,00",
       "categorie": "DOBBERS",
       "bestel": "0"
     },
     {
-      "id": 1789724915560.4114,
+      "id": 1789724631988.1863,
       "merk": "Matrix",
       "naam": "Super soft bait bands - medium",
       "prijs": "€ 2,49",
+      "categorie": "KLEIN MATERIAAL",
+      "bestel": "0"
+    },
+    {
+      "id": 1789724631988.7969,
+      "merk": "Matrix",
+      "naam": "X7 carp method (eyed/barbless) - size 12",
+      "prijs": "€ 7,47",
       "categorie": "00_IMPORT",
+      "bestel": "0"
+    },
+    {
+      "id": 1789724631988.9822,
+      "merk": "Preston",
+      "naam": "Reflo power - 0,17mm - 3,08kg",
+      "prijs": "€ 7,99",
+      "categorie": "VISLIJN",
       "bestel": "0"
     }
   ],
