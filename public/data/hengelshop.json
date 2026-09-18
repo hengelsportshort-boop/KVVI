@@ -582,7 +582,7 @@
       "naam": "Supercrush mega carp method mix 2 kg",
       "prijs": "€12,99",
       "categorie": "AAS",
-      "bestel": "0"
+      "bestel": "1"
     },
     {
       "id": 1788071001832.9788,
@@ -653,7 +653,7 @@
       "merk": "Guru",
       "naam": "Xs inline diamond - 0,40g",
       "prijs": "€ 3,29",
-      "categorie": "DOBBERS",
+      "categorie": "00_IMPORT",
       "bestel": "4"
     },
     {
@@ -661,7 +661,7 @@
       "merk": "Guru",
       "naam": "Xs inline diamond - 0,30g",
       "prijs": "€ 3,29",
-      "categorie": "DOBBERS",
+      "categorie": "00_IMPORT",
       "bestel": "4"
     },
     {
@@ -670,22 +670,14 @@
       "naam": "Super soft bait bands - medium",
       "prijs": "€ 2,49",
       "categorie": "KLEIN MATERIAAL",
-      "bestel": "1"
+      "bestel": "0"
     },
     {
       "id": 1789724631988.7969,
       "merk": "Matrix",
       "naam": "X7 carp method (eyed/barbless) - size 12",
       "prijs": "€ 7,47",
-      "categorie": "HAKEN",
-      "bestel": "0"
-    },
-    {
-      "id": 1789724631988.9822,
-      "merk": "Preston",
-      "naam": "Reflo power - 0,17mm - 3,08kg",
-      "prijs": "€ 7,99",
-      "categorie": "VISLIJN",
+      "categorie": "00_IMPORT",
       "bestel": "0"
     }
   ],
@@ -952,7 +944,7 @@
       "naam": "X7 carp method (eyed/barbless) - size 16",
       "prijs": "€ 2,49",
       "categorie": "HAKEN",
-      "bestel": "0"
+      "bestel": "2"
     },
     {
       "id": 1788261892058.4045,
@@ -1020,8 +1012,8 @@
     },
     {
       "id": 1788347827060.8042,
-      "merk": "Tubertini",
-      "naam": "Onthaker met metalen punt - medium",
+      "merk": "",
+      "naam": "Tubertini onthaker met metalen punt - medium",
       "prijs": "€ 4,39",
       "categorie": "KLEIN MATERIAAL",
       "bestel": "0"
@@ -1056,7 +1048,7 @@
       "naam": "Super soft bait bands - medium",
       "prijs": "€ 2,49",
       "categorie": "KLEIN MATERIAAL",
-      "bestel": "1"
+      "bestel": "0"
     },
     {
       "id": 1788510968582.3494,
@@ -1075,27 +1067,11 @@
       "bestel": "0"
     },
     {
-      "id": 1789725540948.6453,
-      "merk": "Guru",
-      "naam": "Margin diamond float - 0,40g",
-      "prijs": "€ 2,99",
-      "categorie": "DOBBERS",
-      "bestel": "0"
-    },
-    {
-      "id": 1789725540948.034,
-      "merk": "Guru",
-      "naam": "Margin diamond float - 0,30g",
-      "prijs": "€ 2,99",
-      "categorie": "DOBBERS",
-      "bestel": "0"
-    },
-    {
-      "id": 1789725540948.4934,
+      "id": 1789725709749.9905,
       "merk": "Preston",
-      "naam": "Dibber pole floats - 4x12",
-      "prijs": "€ 2,75",
-      "categorie": "DOBBERS",
+      "naam": "Reflo power - 0,17mm - 3,08kg",
+      "prijs": "€ 7,99",
+      "categorie": "VISLIJN",
       "bestel": "0"
     }
   ],
