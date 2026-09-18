@@ -659,8 +659,8 @@
     {
       "id": 1789724631988.8186,
       "merk": "Guru",
-      "naam": "Diamond float - 0,30g",
-      "prijs": "3,29",
+      "naam": "Diamond float -",
+      "prijs": "0,50",
       "categorie": "DOBBERS",
       "bestel": "0"
     },
@@ -675,32 +675,16 @@
     {
       "id": 1789724631988.761,
       "merk": "",
-      "naam": "Guru xs inline diamond - 0,40g",
-      "prijs": "3,29",
+      "naam": "Guru xs inline diamond -",
+      "prijs": "0,40",
       "categorie": "DOBBERS",
       "bestel": "0"
-    },
-    {
-      "id": 1789724631988.3633,
-      "merk": "Guru",
-      "naam": "Xs inline diamond - 0,40g",
-      "prijs": "€ 3,29",
-      "categorie": "00_IMPORT",
-      "bestel": "4"
-    },
-    {
-      "id": 1789724631988.4043,
-      "merk": "Guru",
-      "naam": "Xs inline diamond - 0,30g",
-      "prijs": "€ 3,29",
-      "categorie": "00_IMPORT",
-      "bestel": "4"
     },
     {
       "id": 1789724631988.851,
       "merk": "Preston",
       "naam": "Dibber pole floats - 4x12",
-      "prijs": "€ 11,00",
+      "prijs": "€ 2,75",
       "categorie": "DOBBERS",
       "bestel": "0"
     },
@@ -710,14 +694,6 @@
       "naam": "Super soft bait bands - medium",
       "prijs": "€ 2,49",
       "categorie": "KLEIN MATERIAAL",
-      "bestel": "0"
-    },
-    {
-      "id": 1789724631988.7969,
-      "merk": "Matrix",
-      "naam": "X7 carp method (eyed/barbless) - size 12",
-      "prijs": "€ 7,47",
-      "categorie": "00_IMPORT",
       "bestel": "0"
     },
     {
