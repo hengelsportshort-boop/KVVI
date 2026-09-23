@@ -1067,35 +1067,43 @@
       "bestel": "0"
     },
     {
+      "id": 1790153591292.1619,
+      "merk": "Guru",
+      "naam": "Margin diamond float -",
+      "prijs": "0,40",
+      "categorie": "00_IMPORT",
+      "bestel": "0"
+    },
+    {
       "id": 1790153591292.1472,
       "merk": "Guru",
       "naam": "Margin diamond float - 0,40g",
       "prijs": "€ 11,96",
-      "categorie": "DOBBERS",
-      "bestel": "0"
+      "categorie": "00_IMPORT",
+      "bestel": "4"
     },
     {
       "id": 1790153591292.8906,
       "merk": "Guru",
       "naam": "Margin diamond float - 0,30g",
       "prijs": "€ 11,96",
-      "categorie": "DOBBERS",
-      "bestel": "4"
+      "categorie": "00_IMPORT",
+      "bestel": "0"
     },
     {
       "id": 1790153591293.2869,
       "merk": "Guru",
       "naam": "Micro cubes - size 8",
       "prijs": "€ 3,49",
-      "categorie": "LOOD",
+      "categorie": "00_IMPORT",
       "bestel": "0"
     },
     {
       "id": 1790153591293.894,
-      "merk": "",
-      "naam": "Preston stotz refill - size 8",
+      "merk": "Preston",
+      "naam": "Stotz refill - size 8",
       "prijs": "€ 5,50",
-      "categorie": "LOOD",
+      "categorie": "00_IMPORT",
       "bestel": "0"
     },
     {
