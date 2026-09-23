@@ -1004,8 +1004,8 @@
     },
     {
       "id": 1788347827060.8042,
-      "merk": "",
-      "naam": "Onthaker met metalen punt - medium",
+      "merk": "Tubertini",
+      "naam": "Tubertini onthaker met metalen punt - medium",
       "prijs": "€ 4,39",
       "categorie": "KLEIN MATERIAAL",
       "bestel": "0"
@@ -1064,14 +1064,6 @@
       "naam": "Reflo power - 0,17mm - 3,08kg",
       "prijs": "€ 7,99",
       "categorie": "VISLIJN",
-      "bestel": "1"
-    },
-    {
-      "id": 1790153591292.1619,
-      "merk": "Guru",
-      "naam": "Margin diamond float -",
-      "prijs": "0,40",
-      "categorie": "00_IMPORT",
       "bestel": "0"
     },
     {
@@ -1079,15 +1071,15 @@
       "merk": "Guru",
       "naam": "Margin diamond float - 0,40g",
       "prijs": "€ 11,96",
-      "categorie": "00_IMPORT",
-      "bestel": "4"
+      "categorie": "DOBBERS",
+      "bestel": "0"
     },
     {
       "id": 1790153591292.8906,
       "merk": "Guru",
       "naam": "Margin diamond float - 0,30g",
       "prijs": "€ 11,96",
-      "categorie": "00_IMPORT",
+      "categorie": "DOBBERS",
       "bestel": "0"
     },
     {
@@ -1095,15 +1087,15 @@
       "merk": "Guru",
       "naam": "Micro cubes - size 8",
       "prijs": "€ 3,49",
-      "categorie": "00_IMPORT",
+      "categorie": "LOOD",
       "bestel": "0"
     },
     {
       "id": 1790153591293.894,
-      "merk": "Preston",
-      "naam": "Stotz refill - size 8",
+      "merk": "",
+      "naam": "Preston stotz refill - size 8",
       "prijs": "€ 5,50",
-      "categorie": "00_IMPORT",
+      "categorie": "LOOD",
       "bestel": "0"
     },
     {
