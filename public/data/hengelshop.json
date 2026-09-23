@@ -936,7 +936,7 @@
       "naam": "X7 carp method (eyed/barbless) - size 16",
       "prijs": "€ 2,49",
       "categorie": "HAKEN",
-      "bestel": "3"
+      "bestel": "2"
     },
     {
       "id": 1788261892058.4045,
@@ -971,12 +971,20 @@
       "bestel": "0"
     },
     {
+      "id": 1788347827060.6177,
+      "merk": "Matrix",
+      "naam": "Slim line rubber stops - medium",
+      "prijs": "€ 2,99",
+      "categorie": "METHOD FEEDER",
+      "bestel": "0"
+    },
+    {
       "id": 1788347827060.545,
       "merk": "Matrix",
       "naam": "Rubber line stops - medium",
       "prijs": "€ 2,50",
       "categorie": "METHOD FEEDER",
-      "bestel": "1"
+      "bestel": "0"
     },
     {
       "id": 1788347827060.0295,
@@ -996,8 +1004,8 @@
     },
     {
       "id": 1788347827060.8042,
-      "merk": "Tubertini",
-      "naam": "Tubertini onthaker met metalen punt - medium",
+      "merk": "",
+      "naam": "Onthaker met metalen punt - medium",
       "prijs": "€ 4,39",
       "categorie": "KLEIN MATERIAAL",
       "bestel": "0"
@@ -1032,7 +1040,7 @@
       "naam": "Super soft bait bands - medium",
       "prijs": "€ 2,49",
       "categorie": "KLEIN MATERIAAL",
-      "bestel": "0"
+      "bestel": "1"
     },
     {
       "id": 1788510968582.3494,
@@ -1056,6 +1064,14 @@
       "naam": "Reflo power - 0,17mm - 3,08kg",
       "prijs": "€ 7,99",
       "categorie": "VISLIJN",
+      "bestel": "1"
+    },
+    {
+      "id": 1790153591292.1619,
+      "merk": "Guru",
+      "naam": "Margin diamond float -",
+      "prijs": "0,40",
+      "categorie": "00_IMPORT",
       "bestel": "0"
     },
     {
@@ -1063,15 +1079,15 @@
       "merk": "Guru",
       "naam": "Margin diamond float - 0,40g",
       "prijs": "€ 11,96",
-      "categorie": "DOBBERS",
-      "bestel": "0"
+      "categorie": "00_IMPORT",
+      "bestel": "4"
     },
     {
       "id": 1790153591292.8906,
       "merk": "Guru",
       "naam": "Margin diamond float - 0,30g",
       "prijs": "€ 11,96",
-      "categorie": "DOBBERS",
+      "categorie": "00_IMPORT",
       "bestel": "0"
     },
     {
@@ -1079,15 +1095,15 @@
       "merk": "Guru",
       "naam": "Micro cubes - size 8",
       "prijs": "€ 3,49",
-      "categorie": "LOOD",
+      "categorie": "00_IMPORT",
       "bestel": "3"
     },
     {
       "id": 1790153591293.894,
-      "merk": "",
-      "naam": "Preston stotz refill - size 8",
+      "merk": "Preston",
+      "naam": "Stotz refill - size 8",
       "prijs": "€ 5,50",
-      "categorie": "LOOD",
+      "categorie": "00_IMPORT",
       "bestel": "0"
     },
     {
@@ -1096,7 +1112,7 @@
       "naam": "Inline olivettes - 0,50g",
       "prijs": "€ 2,39",
       "categorie": "LOOD",
-      "bestel": "0"
+      "bestel": "1"
     },
     {
       "id": 1790153591293.491,
@@ -1104,7 +1120,7 @@
       "naam": "Inline olivettes - 0,40g",
       "prijs": "€ 2,39",
       "categorie": "LOOD",
-      "bestel": "0"
+      "bestel": "1"
     },
     {
       "id": 1790153591293.2817,
@@ -1112,7 +1128,7 @@
       "naam": "Inline olivettes - 0,30g",
       "prijs": "€ 2,39",
       "categorie": "LOOD",
-      "bestel": "0"
+      "bestel": "1"
     }
   ],
   "_categories": [
