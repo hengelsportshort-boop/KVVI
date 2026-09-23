@@ -1084,7 +1084,7 @@
     },
     {
       "id": 1790153591293.894,
-      "merk": "Preston",
+      "merk": "",
       "naam": "Preston stotz refill - size 8",
       "prijs": "€ 5,50",
       "categorie": "LOOD",
@@ -1117,16 +1117,16 @@
     {
       "id": 1790154141604.4016,
       "merk": "Coppens",
-      "naam": "Coarse pellets - 2mm",
-      "prijs": "€ 16,99",
+      "naam": "Coarse pellets - 2mm - 5kg",
+      "prijs": "€ 7,50",
       "categorie": "AAS",
       "bestel": "2"
     },
     {
-      "id": 1790154184680.4497,
-      "merk": "",
-      "naam": "Coppens coarse pellets - 3mm",
-      "prijs": "€ 0,00",
+      "id": 1790154193799.3042,
+      "merk": "Coppens",
+      "naam": "Coarse pellets - 4,5mm",
+      "prijs": "€ 7,50",
       "categorie": "AAS",
       "bestel": "0"
     }
