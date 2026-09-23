@@ -1132,8 +1132,16 @@
     },
     {
       "id": 1790154515155.677,
-      "merk": "Coppens",
-      "naam": "Skretting coarse pellets - 2,3mm - 5kg",
+      "merk": "",
+      "naam": "Coppens skretting coarse pellets - 2,3mm - 5kg",
+      "prijs": "18,99",
+      "categorie": "AAS",
+      "bestel": "0"
+    },
+    {
+      "id": 1790154592499.6602,
+      "merk": "",
+      "naam": "Coppens skretting coarse pellets - 4,5mm - 5kg",
       "prijs": "18,99",
       "categorie": "AAS",
       "bestel": "0"
