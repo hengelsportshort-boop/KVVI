@@ -107,7 +107,7 @@
       },
       {
         "name": "Koppelwedstrijd 26 Sep 2026",
-        "visible": false,
+        "visible": true,
         "rows": [
           {
             "deeln1": "",
