@@ -1,0 +1,23 @@
+{
+  "id": "kamp-izegem",
+  "title": "Kampioenschap van Izegem",
+  "type": "kamp-izegem",
+  "date": "2027-01-01",
+  "tables": [
+    {
+      "name": "Namiddag",
+      "visible": true,
+      "rows": [
+        {"deeln":"Devisscher R","gl1":"","gl2":""},{"deeln":"Bardoel F","gl1":"","gl2":""},{"deeln":"Vanhecke A","gl1":"","gl2":""},{"deeln":"Meurisse F","gl1":"","gl2":""},{"deeln":"Desmet C","gl1":"","gl2":""},{"deeln":"Neyrinck S","gl1":"","gl2":""},{"deeln":"Feys C","gl1":"","gl2":""},{"deeln":"Feys R","gl1":"","gl2":""},{"deeln":"Degeldere K","gl1":"","gl2":""},{"deeln":"Vandermeersh L","gl1":"","gl2":""},{"deeln":"Vanbeselaere M","gl1":"","gl2":""},{"deeln":"Landuyt E","gl1":"","gl2":""},{"deeln":"Popelier F","gl1":"","gl2":""},{"deeln":"Vandoorne R","gl1":"","gl2":""},{"deeln":"Christiaens T","gl1":"","gl2":""},{"deeln":"Vercamer F","gl1":"","gl2":""},{"deeln":"Decraene A","gl1":"","gl2":""},{"deeln":"Debackere G","gl1":"","gl2":""},{"deeln":"Deltomme P","gl1":"","gl2":""},{"deeln":"Mees J","gl1":"","gl2":""},{"deeln":"","gl1":"","gl2":""},{"deeln":"","gl1":"","gl2":""},{"deeln":"","gl1":"","gl2":""},{"deeln":"","gl1":"","gl2":""},{"deeln":"","gl1":"","gl2":""}
+      ]
+    },
+    {
+      "name": "Voormiddag",
+      "visible": true,
+      "rows": [
+        {"deeln":"Cloet S","gl1":"","gl2":""},{"deeln":"Bardoel P","gl1":"","gl2":""},{"deeln":"Vanhecke A","gl1":"","gl2":""},{"deeln":"Devos K","gl1":"","gl2":""},{"deeln":"Demeester J","gl1":"","gl2":""},{"deeln":"Depuydt F","gl1":"","gl2":""},{"deeln":"Doom D","gl1":"","gl2":""},{"deeln":"Viane K","gl1":"","gl2":""},{"deeln":"Ferteyn F","gl1":"","gl2":""},{"deeln":"Maes E","gl1":"","gl2":""},{"deeln":"Maes T","gl1":"","gl2":""},{"deeln":"Gobel G","gl1":"","gl2":""},{"deeln":"Depover JL","gl1":"","gl2":""},{"deeln":"Ramaut S","gl1":"","gl2":""},{"deeln":"Lowie D","gl1":"","gl2":""},{"deeln":"Milleville D","gl1":"","gl2":""},{"deeln":"Demeulemeester B","gl1":"","gl2":""},{"deeln":"Fertein J","gl1":"","gl2":""},{"deeln":"Mattheeuws S","gl1":"","gl2":""},{"deeln":"","gl1":"","gl2":""},{"deeln":"","gl1":"","gl2":""},{"deeln":"","gl1":"","gl2":""},{"deeln":"","gl1":"","gl2":""},{"deeln":"","gl1":"","gl2":""},{"deeln":"","gl1":"","gl2":""}
+      ]
+    }
+  ],
+  "visible": true
+}
