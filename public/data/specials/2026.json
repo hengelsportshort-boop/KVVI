@@ -202,5 +202,14 @@
         ]
       }
     ]
+  },
+  {
+    "id": 1794998071447,
+    "title": "Nieuwe sectie",
+    "type": "content",
+    "content": "<p>Vul hier de inhoud in...</p>",
+    "image": "",
+    "order": 2,
+    "visible": true
   }
 ]
