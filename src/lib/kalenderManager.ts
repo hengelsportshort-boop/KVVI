@@ -9,6 +9,47 @@ export interface Wedstrijd {
 }
 
 const KALENDER_FILE = path.resolve('./public/data/wedstrijdkalender.json');
+const KALENDER_INSTELLINGEN_FILE = path.resolve('./public/data/kalender-instellingen.json');
+
+const STANDAARD_KALENDERJAAR = 2027;
+
+function initKalenderInstellingen() {
+  if (!fs.existsSync(KALENDER_INSTELLINGEN_FILE)) {
+    fs.writeFileSync(
+      KALENDER_INSTELLINGEN_FILE,
+      JSON.stringify({ kalenderjaar: STANDAARD_KALENDERJAAR }, null, 2),
+      'utf-8'
+    );
+  }
+}
+
+export function getKalenderjaar(): number {
+  initKalenderInstellingen();
+
+  try {
+    const data = JSON.parse(fs.readFileSync(KALENDER_INSTELLINGEN_FILE, 'utf-8'));
+    const jaar = Number(data.kalenderjaar);
+    return Number.isInteger(jaar) && jaar >= 2000 && jaar <= 2100
+      ? jaar
+      : STANDAARD_KALENDERJAAR;
+  } catch (error) {
+    console.error('Error reading kalenderjaar:', error);
+    return STANDAARD_KALENDERJAAR;
+  }
+}
+
+export function setKalenderjaar(kalenderjaar: number): number {
+  if (!Number.isInteger(kalenderjaar) || kalenderjaar < 2000 || kalenderjaar > 2100) {
+    throw new Error('Kalenderjaar moet een geldig jaar tussen 2000 en 2100 zijn');
+  }
+
+  fs.writeFileSync(
+    KALENDER_INSTELLINGEN_FILE,
+    JSON.stringify({ kalenderjaar }, null, 2),
+    'utf-8'
+  );
+  return kalenderjaar;
+}
 
 // Initialize the kalender file if it doesn't exist
 function initKalenderFile() {

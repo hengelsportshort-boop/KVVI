@@ -136,7 +136,14 @@ const pageTitle = "Kalender Beheer | KVVI Admin";
         <div class="p-4 md:p-8 flex-1 overflow-y-auto">
           <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
             <div class="p-5 border-b border-slate-100">
-              <h2 class="font-black text-[#003366] uppercase tracking-tight text-lg">📅 Wedstrijdkalender 2026</h2>
+              <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                <h2 class="font-black text-[#003366] uppercase tracking-tight text-lg">📅 Wedstrijdkalender <span id="kalenderjaar-label">2027</span></h2>
+                <div class="flex items-center gap-2">
+                  <label for="kalenderjaar-input" class="text-sm font-semibold text-slate-600">Kalenderjaar</label>
+                  <input id="kalenderjaar-input" type="number" min="2000" max="2100" step="1" value="2027" class="w-24 px-2 py-1.5 rounded-lg border border-slate-200 text-sm bg-white">
+                  <button id="save-year-btn" class="bg-green-600 text-white px-3 py-1.5 rounded-lg text-sm font-semibold hover:bg-green-700">Opslaan</button>
+                </div>
+              </div>
               <p class="text-sm text-slate-500 mt-1">Beheer de wedstrijddata en reeksen — wijzigingen worden direct opgeslagen</p>
             </div>
             
@@ -205,13 +212,19 @@ const pageTitle = "Kalender Beheer | KVVI Admin";
   const saveNewBtn = document.getElementById('save-new-btn');
   const cancelAddBtn = document.getElementById('cancel-add-btn');
   const saveStatus = document.getElementById('save-status');
+  const kalenderjaarInput = document.getElementById('kalenderjaar-input');
+  const kalenderjaarLabel = document.getElementById('kalenderjaar-label');
+  const saveYearBtn = document.getElementById('save-year-btn');
 
   let data = [];
 
   async function loadData() {
     try {
-      const resp = await fetch('/api/kalender');
-      data = await resp.json();
+      const resp = await fetch('/api/kalender?settings=1');
+      const result = await resp.json();
+      data = result.wedstrijden || [];
+      kalenderjaarInput.value = result.kalenderjaar;
+      kalenderjaarLabel.textContent = result.kalenderjaar;
       render();
     } catch (e) {
       tbody.innerHTML = '<tr><td colspan="4" class="p-6 text-center text-red-500">Fout bij laden</td></tr>';
@@ -277,6 +290,31 @@ const pageTitle = "Kalender Beheer | KVVI Admin";
     addForm.classList.add('hidden');
     document.getElementById('new-datum').value = '';
     document.getElementById('new-reeks').value = '';
+  };
+
+  saveYearBtn.onclick = async () => {
+    const kalenderjaar = Number(kalenderjaarInput.value);
+    if (!Number.isInteger(kalenderjaar) || kalenderjaar < 2000 || kalenderjaar > 2100) {
+      showStatus('❌ Kies een geldig jaar tussen 2000 en 2100', 'text-red-600');
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/kalender', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ kalenderjaar })
+      });
+      const result = await res.json();
+      if (result.success) {
+        kalenderjaarLabel.textContent = result.kalenderjaar;
+        showStatus('✅ Kalenderjaar opgeslagen', 'text-green-600');
+      } else {
+        showStatus('❌ ' + (result.error || 'Fout bij opslaan'), 'text-red-600');
+      }
+    } catch (e) {
+      showStatus('❌ Fout bij opslaan', 'text-red-600');
+    }
   };
 
   saveNewBtn.onclick = async () => {
